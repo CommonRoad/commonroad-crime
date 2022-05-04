@@ -6,7 +6,7 @@ Toolbox to compute time-to-x criticality measures (e.g. time-to-collision, time-
 
 You have to mannually install the following packages:
 * [CommonRoad Drivability Checker](https://commonroad.in.tum.de/drivability-checker)>=2021.1
-* [CommonRoad Reach](https://gitlab.lrz.de/cps/commonroad-reachable-set)
+* **[CommonRoad Reach](https://gitlab.lrz.de/cps/commonroad-reachable-set) - not needed now
 * [STL Monitor](https://gitlab.lrz.de/ge69xek/stl_crmonitor): under branch feature_interface
 
 ## Installation Guide
