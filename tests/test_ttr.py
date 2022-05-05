@@ -8,8 +8,8 @@ import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_criticality.time_metrics.ttr import TTR
-from commonroad_criticality.time_metrics.simulation import CutOffAction
+from commonroad_criticality.time.ttr import TTR
+from commonroad_criticality.time.simulation import CutOffAction
 
 from stl_crmonitor.crmonitor.common.world_state import WorldState
 
