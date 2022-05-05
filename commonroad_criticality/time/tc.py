@@ -7,13 +7,13 @@ from abc import ABC
 import numpy as np
 from commonroad.scenario.obstacle import State
 
-from commonroad_criticality.time_metrics.base import CutOffBase
-from commonroad_criticality.time_metrics.monitor_wrapper import STLRuleMonitor
-from commonroad_criticality.time_metrics.utils import update_ego_vehicle, visualize_state_list, int_round
-from commonroad_criticality.time_metrics.simulation import (CutOffAction,
-                                                            SimulationLateral,
-                                                            SimulationLong,
-                                                            check_elements_state_list)
+from commonroad_criticality.time.base import CutOffBase
+from commonroad_criticality.time.monitor_wrapper import STLRuleMonitor
+from commonroad_criticality.time.utils import update_ego_vehicle, visualize_state_list, int_round
+from commonroad_criticality.time.simulation import (CutOffAction,
+                                                    SimulationLateral,
+                                                    SimulationLong,
+                                                    check_elements_state_list)
 
 
 class TC(CutOffBase, ABC):

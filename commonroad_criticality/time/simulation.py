@@ -9,7 +9,7 @@ from commonroad.scenario.obstacle import DynamicObstacle, State
 from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
 
 from stl_crmonitor.crmonitor.common.world_state import WorldState
-from commonroad_criticality.time_metrics.utils import check_velocity_feasibility
+from commonroad_criticality.time.utils import check_velocity_feasibility
 
 
 class CutOffAction(str, Enum):

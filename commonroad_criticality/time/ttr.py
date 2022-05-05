@@ -2,10 +2,10 @@ from abc import ABC
 import math
 import functools
 
-from commonroad_criticality.time_metrics.base import CutOffBase
-from commonroad_criticality.time_metrics.utils import visualize_state_list, int_round
-from commonroad_criticality.time_metrics.simulation import (CutOffAction, SimulationLateral, SimulationLong,
-                                                            check_elements_state_list)
+from commonroad_criticality.time.base import CutOffBase
+from commonroad_criticality.time.utils import visualize_state_list, int_round
+from commonroad_criticality.time.simulation import (CutOffAction, SimulationLateral, SimulationLong,
+                                                    check_elements_state_list)
 
 from stl_crmonitor.crmonitor.common.world_state import WorldState
 

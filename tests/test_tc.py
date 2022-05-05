@@ -9,10 +9,10 @@ import math
 from commonroad.common.file_reader import CommonRoadFileReader
 from stl_crmonitor.crmonitor.common.world_state import WorldState
 
-from commonroad_criticality.time_metrics.tc import TC
-from commonroad_criticality.time_metrics.simulation import SimulationLong, SimulationLateral, CutOffAction
-from commonroad_criticality.time_metrics.utils import check_velocity_feasibility, update_ego_vehicle
-from commonroad_criticality.time_metrics.monitor_wrapper import STLRuleMonitor
+from commonroad_criticality.time.tc import TC
+from commonroad_criticality.time.simulation import SimulationLong, SimulationLateral, CutOffAction
+from commonroad_criticality.time.utils import check_velocity_feasibility, update_ego_vehicle
+from commonroad_criticality.time.monitor_wrapper import STLRuleMonitor
 
 
 class TestTC(unittest.TestCase):
