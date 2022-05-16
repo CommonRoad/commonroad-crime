@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 # CommonRoad packages
 from commonroad.scenario.scenario import Scenario
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
@@ -14,5 +16,9 @@ class CriticalityBase:
 
         # ==========  configuration  =========
         self.configuration = config
+
+    @abstractmethod
+    def compute(self):
+        pass
 
 

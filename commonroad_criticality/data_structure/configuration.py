@@ -80,9 +80,6 @@ class VehicleConfiguration:
         def __init__(self, dict_config: Dict):
             dict_curvilinear = dict_config["config_vehicle"]["curvilinear"]
 
-            self.length = dict_curvilinear["length"]
-            self.width = dict_curvilinear["width"]
-
             self.v_lon_min = dict_curvilinear["v_lon_min"]
             self.v_lon_max = dict_curvilinear["v_lon_max"]
             self.v_lat_min = dict_curvilinear["v_lat_min"]
@@ -103,11 +100,11 @@ class VehicleConfiguration:
 
     @staticmethod
     def to_vehicle_parameter(vehicle_type: str):
-        if vehicle_type == "1":
+        if vehicle_type == 1:
             return parameters_vehicle1()
-        elif vehicle_type == "2":
+        elif vehicle_type == 2:
             return parameters_vehicle2()
-        elif vehicle_type == "3":
+        elif vehicle_type == 3:
             return parameters_vehicle3()
         else:
             raise TypeError(f"Vehicle type {vehicle_type} not supported!")
