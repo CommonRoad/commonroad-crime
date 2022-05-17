@@ -28,5 +28,6 @@ class TestSpaceMetrics(unittest.TestCase):
                                                             config=config)
 
     def test_generation(self):
-        self.drivable_criticality.compute()
-        pass
+        criticality = self.drivable_criticality.compute()
+        self.assertGreaterEqual(criticality, 0)
+        self.assertLessEqual(criticality, 1)
