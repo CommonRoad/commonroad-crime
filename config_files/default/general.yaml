@@ -1,0 +1,4 @@
+config_general:
+  # path can either be relative path to the root directory or absolute path
+  path_scenarios: scenarios/
+  path_plots: outputs/plots/
