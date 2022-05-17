@@ -1,4 +1,4 @@
-from typing import Iterable, List, Union, Dict, Tuple
+from typing import List, Union, Dict
 
 import numpy as np
 
@@ -42,7 +42,7 @@ class DrivableAreaCriticality(CriticalityBase):
         area_profile_reference = self.compute_drivable_area_profile(drivable_area)
         return self._criticality_metric(area_profile, area_profile_reference)
 
-    def compute_drivable_area_profile(self, drivable_area: Dict[int, List[ReachPolygon]]):
+    def compute_drivable_area_profile(self, drivable_area: Dict[int, List[Union[ReachPolygon, ReachNode]]]):
         """Computes area profile for given reachability analysis."""
         area_profile = []
         for t, drivable_t in drivable_area.items():

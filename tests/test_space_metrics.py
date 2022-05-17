@@ -4,13 +4,11 @@ Unit tests of the module time-to-react computation
 
 import os
 import unittest
-import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_criticality.space.drivable_area import DrivableAreaCriticality
 from commonroad_criticality.utility.configuration_builder import ConfigurationBuilder
-from stl_crmonitor.crmonitor.common.world_state import WorldState
 
 
 class TestSpaceMetrics(unittest.TestCase):
