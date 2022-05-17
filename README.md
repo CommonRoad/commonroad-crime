@@ -6,7 +6,7 @@ Toolbox to compute criticality measures (e.g. time-to-collision, time-to-react, 
 
 You have to mannually install the following packages:
 * [CommonRoad Drivability Checker](https://commonroad.in.tum.de/drivability-checker)>=2021.1
-* **[CommonRoad Reach](https://gitlab.lrz.de/cps/commonroad-reachable-set) - not needed now
+* [CommonRoad Reach](https://gitlab.lrz.de/cps/commonroad-reachable-set)
 * [STL Monitor](https://gitlab.lrz.de/ge69xek/stl_crmonitor): under branch feature_interface
 
 ## Installation Guide
