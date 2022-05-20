@@ -1,5 +1,5 @@
 """
-Unit tests of the module time-to-react computation
+Unit tests of the module space metrics
 """
 
 import os
