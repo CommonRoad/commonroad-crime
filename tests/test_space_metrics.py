@@ -16,11 +16,14 @@ class TestSpaceMetrics(unittest.TestCase):
         super().setUp()
         root_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
         self.scenario_root_path = os.path.join(root_path, "scenarios")
-        scenario_id = 'DEU_Test-1_1_T-1'
-        scenario_file = os.path.join(self.scenario_root_path, scenario_id + ".xml")
-        self.scenario, _ = CommonRoadFileReader(scenario_file).open(lanelet_assignment=True)
+
+        root_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
         ConfigurationBuilder.set_root_path(root_path)
+
+        scenario_id = 'DEU_Test-1_1_T-1'
         config = ConfigurationBuilder.build_configuration(scenario_id)
+
+        self.scenario, _ = CommonRoadFileReader(config.config_general.path_scenario).open(lanelet_assignment=True)
         self.drivable_criticality = DrivableAreaCriticality(self.scenario,
                                                             id_vehicle=0,
                                                             config=config)
