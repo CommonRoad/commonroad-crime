@@ -2,10 +2,10 @@ import logging
 import os
 from datetime import datetime
 
-from commonroad_robustness.data_structure.configuration import RobustnessConfiguration
+from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 
 
-def initialize_logger(config: RobustnessConfiguration) -> logging.Logger:
+def initialize_logger(config: CriticalityConfiguration) -> logging.Logger:
     # create log directory
     os.makedirs(config.general.path_logs, exist_ok=True)
 
