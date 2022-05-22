@@ -1,6 +1,7 @@
 from typing import List, Union, Dict
 
 import numpy as np
+import logging
 
 from commonroad.scenario.scenario import Scenario
 
@@ -11,6 +12,8 @@ from commonroad_reach.utility import geometry as util_geometry
 
 from commonroad_criticality.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+
+logger = logging.getLogger(__name__)
 
 
 class DrivableAreaCriticality(CriticalityBase):
@@ -26,21 +29,34 @@ class DrivableAreaCriticality(CriticalityBase):
     def compute(self):
         """Computes critically using size of drivable area constrained by obstacles compared to
         unconstrained drivable area."""
+        message = "* Computing space metrics *"
+        logger.info(message)
+        print(message)
+
         # Drivable area
+        message = "! When considering traffic ..."
+        logger.info(message)
+        print(message)
         self.reach_interface.compute_reachable_sets()
         drivable_area = self.reach_interface.drivable_area
         area_profile = self.compute_drivable_area_profile(drivable_area)
 
-        # reference (without obstacles) todo: find a more efficient way to do so
-        dyn_obs = self.reach_interface.config.scenario.dynamic_obstacles
-        sta_obs = self.reach_interface.config.scenario.static_obstacles
-        self.reachset_config.scenario.remove_obstacle(sta_obs)
-        self.reachset_config.scenario.remove_obstacle(dyn_obs)
+        # reference (without obstacles)
+        message = "! Not considering traffic ..."
+        logger.info(message)
+        print(message)
+        self.reachset_config.reachable_set.consider_traffic = False
         self.reach_interface = self.init_reachability_analysis()
         self.reach_interface.compute_reachable_sets()
         drivable_area = self.reach_interface.drivable_area
         area_profile_reference = self.compute_drivable_area_profile(drivable_area)
-        return self._criticality_metric(area_profile, area_profile_reference)
+
+        criticality = self._criticality_metric(area_profile, area_profile_reference)
+
+        message = f"* criticality is: \t{criticality:.3f}"
+        logger.info(message)
+        print(message)
+        return criticality
 
     def compute_drivable_area_profile(self, drivable_area: Dict[int, List[Union[ReachPolygon, ReachNode]]]):
         """Computes area profile for given reachability analysis."""
