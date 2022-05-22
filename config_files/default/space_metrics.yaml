@@ -1,2 +1,7 @@
-config_space_metrics:
-  
+# whether the computation is activated
+# 0: no; 1: yes
+activated: 1
+# mode for space metrics computation
+# 1: area of drivable area
+approach: 1
+
