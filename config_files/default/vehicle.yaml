@@ -1,25 +1,24 @@
-config_vehicle:
-    id_type_vehicle: 2 # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
-    curvilinear:
-        # velocity in m/s
-        v_lon_min: 0.0
-        v_lon_max: 50.0
-        v_lat_min: -3.0
-        v_lat_max: 3.0
+id_type_vehicle: 2 # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
+curvilinear:
+    # velocity in m/s
+    v_lon_min: 0.0
+    v_lon_max: 50.0
+    v_lat_min: -3.0
+    v_lat_max: 3.0
 
-        # acceleration in m/s^2
-        a_lon_max: 2.0
-        a_lon_min: -8.0 # braking acceleration
-        a_lat_max: 2.0
-        a_lat_min: -2.0
-        # engine power
-        a_max: 8.0
+    # acceleration in m/s^2
+    a_lon_max: 2.0
+    a_lon_min: -8.0 # braking acceleration
+    a_lat_max: 2.0
+    a_lat_min: -2.0
+    # engine power
+    a_max: 8.0
 
-        # jerk in m/s^3
-        j_lon_min: -10.0e+3
-        j_lon_max: 10.0e+3
-        j_lat_min: -10.0e+3
-        j_lat_max: 10.0e+3
+    # jerk in m/s^3
+    j_lon_min: -10.0e+3
+    j_lon_max: 10.0e+3
+    j_lat_min: -10.0e+3
+    j_lat_max: 10.0e+3
 
-        reference_point: rear
+    reference_point: rear
 
