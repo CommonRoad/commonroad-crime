@@ -10,7 +10,7 @@ from commonroad_reach.data_structure.reach.reach_interface import ReachableSetIn
 from commonroad_reach.pycrreach import ReachPolygon, ReachNode
 from commonroad_reach.utility import geometry as util_geometry
 
-from commonroad_criticality.base import CriticalityBase
+from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 
 logger = logging.getLogger(__name__)
