@@ -1,7 +1,7 @@
 # whether the computation is activated
 # 0: no; 1: yes
 activated: 1
-# mode for space metrics computation
+# mode for time metrics computation
 # 1: time-to-collision
 # 2. time-to-react
 # 3. time-to-violation
