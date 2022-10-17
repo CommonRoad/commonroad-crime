@@ -21,14 +21,16 @@ class Scene(Scenario):
     self-representations, and the relationships among those entities
     """
 
-    def __init__(self, time_step: int, lanelet_network: LaneletNetwork, scenario: Scenario, dt: float,
+    def __init__(self, time_step: int, scenario: Scenario, dt: float=None,
                  scene_id: Union[str, None] = None):
+        if dt is None:
+            dt = scenario.dt
         super().__init__(dt)
         if scene_id is None:
             self.scene_id = str(scenario.scenario_id) + '_' + str(time_step)
         else:
             self.scene_id = scene_id
-        self.lanelet_network = lanelet_network
+        self.lanelet_network = scenario.lanelet_network
         self.time_step = time_step
         self._scenario = scenario
 
