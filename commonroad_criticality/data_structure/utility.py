@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from typing import List, Union
 from pathlib import Path
 
+
 def load_scenario(config) -> Scenario:
     """
     Loads a scenario from the configuration.
