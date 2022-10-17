@@ -7,10 +7,25 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import Lanelet
+from commonroad.scenario.scenario import Scenario
+from commonroad.common.file_reader import CommonRoadFileReader
+
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 import numpy as np
 from typing import List, Union
+
+
+def load_scenario(config) -> Scenario:
+    """
+    Loads a scenario from the configuration.
+
+    :param config: configuration
+    :return: scenario
+    """
+    scenario, _ = CommonRoadFileReader(config.general.path_scenario).open()
+    return scenario
+
 
 
 def compute_lanelet_width(lanelet: Lanelet, position: List[float]) -> Union[float, None]:
@@ -33,7 +48,7 @@ def _compute_width_from_lanalet_boundary(
         left_polyline: np.ndarray, right_polyline: np.ndarray
 ) -> np.ndarray:
     """
-    Computes the width of a lanelet
+    Computes the width of a lanelet. Credit: Sebastian Maierhofer.
 
     :param left_polyline: left boundary of lanelet
     :param right_polyline: right boundary of lanelet
@@ -49,7 +64,7 @@ def _compute_width_from_lanalet_boundary(
 
 def _compute_path_length_from_polyline(polyline: np.ndarray) -> np.ndarray:
     """
-    Computes the path length of a polyline
+    Computes the path length of a polyline. Credit: Sebastian Maierhofer.
 
     :param polyline: polyline for which path length should be calculated
     :return: path length along polyline

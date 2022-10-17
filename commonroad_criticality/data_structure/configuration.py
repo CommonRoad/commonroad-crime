@@ -1,6 +1,11 @@
 import logging
-from typing import Union
+from typing import Union, Optional
 from omegaconf import ListConfig, DictConfig
+
+from commonroad.scenario.scenario import Scenario
+from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+from commonroad_criticality.common.scene import Scene
+from commonroad_criticality.common.utility import load_scenario
 
 from vehiclemodels.parameters_vehicle1 import parameters_vehicle1
 from vehiclemodels.parameters_vehicle2 import parameters_vehicle2
@@ -13,10 +18,34 @@ class CriticalityConfiguration:
     """Class to hold criticality-related configurations"""
 
     def __init__(self, config: Union[ListConfig, DictConfig]):
+        self.scenario: Optional[Scenario] = None
+        self.scene: Optional[Scene] = None
         self.general: GeneralConfiguration = GeneralConfiguration(config)
         self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
         self.time_metrics: TimeBasedConfiguration = TimeBasedConfiguration(config)
         self.space_metrics: SpaceBasedConfiguration = SpaceBasedConfiguration(config)
+
+    def update(self,
+               sce = Union[Scene, Scenario],
+               CLCS: CurvilinearCoordinateSystem = None,
+               ):
+        """
+        Updates criticality configuration based on the given attributes.
+
+        Possible ways of updating the configuration:
+        1. No attribute is given: load the scenario and evaluate the criticality of all obstacles.
+        2. scenario
+        3. scene
+        4. scenario + clcs
+        5. scene + clcs
+        """
+        if isinstance(sce, Scene):
+            self.scene = sce
+        elif isinstance(sce, Scenario):
+            self.scenario = sce
+        else:
+            self.scenario = load_scenario(self)  # if none is provided, scenario is at default
+        self.vehicle.curvilinear.clcs = CLCS
 
     def print_configuration_summary(self):
         string = "# ===== Configuration Summary ===== #\n"
@@ -97,6 +126,7 @@ class VehicleConfiguration:
     class Curvilinear:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_curvilinear = dict_config.curvilinear
+            self.clcs = None # fixme: other assignment?
 
             self.v_lon_min = dict_curvilinear.v_lon_min
             self.v_lon_max = dict_curvilinear.v_lon_max
