@@ -16,15 +16,14 @@ from commonroad.visualization.mp_renderer import MPRenderer
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
-from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker, \
-    create_collision_object
+from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker
 from commonroad_dc.collision.visualization.drawing \
     import draw_collision_rectobb
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.common.metric import TimeScaleMetricType
-
+from commonroad_criticality.common.utility import save_fig
 
 class TTC(CriticalityBase):
     metric_name = TimeScaleMetricType.TTC
@@ -74,6 +73,10 @@ class TTC(CriticalityBase):
                                                     "dynamic_obstacle": {
                                                         "draw_icon": self.configuration.debug.draw_icons}})
                     rnd.render()
-                    plt.show()
+                    plt.title(f"time step: {i}")
+                    if self.configuration.debug.save_plots:
+                        save_fig(self.metric_name, self.configuration.general.path_output, i)
+                    else:
+                        plt.show()
                 return Decimal(str(i)) * Decimal(str(self.sce.dt))
         return Decimal(math.inf)

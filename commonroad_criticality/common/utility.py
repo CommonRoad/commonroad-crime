@@ -13,8 +13,9 @@ from commonroad.common.file_reader import CommonRoadFileReader
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 import numpy as np
+import matplotlib.pyplot as plt
 from typing import List, Union
-
+from pathlib import Path
 
 def load_scenario(config) -> Scenario:
     """
@@ -26,6 +27,12 @@ def load_scenario(config) -> Scenario:
     scenario, _ = CommonRoadFileReader(config.general.path_scenario).open()
     return scenario
 
+
+def save_fig(metric_name: str, path_output: str, time_step: int):
+    # save as svg
+    Path(path_output).mkdir(parents=True, exist_ok=True)
+    plt.savefig(f'{path_output}{metric_name}_{time_step:03d}.svg', format="svg", bbox_inches="tight",
+                transparent=False)
 
 
 def compute_lanelet_width(lanelet: Lanelet, position: List[float]) -> Union[float, None]:
