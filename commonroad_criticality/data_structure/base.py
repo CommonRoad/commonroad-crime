@@ -8,6 +8,7 @@ from commonroad_criticality.data_structure.configuration import CriticalityConfi
 
 class CriticalityBase:
     """Base class for criticality measures"""
+    metric_name = "base"
 
     def __init__(self, config: CriticalityConfiguration):
         assert isinstance(config, CriticalityConfiguration), '<Criticality>: Provided configuration is not valid!'
@@ -29,5 +30,5 @@ class CriticalityBase:
         self.configuration = config
 
     @abstractmethod
-    def compute(self):
+    def compute(self,  *args, **kwargs):
         pass

@@ -24,10 +24,12 @@ class CriticalityConfiguration:
         self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
         self.time_metrics: TimeBasedConfiguration = TimeBasedConfiguration(config)
         self.space_metrics: SpaceBasedConfiguration = SpaceBasedConfiguration(config)
+        self.debug: DebugConfiguration = DebugConfiguration(config)
 
     def update(self,
-               sce = Union[Scene, Scenario],
-               CLCS: CurvilinearCoordinateSystem = None,
+               ego_id: int = None,
+               sce: Union[Scene, Scenario] = None,
+               CLCS: Optional[CurvilinearCoordinateSystem] = None,
                ):
         """
         Updates criticality configuration based on the given attributes.
@@ -46,6 +48,10 @@ class CriticalityConfiguration:
         else:
             self.scenario = load_scenario(self)  # if none is provided, scenario is at default
         self.vehicle.curvilinear.clcs = CLCS
+        if ego_id:
+            if self.scenario.obstacle_by_id(ego_id) is None or self.scene.obstacle_by_id(ego_id):
+                assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
+            self.vehicle.ego_id = ego_id
 
     def print_configuration_summary(self):
         string = "# ===== Configuration Summary ===== #\n"
@@ -109,7 +115,7 @@ class TimeBasedConfiguration:
 class VehicleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.vehicle
-        self.id_vehicle = None
+        self.ego_id = config_relevant.ego_id
 
         # vehicle configuration in the curvilinear coordinate system
         # todo: check whether this is actually runable
@@ -172,3 +178,24 @@ class VehicleConfiguration:
     @width.setter
     def width(self, width: float):
         self._width = width
+
+
+class DebugConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.debug
+
+        self.save_plots = config_relevant.save_plots
+        self.draw_visualization = config_relevant.draw_visualization
+        self.draw_icons = config_relevant.draw_icons
+
+        # self.save_config = config_relevant.save_config
+        # self.verbose_debug = config_relevant.verbose_debug
+        # self.verbose_info = config_relevant.verbose_info
+        # self.draw_ref_path = config_relevant.draw_ref_path
+        # self.draw_planning_problem = config_relevant.draw_planning_problem
+        # self.draw_icons = config_relevant.draw_icons
+        # self.draw_lanelet_labels = config_relevant.draw_lanelet_labels
+        # self.plot_limits = config_relevant.plot_limits
+        # self.plot_azimuth = config_relevant.plot_azimuth
+        # self.plot_elevation = config_relevant.plot_elevation
+        # self.ax_distance = config_relevant.ax_distance

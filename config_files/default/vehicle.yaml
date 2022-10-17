@@ -1,3 +1,4 @@
+ego_id: 8
 id_type_vehicle: 2 # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
 curvilinear:
     # velocity in m/s
