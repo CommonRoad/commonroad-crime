@@ -1,10 +1,7 @@
 
 import unittest
 
-from commonroad.common.file_reader import CommonRoadFileReader
-
-from commonroad_criticality.space.drivable_area import DrivableAreaCriticality
-from commonroad_criticality.common.scene import Scene
+from commonroad_criticality.data_structure.scene import Scene
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_criticality.data_structure.logger as util_logger

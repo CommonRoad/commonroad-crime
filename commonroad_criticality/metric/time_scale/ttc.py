@@ -22,8 +22,9 @@ from commonroad_dc.collision.visualization.drawing \
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-from commonroad_criticality.common.metric import TimeScaleMetricType
-from commonroad_criticality.common.utility import save_fig
+from commonroad_criticality.data_structure.metric import TimeScaleMetricType
+from commonroad_criticality.data_structure.utility import save_fig
+
 
 class TTC(CriticalityBase):
     metric_name = TimeScaleMetricType.TTC
@@ -43,7 +44,7 @@ class TTC(CriticalityBase):
         # creat collision checker
         road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
         self.sce.add_objects(road_boundary_obstacle)
-        self._collision_checker = create_collision_checker(self.sce)
+        self.collision_checker = create_collision_checker(self.sce)
 
     def compute(self) -> Union[Decimal]:
         """
@@ -65,7 +66,7 @@ class TTC(CriticalityBase):
                                      0.5 * self.ego_vehicle.obstacle_shape.width,
                                      theta, pos1, pos2)
             ego.append_obstacle(ego_obb)
-            if self._collision_checker.collide(ego):
+            if self.collision_checker.collide(ego):
                 if self.configuration.debug.draw_visualization:
                     rnd = MPRenderer()
                     draw_collision_rectobb(ego_obb, rnd)

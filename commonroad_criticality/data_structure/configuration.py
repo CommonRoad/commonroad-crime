@@ -4,8 +4,8 @@ from omegaconf import ListConfig, DictConfig
 
 from commonroad.scenario.scenario import Scenario
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
-from commonroad_criticality.common.scene import Scene
-from commonroad_criticality.common.utility import load_scenario
+from commonroad_criticality.data_structure.scene import Scene
+from commonroad_criticality.data_structure.utility import load_scenario
 
 from vehiclemodels.parameters_vehicle1 import parameters_vehicle1
 from vehiclemodels.parameters_vehicle2 import parameters_vehicle2
