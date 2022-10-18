@@ -4,8 +4,9 @@ from omegaconf import ListConfig, DictConfig
 
 from commonroad.scenario.scenario import Scenario
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
 from commonroad_criticality.data_structure.scene import Scene
-from commonroad_criticality.data_structure.utility import load_scenario
+from commonroad_criticality.utility.utility import load_scenario
 
 from vehiclemodels.parameters_vehicle1 import parameters_vehicle1
 from vehiclemodels.parameters_vehicle2 import parameters_vehicle2
@@ -118,21 +119,26 @@ class VehicleConfiguration:
         self.ego_id = config_relevant.ego_id
 
         # vehicle configuration in the curvilinear coordinate system
-        # todo: check whether this is actually runable
+        # fixme: check whether this is actually runable
         self.curvilinear = VehicleConfiguration.Curvilinear(config_relevant)
 
         # vehicle configuration in the cartesian frame
         id_type_vehicle = config_relevant.id_type_vehicle
         self.cartesian = self.to_vehicle_parameter(id_type_vehicle)
+        self.complete_cartesian_constraints(config_relevant)
+        self.dynamic = PointMassDynamics(id_type_vehicle)
 
-        # vehicle size todo: need to be updated with the scenario
-        self.width = self.cartesian.w
-        self.length = self.cartesian.l
+    def complete_cartesian_constraints(self, dict_config: Union[ListConfig, DictConfig]):
+        dict_cartesian = dict_config.cartesian
+        self.cartesian.j_x_min = dict_cartesian.j_x_min
+        self.cartesian.j_x_max = dict_cartesian.j_x_max
+        self.cartesian.j_y_min = dict_cartesian.j_y_min
+        self.cartesian.j_y_max = dict_cartesian.j_y_max
 
     class Curvilinear:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_curvilinear = dict_config.curvilinear
-            self.clcs = None # fixme: other assignment?
+            self.clcs = None  # fixme: other assignment?
 
             self.v_lon_min = dict_curvilinear.v_lon_min
             self.v_lon_max = dict_curvilinear.v_lon_max

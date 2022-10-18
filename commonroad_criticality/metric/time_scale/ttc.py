@@ -23,7 +23,7 @@ from commonroad_dc.collision.visualization.drawing \
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-from commonroad_criticality.data_structure.utility import save_fig
+from commonroad_criticality.utility.utility import save_fig
 
 
 class TTC(CriticalityBase):
