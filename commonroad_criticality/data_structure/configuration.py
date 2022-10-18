@@ -3,10 +3,11 @@ from typing import Union, Optional
 from omegaconf import ListConfig, DictConfig
 
 from commonroad.scenario.scenario import Scenario
+from commonroad.common.solution import VehicleType
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
 from commonroad_criticality.data_structure.scene import Scene
-from commonroad_criticality.utility.utility import load_scenario
+import commonroad_criticality.utility.general as utils_general
 
 from vehiclemodels.parameters_vehicle1 import parameters_vehicle1
 from vehiclemodels.parameters_vehicle2 import parameters_vehicle2
@@ -47,7 +48,7 @@ class CriticalityConfiguration:
         elif isinstance(sce, Scenario):
             self.scenario = sce
         else:
-            self.scenario = load_scenario(self)  # if none is provided, scenario is at default
+            self.scenario = utils_general.load_scenario(self)  # if none is provided, scenario is at default
         self.vehicle.curvilinear.clcs = CLCS
         if ego_id:
             if self.scenario.obstacle_by_id(ego_id) is None or self.scene.obstacle_by_id(ego_id):
@@ -126,7 +127,7 @@ class VehicleConfiguration:
         id_type_vehicle = config_relevant.id_type_vehicle
         self.cartesian = self.to_vehicle_parameter(id_type_vehicle)
         self.complete_cartesian_constraints(config_relevant)
-        self.dynamic = PointMassDynamics(id_type_vehicle)
+        self.dynamic = PointMassDynamics(VehicleType(id_type_vehicle))
 
     def complete_cartesian_constraints(self, dict_config: Union[ListConfig, DictConfig]):
         dict_cartesian = dict_config.cartesian
@@ -161,6 +162,7 @@ class VehicleConfiguration:
     @staticmethod
     def to_vehicle_parameter(vehicle_type: str):
         if vehicle_type == 1:
+
             return parameters_vehicle1()
         elif vehicle_type == 2:
             return parameters_vehicle2()

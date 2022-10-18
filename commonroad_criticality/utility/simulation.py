@@ -2,16 +2,11 @@
 import math
 from enum import Enum
 import numpy as np
-from math import sqrt
 from typing import Union, List
 from abc import ABC, abstractmethod
 
-from commonroad.common.solution import VehicleType
 from commonroad.scenario.obstacle import DynamicObstacle, State
-from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
 
-from stl_crmonitor.crmonitor.common.world_state import WorldState
-from commonroad_criticality.time.utils import check_velocity_feasibility
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 
 
@@ -31,7 +26,6 @@ class SimulationBase(ABC):
         # currently: point mass model since KS model has some infeasibility issues
         self._input: State = State(acceleration=0,
                                    acceleration_y=0)
-        self._state_list = []
 
         self.dt = config.scenario.dt
         self.time_horizon = simulated_vehicle.prediction.final_time_step
@@ -39,6 +33,9 @@ class SimulationBase(ABC):
         self.simulated_vehicle = simulated_vehicle
         self.parameters = config.vehicle.cartesian
         self.vehicle_dynamics = config.vehicle.dynamic
+
+    def update_maneuver(self, maneuver: Maneuver):
+        self._maneuver = maneuver
 
     def initialize_state_list(self, time_step: int) -> List[State]:
         """
@@ -120,14 +117,17 @@ class SimulationLong(SimulationBase):
     def simulate_state_list(self, start_time_step: int) -> List[State]:
         pre_state = self.simulated_vehicle.state_at_time(start_time_step)
         state_list = self.initialize_state_list(start_time_step)
+        # update the input
+        self.set_inputs(pre_state)
+        state_list.append(pre_state)
         while pre_state.time_step < self.time_horizon:
-            # update the input
-            self.set_inputs(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
                 check_elements_state(suc_state, pre_state, self.dt)
                 state_list.append(suc_state)
                 pre_state = suc_state
+                # update the input
+                self.set_inputs(pre_state)
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 self.input.acceleration = 0
@@ -151,7 +151,8 @@ def check_elements_state(state: State, prev_state: State = None, dt: float = Non
     if not hasattr(state, "yaw_rate"):
         state.yaw_rate = 0
     if not hasattr(state, "velocity_y"):
-        state.velocity_y = state.velocity * math.cos(state.orientation)
+        state.velocity_y = state.velocity * math.sin(state.orientation)
+        state.velocity = state.velocity * math.cos(state.orientation)
     if prev_state is not None:
         if not hasattr(state, "acceleration"):
             state.acceleration = (state.velocity - prev_state.velocity) / dt

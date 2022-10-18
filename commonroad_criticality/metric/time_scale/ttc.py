@@ -23,7 +23,7 @@ from commonroad_dc.collision.visualization.drawing \
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-from commonroad_criticality.utility.utility import save_fig
+import commonroad_criticality.utility.general as utils_general
 
 
 class TTC(CriticalityBase):
@@ -76,7 +76,7 @@ class TTC(CriticalityBase):
                     rnd.render()
                     plt.title(f"time step: {i}")
                     if self.configuration.debug.save_plots:
-                        save_fig(self.metric_name, self.configuration.general.path_output, i)
+                        utils_general.save_fig(self.metric_name, self.configuration.general.path_output, i)
                     else:
                         plt.show()
                 return Decimal(str(i)) * Decimal(str(self.sce.dt))
