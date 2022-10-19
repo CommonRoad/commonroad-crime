@@ -5,10 +5,12 @@ Unit tests of the module time metrics
 import unittest
 import math
 
+from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_criticality.data_structure.logger as util_logger
 from commonroad_criticality.metric.time_scale.ttc import TTC
-from commonroad_criticality.utility.simulation import SimulationLong, Maneuver
+from commonroad_criticality.utility.simulation import SimulationLong, SimulateLat, Maneuver
+import commonroad_criticality.utility.visualization as Utils_vis
 
 
 class TestTimeMetrics(unittest.TestCase):
@@ -55,5 +57,17 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(simulated_state3[10].velocity,
                          math.sqrt(simulated_state3[-1].velocity**2 + simulated_state3[-1].velocity_y**2))
 
+    def test_simulation_lat(self):
+        self.config.update()
+        self.config.debug.draw_visualization = True
+        ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
+        sim_lat = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+        rnd = MPRenderer()
+        self.config.scenario.draw(rnd)
+        rnd.render()
+        simulated_state1 = sim_lat.simulate_state_list(0, rnd)
+        self.assertEqual(simulated_state1[-1].time_step,
+                         ego_vehicle.prediction.final_time_step)
+        Utils_vis.save_fig(Maneuver.STEERLEFT, self.config.general.path_output, 0)
 
 

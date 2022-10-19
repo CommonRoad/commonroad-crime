@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from typing import List, Union
+import copy
 
 # CommonRoad packages
 from commonroad.scenario.scenario import Scenario
@@ -15,8 +16,14 @@ class CriticalityBase:
         # assert isinstance(id_vehicles, list), '<Criticality>: Provided vehicle ids are not in a list!'
 
         # ==========     Scenario or scene   =========
-        self.scenario = config.scenario
-        self.scene = config.scene
+        if config.scenario:
+            self.sce = copy.deepcopy(config.scenario)
+        else:
+            self.sce = copy.deepcopy(config.scene)
+        # separate the ego vehicle
+        if self.sce is None:
+            assert "<Criticality>: the configuration needs to be first updated"
+        self.ego_vehicle = self.sce.obstacle_by_id(config.vehicle.ego_id)
         # if id_vehicles is None:
         #     self.id_vehicles = [veh.obstacle_id for veh in self.scenario.obstacles if
         #                         veh.state_at_time(time_step) is not None]

@@ -23,7 +23,7 @@ from commonroad_dc.collision.visualization.drawing \
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.general as utils_general
+import commonroad_criticality.utility.visualization as Utils_vis
 
 
 class TTC(CriticalityBase):
@@ -31,14 +31,6 @@ class TTC(CriticalityBase):
 
     def __init__(self, config: CriticalityConfiguration):
         super(TTC, self).__init__(config)
-        if self.scenario:
-            self.sce = copy.deepcopy(config.scenario)
-        else:
-            self.sce = copy.deepcopy(config.scene)
-        # separate the ego vehicle
-        if self.sce is None:
-            assert "<Criticality>: the configuration needs to be first updated"
-        self.ego_vehicle = self.sce.obstacle_by_id(config.vehicle.ego_id)
         self.sce.remove_obstacle(self.ego_vehicle)
 
         # creat collision checker
@@ -76,7 +68,7 @@ class TTC(CriticalityBase):
                     rnd.render()
                     plt.title(f"time step: {i}")
                     if self.configuration.debug.save_plots:
-                        utils_general.save_fig(self.metric_name, self.configuration.general.path_output, i)
+                        Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, i)
                     else:
                         plt.show()
                 return Decimal(str(i)) * Decimal(str(self.sce.dt))

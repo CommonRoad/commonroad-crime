@@ -7,4 +7,7 @@ activated: 1
 # 3. time-to-violation
 # 4. time-to-comply
 metric: 1, 2
-
+# mode for computing the steering width
+# 1. default value from the paper "A flexible method for criticality assessment in driver assistance systems"
+# 2. based on the lane width
+steer_width: 1

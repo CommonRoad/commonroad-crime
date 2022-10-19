@@ -9,6 +9,7 @@ __status__ = "Pre-alpha"
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
+from commonroad_criticality.utility.simulation import SimulationLong, Maneuver
 
 
 class TTB(CriticalityBase):
@@ -16,3 +17,6 @@ class TTB(CriticalityBase):
     
     def __init__(self, config: CriticalityConfiguration):
         super(TTB, self).__init__(config)
+        self._sim_long = SimulationLong(Maneuver.BRAKE, self.ego_vehicle, config)
+
+

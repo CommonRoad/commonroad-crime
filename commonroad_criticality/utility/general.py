@@ -14,7 +14,7 @@ from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import List, Union
+from typing import List, Union, Tuple
 from pathlib import Path
 
 
@@ -29,27 +29,21 @@ def load_scenario(config) -> Scenario:
     return scenario
 
 
-def save_fig(metric_name: str, path_output: str, time_step: int):
-    # save as svg
-    Path(path_output).mkdir(parents=True, exist_ok=True)
-    plt.savefig(f'{path_output}{metric_name}_{time_step:03d}.svg', format="svg", bbox_inches="tight",
-                transparent=False)
-
-
-def compute_lanelet_width(lanelet: Lanelet, position: List[float]) -> Union[float, None]:
+def compute_lanelet_width_orientation(lanelet: Lanelet, position: np.ndarray) -> Tuple[Union[float, None],
+                                                                                       Union[float, None]]:
     """
-    Computes the width of the lanelet at given position
+    Computes the width and the orientation of the lanelet at given position
 
     :param lanelet: a lanelet
     :param position: position of the vehicle
     """
-    if not lanelet.contains_points(np.array([position])):
-        return None
     width_list = _compute_width_from_lanalet_boundary(lanelet.left_vertices, lanelet.right_vertices)
+    orient_list = _compute_orientation_from_polyline(lanelet.center_vertices)
+
     path_length = _compute_path_length_from_polyline(lanelet.center_vertices)
     lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
     position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
-    return np.interp(position_s, path_length, width_list)
+    return np.interp(position_s, path_length, width_list), np.interp(position_s, path_length, orient_list)
 
 
 def _compute_width_from_lanalet_boundary(
@@ -90,3 +84,29 @@ def _compute_path_length_from_polyline(polyline: np.ndarray) -> np.ndarray:
         )
 
     return np.array(distance)
+
+
+def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
+    """
+    Computes orientation along a polyline. Credit: Sebastian Maierhofer.
+
+    :param polyline: polyline for which orientation should be calculated
+    :return: orientation along polyline
+    """
+    assert (
+            isinstance(polyline, np.ndarray)
+            and len(polyline) > 1
+            and polyline.ndim == 2
+            and len(polyline[0, :]) == 2
+    ), "<Math>: not a valid polyline. polyline = {}".format(polyline)
+    if len(polyline) < 2:
+        raise ValueError("Cannot create orientation from polyline of length < 2")
+
+    orientation = [0]
+    for i in range(1, len(polyline)):
+        pt1 = polyline[i - 1]
+        pt2 = polyline[i]
+        tmp = pt2 - pt1
+        orientation.append(np.arctan2(tmp[1], tmp[0]))
+
+    return np.array(orientation)
