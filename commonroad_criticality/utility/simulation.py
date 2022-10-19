@@ -239,7 +239,7 @@ class SimulateLat(SimulationBase):
             lateral_dis = 0.8
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
         # self-driving vehicles based on formalized traffic rules. In IV 2017 (pp. 1477-1483). IEEE.
-        total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_x_min)))
+        total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
         return int(total_timestep / (2 * self.dt)), orientation
 
     def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None):

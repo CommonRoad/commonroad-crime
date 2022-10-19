@@ -77,7 +77,7 @@ class TestTimeMetrics(unittest.TestCase):
         sim_lat_left = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
         simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
         sim_lat_right = SimulateLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
-        simulated_state2 = sim_lat_right.simulate_state_list(0, rnd)
+        simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
 
         for i in range(len(simulated_state1)):
             self.assertEqual(simulated_state1[i].time_step, i)
