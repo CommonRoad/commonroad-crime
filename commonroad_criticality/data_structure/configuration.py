@@ -136,6 +136,10 @@ class VehicleConfiguration:
         self.cartesian.j_x_max = dict_cartesian.j_x_max
         self.cartesian.j_y_min = dict_cartesian.j_y_min
         self.cartesian.j_y_max = dict_cartesian.j_y_max
+        self.cartesian.a_x_min = dict_cartesian.a_x_min
+        self.cartesian.a_x_max = dict_cartesian.a_x_max
+        self.cartesian.a_y_min = dict_cartesian.a_y_min
+        self.cartesian.a_y_max = dict_cartesian.a_y_max
 
     class Curvilinear:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):

@@ -1,11 +1,17 @@
 ego_id: 8
 id_type_vehicle: 2 # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
 cartesian:
+    # acceleration in m/s^2
+    a_x_max: 8.0
+    a_x_min: -8.0
+    a_y_max: 8.0
+    a_y_min: -8.0
+
     # jerk in m/s^3
-    j_x_min: -10.0e+3
-    j_x_max: 10.0e+3
-    j_y_min: -10.0e+3
-    j_y_max: 10.0e+3
+    j_x_min: -50.0
+    j_x_max: 50.0
+    j_y_min: -50.0
+    j_y_max: 50.0
 
 curvilinear:
     # velocity in m/s
@@ -23,10 +29,10 @@ curvilinear:
     a_max: 8.0
 
     # jerk in m/s^3
-    j_lon_min: -10.0e+3
-    j_lon_max: 10.0e+3
-    j_lat_min: -10.0e+3
-    j_lat_max: 10.0e+3
+    j_lon_min: -10.0
+    j_lon_max: 10.0
+    j_lat_min: -10.0
+    j_lat_max: 10.0
 
     reference_point: rear
 

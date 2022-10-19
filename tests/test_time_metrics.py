@@ -39,8 +39,15 @@ class TestTimeMetrics(unittest.TestCase):
     def test_simulation_long(self):
         self.config.update()
         ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
+
+        rnd = MPRenderer()
+        self.config.scenario.draw(rnd)
+        rnd.render()
+
         sim_long = SimulationLong(Maneuver.BRAKE, ego_vehicle, self.config)
-        simulated_state1 = sim_long.simulate_state_list(0)
+        simulated_state1 = sim_long.simulate_state_list(0, rnd)
+        for i in range(len(simulated_state1)):
+            self.assertEqual(simulated_state1[i].time_step, i)
         self.assertEqual(
             simulated_state1[-1].time_step,
             ego_vehicle.prediction.final_time_step)
@@ -48,26 +55,37 @@ class TestTimeMetrics(unittest.TestCase):
             simulated_state1[-1]), True)
 
         sim_long.update_maneuver(Maneuver.KICKDOWN)
-        simulated_state2 = sim_long.simulate_state_list(0)
+        simulated_state2 = sim_long.simulate_state_list(20, rnd)
         self.assertEqual(sim_long.check_velocity_feasibility(
             simulated_state2[-1]), True)
 
         sim_long.update_maneuver(Maneuver.CONSTANT)
-        simulated_state3 = sim_long.simulate_state_list(10)
-        self.assertEqual(simulated_state3[10].velocity,
-                         math.sqrt(simulated_state3[-1].velocity**2 + simulated_state3[-1].velocity_y**2))
+        simulated_state3 = sim_long.simulate_state_list(10, rnd)
+        self.assertEqual(sim_long.check_velocity_feasibility(
+            simulated_state3[-1]), True)
+        Utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
         self.config.update()
         self.config.debug.draw_visualization = True
         ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
-        sim_lat = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+
         rnd = MPRenderer()
         self.config.scenario.draw(rnd)
         rnd.render()
-        simulated_state1 = sim_lat.simulate_state_list(0, rnd)
+
+        sim_lat_left = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+        simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
+        sim_lat_right = SimulateLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
+        simulated_state2 = sim_lat_right.simulate_state_list(0, rnd)
+
+        for i in range(len(simulated_state1)):
+            self.assertEqual(simulated_state1[i].time_step, i)
         self.assertEqual(simulated_state1[-1].time_step,
                          ego_vehicle.prediction.final_time_step)
-        Utils_vis.save_fig(Maneuver.STEERLEFT, self.config.general.path_output, 0)
+        self.assertEqual(simulated_state2[-1].time_step,
+                         ego_vehicle.prediction.final_time_step)
+        Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
+
 
 

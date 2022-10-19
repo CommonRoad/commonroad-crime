@@ -58,8 +58,11 @@ class SimulationBase(ABC):
         """
         # visualize optimal trajectory
         pos = np.asarray([state.position for state in state_list])
-        rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5, zorder=21, linewidth=1,
-                    alpha=0.5 * (start_time_stap / self.time_horizon + 1))
+        opacity = 0.5 * (start_time_stap / self.time_horizon + 1)
+        # the cut-off state
+        # rnd.ax.scatter(pos[0, 0], pos[0, 1], marker='o', color='#ffc325ff', edgecolor='none', zorder=22, s=1.2)
+        # rnd.ax.scatter(pos[0, 0], pos[0, 1], marker='o', color='w', edgecolor='none', zorder=21, s=2.2)
+        rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5, zorder=23, linewidth=0.75, alpha=opacity)
 
     @property
     def maneuver(self):
@@ -97,7 +100,7 @@ class SimulationLong(SimulationBase):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriticalityConfiguration):
-        if maneuver is not Maneuver.BRAKE or not Maneuver.KICKDOWN or not Maneuver.CONSTANT:
+        if maneuver is not Maneuver.BRAKE and not Maneuver.KICKDOWN and not Maneuver.CONSTANT:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLong, self).__init__(maneuver, simulated_vehicle, config)
@@ -106,10 +109,16 @@ class SimulationLong(SimulationBase):
         """
         Sets inputs for the longitudinal simulation
         """
+        if not hasattr(ref_state, "acceleration"):
+            ref_state.acceleration = 0.
+        if not hasattr(ref_state, "acceleration_y"):
+            ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
         # set the lateral acceleration to 0
         self.input.acceleration_y = np.clip(0,
-                                            ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                                            ref_state.acceleration_y + self.parameters.j_y_max * self.dt)
+                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
+                                                self.parameters.a_y_min),
+                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
+                                                self.parameters.a_y_max))
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
         if self.maneuver is Maneuver.BRAKE:
             a_x = - self.parameters.longitudinal.a_max
@@ -123,8 +132,10 @@ class SimulationLong(SimulationBase):
             a_x = 0
         # includes the jerk limits
         self.input.acceleration = np.clip(a_x,
-                                          ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                                          ref_state.acceleration + self.parameters.j_x_max * self.dt)
+                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
+                                              self.parameters.a_x_min),
+                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
+                                              self.parameters.a_x_max))
         self.input.time_step = ref_state.time_step
         ref_state.acceleration = self.input.acceleration
         ref_state.acceleration_y = self.input.acceleration_y
@@ -148,9 +159,14 @@ class SimulationLong(SimulationBase):
                 self.set_inputs(pre_state)
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
-                self.input.acceleration = 0
+                self.maneuver = Maneuver.CONSTANT
+                if suc_state is not None:
+                    if suc_state.velocity < 0:
+                        pre_state.velocity = 0
+                        pre_state.velocity_y = 0
+                self.set_inputs(pre_state)
         if self.plot:
-            self.viz_state_list(rnd, state_list, start_time_step)
+            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def check_velocity_feasibility(self, state: State) -> bool:
@@ -171,7 +187,7 @@ class SimulateLat(SimulationBase):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriticalityConfiguration):
-        if maneuver is not Maneuver.STEERLEFT or not Maneuver.STEERRIGHT:
+        if maneuver is not Maneuver.STEERLEFT and not Maneuver.STEERRIGHT:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulateLat, self).__init__(maneuver, simulated_vehicle, config)
@@ -182,14 +198,16 @@ class SimulateLat(SimulationBase):
         """
         Sets inputs for the lateral simulation
         """
-        if not hasattr(ref_state, "acceleration_y"):
-            ref_state.acceleration_y = 0.
         if not hasattr(ref_state, "acceleration"):
             ref_state.acceleration = 0.
+        if not hasattr(ref_state, "acceleration_y"):
+            ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
         # set the longitudinal acceleration to 0
         self.input.acceleration = np.clip(0,
-                                          ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                                          ref_state.acceleration + self.parameters.j_x_max * self.dt)
+                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
+                                              self.parameters.a_x_min),
+                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
+                                              self.parameters.a_x_max))
         # set the lateral acceleration based on the vehicle's capability and the maneuver
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
@@ -201,8 +219,10 @@ class SimulateLat(SimulationBase):
             a_y = -a_y
         # includes the jerk limits
         self.input.acceleration_y = np.clip(a_y,
-                                            ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                                            ref_state.acceleration_y + self.parameters.j_y_max * self.dt)
+                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
+                                                self.parameters.a_y_min),
+                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
+                                                self.parameters.a_y_max))
         self.input.time_step = ref_state.time_step
         ref_state.acceleration = self.input.acceleration
         ref_state.acceleration_y = self.input.acceleration_y
@@ -219,7 +239,7 @@ class SimulateLat(SimulationBase):
             lateral_dis = 0.8
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
         # self-driving vehicles based on formalized traffic rules. In IV 2017 (pp. 1477-1483). IEEE.
-        total_timestep = math.sqrt(4 * lateral_dis / abs(self.input.acceleration_y))
+        total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_x_min)))
         return int(total_timestep / (2 * self.dt)), orientation
 
     def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None):
@@ -237,7 +257,10 @@ class SimulateLat(SimulationBase):
             bang_state_list = self.bang_bang_simulation(pre_state, bang_bang_ts, max_orient)
             state_list += bang_state_list
             pre_state = bang_state_list[-1]
-            self.input.acceleration_y = - self.input.acceleration_y
+            if self.maneuver is Maneuver.STEERLEFT:
+                self.maneuver = Maneuver.STEERRIGHT
+            else:
+                self.maneuver = Maneuver.STEERLEFT
         # updates the orientation
         while pre_state.time_step < self.time_horizon: # not <= since the simulation stops at the final step
             self.set_inputs(pre_state)
@@ -249,7 +272,7 @@ class SimulateLat(SimulationBase):
             pre_state = suc_state
         self.set_inputs(state_list[-1])
         if self.plot:
-            self.viz_state_list(rnd, state_list, start_time_step)
+            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def set_maximal_orientation(self, lane_orientation):
@@ -269,9 +292,11 @@ class SimulateLat(SimulationBase):
         while pre_state.time_step < init_state.time_step + simulation_length:
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
+                self.set_inputs(pre_state)
                 check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
+                self.set_inputs(pre_state)
                 if abs(suc_state.orientation) > abs(max_orientation):
                     break
             else:
