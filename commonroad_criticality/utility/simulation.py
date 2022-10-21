@@ -39,6 +39,24 @@ class SimulationBase(ABC):
     def update_maneuver(self, maneuver: Maneuver):
         self._maneuver = maneuver
 
+    def update_inputs_x_y(self, ref_state: State, a_long: float, a_lat: float):
+        # includes the jerk limits
+        self.input.acceleration = np.clip(a_long * math.cos(ref_state.orientation) -
+                                          a_lat * math.sin(ref_state.orientation),
+                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
+                                              self.parameters.a_x_min),
+                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
+                                              self.parameters.a_x_max))
+        self.input.acceleration_y = np.clip(a_long * math.sin(ref_state.orientation) -
+                                            a_lat * math.cos(ref_state.orientation),
+                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
+                                                self.parameters.a_y_min),
+                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
+                                                self.parameters.a_y_max))
+        self.input.time_step = ref_state.time_step
+        ref_state.acceleration = self.input.acceleration
+        ref_state.acceleration_y = self.input.acceleration_y
+
     def initialize_state_list(self, time_step: int) -> List[State]:
         """
         Initializing the state list based on the given time step. All the states before the time step would be returned.
@@ -111,34 +129,24 @@ class SimulationLong(SimulationBase):
         """
         if not hasattr(ref_state, "acceleration"):
             ref_state.acceleration = 0.
+        else:
+            ref_state.acceleration = ref_state.acceleration * math.cos(ref_state.orientation)
         if not hasattr(ref_state, "acceleration_y"):
             ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
         # set the lateral acceleration to 0
-        self.input.acceleration_y = np.clip(0,
-                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                                                self.parameters.a_y_min),
-                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
-                                                self.parameters.a_y_max))
+        a_lat = 0
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
         if self.maneuver is Maneuver.BRAKE:
-            a_x = - self.parameters.longitudinal.a_max
+            a_long = - self.parameters.longitudinal.a_max
         elif self.maneuver is Maneuver.KICKDOWN:
             v_switch = self.parameters.longitudinal.v_switch
             if ref_state.velocity > v_switch:
-                a_x = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
+                a_long = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
             else:
-                a_x = self.parameters.longitudinal.a_max
+                a_long = self.parameters.longitudinal.a_max
         else:
-            a_x = 0
-        # includes the jerk limits
-        self.input.acceleration = np.clip(a_x,
-                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                                              self.parameters.a_x_min),
-                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
-                                              self.parameters.a_x_max))
-        self.input.time_step = ref_state.time_step
-        ref_state.acceleration = self.input.acceleration
-        ref_state.acceleration_y = self.input.acceleration_y
+            a_long = 0
+        self.update_inputs_x_y(ref_state, a_long, a_lat)
 
     def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None):
         """
@@ -200,9 +208,12 @@ class SimulateLat(SimulationBase):
         """
         if not hasattr(ref_state, "acceleration"):
             ref_state.acceleration = 0.
+        else:
+            ref_state.acceleration = ref_state.acceleration * math.cos(ref_state.orientation)
         if not hasattr(ref_state, "acceleration_y"):
             ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
         # set the longitudinal acceleration to 0
+        a_long = 0
         self.input.acceleration = np.clip(0,
                                           max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
                                               self.parameters.a_x_min),
@@ -211,21 +222,14 @@ class SimulateLat(SimulationBase):
         # set the lateral acceleration based on the vehicle's capability and the maneuver
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
-            a_y = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
+            a_lat = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
         else:
-            a_y = self.parameters.longitudinal.a_max
+            a_lat = self.parameters.longitudinal.a_max
         if self.maneuver in [Maneuver.STEERRIGHT]:
             # right-hand coordinate
-            a_y = -a_y
+            a_lat = -a_lat
         # includes the jerk limits
-        self.input.acceleration_y = np.clip(a_y,
-                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                                                self.parameters.a_y_min),
-                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
-                                                self.parameters.a_y_max))
-        self.input.time_step = ref_state.time_step
-        ref_state.acceleration = self.input.acceleration
-        ref_state.acceleration_y = self.input.acceleration_y
+        self.update_inputs_x_y(ref_state, a_long, a_lat)
 
     def set_bang_bang_timestep_orientation(self, position: np.ndarray):
         """
