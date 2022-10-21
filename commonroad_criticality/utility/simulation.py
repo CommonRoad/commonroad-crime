@@ -47,7 +47,7 @@ class SimulationBase(ABC):
                                               self.parameters.a_x_min),
                                           min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
                                               self.parameters.a_x_max))
-        self.input.acceleration_y = np.clip(a_long * math.sin(ref_state.orientation) -
+        self.input.acceleration_y = np.clip(a_long * math.sin(ref_state.orientation) +
                                             a_lat * math.cos(ref_state.orientation),
                                             max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
                                                 self.parameters.a_y_min),
@@ -296,7 +296,6 @@ class SimulateLat(SimulationBase):
         while pre_state.time_step < init_state.time_step + simulation_length:
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
-                self.set_inputs(pre_state)
                 check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state

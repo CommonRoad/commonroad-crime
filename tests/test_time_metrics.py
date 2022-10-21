@@ -78,6 +78,9 @@ class TestTimeMetrics(unittest.TestCase):
         simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
         sim_lat_right = SimulateLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
         simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
+        self.config.time_metrics.steer_width = 2
+        sim_lat_left_2 = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+        simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
 
         for i in range(len(simulated_state1)):
             self.assertEqual(simulated_state1[i].time_step, i)
@@ -85,7 +88,11 @@ class TestTimeMetrics(unittest.TestCase):
                          ego_vehicle.prediction.final_time_step)
         self.assertEqual(simulated_state2[-1].time_step,
                          ego_vehicle.prediction.final_time_step)
+        self.assertEqual(simulated_state3[-1].time_step,
+                         ego_vehicle.prediction.final_time_step)
+
         Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
+
 
 
 
