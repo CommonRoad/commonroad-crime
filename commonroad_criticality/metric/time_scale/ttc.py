@@ -13,7 +13,8 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State
+from commonroad.scenario.scenario import State, TrajectoryPrediction
+from commonroad.scenario.trajectory import Trajectory
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
@@ -46,11 +47,12 @@ class TTC(CriticalityBase):
         """
         # update the trajectory prediction
         updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
-        updated_ego_vehicle.prediction.trajectory.state_list = state_list
-        updated_ego_vehicle.initial_state = state_list[0]
+        dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step, state_list)
+        dynamic_obstacle_prediction = TrajectoryPrediction(dynamic_obstacle_trajectory,
+                                                           updated_ego_vehicle.obstacle_shape)
+        updated_ego_vehicle.prediction = dynamic_obstacle_prediction
         co = create_collision_object(updated_ego_vehicle)
         return self.collision_checker.collide(co)
-
 
     def compute(self) -> Union[Decimal]:
         """

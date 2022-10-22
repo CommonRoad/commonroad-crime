@@ -7,10 +7,9 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
-from typing import Union
+from decimal import Decimal
 
 from commonroad.visualization.mp_renderer import MPRenderer
-
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
@@ -24,23 +23,35 @@ class TTM(CriticalityBase):
 
     def __init__(self,
                  config: CriticalityConfiguration,
-                 simulator: Union[SimulationLong, SimulationLat]):
+                 maneuver: Maneuver):
         super(TTM, self).__init__(config)
-        self.simulator = simulator
+        if maneuver in [Maneuver.BRAKE,
+                        Maneuver.KICKDOWN,
+                        Maneuver.CONSTANT]:
+            self.simulator = SimulationLong(maneuver, self.ego_vehicle, config)
+        elif maneuver in [Maneuver.STEERLEFT,
+                          Maneuver.STEERRIGHT]:
+            self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
+        else:
+            assert ValueError(f"<Criticality/{self.__class__.__name__}>: the given maneuver is not supported")
         self.ttc_object = TTC(config)
         self.ttc = self.ttc_object.compute()
         self.rnd = MPRenderer()
+        self.sce.draw(self.rnd, draw_params={'time_begin': 0,
+                                             "dynamic_obstacle": {
+                                             "draw_icon": self.configuration.debug.draw_icons}})
+        self.rnd.render()
 
     def compute(self):
         pass
 
-    def binary_search(self):
+    def binary_search(self) -> float:
         """
         Binary search to find the last time to execute the maneuver.
         """
         ttm = - math.inf
         low = 0
-        high = int(self.ttc/self.dt)
+        high = int(self.ttc/Decimal(self.dt))
         while low < high:
             mid = int((low + high)/2)
             state_list = self.simulator.simulate_state_list(mid, self.rnd)
@@ -55,4 +66,4 @@ class TTM(CriticalityBase):
         if low != 0:
             ttm = (low - 1) * self.dt
         return ttm
-    
+

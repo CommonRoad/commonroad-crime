@@ -77,9 +77,6 @@ class SimulationBase(ABC):
         # visualize optimal trajectory
         pos = np.asarray([state.position for state in state_list])
         opacity = 0.5 * (start_time_stap / self.time_horizon + 1)
-        # the cut-off state
-        # rnd.ax.scatter(pos[0, 0], pos[0, 1], marker='o', color='#ffc325ff', edgecolor='none', zorder=22, s=1.2)
-        # rnd.ax.scatter(pos[0, 0], pos[0, 1], marker='o', color='w', edgecolor='none', zorder=21, s=2.2)
         rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5, zorder=23, linewidth=0.75, alpha=opacity)
 
     @property
@@ -127,12 +124,7 @@ class SimulationLong(SimulationBase):
         """
         Sets inputs for the longitudinal simulation
         """
-        if not hasattr(ref_state, "acceleration"):
-            ref_state.acceleration = 0.
-        else:
-            ref_state.acceleration = ref_state.acceleration * math.cos(ref_state.orientation)
-        if not hasattr(ref_state, "acceleration_y"):
-            ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
+        check_elements_state(ref_state)
         # set the lateral acceleration to 0
         a_lat = 0
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
@@ -206,12 +198,7 @@ class SimulationLat(SimulationBase):
         """
         Sets inputs for the lateral simulation
         """
-        if not hasattr(ref_state, "acceleration"):
-            ref_state.acceleration = 0.
-        else:
-            ref_state.acceleration = ref_state.acceleration * math.cos(ref_state.orientation)
-        if not hasattr(ref_state, "acceleration_y"):
-            ref_state.acceleration_y = ref_state.acceleration * math.sin(ref_state.orientation)
+        check_elements_state(ref_state)
         # set the longitudinal acceleration to 0
         a_long = 0
         self.input.acceleration = np.clip(0,
@@ -318,6 +305,12 @@ def check_elements_state(state: State, prev_state: State = None, dt: float = Non
     if not hasattr(state, "velocity_y"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
+
     if prev_state is not None:
         if not hasattr(state, "acceleration"):
             state.acceleration = (state.velocity - prev_state.velocity) / dt
+    else:
+        state.acceleration = 0
+    if hasattr(state, "acceleration") and not hasattr(state, "acceleration_y"):
+        state.acceleration_y = state.acceleration * math.sin(state.orientation)
+        state.acceleration = state.acceleration * math.cos(state.orientation)
