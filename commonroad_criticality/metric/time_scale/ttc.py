@@ -8,15 +8,17 @@ __status__ = "Pre-alpha"
 
 import copy
 import math
-from typing import Union
+from typing import Union, List
 from decimal import Decimal
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
+from commonroad.scenario.scenario import State
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
-from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker
+from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import (create_collision_checker,
+create_collision_object)
 from commonroad_dc.collision.visualization.drawing \
     import draw_collision_rectobb
 
@@ -37,6 +39,18 @@ class TTC(CriticalityBase):
         road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
         self.sce.add_objects(road_boundary_obstacle)
         self.collision_checker = create_collision_checker(self.sce)
+
+    def detect_collision(self, state_list: List[State]) -> bool:
+        """
+        Returns whether the state list of the ego vehicle is collision-free.
+        """
+        # update the trajectory prediction
+        updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
+        updated_ego_vehicle.prediction.trajectory.state_list = state_list
+        updated_ego_vehicle.initial_state = state_list[0]
+        co = create_collision_object(updated_ego_vehicle)
+        return self.collision_checker.collide(co)
+
 
     def compute(self) -> Union[Decimal]:
         """
@@ -71,5 +85,5 @@ class TTC(CriticalityBase):
                         Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, i)
                     else:
                         plt.show()
-                return Decimal(str(i)) * Decimal(str(self.sce.dt))
+                return Decimal(str(i)) * Decimal(str(self.dt))
         return Decimal(math.inf)

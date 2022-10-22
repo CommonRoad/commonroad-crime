@@ -19,4 +19,6 @@ class TTB(CriticalityBase):
         super(TTB, self).__init__(config)
         self._sim_long = SimulationLong(Maneuver.BRAKE, self.ego_vehicle, config)
 
+    def compute(self,  *args, **kwargs):
+        pass
 

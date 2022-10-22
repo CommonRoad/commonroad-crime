@@ -186,7 +186,7 @@ class SimulationLong(SimulationBase):
         return True
 
 
-class SimulateLat(SimulationBase):
+class SimulationLat(SimulationBase):
     """
     Simulate the trajectory in the lateral direction.
     """
@@ -198,7 +198,7 @@ class SimulateLat(SimulationBase):
         if maneuver is not Maneuver.STEERLEFT and not Maneuver.STEERRIGHT:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
-        super(SimulateLat, self).__init__(maneuver, simulated_vehicle, config)
+        super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
         self._scenario = config.scenario
         self._lateral_distance_mode = config.time_metrics.steer_width
 

@@ -35,6 +35,7 @@ class CriticalityBase:
 
         # ==========  configuration  =========
         self.configuration = config
+        self.dt = self.sce.dt
 
     @abstractmethod
     def compute(self,  *args, **kwargs):
