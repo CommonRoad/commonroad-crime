@@ -9,7 +9,7 @@ from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_criticality.data_structure.logger as util_logger
 from commonroad_criticality.metric.time_scale.ttc import TTC
-from commonroad_criticality.utility.simulation import SimulationLong, SimulateLat, Maneuver
+from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 import commonroad_criticality.utility.visualization as Utils_vis
 
 
@@ -74,12 +74,12 @@ class TestTimeMetrics(unittest.TestCase):
         self.config.scenario.draw(rnd)
         rnd.render()
 
-        sim_lat_left = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+        sim_lat_left = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
         simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
-        sim_lat_right = SimulateLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
+        sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
         simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
         self.config.time_metrics.steer_width = 2
-        sim_lat_left_2 = SimulateLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
+        sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
         simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
 
         for i in range(len(simulated_state1)):
