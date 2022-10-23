@@ -79,7 +79,8 @@ class SimulationBase(ABC):
         # visualize optimal trajectory
         pos = np.asarray([state.position for state in state_list])
         opacity = 0.5 * (start_time_stap / self.time_horizon + 1)
-        rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5, zorder=23, linewidth=0.75, alpha=opacity)
+        rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5,
+                    zorder=23, linewidth=0.75, alpha=opacity)
 
     @property
     def maneuver(self):

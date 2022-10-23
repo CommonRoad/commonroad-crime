@@ -121,6 +121,7 @@ class TestTimeMetrics(unittest.TestCase):
 
     def test_ttr(self):
         self.config.update()
+        self.config.time_metrics.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
