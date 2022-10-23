@@ -8,7 +8,6 @@ __status__ = "Pre-alpha"
 
 import math
 import matplotlib.pyplot as plt
-from decimal import Decimal
 
 from commonroad.visualization.mp_renderer import MPRenderer
 
