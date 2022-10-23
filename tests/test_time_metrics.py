@@ -10,6 +10,7 @@ from commonroad_criticality.data_structure.configuration_builder import Configur
 import commonroad_criticality.data_structure.logger as util_logger
 from commonroad_criticality.metric.time_scale.ttc import TTC
 from commonroad_criticality.metric.time_scale.ttb import TTB
+from commonroad_criticality.metric.time_scale.ttk import TTK
 
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 import commonroad_criticality.utility.visualization as Utils_vis
@@ -95,11 +96,17 @@ class TestTimeMetrics(unittest.TestCase):
 
         Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 
-    def test_ttb(self):
+    def test_ttm(self):
         self.config.update()
         self.config.debug.draw_visualization = True
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
+        self.assertEqual(ttb, 2.0)
+
+        ttk_object = TTK(self.config)
+        ttk = ttk_object.compute()
+        self.assertEqual(ttk, 0.7)
+
 
 
 

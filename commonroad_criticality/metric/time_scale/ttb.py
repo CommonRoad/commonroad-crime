@@ -23,21 +23,6 @@ class TTB(TTM):
     def __init__(self, config: CriticalityConfiguration):
         super(TTB, self).__init__(config, Maneuver.BRAKE)
 
-    def compute(self) -> Decimal:
-        if self.ttc == 0:
-            ttb = -math.inf
-        elif self.ttc == Decimal(math.inf):
-            ttb = Decimal(math.inf)
-        else:
-            ttb = Decimal(self.binary_search())
 
-        if self.configuration.debug.draw_visualization:
-            plt.title(f"{self.metric_name} at time step {int(ttb/Decimal(self.dt))}")
-            Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(int(ttb/Decimal(self.dt))))
-            if self.configuration.debug.save_plots:
-                Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, int(ttb/Decimal(self.dt)))
-            else:
-                plt.show()
-        return ttb
 
 

@@ -54,7 +54,7 @@ class TTC(CriticalityBase):
         co = create_collision_object(updated_ego_vehicle)
         return self.collision_checker.collide(co)
 
-    def compute(self) -> Union[Decimal]:
+    def compute(self) -> Union[int, float]:
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
@@ -87,5 +87,5 @@ class TTC(CriticalityBase):
                         Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, i)
                     else:
                         plt.show()
-                return Decimal(str(i)) * Decimal(str(self.dt))
-        return Decimal(math.inf)
+                return i * self.dt
+        return math.inf

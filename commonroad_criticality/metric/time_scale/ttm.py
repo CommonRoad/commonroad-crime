@@ -7,15 +7,18 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
+import matplotlib.pyplot as plt
 from decimal import Decimal
 
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_criticality.data_structure.base import CriticalityBase
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_criticality.metric.time_scale.ttc import TTC
+from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+from commonroad_criticality.data_structure.metric import TimeScaleMetricType
+import commonroad_criticality.utility.visualization as Utils_vis
+import commonroad_criticality.utility.general as Utils_gen
 
 
 class TTM(CriticalityBase):
@@ -43,7 +46,23 @@ class TTM(CriticalityBase):
         self.rnd.render()
 
     def compute(self):
-        pass
+        if self.ttc == 0:
+            ttm = -math.inf
+        elif self.ttc == math.inf:
+            ttm = math.inf
+        else:
+            ttm = self.binary_search()
+
+        if self.configuration.debug.draw_visualization:
+            tstm = int(Utils_gen.int_round(ttm/self.dt, 0))
+            plt.title(f"{self.metric_name} at time step {tstm}")
+            Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+            if self.configuration.debug.save_plots:
+                Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                                   tstm)
+            else:
+                plt.show()
+        return ttm
 
     def binary_search(self) -> float:
         """
@@ -51,7 +70,7 @@ class TTM(CriticalityBase):
         """
         ttm = - math.inf
         low = 0
-        high = int(self.ttc/Decimal(self.dt))
+        high = int(self.ttc/self.dt)
         while low < high:
             mid = int((low + high)/2)
             state_list = self.simulator.simulate_state_list(mid, self.rnd)
@@ -65,5 +84,5 @@ class TTM(CriticalityBase):
                 high = mid
         if low != 0:
             ttm = (low - 1) * self.dt
-        return ttm
+        return Utils_gen.int_round(ttm, 1)
 

@@ -13,9 +13,8 @@ from commonroad.common.file_reader import CommonRoadFileReader
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 import numpy as np
-import matplotlib.pyplot as plt
-from typing import List, Union, Tuple
-from pathlib import Path
+from typing import Union, Tuple
+import functools
 
 
 def load_scenario(config) -> Scenario:
@@ -27,6 +26,21 @@ def load_scenario(config) -> Scenario:
     """
     scenario, _ = CommonRoadFileReader(config.general.path_scenario).open()
     return scenario
+
+
+@functools.lru_cache()
+def int_round(some_float, tolerance=1):
+    """
+    Round function using int.
+    :param some_float: number
+    :param tolerance: float point
+    :return: rounded number
+    """
+    p = float(10 ** tolerance)
+    if some_float < 0:
+        return int(some_float * p - 0.5) / p
+    else:
+        return int(some_float * p + 0.5) / p
 
 
 def compute_lanelet_width_orientation(lanelet: Lanelet, position: np.ndarray) -> Tuple[Union[float, None],
