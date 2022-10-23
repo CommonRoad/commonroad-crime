@@ -44,24 +44,30 @@ class TTM(CriticalityBase):
                                              "draw_icon": self.configuration.debug.draw_icons}})
         self.rnd.render()
 
-    def compute(self):
-        if self.ttc == 0:
-            ttm = -math.inf
-        elif self.ttc == math.inf:
-            ttm = math.inf
-        else:
-            ttm = self.binary_search()
-
+    def visualize(self):
         if self.configuration.debug.draw_visualization:
-            tstm = int(Utils_gen.int_round(ttm/self.dt, 0))
+            if self.value not in [math.inf, -math.inf]:
+                tstm = int(Utils_gen.int_round(self.value/self.dt, 0))
+                Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+            else:
+                tstm = self.value
             plt.title(f"{self.metric_name} at time step {tstm}")
-            Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
             if self.configuration.debug.save_plots:
                 Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
                                    tstm)
             else:
                 plt.show()
-        return ttm
+
+    def compute(self):
+        if self.ttc == 0:
+            self.value = -math.inf
+        elif self.ttc == math.inf:
+            self.value = math.inf
+        else:
+            self.value = self.binary_search()
+        if self.value in [math.inf, -math.inf]:
+            return self.value
+        return Utils_gen.int_round(self.value, 1)
 
     def binary_search(self) -> float:
         """
@@ -83,5 +89,5 @@ class TTM(CriticalityBase):
                 high = mid
         if low != 0:
             ttm = (low - 1) * self.dt
-        return Utils_gen.int_round(ttm, 1)
+        return ttm
 

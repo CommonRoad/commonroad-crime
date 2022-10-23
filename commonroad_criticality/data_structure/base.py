@@ -15,6 +15,7 @@ class CriticalityBase:
         assert isinstance(config, CriticalityConfiguration), '<Criticality>: Provided configuration is not valid!'
         # assert isinstance(id_vehicles, list), '<Criticality>: Provided vehicle ids are not in a list!'
 
+        self.value = None
         # ==========     Scenario or scene   =========
         if config.scenario:
             self.sce = copy.deepcopy(config.scenario)

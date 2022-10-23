@@ -11,6 +11,7 @@ import commonroad_criticality.data_structure.logger as util_logger
 from commonroad_criticality.metric.time_scale.ttc import TTC
 from commonroad_criticality.metric.time_scale.ttb import TTB
 from commonroad_criticality.metric.time_scale.ttk import TTK
+from commonroad_criticality.metric.time_scale.tts import TTS
 
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 import commonroad_criticality.utility.visualization as Utils_vis
@@ -99,13 +100,24 @@ class TestTimeMetrics(unittest.TestCase):
     def test_ttm(self):
         self.config.update()
         self.config.debug.draw_visualization = True
-        ttb_object = TTB(self.config)
-        ttb = ttb_object.compute()
-        self.assertEqual(ttb, 2.0)
+        # ttb_object = TTB(self.config)
+        # ttb = ttb_object.compute()
+        # self.assertEqual(ttb, 2.0)
+        # ttb2 = ttb_object.compute()
+        # self.assertEqual(ttb, ttb2)
+        #
+        # ttk_object = TTK(self.config)
+        # ttk = ttk_object.compute()
+        # self.assertEqual(ttk, 0.7)
 
-        ttk_object = TTK(self.config)
-        ttk = ttk_object.compute()
-        self.assertEqual(ttk, 0.7)
+        tts_object = TTS(self.config)
+        tts = tts_object.compute()
+        self.assertEqual(tts, 1.7)
+        tts_object.visualize()
+
+        tts2 = tts_object.compute()
+        tts_object.visualize()
+        #self.assertEqual(tts, tts2)
 
 
 
