@@ -6,6 +6,7 @@ class TimeScaleMetricType(str, Enum):
     TTR = "time-to-react"
     TTB = "time-to-brake"
     TTM = "time-to-maneuver"
+    TTK = "time-to-kickdown"
     WTTC = "worst-time-to-collision"
     WTTR = "worst-time-to-react"
 
