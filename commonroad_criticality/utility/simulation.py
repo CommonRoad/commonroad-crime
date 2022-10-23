@@ -18,6 +18,7 @@ class Maneuver(str, Enum):
     KICKDOWN = "kick-down"
     STEERLEFT = "steer to the left"
     STEERRIGHT = "steer to the right"
+    NONE = ''
 
 
 class SimulationBase(ABC):

@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 import math
 import matplotlib.pyplot as plt
+from typing import Union
 
 from commonroad.visualization.mp_renderer import MPRenderer
 
@@ -25,8 +26,9 @@ class TTM(CriticalityBase):
 
     def __init__(self,
                  config: CriticalityConfiguration,
-                 maneuver: Maneuver):
+                 maneuver: Union[Maneuver, None]):
         super(TTM, self).__init__(config)
+        self._maneuver = maneuver
         if maneuver in [Maneuver.BRAKE,
                         Maneuver.KICKDOWN,
                         Maneuver.CONSTANT]:
@@ -35,19 +37,28 @@ class TTM(CriticalityBase):
                           Maneuver.STEERRIGHT]:
             self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
         else:
-            assert ValueError(f"<Criticality/{self.__class__.__name__}>: the given maneuver is not supported")
-        self.ttc_object = TTC(config)
-        self.ttc = self.ttc_object.compute()
+            self.simulator = None
+        if self.simulator:
+            self.ttc_object = TTC(config)
+            self.ttc = self.ttc_object.compute()
         self.rnd = MPRenderer()
         self.sce.draw(self.rnd, draw_params={'time_begin': 0,
                                              "dynamic_obstacle": {
-                                             "draw_icon": self.configuration.debug.draw_icons}})
+                                                 "draw_icon": self.configuration.debug.draw_icons}})
         self.rnd.render()
+
+    @property
+    def maneuver(self):
+        return self._maneuver
+
+    @maneuver.setter
+    def maneuver(self, maneuver: Maneuver):
+        self._maneuver = maneuver
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
             if self.value not in [math.inf, -math.inf]:
-                tstm = int(Utils_gen.int_round(self.value/self.dt, 0))
+                tstm = int(Utils_gen.int_round(self.value / self.dt, 0))
                 Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
             else:
                 tstm = self.value
@@ -75,9 +86,9 @@ class TTM(CriticalityBase):
         """
         ttm = - math.inf
         low = 0
-        high = int(self.ttc/self.dt)
+        high = int(self.ttc / self.dt)
         while low < high:
-            mid = int((low + high)/2)
+            mid = int((low + high) / 2)
             state_list = self.simulator.simulate_state_list(mid, self.rnd)
             # flag for successful simulation, 0: False, 1: True
             flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
@@ -90,4 +101,3 @@ class TTM(CriticalityBase):
         if low != 0:
             ttm = (low - 1) * self.dt
         return ttm
-

@@ -22,20 +22,20 @@ class TTS(CriticalityBase):
         self._right_evaluator = TTM(config, Maneuver.STEERRIGHT)
         self._left_evaluator.metric_name = self.metric_name
         self._right_evaluator.metric_name = self.metric_name
-        self._maneuver = None
+        self.maneuver = Maneuver.NONE
 
     def compute(self):
         tts_left = self._left_evaluator.compute()
         tts_right = self._right_evaluator.compute()
         if tts_left > tts_right:
-            self._maneuver = Maneuver.STEERLEFT
+            self.maneuver = Maneuver.STEERLEFT
         else:
-            self._maneuver = Maneuver.STEERRIGHT
+            self.maneuver = Maneuver.STEERRIGHT
         self.value = max(tts_left, tts_right)
         return self.value
 
     def visualize(self):
-        if self._maneuver is Maneuver.STEERLEFT:
+        if self.maneuver is Maneuver.STEERLEFT:
             self._left_evaluator.visualize()
         else:
             self._right_evaluator.visualize()
