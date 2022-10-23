@@ -31,6 +31,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.config.update()
         ttc_object_1 = TTC(self.config)
         ttc_1 = ttc_object_1.compute()
+        ttc_object_1.visualize()
         assert math.isclose(ttc_1, 2.4, abs_tol=1e-2)
 
         # remove the colliding obstacle
