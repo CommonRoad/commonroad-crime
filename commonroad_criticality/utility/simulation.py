@@ -1,6 +1,7 @@
 import math
 from enum import Enum
 import numpy as np
+import copy
 from typing import Union, List
 from abc import ABC, abstractmethod
 
@@ -144,7 +145,7 @@ class SimulationLong(SimulationBase):
         """
         Simulates the longitudinal state list from the given start time step.
         """
-        pre_state = self.simulated_vehicle.state_at_time(start_time_step)
+        pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
         self.set_inputs(pre_state)
@@ -237,7 +238,7 @@ class SimulationLat(SimulationBase):
         """
         Simulates the lateral state list from the given start time step.
         """
-        pre_state = self.simulated_vehicle.state_at_time(start_time_step)
+        pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
         self.set_inputs(pre_state)

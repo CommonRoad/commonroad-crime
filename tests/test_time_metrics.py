@@ -117,7 +117,7 @@ class TestTimeMetrics(unittest.TestCase):
 
         tts2 = tts_object.compute()
         tts_object.visualize()
-        #self.assertEqual(tts, tts2)
+        self.assertEqual(tts, tts2)
 
 
 
