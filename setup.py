@@ -15,7 +15,7 @@ setup(name='commonroad-criticality',
           'commonroad-drivability-checker>=2021.4',
           'commonroad-vehicle-models>=1.0.0'
           'matplotlib>=3.5.2'
-          'numpy>=1.22.4',
+          'numpy>=1.19.5',
       ],
       extras_require={
           'tests': [

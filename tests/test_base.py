@@ -20,6 +20,7 @@ class TestBase(unittest.TestCase):
         Test the construction of base classes.
         """
         self.config.update()
+        self.config.vehicle.ego_id = 6
         base_1 = CriticalityBase(self.config)
 
         scene = Scene(0, self.config.scenario)

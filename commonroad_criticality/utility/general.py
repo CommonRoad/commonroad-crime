@@ -38,11 +38,11 @@ def generate_reference_path(lanelet_id: int, lanelet_network: LaneletNetwork, fl
     # extend the reference path
     pre_lanelet = ini_lanelet  # todo: more predecessors?
     while pre_lanelet.predecessor:
-        pre_lanelet = lanelet_network.find_lanelet_by_id(pre_lanelet)
+        pre_lanelet = lanelet_network.find_lanelet_by_id(pre_lanelet.predecessor[0])
         ref_path = np.concatenate((pre_lanelet.center_vertices, ref_path))
     suc_lanelet = ini_lanelet  # todo: more successors?
     while suc_lanelet.successor:
-        suc_lanelet = lanelet_network.find_lanelet_by_id(suc_lanelet)
+        suc_lanelet = lanelet_network.find_lanelet_by_id(suc_lanelet.successor[0])
         ref_path = np.concatenate((ref_path, suc_lanelet.center_vertices))
     if flag_resampling:
         ref_path = np.array(chaikins_corner_cutting(ref_path))
