@@ -6,11 +6,12 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-from commonroad.scenario.lanelet import Lanelet
+from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 from commonroad.scenario.scenario import Scenario
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
 
 import numpy as np
 from typing import Union, Tuple
@@ -24,8 +25,29 @@ def load_scenario(config) -> Scenario:
     :param config: configuration
     :return: scenario
     """
-    scenario, _ = CommonRoadFileReader(config.general.path_scenario).open()
+    scenario, _ = CommonRoadFileReader(config.general.path_scenario).open(lanelet_assignment=True)
     return scenario
+
+
+def generate_reference_path(lanelet_id: int, lanelet_network: LaneletNetwork, flag_resampling=True):
+    """
+    Generate the reference path based on the center line of the provided lanelet.
+    """
+    ini_lanelet = lanelet_network.find_lanelet_by_id(lanelet_id)
+    ref_path = ini_lanelet.center_vertices
+    # extend the reference path
+    pre_lanelet = ini_lanelet  # todo: more predecessors?
+    while pre_lanelet.predecessor:
+        pre_lanelet = lanelet_network.find_lanelet_by_id(pre_lanelet)
+        ref_path = np.concatenate((pre_lanelet.center_vertices, ref_path))
+    suc_lanelet = ini_lanelet  # todo: more successors?
+    while suc_lanelet.successor:
+        suc_lanelet = lanelet_network.find_lanelet_by_id(suc_lanelet)
+        ref_path = np.concatenate((ref_path, suc_lanelet.center_vertices))
+    if flag_resampling:
+        ref_path = np.array(chaikins_corner_cutting(ref_path))
+        ref_path = resample_polyline(ref_path)
+    return ref_path
 
 
 @functools.lru_cache()

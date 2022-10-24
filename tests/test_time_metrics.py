@@ -13,6 +13,7 @@ from commonroad_criticality.metric.time_scale.ttb import TTB
 from commonroad_criticality.metric.time_scale.ttk import TTK
 from commonroad_criticality.metric.time_scale.tts import TTS
 from commonroad_criticality.metric.time_scale.ttr import TTR
+from commonroad_criticality.metric.time_scale.thw import THW
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 import commonroad_criticality.utility.visualization as Utils_vis
 
@@ -24,11 +25,11 @@ class TestTimeMetrics(unittest.TestCase):
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
+        self.config.update()
 
     def test_ttc(self):
         self.config.debug.draw_visualization = False
         self.config.debug.save_plots = True
-        self.config.update()
         ttc_object_1 = TTC(self.config)
         ttc_1 = ttc_object_1.compute()
         ttc_object_1.visualize()
@@ -42,7 +43,6 @@ class TestTimeMetrics(unittest.TestCase):
         assert math.isclose(ttc_2, math.inf, abs_tol=1e-2)
 
     def test_simulation_long(self):
-        self.config.update()
         ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
 
         rnd = MPRenderer()
@@ -71,7 +71,6 @@ class TestTimeMetrics(unittest.TestCase):
         Utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
-        self.config.update()
         self.config.debug.draw_visualization = True
         ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
 
@@ -99,7 +98,6 @@ class TestTimeMetrics(unittest.TestCase):
         Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 
     def test_ttm(self):
-        self.config.update()
         self.config.debug.draw_visualization = True
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
@@ -122,7 +120,6 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(tts, tts2)
 
     def test_ttr(self):
-        self.config.update()
         self.config.time_metrics.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
@@ -131,6 +128,16 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(ttr, 2.0)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
+    def test_thw(self):
+        thw_object = THW(self.config)
+        other_obs_id = 6
+        thw = thw_object.compute(other_obs_id, 0)
+        thw_object.visualize()
+        self.assertEqual(thw, 2.9)
+
+        thw2 = thw_object.compute(other_obs_id, 10)
+        thw_object.visualize()
+        self.assertEqual(thw2, thw - 1)
 
 
 

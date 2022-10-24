@@ -8,6 +8,7 @@ class TimeScaleMetricType(str, Enum):
     TTM = "time-to-maneuver"
     TTK = "time-to-kickdown"
     TTS = "time-to-steer"
+    THW = "time-headway"
     WTTC = "worst-time-to-collision"
     WTTR = "worst-time-to-react"
 

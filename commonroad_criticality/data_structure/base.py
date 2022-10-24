@@ -1,10 +1,12 @@
 from abc import abstractmethod
-from typing import List, Union
 import copy
+from typing import Union
 
 # CommonRoad packages
-from commonroad.scenario.scenario import Scenario
+from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+import commonroad_criticality.utility.general as Utils_gen
+from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 
 class CriticalityBase:
@@ -13,30 +15,39 @@ class CriticalityBase:
 
     def __init__(self, config: CriticalityConfiguration):
         assert isinstance(config, CriticalityConfiguration), '<Criticality>: Provided configuration is not valid!'
-        # assert isinstance(id_vehicles, list), '<Criticality>: Provided vehicle ids are not in a list!'
 
         self.value = None
-        # ==========     Scenario or scene   =========
+        # ==========  configuration  =========
+        self.configuration = config
+        # =======  Scenario or scene  ========
         if config.scenario:
             self.sce = copy.deepcopy(config.scenario)
         else:
             self.sce = copy.deepcopy(config.scene)
-        # separate the ego vehicle
         if self.sce is None:
-            assert "<Criticality>: the configuration needs to be first updated"
-        self.ego_vehicle = self.sce.obstacle_by_id(config.vehicle.ego_id)
-        # if id_vehicles is None:
-        #     self.id_vehicles = [veh.obstacle_id for veh in self.scenario.obstacles if
-        #                         veh.state_at_time(time_step) is not None]
-        # else:
-        #     for v_id in id_vehicles:
-        #         if self.scenario.obstacle_by_id(v_id) is None:
-        #             assert f'<Criticality>: Vehicle (id: {v_id}) is not contained in the scenario!'
-        #     self.id_vehicles = id_vehicles
-
-        # ==========  configuration  =========
-        self.configuration = config
+            assert "<Criticality>: the scenario/scene in the configuration needs to be first updated"
         self.dt = self.sce.dt
+        # =======       Vehicles      ========
+        self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
+        self.other_vehicle: Union[Obstacle, None] = None  # optional
+        self.clcs = self.update_clcs()
+        self.rnd = None
+
+    def update_clcs(self):
+        # default setting of ego vehicle's curvilinear coordinate system
+        ego_initial_lanelet_id = list(self.ego_vehicle.prediction.center_lanelet_assignment[0])[0]
+        reference_path = Utils_gen.generate_reference_path(ego_initial_lanelet_id, self.sce.lanelet_network)
+        clcs = CurvilinearCoordinateSystem(reference_path)
+        self.configuration.update(CLCS=clcs)
+        return clcs
+
+    def set_other_vehicles(self, vehicle_id: int):
+        """
+        Sets up the id for other metric-related vehicle.
+        """
+        if not self.sce.obstacle_by_id(vehicle_id):
+            raise ValueError(f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!")
+        self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
 
     @abstractmethod
     def compute(self,  *args, **kwargs):
