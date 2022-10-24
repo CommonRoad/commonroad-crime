@@ -23,7 +23,7 @@ class TestBase(unittest.TestCase):
         base_1 = CriticalityBase(self.config)
 
         scene = Scene(0, self.config.scenario)
-        self.config.update(scene)
+        self.config.update(sce=scene)
         base_2 = CriticalityBase(self.config)
 
         self.assertIsInstance(base_1, CriticalityBase)

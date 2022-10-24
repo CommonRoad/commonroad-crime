@@ -103,6 +103,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.config.debug.draw_visualization = True
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
+        ttb_object.visualize()
         self.assertEqual(ttb, 2.0)
         ttb2 = ttb_object.compute()
         self.assertEqual(ttb, ttb2)
