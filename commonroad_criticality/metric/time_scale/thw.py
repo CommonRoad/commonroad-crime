@@ -27,6 +27,8 @@ class THW(CriticalityBase):
         super(THW, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
+        if self.configuration.debug.draw_visualization:
+            self.initialize_vis(time_step, None)
         self.set_other_vehicles(vehicle_id)
         other_position = self.other_vehicle.state_at_time(time_step).position
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
@@ -37,19 +39,13 @@ class THW(CriticalityBase):
             if ego_s > other_s:
                 self.value = (ts - time_step) * self.dt
                 break
-        if self.configuration.debug.draw_visualization:
-            self.rnd = MPRenderer()
-            self.sce.draw(self.rnd, draw_params={'time_begin': time_step,
-                                                 "dynamic_obstacle": {
-                                                     "draw_icon": self.configuration.debug.draw_icons}})
         return Utils_gen.int_round(self.value, 1)
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
-            self.rnd.render()
             if self.value > 0:
                 tshw = int(Utils_gen.int_round(self.value / self.dt, 0))
-                Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tshw))
+                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tshw))
             else:
                 tshw = self.value
             plt.title(f"{self.metric_name} at time step {tshw}")

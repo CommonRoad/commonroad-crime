@@ -54,7 +54,7 @@ class TTM(CriticalityBase):
         if self.configuration.debug.draw_visualization:
             if self.value not in [math.inf, -math.inf]:
                 tstm = int(Utils_gen.int_round(self.value / self.dt, 0))
-                Utils_vis.draw_cut_off_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
             else:
                 tstm = self.value
             plt.title(f"{self.metric_name} at time step {tstm}")
@@ -66,11 +66,9 @@ class TTM(CriticalityBase):
 
     def compute(self, time_step: int = 0, rnd: MPRenderer = None):
         if self.configuration.debug.draw_visualization:
-            if rnd:
-                self.rnd = rnd
-            else:
-                self.rnd = MPRenderer()
-                Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
+            self.initialize_vis(time_step, rnd)
+            Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(int(self.ttc/self.dt)), 'r')
+
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:

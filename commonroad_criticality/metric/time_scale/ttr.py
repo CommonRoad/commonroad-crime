@@ -27,8 +27,7 @@ class TTR(TTM):
 
     def compute(self, time_step: int = 0, rnd: MPRenderer = None):
         if self.configuration.debug.draw_visualization:
-            self.rnd = MPRenderer()
-            Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
+            self.initialize_vis(time_step, rnd)
         ttm = dict()
         for evl in self._evaluator:
             ttm[evl.maneuver] = evl.compute(time_step, rnd=self.rnd)

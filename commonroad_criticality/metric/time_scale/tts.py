@@ -28,11 +28,9 @@ class TTS(CriticalityBase):
         self.maneuver = Maneuver.NONE
 
     def compute(self, time_step: int = 0, rnd: MPRenderer = None):
-        if rnd:
-            self.rnd = rnd
-        else:
-            self.rnd = MPRenderer()
-            Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
+        if self.configuration.debug.draw_visualization:
+            self.initialize_vis(time_step, rnd)
+
         tts_left = self._left_evaluator.compute(time_step, self.rnd)
         tts_right = self._right_evaluator.compute(time_step, self.rnd)
         if tts_left > tts_right:

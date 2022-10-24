@@ -16,9 +16,9 @@ def save_fig(metric_name: str, path_output: str, time_step: int):
                 transparent=False)
 
 
-def draw_cut_off_state(rnd: MPRenderer, state: State):
+def draw_state(rnd: MPRenderer, state: State, color: str = '#ffc325ff'):
     # the cut-off state
-    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color='#ffc325ff', edgecolor='none', zorder=30,
+    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color=color, edgecolor='none', zorder=30,
                    s=1.2)
     rnd.ax.scatter(state.position[0], state.position[1], marker='o', color='w', edgecolor='none', zorder=29, s=2.2)
 

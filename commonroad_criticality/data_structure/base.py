@@ -4,8 +4,12 @@ from typing import Union
 
 # CommonRoad packages
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
+from commonroad.visualization.mp_renderer import MPRenderer
+
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+import commonroad_criticality.utility.visualization as Utils_vis
 import commonroad_criticality.utility.general as Utils_gen
+
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 
@@ -40,6 +44,13 @@ class CriticalityBase:
         clcs = CurvilinearCoordinateSystem(reference_path)
         self.configuration.update(CLCS=clcs)
         return clcs
+
+    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None]):
+        if rnd:
+            self.rnd = rnd
+        else:
+            self.rnd = MPRenderer()
+            Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
 
     def set_other_vehicles(self, vehicle_id: int):
         """
