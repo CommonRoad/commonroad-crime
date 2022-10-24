@@ -70,10 +70,7 @@ class TTM(CriticalityBase):
                 self.rnd = rnd
             else:
                 self.rnd = MPRenderer()
-                self.sce.draw(self.rnd, draw_params={'time_begin': time_step,
-                                                     "dynamic_obstacle": {
-                                                         "draw_icon": self.configuration.debug.draw_icons}})
-                self.rnd.render()
+                Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:

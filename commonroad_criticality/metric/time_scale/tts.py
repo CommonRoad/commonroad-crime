@@ -11,6 +11,7 @@ from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.metric.time_scale.ttm import TTM
 from commonroad_criticality.utility.simulation import Maneuver
+import commonroad_criticality.utility.visualization as Utils_vis
 
 from commonroad.visualization.mp_renderer import MPRenderer
 
@@ -31,10 +32,7 @@ class TTS(CriticalityBase):
             self.rnd = rnd
         else:
             self.rnd = MPRenderer()
-            self.sce.draw(self.rnd, draw_params={'time_begin': time_step,
-                                                 "dynamic_obstacle": {
-                                                     "draw_icon": self.configuration.debug.draw_icons}})
-            self.rnd.render()
+            Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
         tts_left = self._left_evaluator.compute(time_step, self.rnd)
         tts_right = self._right_evaluator.compute(time_step, self.rnd)
         if tts_left > tts_right:
