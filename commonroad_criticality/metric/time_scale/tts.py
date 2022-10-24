@@ -11,6 +11,9 @@ from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.metric.time_scale.ttm import TTM
 from commonroad_criticality.utility.simulation import Maneuver
+import commonroad_criticality.utility.visualization as Utils_vis
+
+from commonroad.visualization.mp_renderer import MPRenderer
 
 
 class TTS(CriticalityBase):
@@ -24,9 +27,12 @@ class TTS(CriticalityBase):
         self._right_evaluator.metric_name = self.metric_name
         self.maneuver = Maneuver.NONE
 
-    def compute(self):
-        tts_left = self._left_evaluator.compute()
-        tts_right = self._right_evaluator.compute()
+    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+        if self.configuration.debug.draw_visualization:
+            self.initialize_vis(time_step, rnd)
+
+        tts_left = self._left_evaluator.compute(time_step, self.rnd)
+        tts_right = self._right_evaluator.compute(time_step, self.rnd)
         if tts_left > tts_right:
             self.maneuver = Maneuver.STEERLEFT
         else:
