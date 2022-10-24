@@ -1,4 +1,5 @@
-matplotlib>=3.3.4
-numpy>=1.19.5
-commonroad-io>=2021.1
+matplotlib>=3.5.2
+numpy>=1.22.4
+commonroad-io>=2021.4,<2022.2
 commonroad-vehicle-models>=1.0.0
+commonroad-drivability-checker>=2021.4
