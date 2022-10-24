@@ -41,3 +41,7 @@ class CriticalityBase:
     @abstractmethod
     def compute(self,  *args, **kwargs):
         pass
+
+    @abstractmethod
+    def visualize(self):
+        pass
