@@ -41,11 +41,6 @@ class TTM(CriticalityBase):
         if self.simulator:
             self.ttc_object = TTC(config)
             self.ttc = self.ttc_object.compute()
-        self.rnd = MPRenderer()
-        self.sce.draw(self.rnd, draw_params={'time_begin': 0,
-                                             "dynamic_obstacle": {
-                                                 "draw_icon": self.configuration.debug.draw_icons}})
-        self.rnd.render()
 
     @property
     def maneuver(self):
@@ -69,23 +64,32 @@ class TTM(CriticalityBase):
             else:
                 plt.show()
 
-    def compute(self):
+    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+        if self.configuration.debug.draw_visualization:
+            if rnd:
+                self.rnd = rnd
+            else:
+                self.rnd = MPRenderer()
+                self.sce.draw(self.rnd, draw_params={'time_begin': time_step,
+                                                     "dynamic_obstacle": {
+                                                         "draw_icon": self.configuration.debug.draw_icons}})
+                self.rnd.render()
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:
             self.value = math.inf
         else:
-            self.value = self.binary_search()
+            self.value = self.binary_search(time_step)
         if self.value in [math.inf, -math.inf]:
             return self.value
         return Utils_gen.int_round(self.value, 1)
 
-    def binary_search(self) -> float:
+    def binary_search(self, initial_step: int) -> float:
         """
         Binary search to find the last time to execute the maneuver.
         """
         ttm = - math.inf
-        low = 0
+        low = initial_step
         high = int(self.ttc / self.dt)
         while low < high:
             mid = int((low + high) / 2)
@@ -98,6 +102,6 @@ class TTM(CriticalityBase):
                 low = mid + 1
             else:
                 high = mid
-        if low != 0:
-            ttm = (low - 1) * self.dt
+        if low != initial_step:
+            ttm = (low - initial_step - 1) * self.dt
         return ttm

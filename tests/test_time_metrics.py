@@ -128,6 +128,10 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(ttr, 2.0)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
+        ttr2 = ttr_object.compute(10)
+        ttr_object.visualize()
+        self.assertEqual(ttr2, ttr - 10 * ttr_object.dt)
+
     def test_thw(self):
         thw_object = THW(self.config)
         other_obs_id = 6
@@ -137,7 +141,7 @@ class TestTimeMetrics(unittest.TestCase):
 
         thw2 = thw_object.compute(other_obs_id, 10)
         thw_object.visualize()
-        self.assertEqual(thw2, thw - 1)
+        self.assertEqual(thw2, thw - 10 * thw_object.dt)
 
 
 

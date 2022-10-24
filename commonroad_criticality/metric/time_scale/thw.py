@@ -6,7 +6,6 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import math
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -19,6 +18,9 @@ import commonroad_criticality.utility.general as Utils_gen
 
 
 class THW(CriticalityBase):
+    """
+    https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
+    """
     metric_name = TimeScaleMetricType.THW
 
     def __init__(self, config: CriticalityConfiguration):

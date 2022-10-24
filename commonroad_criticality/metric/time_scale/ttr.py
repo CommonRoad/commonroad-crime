@@ -14,6 +14,8 @@ from commonroad_criticality.data_structure.configuration import CriticalityConfi
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.utility.simulation import Maneuver
 
+from commonroad.visualization.mp_renderer import MPRenderer
+
 
 class TTR(TTM):
     metric_name = TimeScaleMetricType.TTR
@@ -22,10 +24,16 @@ class TTR(TTM):
         super(TTR, self).__init__(config, Maneuver.NONE)
         self._evaluator = [TTB(config), TTK(config), TTS(config)]
 
-    def compute(self):
+    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+        if self.configuration.debug.draw_visualization:
+            self.rnd = MPRenderer()
+            self.sce.draw(self.rnd, draw_params={'time_begin': time_step,
+                                                 "dynamic_obstacle": {
+                                                     "draw_icon": self.configuration.debug.draw_icons}})
+            self.rnd.render()
         ttm = dict()
         for evl in self._evaluator:
-            ttm[evl.maneuver] = evl.compute()
+            ttm[evl.maneuver] = evl.compute(time_step, rnd=self.rnd)
         self.value = max(ttm.values())
         self.maneuver = max(ttm, key=ttm.get)
         return self.value

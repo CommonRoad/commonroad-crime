@@ -73,14 +73,14 @@ class TTC(CriticalityBase):
             else:
                 plt.show()
 
-    def compute(self) -> Union[int, float]:
+    def compute(self, time_step: int = 0) -> Union[int, float]:
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
         """
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
-        for i in range(len(state_list)):
+        for i in range(time_step, len(state_list)):
             # ith time step
             pos1 = state_list[i].position[0]
             pos2 = state_list[i].position[1]
@@ -96,7 +96,7 @@ class TTC(CriticalityBase):
             ego.append_obstacle(ego_obb)
             if self.collision_checker.collide(ego):
                 self._colliding_ego_obb = ego_obb
-                self.value = Utils_gen.int_round(i * self.dt, 1)
+                self.value = Utils_gen.int_round((i - time_step) * self.dt, 1)
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break
         return self.value
