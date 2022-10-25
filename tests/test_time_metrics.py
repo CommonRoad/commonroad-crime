@@ -28,7 +28,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.config.update()
 
     def test_ttc(self):
-        self.config.debug.draw_visualization = False
+        self.config.debug.draw_visualization = True
         self.config.debug.save_plots = True
         ttc_object_1 = TTC(self.config)
         ttc_1 = ttc_object_1.compute()

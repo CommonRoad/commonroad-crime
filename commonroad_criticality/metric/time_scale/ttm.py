@@ -40,7 +40,7 @@ class TTM(CriticalityBase):
             self.simulator = None
         if self.simulator:
             self.ttc_object = TTC(config)
-            self.ttc = self.ttc_object.compute()
+            self.ttc = self.ttc_object.compute(rnd=self.rnd)
 
     @property
     def maneuver(self):

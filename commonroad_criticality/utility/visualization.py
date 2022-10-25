@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.scenario.scenario import State, Scenario
+from commonroad.scenario.obstacle import Shape
 
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.scene import Scene
 
 
-def save_fig(metric_name: str, path_output: str, time_step: int):
+def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
     plt.savefig(f'{path_output}{metric_name}_{time_step:.0f}.svg', format="svg", bbox_inches="tight",
