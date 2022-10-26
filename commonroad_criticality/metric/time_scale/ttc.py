@@ -59,8 +59,10 @@ class TTC(CriticalityBase):
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
+            self.rnd.render()
             if self.value not in [math.inf, -math.inf]:
                 tstc = int(Utils_gen.int_round(self.value / self.dt, 0))
+                Utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
                 Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
             else:
                 tstc = self.value
@@ -96,7 +98,6 @@ class TTC(CriticalityBase):
             if self.collision_checker.collide(ego):
                 self.value = Utils_gen.int_round((i - time_step) * self.dt, 1)
                 if self.configuration.debug.draw_visualization:
-                    draw_collision_rectobb(ego_obb, self.rnd)
                     Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break

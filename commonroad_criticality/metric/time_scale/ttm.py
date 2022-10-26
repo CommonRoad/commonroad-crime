@@ -38,9 +38,8 @@ class TTM(CriticalityBase):
             self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
         else:
             self.simulator = None
-        if self.simulator:
-            self.ttc_object = TTC(config)
-            self.ttc = self.ttc_object.compute(rnd=self.rnd)
+        self.ttc_object = TTC(config)
+        self.ttc = self.ttc_object.compute(rnd=self.rnd)
 
     @property
     def maneuver(self):
@@ -55,6 +54,9 @@ class TTM(CriticalityBase):
             if self.value not in [math.inf, -math.inf]:
                 tstm = int(Utils_gen.int_round(self.value / self.dt, 0))
                 Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+                tstc = int(Utils_gen.int_round(self.ttc / self.dt, 0))
+                Utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
+                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
             else:
                 tstm = self.value
             plt.title(f"{self.metric_name} at time step {tstm}")
@@ -67,7 +69,6 @@ class TTM(CriticalityBase):
     def compute(self, time_step: int = 0, rnd: MPRenderer = None):
         if self.configuration.debug.draw_visualization:
             self.initialize_vis(time_step, rnd)
-            Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(int(self.ttc/self.dt)), 'r')
 
         if self.ttc == 0:
             self.value = -math.inf

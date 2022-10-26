@@ -13,6 +13,9 @@ def main():
     config = ConfigurationBuilder.build_configuration(scenario_id)
     config.update()
 
+    # steering based on the lane width
+    config.time_metrics.steer_width = 2
+
     # ==== select the criticality metric you want to evaluate and then compute the value at a given time step
     # ttk_interface = TTK(config)
     # ttc_interface = TTC(config)
