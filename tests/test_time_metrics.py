@@ -7,7 +7,7 @@ import math
 
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
-import commonroad_criticality.data_structure.logger as util_logger
+import commonroad_criticality.utility.logger as util_logger
 from commonroad_criticality.metric.time_scale.ttc import TTC
 from commonroad_criticality.metric.time_scale.ttb import TTB
 from commonroad_criticality.metric.time_scale.ttk import TTK
@@ -28,7 +28,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.config.update()
 
     def test_ttc(self):
-        self.config.debug.draw_visualization = False
+        self.config.debug.draw_visualization = True
         self.config.debug.save_plots = True
         ttc_object_1 = TTC(self.config)
         ttc_1 = ttc_object_1.compute()

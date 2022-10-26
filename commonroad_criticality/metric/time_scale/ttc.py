@@ -8,8 +8,8 @@ __status__ = "Pre-alpha"
 
 import copy
 import math
-from typing import Union, List
-from decimal import Decimal
+import logging
+from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -19,15 +19,16 @@ from commonroad.scenario.trajectory import Trajectory
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
 from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import (create_collision_checker,
-create_collision_object)
-from commonroad_dc.collision.visualization.drawing \
-    import draw_collision_rectobb
+                                                                                   create_collision_object)
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.visualization as Utils_vis
-import commonroad_criticality.utility.general as Utils_gen
+import commonroad_criticality.utility.visualization as utils_vis
+import commonroad_criticality.utility.general as utils_gen
+import commonroad_criticality.utility.logger as utils_log
+
+logger = logging.getLogger(__name__)
 
 
 class TTC(CriticalityBase):
@@ -41,7 +42,8 @@ class TTC(CriticalityBase):
         road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
         self.sce.add_objects(road_boundary_obstacle)
         self.collision_checker = create_collision_checker(self.sce)
-        self._colliding_ego_obb = None
+        self.sce.remove_obstacle(road_boundary_obstacle)
+        self.sce.add_objects(self.ego_vehicle)
 
     def detect_collision(self, state_list: List[State]) -> bool:
         """
@@ -58,26 +60,27 @@ class TTC(CriticalityBase):
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
-            rnd = MPRenderer()
-            if self._colliding_ego_obb:
-                draw_collision_rectobb(self._colliding_ego_obb, rnd)
+            self.rnd.render()
             if self.value not in [math.inf, -math.inf]:
-                tstc = int(Utils_gen.int_round(self.value / self.dt, 0))
-                self.sce.draw(rnd, draw_params={'time_begin': tstc,
-                                                "dynamic_obstacle": {
-                                                    "draw_icon": self.configuration.debug.draw_icons}})
-            rnd.render()
-            plt.title(f"time step: {self.value}")
+                tstc = int(utils_gen.int_round(self.value / self.dt, 0))
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
+            else:
+                tstc = self.value
+            plt.title(f"time step: {tstc}")
             if self.configuration.debug.save_plots:
-                Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.value)
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, tstc)
             else:
                 plt.show()
 
-    def compute(self, time_step: int = 0) -> Union[int, float]:
+    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
         """
+        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
+        if self.configuration.debug.draw_visualization:
+            self.initialize_vis(time_step, self.rnd)
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
         for i in range(time_step, len(state_list)):
@@ -95,8 +98,11 @@ class TTC(CriticalityBase):
                                      theta, pos1, pos2)
             ego.append_obstacle(ego_obb)
             if self.collision_checker.collide(ego):
-                self._colliding_ego_obb = ego_obb
-                self.value = Utils_gen.int_round((i - time_step) * self.dt, 1)
+                self.value = utils_gen.int_round((i - time_step) * self.dt, str(self.dt)[::-1].find('.'))
+
+                if self.configuration.debug.draw_visualization:
+                    utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value

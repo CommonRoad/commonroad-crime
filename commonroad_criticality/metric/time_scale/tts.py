@@ -6,14 +6,18 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
+import logging
+
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.metric.time_scale.ttm import TTM
 from commonroad_criticality.utility.simulation import Maneuver
-import commonroad_criticality.utility.visualization as Utils_vis
+import commonroad_criticality.utility.logger as utils_log
 
 from commonroad.visualization.mp_renderer import MPRenderer
+
+logger = logging.getLogger(__name__)
 
 
 class TTS(CriticalityBase):
@@ -27,17 +31,20 @@ class TTS(CriticalityBase):
         self._right_evaluator.metric_name = self.metric_name
         self.maneuver = Maneuver.NONE
 
-    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+    def compute(self, time_step: int = 0,  ttc: float = None, rnd: MPRenderer = None, verbose: bool = False):
+        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
+
         if self.configuration.debug.draw_visualization:
             self.initialize_vis(time_step, rnd)
 
-        tts_left = self._left_evaluator.compute(time_step, self.rnd)
-        tts_right = self._right_evaluator.compute(time_step, self.rnd)
+        tts_left = self._left_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
+        tts_right = self._right_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
         if tts_left > tts_right:
             self.maneuver = Maneuver.STEERLEFT
         else:
             self.maneuver = Maneuver.STEERRIGHT
         self.value = max(tts_left, tts_right)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
     def visualize(self):

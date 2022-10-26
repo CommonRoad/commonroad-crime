@@ -4,7 +4,7 @@ import unittest
 from commonroad_criticality.data_structure.scene import Scene
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
-import commonroad_criticality.data_structure.logger as util_logger
+import commonroad_criticality.utility.logger as util_logger
 
 
 class TestBase(unittest.TestCase):

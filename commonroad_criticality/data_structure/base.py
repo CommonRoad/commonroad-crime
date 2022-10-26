@@ -51,6 +51,7 @@ class CriticalityBase:
         else:
             self.rnd = MPRenderer()
             Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
+            self.rnd.render()
 
     def set_other_vehicles(self, vehicle_id: int):
         """
