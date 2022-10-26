@@ -9,6 +9,7 @@ __status__ = "Pre-alpha"
 import math
 import matplotlib.pyplot as plt
 from typing import Union
+import logging
 
 from commonroad.visualization.mp_renderer import MPRenderer
 
@@ -17,8 +18,11 @@ from commonroad_criticality.utility.simulation import SimulationLong, Simulation
 from commonroad_criticality.metric.time_scale.ttc import TTC
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.visualization as Utils_vis
-import commonroad_criticality.utility.general as Utils_gen
+import commonroad_criticality.utility.visualization as utils_vis
+import commonroad_criticality.utility.general as utils_gen
+import commonroad_criticality.utility.logger as utils_log
+
+logger = logging.getLogger(__name__)
 
 
 class TTM(CriticalityBase):
@@ -39,7 +43,7 @@ class TTM(CriticalityBase):
         else:
             self.simulator = None
         self.ttc_object = TTC(config)
-        self.ttc = self.ttc_object.compute(rnd=self.rnd)
+        self.ttc = None
 
     @property
     def maneuver(self):
@@ -51,25 +55,29 @@ class TTM(CriticalityBase):
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
-            if self.value not in [math.inf, -math.inf]:
-                tstm = int(Utils_gen.int_round(self.value / self.dt, 0))
-                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
-                tstc = int(Utils_gen.int_round(self.ttc / self.dt, 0))
-                Utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
-                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
+            if self.value not in [math.inf, -math.inf] and self.ttc:
+                tstm = int(utils_gen.int_round(self.value / self.dt, 0))
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+                tstc = int(utils_gen.int_round(self.ttc / self.dt, 0))
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
             else:
                 tstm = self.value
             plt.title(f"{self.metric_name} at time step {tstm}")
             if self.configuration.debug.save_plots:
-                Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
                                    tstm)
             else:
                 plt.show()
 
-    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+    def compute(self, time_step: int = 0, ttc: float = None, rnd: MPRenderer = None, verbose: bool = True):
+        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         if self.configuration.debug.draw_visualization:
             self.initialize_vis(time_step, rnd)
-
+        if ttc:
+            self.ttc = ttc
+        else:
+            self.ttc = self.ttc_object.compute(rnd=self.rnd)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:
@@ -78,7 +86,9 @@ class TTM(CriticalityBase):
             self.value = self.binary_search(time_step)
         if self.value in [math.inf, -math.inf]:
             return self.value
-        return Utils_gen.int_round(self.value, 1)
+        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def binary_search(self, initial_step: int) -> float:
         """

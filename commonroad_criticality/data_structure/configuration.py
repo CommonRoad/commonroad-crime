@@ -57,30 +57,8 @@ class CriticalityConfiguration:
 
     def print_configuration_summary(self):
         string = "# ===== Configuration Summary ===== #\n"
-        # string += f"# {self.general.name_scenario}\n"
-        # string += "# Time metrics:\n"
-        # if self.time_metrics.activated == 1:
-        #     time_metric = " "
-        #     if "1" in self.time_metrics.metric:
-        #         time_metric += "time-to-collision\t"
-        #     if "2" in self.time_metrics.metric:
-        #         time_metric += "time-to-react\t"
-        #     if "3" in self.time_metrics.metric:
-        #         time_metric += "time-to-violation\t"
-        #     if "4" in self.time_metrics.metric:
-        #         time_metric += "time-to-comply\t"
-        #     string += f"# \tmetric: {time_metric}\n"
-        # else:
-        #     string += "# \tnot activated\n"
-        # string += "# Space Metrics:\n"
-        # if self.space_metrics.activated == 1:
-        #     if self.space_metrics.approach == 1:
-        #         space_approach = "Area of drivable area"
-        #     else:
-        #         space_approach = "not defined"
-        #     string += f"# \tapproach: {space_approach}\n"
-        # else:
-        #     string += "# \tnot activated\n"
+        string += f"# Scene/Scenario: {self.general.name_scenario}\n"
+        string += f"# ego vehicle: id {self.vehicle.ego_id}\n"
         string += "# ================================= #"
 
         print(string)
