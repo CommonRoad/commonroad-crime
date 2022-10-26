@@ -7,14 +7,16 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
-
-from commonroad.visualization.mp_renderer import MPRenderer
+import logging
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.visualization as Utils_vis
-import commonroad_criticality.utility.general as Utils_gen
+import commonroad_criticality.utility.visualization as utils_vis
+import commonroad_criticality.utility.general as utils_gen
+import commonroad_criticality.utility.logger as utils_log
+
+logger = logging.getLogger(__name__)
 
 
 class THW(CriticalityBase):
@@ -25,8 +27,11 @@ class THW(CriticalityBase):
 
     def __init__(self, config: CriticalityConfiguration):
         super(THW, self).__init__(config)
+        self._thw_ts = None  # the absolute thw
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
+
         if self.configuration.debug.draw_visualization:
             self.initialize_vis(time_step, None)
         self.set_other_vehicles(vehicle_id)
@@ -37,20 +42,24 @@ class THW(CriticalityBase):
             ego_position = self.ego_vehicle.state_at_time(ts).position
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
             if ego_s > other_s:
-                self.value = (ts - time_step) * self.dt
+                self._thw_ts = ts
+                self.value = (self._thw_ts - time_step) * self.dt
                 break
-        return Utils_gen.int_round(self.value, 1)
+        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def visualize(self):
         if self.configuration.debug.draw_visualization:
             if self.value > 0:
-                tshw = int(Utils_gen.int_round(self.value / self.dt, 0))
-                Utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tshw))
+                tshw = int(utils_gen.int_round(self.value / self.dt, 0))
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self._thw_ts))
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts, 'g')
             else:
                 tshw = self.value
             plt.title(f"{self.metric_name} at time step {tshw}")
             if self.configuration.debug.save_plots:
-                Utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
                                    tshw)
             else:
                 plt.show()
