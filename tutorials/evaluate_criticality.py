@@ -24,6 +24,7 @@ def main():
     ttr_interface.compute(0, verbose=True)
 
     # ==== visualize the result
+    config.debug.save_plots = False
     ttr_interface.visualize()
 
 

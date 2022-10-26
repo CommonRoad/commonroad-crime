@@ -17,11 +17,16 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
                 transparent=False)
 
 
-def draw_state(rnd: MPRenderer, state: State, color: str = '#ffc325ff'):
+def draw_state(rnd: MPRenderer, state: State, color: str = '#ffc325ff', flag_save: bool = True):
+    if flag_save:
+        s_c = 1.2
+        s_b = 2.2
+    else:
+        s_c = 50
+        s_b = 55
     # the cut-off state
-    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color=color, edgecolor='none', zorder=30,
-                   s=1.2)
-    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color='w', edgecolor='none', zorder=29, s=2.2)
+    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color=color, edgecolor='none', zorder=30, s=s_c)
+    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color='w', edgecolor='none', zorder=29, s=s_b)
 
 
 def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int, color: str = "r"):

@@ -57,10 +57,12 @@ class TTM(CriticalityBase):
         if self.configuration.debug.draw_visualization:
             if self.value not in [math.inf, -math.inf] and self.ttc:
                 tstm = int(utils_gen.int_round(self.value / self.dt, 0))
-                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm))
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm),
+                                     flag_save=self.configuration.debug.save_plots)
                 tstc = int(utils_gen.int_round(self.ttc / self.dt, 0))
                 utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
-                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r',
+                                     self.configuration.debug.save_plots)
             else:
                 tstm = self.value
             plt.title(f"{self.metric_name} at time step {tstm}")

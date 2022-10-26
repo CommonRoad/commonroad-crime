@@ -64,7 +64,8 @@ class TTC(CriticalityBase):
             if self.value not in [math.inf, -math.inf]:
                 tstc = int(utils_gen.int_round(self.value / self.dt, 0))
                 utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc, 'r')
-                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r')
+                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r',
+                                     self.configuration.debug.save_plots)
             else:
                 tstc = self.value
             plt.title(f"time step: {tstc}")
