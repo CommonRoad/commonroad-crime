@@ -8,8 +8,8 @@ from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-import commonroad_criticality.utility.visualization as Utils_vis
-import commonroad_criticality.utility.general as Utils_gen
+import commonroad_criticality.utility.visualization as utils_vis
+import commonroad_criticality.utility.general as utils_gen
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
@@ -22,6 +22,7 @@ class CriticalityBase:
         assert isinstance(config, CriticalityConfiguration), '<Criticality>: Provided configuration is not valid!'
 
         self.value = None
+        self.time_step = 0
         # ==========  configuration  =========
         self.configuration = config
         # =======  Scenario or scene  ========
@@ -35,32 +36,21 @@ class CriticalityBase:
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
         self.other_vehicle: Union[Obstacle, None] = None  # optional
-        self.clcs = self.update_clcs()
-        self.rnd = None
+        self.clcs: CurvilinearCoordinateSystem = self.update_clcs()
+        self.rnd: Union[MPRenderer, None] = None
 
     def update_clcs(self):
         # default setting of ego vehicle's curvilinear coordinate system
         ego_initial_lanelet_id = list(self.ego_vehicle.prediction.center_lanelet_assignment[0])[0]
-        reference_path = Utils_gen.generate_reference_path(ego_initial_lanelet_id, self.sce.lanelet_network)
+        reference_path = utils_gen.generate_reference_path(ego_initial_lanelet_id, self.sce.lanelet_network)
         clcs = CurvilinearCoordinateSystem(reference_path)
         self.configuration.update(CLCS=clcs)
         return clcs
 
-    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None],
-                       fig_size: tuple = (25, 15), margin: float = 10):
-        if rnd:
-            self.rnd = rnd
-        else:
-            plot_limit = [self.ego_vehicle.state_at_time(time_step).position[0] -
-                          self.ego_vehicle.state_at_time(time_step).velocity * self.dt * 5,
-                          self.ego_vehicle.state_at_time(self.ego_vehicle.prediction.final_time_step).position[0] +
-                          self.ego_vehicle.state_at_time(
-                              self.ego_vehicle.prediction.final_time_step).velocity * self.dt * 30,
-                          self.ego_vehicle.state_at_time(time_step).position[1] - margin,
-                          self.ego_vehicle.state_at_time(time_step).position[1] + margin]
-            self.rnd = MPRenderer(figsize=fig_size, plot_limits=plot_limit)
-            Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
-            self.rnd.render()
+    def initialize_vis(self,
+                       figsize: tuple = (25, 15), plot_limit: Union[list, None] = None):
+        self.rnd = MPRenderer(figsize=figsize, plot_limits=plot_limit)
+        utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, self.time_step)
 
     def set_other_vehicles(self, vehicle_id: int):
         """

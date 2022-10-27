@@ -32,14 +32,13 @@ class TTR(TTM):
     def compute(self, time_step: int = 0, ttc: float = None, rnd: MPRenderer = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.ttc = self.ttc_object.compute(time_step, rnd)
-        if self.configuration.debug.draw_visualization:
-            self.initialize_vis(time_step, rnd)
-            self.ttc_object.draw_collision_checker(self.rnd)
         ttm = dict()
         for evl in self._evaluator:
-            ttm[evl.maneuver] = evl.compute(time_step, self.ttc, rnd=self.rnd, verbose=verbose)
+            ttm[evl] = evl.compute(time_step, self.ttc, rnd=self.rnd, verbose=verbose)
+            self.state_list_set += evl.state_list_set
         self.value = max(ttm.values())
-        self.maneuver = max(ttm, key=ttm.get)
+        self.selected_state_list = max(ttm, key=ttm.get).selected_state_list
+        self.maneuver = max(ttm, key=ttm.get).maneuver
         utils_log.print_and_log_info(logger, "*\t maximum of the values")
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value

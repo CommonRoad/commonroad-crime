@@ -72,17 +72,6 @@ class SimulationBase(ABC):
                 state_list.append(state)
         return state_list
 
-    def viz_state_list(self, rnd: MPRenderer, state_list: List[State], start_time_step: int) -> None:
-        """
-        Visualizing the state list as a connecting trajectory. The transparency is based on the starting
-        time step.
-        """
-        # visualize optimal trajectory
-        pos = np.asarray([state.position for state in state_list])
-        opacity = 0.5 * (start_time_step / self.time_horizon + 1)
-        rnd.ax.plot(pos[:, 0], pos[:, 1], color=TUMcolor.TUMdarkblue, markersize=1.5,
-                    zorder=23, linewidth=0.75, alpha=opacity)
-
     @property
     def maneuver(self):
         return self._maneuver
@@ -169,8 +158,8 @@ class SimulationLong(SimulationBase):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                 self.set_inputs(pre_state)
-        if self.plot:
-            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
+        # if self.plot:
+        #     self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def check_velocity_feasibility(self, state: State) -> bool:
@@ -266,8 +255,6 @@ class SimulationLat(SimulationBase):
             state_list.append(suc_state)
             pre_state = suc_state
         self.set_inputs(state_list[-1])
-        if self.plot:
-            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def set_maximal_orientation(self, lane_orientation):

@@ -66,30 +66,33 @@ class TTC(CriticalityBase):
         self.collision_checker.draw(rnd,
                                     draw_params={'facecolor': TUMcolor.TUMgray, 'draw_mesh': False})
 
-    def visualize(self):
-        if self.configuration.debug.draw_visualization:
-            self.draw_collision_checker(self.rnd)
-            if self.value not in [math.inf, -math.inf]:
-                tstc = int(utils_gen.int_round(self.value / self.dt, 0))
-                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
-                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), 'r',
-                                     self.configuration.debug.save_plots)
-            else:
-                tstc = self.value
-            plt.title(f"time step: {tstc}")
-            if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, tstc)
-            else:
-                plt.show()
+    def visualize(self, figsize: tuple = (25, 15)):
+        self.initialize_vis(figsize=figsize,
+                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                             self.ego_vehicle.prediction.trajectory.state_list,
+                                                                             margin=10))
+        self.draw_collision_checker(self.rnd)
+        self.rnd.render()
+
+        if self.value not in [math.inf, -math.inf]:
+            tstc = int(utils_gen.int_round(self.value / self.dt, 0))
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
+        else:
+            tstc = self.value
+        plt.title(f"time step: {tstc}")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, tstc)
+        else:
+            plt.show()
 
     def compute(self, time_step: int = 0, rnd: MPRenderer = None):
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
         """
+        self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
-        if self.configuration.debug.draw_visualization:
-            self.initialize_vis(time_step, self.rnd)
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
         for i in range(time_step, len(state_list)):
@@ -108,9 +111,6 @@ class TTC(CriticalityBase):
             ego.append_obstacle(ego_obb)
             if self.collision_checker.collide(ego):
                 self.value = utils_gen.int_round((i - time_step) * self.dt, str(self.dt)[::-1].find('.'))
-
-                if self.configuration.debug.draw_visualization:
-                    utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
