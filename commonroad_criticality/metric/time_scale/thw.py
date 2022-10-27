@@ -15,6 +15,7 @@ from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 import commonroad_criticality.utility.visualization as utils_vis
 import commonroad_criticality.utility.general as utils_gen
 import commonroad_criticality.utility.logger as utils_log
+from commonroad_criticality.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +32,8 @@ class THW(CriticalityBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
-
-        if self.configuration.debug.draw_visualization:
-            self.initialize_vis(time_step, None)
         self.set_other_vehicles(vehicle_id)
+        self.time_step = time_step
         other_position = self.other_vehicle.state_at_time(time_step).position
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
         self.value = 0.  # at default, we assume that the ego vehicle is already in front
@@ -49,17 +48,23 @@ class THW(CriticalityBase):
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
-    def visualize(self):
-        if self.configuration.debug.draw_visualization:
-            if self.value > 0:
-                tshw = int(utils_gen.int_round(self.value / self.dt, 0))
-                utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self._thw_ts))
-                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts, 'g')
-            else:
-                tshw = self.value
-            plt.title(f"{self.metric_name} at time step {tshw}")
-            if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
-                                   tshw)
-            else:
-                plt.show()
+    def visualize(self, figsize: tuple = (25, 15)):
+        self.initialize_vis(figsize=figsize,
+                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                             self.ego_vehicle.prediction.trajectory.state_list,
+                                                                             margin=10))
+        self.rnd.render()
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=5)
+        if self.value > 0:
+            tshw = int(utils_gen.int_round(self.value / self.dt, 0))
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self._thw_ts))
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts)
+        else:
+            tshw = self.value
+        plt.title(f"{self.metric_name} at time step {tshw}")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                               tshw)
+        else:
+            plt.show()

@@ -9,7 +9,8 @@ from commonroad.scenario.obstacle import DynamicObstacle, State
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-import commonroad_criticality.utility.general as Utils_general
+import commonroad_criticality.utility.general as utils_general
+from commonroad_criticality.utility.visualization import TUMcolor
 
 
 class Maneuver(str, Enum):
@@ -70,17 +71,6 @@ class SimulationBase(ABC):
                 check_elements_state(state)
                 state_list.append(state)
         return state_list
-
-    def viz_state_list(self, rnd: MPRenderer, state_list: List[State], start_time_stap: int) -> None:
-        """
-        Visualizing the state list as a connecting trajectory. The transparency is based on the starting
-        time step.
-        """
-        # visualize optimal trajectory
-        pos = np.asarray([state.position for state in state_list])
-        opacity = 0.5 * (start_time_stap / self.time_horizon + 1)
-        rnd.ax.plot(pos[:, 0], pos[:, 1], color='#ffc325ff', markersize=1.5,
-                    zorder=23, linewidth=0.75, alpha=opacity)
 
     @property
     def maneuver(self):
@@ -168,8 +158,8 @@ class SimulationLong(SimulationBase):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                 self.set_inputs(pre_state)
-        if self.plot:
-            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
+        # if self.plot:
+        #     self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def check_velocity_feasibility(self, state: State) -> bool:
@@ -226,7 +216,7 @@ class SimulationLat(SimulationBase):
         Sets the time for the bang–bang controller of the lane change.
         """
         lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
-        lateral_dis, orientation = Utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
+        lateral_dis, orientation = utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
                                                                                    find_lanelet_by_id(lanelet_id[0]),
                                                                                    position)
         if self._lateral_distance_mode == 1:
@@ -265,8 +255,6 @@ class SimulationLat(SimulationBase):
             state_list.append(suc_state)
             pre_state = suc_state
         self.set_inputs(state_list[-1])
-        if self.plot:
-            self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def set_maximal_orientation(self, lane_orientation):

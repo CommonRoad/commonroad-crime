@@ -30,19 +30,22 @@ class TTS(CriticalityBase):
         self._left_evaluator.metric_name = self.metric_name
         self._right_evaluator.metric_name = self.metric_name
         self.maneuver = Maneuver.NONE
+        self.selected_state_list = None
+        self.state_list_set = []
 
-    def compute(self, time_step: int = 0,  ttc: float = None, rnd: MPRenderer = None, verbose: bool = False):
+    def compute(self, time_step: int = 0,  ttc: float = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
 
-        if self.configuration.debug.draw_visualization:
-            self.initialize_vis(time_step, rnd)
-
-        tts_left = self._left_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
-        tts_right = self._right_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
+        tts_left = self._left_evaluator.compute(time_step, ttc, verbose=False)
+        tts_right = self._right_evaluator.compute(time_step, ttc, verbose=False)
         if tts_left > tts_right:
             self.maneuver = Maneuver.STEERLEFT
+            self.selected_state_list = self._left_evaluator.selected_state_list
         else:
             self.maneuver = Maneuver.STEERRIGHT
+            self.selected_state_list = self._right_evaluator.selected_state_list
+        self.state_list_set += self._left_evaluator.state_list_set
+        self.state_list_set += self._right_evaluator.state_list_set
         self.value = max(tts_left, tts_right)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
