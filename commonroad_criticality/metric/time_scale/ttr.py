@@ -27,14 +27,22 @@ class TTR(TTM):
 
     def __init__(self, config: CriticalityConfiguration):
         super(TTR, self).__init__(config, Maneuver.NONE)
-        self._evaluator = [TTB(config), TTK(config), TTS(config)]
+        self._evaluator = None
 
-    def compute(self, time_step: int = 0, ttc: float = None, rnd: MPRenderer = None, verbose: bool = False):
+    def initialize_evaluator(self, time_step):
+        self._evaluator = [TTB(self.configuration),
+                           TTK(self.configuration),
+                           TTS(self.configuration)]
+        self.time_step = time_step
+        self.state_list_set = []
+        self.ttc = self.ttc_object.compute(time_step)
+
+    def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
-        self.ttc = self.ttc_object.compute(time_step, rnd)
+        self.initialize_evaluator(time_step)
         ttm = dict()
         for evl in self._evaluator:
-            ttm[evl] = evl.compute(time_step, self.ttc, rnd=self.rnd, verbose=verbose)
+            ttm[evl] = evl.compute(time_step, self.ttc, verbose=verbose)
             self.state_list_set += evl.state_list_set
         self.value = max(ttm.values())
         self.selected_state_list = max(ttm, key=ttm.get).selected_state_list

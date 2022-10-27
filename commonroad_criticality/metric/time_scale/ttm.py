@@ -64,14 +64,14 @@ class TTM(CriticalityBase):
                                                                              margin=10))
         self.ttc_object.draw_collision_checker(self.rnd)
         self.rnd.render()
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list,
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
                                   color=TUMcolor.TUMblue, linewidth=5)
         for sl in self.state_list_set:
             utils_vis.draw_state_list(self.rnd, sl)
         if self.value not in [math.inf, -math.inf] and self.ttc:
-            tstm = int(utils_gen.int_round(self.value / self.dt, 0))
+            tstm = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
-            tstc = int(utils_gen.int_round(self.ttc / self.dt, 0))
+            tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
             utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[tstc:],
@@ -81,19 +81,20 @@ class TTM(CriticalityBase):
         else:
             tstm = self.value
 
-        plt.title(f"{self.metric_name} at time step {tstm}")
+        plt.title(f"{self.metric_name} at time step {tstm - self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
-                               tstm)
+                               tstm - self.time_step)
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0, ttc: float = None, rnd: MPRenderer = None, verbose: bool = True):
+    def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
+        self.time_step = time_step
         if ttc:
             self.ttc = ttc
         else:
-            self.ttc = self.ttc_object.compute(rnd=self.rnd)
+            self.ttc = self.ttc_object.compute(time_step, rnd=self.rnd)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:
@@ -112,7 +113,7 @@ class TTM(CriticalityBase):
         """
         ttm = - math.inf
         low = initial_step
-        high = int(self.ttc / self.dt)
+        high = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.'))) + initial_step
         while low < high:
             mid = int((low + high) / 2)
             state_list = self.simulator.simulate_state_list(mid, self.rnd)

@@ -33,11 +33,11 @@ class TTS(CriticalityBase):
         self.selected_state_list = None
         self.state_list_set = []
 
-    def compute(self, time_step: int = 0,  ttc: float = None, rnd: MPRenderer = None, verbose: bool = False):
+    def compute(self, time_step: int = 0,  ttc: float = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
 
-        tts_left = self._left_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
-        tts_right = self._right_evaluator.compute(time_step, ttc, self.rnd, verbose=False)
+        tts_left = self._left_evaluator.compute(time_step, ttc, verbose=False)
+        tts_right = self._right_evaluator.compute(time_step, ttc, verbose=False)
         if tts_left > tts_right:
             self.maneuver = Maneuver.STEERLEFT
             self.selected_state_list = self._left_evaluator.selected_state_list
