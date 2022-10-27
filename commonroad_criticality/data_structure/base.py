@@ -45,11 +45,11 @@ class CriticalityBase:
         self.configuration.update(CLCS=clcs)
         return clcs
 
-    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None]):
+    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None], fig_size: tuple = (25, 15)):
         if rnd:
             self.rnd = rnd
         else:
-            self.rnd = MPRenderer()
+            self.rnd = MPRenderer(figsize=fig_size)
             Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
             self.rnd.render()
 

@@ -55,7 +55,7 @@ class THW(CriticalityBase):
                 tshw = int(utils_gen.int_round(self.value / self.dt, 0))
                 utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self._thw_ts),
                                      self.configuration.debug.save_plots)
-                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts, 'g')
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts)
             else:
                 tshw = self.value
             plt.title(f"{self.metric_name} at time step {tshw}")
