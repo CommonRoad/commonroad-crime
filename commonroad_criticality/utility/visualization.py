@@ -35,11 +35,12 @@ def draw_state(rnd: MPRenderer, state: State, color: str = TUMcolor.TUMgreen, fl
         s_c = 1.2
         s_b = 2.2
     else:
-        s_c = 100
-        s_b = 120
+        s_c = 120
+        s_b = 180
     # the cut-off state
     rnd.ax.scatter(state.position[0], state.position[1], marker='o', color=color, edgecolor='none', zorder=30, s=s_c)
-    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color='w', edgecolor='none', zorder=29, s=s_b)
+    rnd.ax.scatter(state.position[0], state.position[1], marker='o', color=TUMcolor.TUMwhite, edgecolor='none',
+                   zorder=29, s=s_b)
 
 
 def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int, color: str = TUMcolor.TUMblue):
@@ -52,7 +53,6 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                           sce: Union[Scenario, Scene],
                           time_step: int):
     sce.draw(rnd, draw_params={'time_begin': time_step,
-                               "focus_obstacle_id": True,
                                "dynamic_obstacle": {
                                    "draw_icon": config.debug.draw_icons},
                                "static_obstacle": {

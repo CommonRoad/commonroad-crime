@@ -1,3 +1,4 @@
+import math
 from abc import abstractmethod
 import copy
 from typing import Union
@@ -45,11 +46,19 @@ class CriticalityBase:
         self.configuration.update(CLCS=clcs)
         return clcs
 
-    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None], fig_size: tuple = (25, 15)):
+    def initialize_vis(self, time_step: int, rnd: Union[MPRenderer, None],
+                       fig_size: tuple = (25, 15), margin: float = 10):
         if rnd:
             self.rnd = rnd
         else:
-            self.rnd = MPRenderer(figsize=fig_size)
+            plot_limit = [self.ego_vehicle.state_at_time(time_step).position[0] -
+                          self.ego_vehicle.state_at_time(time_step).velocity * self.dt * 5,
+                          self.ego_vehicle.state_at_time(self.ego_vehicle.prediction.final_time_step).position[0] +
+                          self.ego_vehicle.state_at_time(
+                              self.ego_vehicle.prediction.final_time_step).velocity * self.dt * 30,
+                          self.ego_vehicle.state_at_time(time_step).position[1] - margin,
+                          self.ego_vehicle.state_at_time(time_step).position[1] + margin]
+            self.rnd = MPRenderer(figsize=fig_size, plot_limits=plot_limit)
             Utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, time_step)
             self.rnd.render()
 
