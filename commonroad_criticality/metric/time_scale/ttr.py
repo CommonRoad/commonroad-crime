@@ -34,6 +34,7 @@ class TTR(TTM):
         self.ttc = self.ttc_object.compute(time_step, rnd)
         if self.configuration.debug.draw_visualization:
             self.initialize_vis(time_step, rnd)
+            self.ttc_object.draw_collision_checker(self.rnd)
         ttm = dict()
         for evl in self._evaluator:
             ttm[evl.maneuver] = evl.compute(time_step, self.ttc, rnd=self.rnd, verbose=verbose)

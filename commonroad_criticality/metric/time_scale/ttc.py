@@ -27,6 +27,7 @@ from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 import commonroad_criticality.utility.visualization as utils_vis
 import commonroad_criticality.utility.general as utils_gen
 import commonroad_criticality.utility.logger as utils_log
+from commonroad_criticality.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,10 @@ class TTC(CriticalityBase):
         self.sce.remove_obstacle(self.ego_vehicle)
 
         # creat collision checker
-        road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
+        # road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
+        road_boundary_obstacle, _ = boundary.create_road_boundary_obstacle(self.sce,
+                                                                           method='aligned_triangulation',
+                                                                           axis=2)
         self.sce.add_objects(road_boundary_obstacle)
         self.collision_checker = create_collision_checker(self.sce)
         self.sce.remove_obstacle(road_boundary_obstacle)
@@ -58,9 +62,13 @@ class TTC(CriticalityBase):
         co = create_collision_object(updated_ego_vehicle)
         return self.collision_checker.collide(co)
 
+    def draw_collision_checker(self, rnd: MPRenderer):
+        self.collision_checker.draw(rnd,
+                                    draw_params={'facecolor': TUMcolor.TUMgray, 'draw_mesh': False})
+
     def visualize(self):
         if self.configuration.debug.draw_visualization:
-            self.rnd.render()
+            self.draw_collision_checker(self.rnd)
             if self.value not in [math.inf, -math.inf]:
                 tstc = int(utils_gen.int_round(self.value / self.dt, 0))
                 utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
