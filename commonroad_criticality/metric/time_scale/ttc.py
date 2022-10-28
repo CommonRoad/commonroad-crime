@@ -86,7 +86,7 @@ class TTC(CriticalityBase):
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0, rnd: MPRenderer = None):
+    def compute(self, time_step: int = 0):
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
