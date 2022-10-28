@@ -11,9 +11,6 @@ import matplotlib.pyplot as plt
 from typing import Union, List
 import logging
 
-from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State
-
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_criticality.metric.time_scale.ttc import TTC
@@ -73,9 +70,9 @@ class TTM(CriticalityBase):
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
-            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
-            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[tstc:],
-                                      color=TUMcolor.TUMred, linewidth=5)
+            # utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
+            # utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[tstc:],
+            #                           color=TUMcolor.TUMred, linewidth=5)
             utils_vis.draw_state_list(self.rnd, self.selected_state_list[tstm:],
                                       color=TUMcolor.TUMgreen, linewidth=5)
         else:
