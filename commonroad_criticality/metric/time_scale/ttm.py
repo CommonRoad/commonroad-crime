@@ -8,7 +8,7 @@ __status__ = "Pre-alpha"
 
 import math
 import matplotlib.pyplot as plt
-from typing import Union, List
+from typing import Union
 import logging
 
 from commonroad_criticality.data_structure.base import CriticalityBase
