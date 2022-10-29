@@ -15,6 +15,7 @@ from commonroad_criticality.metric.time_scale.tts import TTS
 from commonroad_criticality.metric.time_scale.ttr import TTR
 from commonroad_criticality.metric.time_scale.thw import THW
 from commonroad_criticality.metric.time_scale.wttc import WTTC
+from commonroad_criticality.metric.time_scale.wttr import WTTR
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 import commonroad_criticality.utility.visualization as Utils_vis
 
@@ -154,6 +155,11 @@ class TestTimeMetrics(unittest.TestCase):
         ttc_object = TTC(self.config)
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
+
+    def test_wttr(self):
+        wttr_object = WTTR(self.config)
+        wttr = wttr_object.compute(0)
+        self.assertEqual(wttr, 2.0)
 
 
 
