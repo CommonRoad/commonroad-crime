@@ -1,6 +1,7 @@
 from typing import Tuple
 import numpy as np
-from commonroad.scenario.obstacle import Obstacle
+
+from commonroad.scenario.obstacle import Obstacle, StaticObstacle
 
 
 def solver_wttc(veh_1: Obstacle,
@@ -16,11 +17,15 @@ def solver_wttc(veh_1: Obstacle,
                                                veh_2.obstacle_shape.width)
     x_10, y_10 = veh_1.state_at_time(time_step).position
     x_20, y_20 = veh_2.state_at_time(time_step).position
-    v_1x0, v_1y0 = veh_1.state_at_time(time_step).velocity * [np.cos(veh_1.state_at_time(time_step).orientation),
-                                                              np.sin(veh_1.state_at_time(time_step).orientation)]
-    v_2x0, v_2y0 = veh_2.state_at_time(time_step).velocity * [np.cos(veh_2.state_at_time(time_step).orientation),
-                                                              np.sin(veh_2.state_at_time(time_step).orientation)]
+    v_1x0, v_1y0 = veh_1.state_at_time(time_step).velocity * np.array(
+        [np.cos(veh_1.state_at_time(time_step).orientation),
+         np.sin(veh_1.state_at_time(time_step).orientation)])
+    v_2x0, v_2y0 = veh_2.state_at_time(time_step).velocity * np.array(
+        [np.cos(veh_2.state_at_time(time_step).orientation),
+         np.sin(veh_2.state_at_time(time_step).orientation)])
     a_10 = a_20 = a_max
+    if isinstance(veh_2, StaticObstacle):
+        a_20 = 0
     # compute the parameters
     A = -1/4 * (a_10 + a_20) ** 2
     B = 0

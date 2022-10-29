@@ -7,13 +7,22 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
+import numpy as np
 import matplotlib.pyplot as plt
 from typing import Union, List
 import logging
 
+from commonroad.scenario.obstacle import Obstacle, StaticObstacle
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+import commonroad_criticality.utility.solver as utils_sol
+import commonroad_criticality.utility.general as utils_gen
+import commonroad_criticality.utility.visualization as utils_vis
+import commonroad_criticality.utility.logger as utils_log
+from commonroad_criticality.utility.visualization import TUMcolor
+
+logger = logging.getLogger(__name__)
 
 
 class WTTC(CriticalityBase):
@@ -29,13 +38,48 @@ class WTTC(CriticalityBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         self.time_step = time_step
+        self.set_other_vehicles(vehicle_id)
+        wttc_list = utils_sol.solver_wttc(self.ego_vehicle,
+                                          self.other_vehicle,
+                                          time_step,
+                                          self.configuration.vehicle.cartesian.longitudinal.a_max)
+        self.value = max([np.real(x) for x in wttc_list if np.isreal(x) and x > 0][0], 0.0)
+        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
-    def _wttc_st_obs(self):
-
-    def _wttc_dy_obs(self):
-
-    def visualize(self):
-        pass
+    def visualize(self, figsize: tuple = (25, 15)):
+        self.initialize_vis(figsize=figsize,
+                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                             self.ego_vehicle.prediction.
+                                                                             trajectory.state_list,
+                                                                             margin=10))
+        self.rnd.render()
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=5)
+        r_1 = r_2 = 1/2 * self.configuration.vehicle.cartesian.longitudinal.a_max * self.value ** 2
+        if isinstance(self.other_vehicle, StaticObstacle):
+            r_2 = 0
+        r_v1, _ = utils_sol.compute_disc_radius_and_distance(self.ego_vehicle.obstacle_shape.length,
+                                                             self.ego_vehicle.obstacle_shape.width)
+        r_v2, _ = utils_sol.compute_disc_radius_and_distance(self.other_vehicle.obstacle_shape.length,
+                                                             self.other_vehicle.obstacle_shape.width)
+        wtstc = int(utils_gen.int_round(self.value / self.dt, 0))
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, wtstc)
+        utils_vis.draw_circle(self.rnd, self.ego_vehicle.state_at_time(wtstc).position,
+                              r_v1 + r_1, color=TUMcolor.TUMblue)
+        utils_vis.draw_circle(self.rnd, self.ego_vehicle.state_at_time(wtstc).position,
+                              r_v1, color=TUMcolor.TUMdarkblue)
+        utils_vis.draw_circle(self.rnd, self.other_vehicle.state_at_time(wtstc).position,
+                              r_v2 + r_2, color=TUMcolor.TUMlightgray)
+        utils_vis.draw_circle(self.rnd, self.other_vehicle.state_at_time(wtstc).position,
+                              r_v2, color=TUMcolor.TUMdarkgray)
+        plt.title(f"{self.metric_name} at time step {wtstc}")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                               wtstc)
+        else:
+            plt.show()
 
 
 
