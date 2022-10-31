@@ -2,10 +2,10 @@ import logging
 import os
 from datetime import datetime
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 
 
-def initialize_logger(config: CriticalityConfiguration) -> logging.Logger:
+def initialize_logger(config: CriMeConfiguration) -> logging.Logger:
     # create log directory
     os.makedirs(config.general.path_logs, exist_ok=True)
 

@@ -13,9 +13,9 @@ from typing import Union, List
 import logging
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
-from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
@@ -25,7 +25,7 @@ from commonroad_crime.utility.visualization import TUMcolor
 logger = logging.getLogger(__name__)
 
 
-class WTTC(CriticalityBase):
+class WTTC(CriMeBase):
     """
     The worst-time-to-collision metric extends the usual TTC by considering multiple traces of actors as predicted by an
     over-approximating dynamic motion model. From: Wachenfeld, Walther, et al. "The worst-time-to-collision metric
@@ -33,7 +33,7 @@ class WTTC(CriticalityBase):
     """
     metric_name = TimeScaleMetricType.WTTC
     
-    def __init__(self, config: CriticalityConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(WTTC, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):

@@ -9,8 +9,8 @@ __status__ = "Pre-alpha"
 import matplotlib.pyplot as plt
 import logging
 
-from commonroad_crime.data_structure.base import CriticalityBase
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.base import CriMeBase
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
@@ -20,13 +20,13 @@ from commonroad_crime.utility.visualization import TUMcolor
 logger = logging.getLogger(__name__)
 
 
-class THW(CriticalityBase):
+class THW(CriMeBase):
     """
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
     """
     metric_name = TimeScaleMetricType.THW
 
-    def __init__(self, config: CriticalityConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)
         self._thw_ts = None  # the absolute thw
 

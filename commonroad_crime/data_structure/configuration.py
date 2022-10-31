@@ -16,8 +16,8 @@ from vehiclemodels.parameters_vehicle3 import parameters_vehicle3
 logger = logging.getLogger(__name__)
 
 
-class CriticalityConfiguration:
-    """Class to hold criticality-related configurations"""
+class CriMeConfiguration:
+    """Class to hold criticality-measure-related configurations"""
 
     def __init__(self, config: Union[ListConfig, DictConfig]):
         self.scenario: Optional[Scenario] = None

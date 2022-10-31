@@ -4,7 +4,7 @@ from typing import Union
 
 from omegaconf import OmegaConf, ListConfig, DictConfig
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 
 
 class ConfigurationBuilder:
@@ -15,7 +15,7 @@ class ConfigurationBuilder:
     @classmethod
     def build_configuration(cls, name_scenario: str, path_root: str = None,
                             dir_config: str = "config_files",
-                            dir_config_default: str = "default") -> CriticalityConfiguration:
+                            dir_config_default: str = "default") -> CriMeConfiguration:
         """Builds configuration from default, scenario-specific, and commandline config files.
 
         Args:
@@ -35,7 +35,7 @@ class ConfigurationBuilder:
         config_cli = OmegaConf.from_cli()
         # configurations coming after overrides the ones coming before
         config_combined = OmegaConf.merge(config_default, config_scenario, config_cli)
-        config = CriticalityConfiguration(config_combined)
+        config = CriMeConfiguration(config_combined)
 
         return config
 

@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from commonroad.scenario.obstacle import DynamicObstacle, State
 from commonroad.visualization.mp_renderer import MPRenderer
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_general
 from commonroad_crime.utility.visualization import TUMcolor
 
@@ -25,7 +25,7 @@ class Maneuver(str, Enum):
 class SimulationBase(ABC):
     def __init__(self, maneuver: Union[Maneuver, None],
                  simulated_vehicle: DynamicObstacle,
-                 config: CriticalityConfiguration):
+                 config: CriMeConfiguration):
         self._maneuver = maneuver
         # currently: point mass model since KS model has some infeasibility issues
         self._input: State = State(acceleration=0,
@@ -107,7 +107,7 @@ class SimulationLong(SimulationBase):
     def __init__(self,
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
-                 config: CriticalityConfiguration):
+                 config: CriMeConfiguration):
         if maneuver is not Maneuver.BRAKE and not Maneuver.KICKDOWN and not Maneuver.CONSTANT:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
@@ -179,7 +179,7 @@ class SimulationLat(SimulationBase):
     def __init__(self,
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
-                 config: CriticalityConfiguration):
+                 config: CriMeConfiguration):
         if maneuver is not Maneuver.STEERLEFT and not Maneuver.STEERRIGHT:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")

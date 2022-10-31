@@ -10,14 +10,14 @@ from commonroad_reach.data_structure.reach.reach_interface import ReachableSetIn
 from commonroad_reach.pycrreach import ReachPolygon, ReachNode
 from commonroad_reach.utility import geometry as util_geometry
 
-from commonroad_crime.data_structure.base import CriticalityBase
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.base import CriMeBase
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 
 logger = logging.getLogger(__name__)
 
 
-class DrivableAreaCriticality(CriticalityBase):
-    def __init__(self, scenario: Scenario, id_vehicle: int = None, config: CriticalityConfiguration = None):
+class DrivableAreaCriticality(CriMeBase):
+    def __init__(self, scenario: Scenario, id_vehicle: int = None, config: CriMeConfiguration = None):
         super().__init__(scenario, id_vehicle, config)
         self.reachset_config = ConfigurationBuilder.build_configuration(str(scenario.scenario_id))
         self.reach_interface = self.init_reachability_analysis()

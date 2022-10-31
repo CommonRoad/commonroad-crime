@@ -8,7 +8,7 @@ from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.scenario.scenario import State, Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
 
 zorder = 22
@@ -89,7 +89,7 @@ def draw_state_list(rnd: MPRenderer, state_list: List[State],
 
 
 def draw_sce_at_time_step(rnd: MPRenderer,
-                          config: CriticalityConfiguration,
+                          config: CriMeConfiguration,
                           sce: Union[Scenario, Scene],
                           time_step: int):
     sce.draw(rnd, draw_params={'time_begin': time_step,

@@ -21,8 +21,8 @@ import commonroad_dc.pycrcc as pycrcc
 from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import (create_collision_checker,
                                                                                    create_collision_object)
 
-from commonroad_crime.data_structure.base import CriticalityBase
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.base import CriMeBase
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
@@ -32,10 +32,10 @@ from commonroad_crime.utility.visualization import TUMcolor
 logger = logging.getLogger(__name__)
 
 
-class TTC(CriticalityBase):
+class TTC(CriMeBase):
     metric_name = TimeScaleMetricType.TTC
 
-    def __init__(self, config: CriticalityConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(TTC, self).__init__(config)
         self.sce.remove_obstacle(self.ego_vehicle)
 

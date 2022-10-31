@@ -7,19 +7,19 @@ from typing import Union
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
 from commonroad.visualization.mp_renderer import MPRenderer
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 
-class CriticalityBase:
+class CriMeBase:
     """Base class for criticality measures"""
     metric_name = "base"
 
-    def __init__(self, config: CriticalityConfiguration):
-        assert isinstance(config, CriticalityConfiguration), '<Criticality>: Provided configuration is not valid!'
+    def __init__(self, config: CriMeConfiguration):
+        assert isinstance(config, CriMeConfiguration), '<Criticality>: Provided configuration is not valid!'
 
         self.value = None
         self.time_step = 0

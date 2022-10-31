@@ -2,7 +2,7 @@
 import unittest
 
 from commonroad_crime.data_structure.scene import Scene
-from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 
@@ -21,11 +21,11 @@ class TestBase(unittest.TestCase):
         """
         self.config.update()
         self.config.vehicle.ego_id = 6
-        base_1 = CriticalityBase(self.config)
+        base_1 = CriMeBase(self.config)
 
         scene = Scene(0, self.config.scenario)
         self.config.update(sce=scene)
-        base_2 = CriticalityBase(self.config)
+        base_2 = CriMeBase(self.config)
 
-        self.assertIsInstance(base_1, CriticalityBase)
-        self.assertIsInstance(base_2, CriticalityBase)
+        self.assertIsInstance(base_1, CriMeBase)
+        self.assertIsInstance(base_2, CriMeBase)

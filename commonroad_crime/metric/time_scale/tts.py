@@ -8,8 +8,8 @@ __status__ = "Pre-alpha"
 
 import logging
 
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
-from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
+from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
 from commonroad_crime.metric.time_scale.ttm import TTM
 from commonroad_crime.utility.simulation import Maneuver
@@ -20,10 +20,10 @@ from commonroad.visualization.mp_renderer import MPRenderer
 logger = logging.getLogger(__name__)
 
 
-class TTS(CriticalityBase):
+class TTS(CriMeBase):
     metric_name = TimeScaleMetricType.TTS
 
-    def __init__(self, config: CriticalityConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(TTS, self).__init__(config)
         self._left_evaluator = TTM(config, Maneuver.STEERLEFT)
         self._right_evaluator = TTM(config, Maneuver.STEERRIGHT)

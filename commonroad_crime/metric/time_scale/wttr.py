@@ -17,9 +17,9 @@ try:
 except ModuleNotFoundError:
     raise ModuleNotFoundError('commonroad_reach is not installed')
 
-from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.metric.time_scale.ttc import TTC
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -27,11 +27,11 @@ import commonroad_crime.utility.logger as utils_log
 logger = logging.getLogger(__name__)
 
 
-class WTTR(CriticalityBase):
+class WTTR(CriMeBase):
     metric_name = TimeScaleMetricType.WTTR
 
     def __init__(self,
-                 config: CriticalityConfiguration):
+                 config: CriMeConfiguration):
         super(WTTR, self).__init__(config)
         self.ttc_object = TTC(config)
         self.ttc = None

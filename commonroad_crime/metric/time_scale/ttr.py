@@ -12,7 +12,7 @@ from commonroad_crime.metric.time_scale.ttb import TTB
 from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
 from commonroad_crime.metric.time_scale.ttm import TTM
-from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.metric import TimeScaleMetricType
 from commonroad_crime.utility.simulation import Maneuver
 import commonroad_crime.utility.logger as utils_log
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class TTR(TTM):
     metric_name = TimeScaleMetricType.TTR
 
-    def __init__(self, config: CriticalityConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(TTR, self).__init__(config, Maneuver.NONE)
         self._evaluator = None
 
