@@ -7,24 +7,22 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
-import matplotlib.pyplot as plt
-from typing import Union
 import copy
 import logging
 
-from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
-from commonroad_reach.utility import visualization as util_visual
+try:
+    from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
+    from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
+    from commonroad_reach.utility import visualization as util_visual
+except ModuleNotFoundError:
+    raise ModuleNotFoundError('commonroad_reach is not installed')
 
 from commonroad_criticality.data_structure.base import CriticalityBase
-from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_criticality.metric.time_scale.ttc import TTC
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.visualization as utils_vis
 import commonroad_criticality.utility.general as utils_gen
 import commonroad_criticality.utility.logger as utils_log
-from commonroad_criticality.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
