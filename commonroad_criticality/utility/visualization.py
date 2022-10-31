@@ -11,8 +11,8 @@ from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
 from commonroad_criticality.data_structure.scene import Scene
 
-
 zorder = 22
+
 
 class TUMcolor(tuple, Enum):
     TUMblue = (0, 101 / 255, 189 / 255)
@@ -46,17 +46,26 @@ def draw_state(rnd: MPRenderer, state: State, color: TUMcolor = TUMcolor.TUMgree
     cir_c = plt.Circle((state.position[0], state.position[1]), 0.12, color=color,
                        linewidth=10., zorder=zorder)
     cir_b = plt.Circle((state.position[0], state.position[1]), 0.2, color=TUMcolor.TUMwhite,
-                       linewidth=10., zorder=zorder-1)
+                       linewidth=10., zorder=zorder - 1)
     zorder += 1
     rnd.ax.add_patch(cir_c)
     rnd.ax.add_patch(cir_b)
 
 
-def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int, color: str = TUMcolor.TUMblue):
+def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
+                           color: TUMcolor = TUMcolor.TUMblue):
     global zorder
     x, y = obstacle.occupancy_at_time(time_step).shape.shapely_object.exterior.xy
     rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
     zorder += 1
+
+
+def draw_circle(rnd: MPRenderer, center: np.ndarray, radius: float,
+                opacity: float = 0.5, color: TUMcolor = TUMcolor.TUMblue):
+    global zorder
+    cir = plt.Circle((center[0], center[1]), radius, color=color, zorder=zorder, alpha=opacity)
+    zorder += 1
+    rnd.ax.add_patch(cir)
 
 
 def draw_state_list(rnd: MPRenderer, state_list: List[State],
@@ -85,7 +94,7 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                           time_step: int):
     sce.draw(rnd, draw_params={'time_begin': time_step,
                                "trajectory": {
-                                    "draw_trajectory": False},
+                                   "draw_trajectory": False},
                                "dynamic_obstacle": {
                                    "draw_icon": config.debug.draw_icons,
                                },
