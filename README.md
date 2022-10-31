@@ -1,6 +1,6 @@
-# CommonRoad-Criticality
+# CommonRoad-CriMe
 
-Toolbox to compute criticality measures (e.g. time-to-collision, time-to-react, time-to-comply,...). Such measures can be used to trigger warnings and emergency maneuvers in driver assistance systems or repair an infeasible trajectory. 
+Toolbox to compute **Cri**ticality **Me**asures (e.g. time-to-collision, time-to-react, time-to-comply,...). Such measures can be used to trigger warnings and emergency maneuvers in driver assistance systems or repair an infeasible trajectory. 
 
 
 ## Installation Guide
