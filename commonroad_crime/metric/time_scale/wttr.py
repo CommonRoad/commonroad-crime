@@ -17,12 +17,12 @@ try:
 except ModuleNotFoundError:
     raise ModuleNotFoundError('commonroad_reach is not installed')
 
-from commonroad_criticality.data_structure.base import CriticalityBase
-from commonroad_criticality.metric.time_scale.ttc import TTC
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-import commonroad_criticality.utility.general as utils_gen
-import commonroad_criticality.utility.logger as utils_log
+from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.metric import TimeScaleMetricType
+import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)
 

@@ -8,8 +8,8 @@ from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.scenario.scenario import State, Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
 
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-from commonroad_criticality.data_structure.scene import Scene
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.scene import Scene
 
 zorder = 22
 

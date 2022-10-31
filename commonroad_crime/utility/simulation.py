@@ -8,9 +8,9 @@ from abc import ABC, abstractmethod
 from commonroad.scenario.obstacle import DynamicObstacle, State
 from commonroad.visualization.mp_renderer import MPRenderer
 
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-import commonroad_criticality.utility.general as utils_general
-from commonroad_criticality.utility.visualization import TUMcolor
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+import commonroad_crime.utility.general as utils_general
+from commonroad_crime.utility.visualization import TUMcolor
 
 
 class Maneuver(str, Enum):

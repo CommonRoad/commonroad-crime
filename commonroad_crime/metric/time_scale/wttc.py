@@ -13,14 +13,14 @@ from typing import Union, List
 import logging
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
-from commonroad_criticality.data_structure.base import CriticalityBase
-from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-import commonroad_criticality.utility.solver as utils_sol
-import commonroad_criticality.utility.general as utils_gen
-import commonroad_criticality.utility.visualization as utils_vis
-import commonroad_criticality.utility.logger as utils_log
-from commonroad_criticality.utility.visualization import TUMcolor
+from commonroad_crime.data_structure.base import CriticalityBase
+from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.visualization as utils_vis
+import commonroad_crime.utility.logger as utils_log
+from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 

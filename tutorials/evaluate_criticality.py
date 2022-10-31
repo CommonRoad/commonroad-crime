@@ -1,8 +1,8 @@
 
-from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
-# from commonroad_criticality.metric.time_scale.ttc import TTC
-# from commonroad_criticality.metric.time_scale.ttk import TTK
-from commonroad_criticality.metric.time_scale.ttr import TTR
+from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+# from commonroad_crime.metric.time_scale.ttc import TTC
+# from commonroad_crime.metric.time_scale.ttk import TTK
+from commonroad_crime.metric.time_scale.ttr import TTR
 
 
 def main():

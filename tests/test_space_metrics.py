@@ -6,9 +6,9 @@
 #
 # from commonroad.common.file_reader import CommonRoadFileReader
 #
-# from commonroad_criticality.metric.reachable_set_scale.drivable_area import DrivableAreaCriticality
-# from commonroad_criticality.data_structure.configuration_builder import ConfigurationBuilder
-# import commonroad_criticality.data_structure.logger as util_logger
+# from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableAreaCriticality
+# from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+# import commonroad_crime.data_structure.logger as util_logger
 #
 #
 # class TestSpaceMetrics(unittest.TestCase):

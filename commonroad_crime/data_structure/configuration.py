@@ -6,8 +6,8 @@ from commonroad.scenario.scenario import Scenario
 from commonroad.common.solution import VehicleType
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
-from commonroad_criticality.data_structure.scene import Scene
-import commonroad_criticality.utility.general as utils_general
+from commonroad_crime.data_structure.scene import Scene
+import commonroad_crime.utility.general as utils_general
 
 from vehiclemodels.parameters_vehicle1 import parameters_vehicle1
 from vehiclemodels.parameters_vehicle2 import parameters_vehicle2

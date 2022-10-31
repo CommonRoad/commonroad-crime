@@ -7,9 +7,9 @@ from typing import Union
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
 from commonroad.visualization.mp_renderer import MPRenderer
 
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-import commonroad_criticality.utility.visualization as utils_vis
-import commonroad_criticality.utility.general as utils_gen
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+import commonroad_crime.utility.visualization as utils_vis
+import commonroad_crime.utility.general as utils_gen
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 

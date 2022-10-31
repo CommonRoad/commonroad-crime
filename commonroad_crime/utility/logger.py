@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
 
 
 def initialize_logger(config: CriticalityConfiguration) -> logging.Logger:

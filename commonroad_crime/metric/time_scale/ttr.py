@@ -8,14 +8,14 @@ __status__ = "Pre-alpha"
 
 import logging
 
-from commonroad_criticality.metric.time_scale.ttb import TTB
-from commonroad_criticality.metric.time_scale.ttk import TTK
-from commonroad_criticality.metric.time_scale.tts import TTS
-from commonroad_criticality.metric.time_scale.ttm import TTM
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
-from commonroad_criticality.data_structure.metric import TimeScaleMetricType
-from commonroad_criticality.utility.simulation import Maneuver
-import commonroad_criticality.utility.logger as utils_log
+from commonroad_crime.metric.time_scale.ttb import TTB
+from commonroad_crime.metric.time_scale.ttk import TTK
+from commonroad_crime.metric.time_scale.tts import TTS
+from commonroad_crime.metric.time_scale.ttm import TTM
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.utility.simulation import Maneuver
+import commonroad_crime.utility.logger as utils_log
 
 from commonroad.visualization.mp_renderer import MPRenderer
 

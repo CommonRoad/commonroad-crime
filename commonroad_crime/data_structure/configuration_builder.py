@@ -4,7 +4,7 @@ from typing import Union
 
 from omegaconf import OmegaConf, ListConfig, DictConfig
 
-from commonroad_criticality.data_structure.configuration import CriticalityConfiguration
+from commonroad_crime.data_structure.configuration import CriticalityConfiguration
 
 
 class ConfigurationBuilder:
