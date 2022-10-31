@@ -14,6 +14,7 @@ import logging
 
 from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
+from commonroad_reach.utility import visualization as util_visual
 
 from commonroad_criticality.data_structure.base import CriticalityBase
 from commonroad_criticality.utility.simulation import SimulationLong, SimulationLat, Maneuver
@@ -37,11 +38,15 @@ class WTTR(CriticalityBase):
         self.ttc_object = TTC(config)
         self.ttc = None
         self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
+        # update the paths based on the
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
+        self.reach_config.general.path_output = self.configuration.general.path_output
         self.reach_config.update()
         self.reach_config.scenario.remove_obstacle(
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
         self.reach_interface = ReachableSetInterface(self.reach_config)
+
+        self._end_sim = None
 
     def compute(self, time_step: int = 0, verbose: bool = False):
         self.ttc = self.ttc_object.compute(time_step)
@@ -73,9 +78,12 @@ class WTTR(CriticalityBase):
             mid_state.time_step = 0
             self.reach_config.planning_problem.initial_state = mid_state
             self.reach_config.update(planning_problem=self.reach_config.planning_problem)
+            self.reach_config.scenario.remove_obstacle(
+                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
             self.reach_interface.reset(self.reach_config)
-            self.reach_interface.compute_reachable_sets(0, time_end - mid, verbose=True)
-            if self.reach_interface.reachable_set_at_step(time_end - mid):
+            self._end_sim = time_end - mid
+            self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
+            if self.reach_interface.reachable_set_at_step(self._end_sim):
                 # the final step is still reachable without causing the collision
                 low = mid + 1
             else:
@@ -85,5 +93,6 @@ class WTTR(CriticalityBase):
         return wttr
 
     def visualize(self):
-        pass
+        util_visual.plot_scenario_with_reachable_sets(self.reach_interface, step_end= self._end_sim)
+
 

@@ -159,6 +159,7 @@ class TestTimeMetrics(unittest.TestCase):
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(0)
+        wttr_object.visualize()
         self.assertEqual(wttr, 2.0)
 
 
