@@ -8,10 +8,11 @@ __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
 import logging
+import math
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -24,7 +25,7 @@ class THW(CriMeBase):
     """
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
     """
-    metric_name = TimeScaleMetricType.THW
+    metric_name = TypeTimeScale.THW
 
     def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)
@@ -36,6 +37,11 @@ class THW(CriMeBase):
         self.time_step = time_step
         other_position = self.other_vehicle.state_at_time(time_step).position
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
+        if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
+                                               self.other_vehicle, time_step):
+            self.value = math.inf
+            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+            return self.value
         self.value = 0.  # at default, we assume that the ego vehicle is already in front
         for ts in range(time_step, self.ego_vehicle.prediction.final_time_step + 1):
             ego_position = self.ego_vehicle.state_at_time(ts).position

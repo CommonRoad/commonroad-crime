@@ -4,8 +4,6 @@ Unit tests of the module reachable set scale metrics
 
 import unittest
 
-from commonroad.common.file_reader import CommonRoadFileReader
-
 from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger

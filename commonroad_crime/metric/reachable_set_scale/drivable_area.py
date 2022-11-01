@@ -12,7 +12,7 @@ except ModuleNotFoundError:
     raise ModuleNotFoundError('commonroad_reach is not installed')
 
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.metric import ReachableSetScaleMetricType
+from commonroad_crime.data_structure.type import TypeReachableSetScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol
@@ -25,7 +25,7 @@ class DrivableArea(CriMeBase):
     Klischat, Moritz, et al. "Scenario factory: Creating safety-critical traffic scenarios for automated vehicles."
     2020 IEEE 23rd International Conference on Intelligent Transportation Systems (ITSC). IEEE, 2020.
     """
-    metric_name = ReachableSetScaleMetricType.DA
+    metric_name = TypeReachableSetScale.DA
 
     def __init__(self, config: CriMeConfiguration):
         super(DrivableArea, self).__init__(config)

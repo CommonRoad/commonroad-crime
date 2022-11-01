@@ -26,8 +26,7 @@ class CriMeConfiguration:
         self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
-        self.time_metrics: TimeBasedConfiguration = TimeBasedConfiguration(config)
-        self.space_metrics: SpaceBasedConfiguration = SpaceBasedConfiguration(config)
+        self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
         self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
 
     def update(self,
@@ -80,16 +79,9 @@ class GeneralConfiguration:
         self.path_logs = config_relevant.path_logs
 
 
-class SpaceBasedConfiguration:
+class TimeScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.space_metrics
-        self.activated = config_relevant.activated
-        self.approach = config_relevant.approach
-
-
-class TimeBasedConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.time_metrics
+        config_relevant = config.time_scale
         self.activated = config_relevant.activated
         self.metric = config_relevant.metric
         self.steer_width = config_relevant.steer_width

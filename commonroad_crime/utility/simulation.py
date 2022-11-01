@@ -185,7 +185,7 @@ class SimulationLat(SimulationBase):
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
         self._scenario = config.scenario
-        self._lateral_distance_mode = config.time_metrics.steer_width
+        self._lateral_distance_mode = config.time_scale.steer_width
 
     def set_inputs(self, ref_state: State) -> None:
         """

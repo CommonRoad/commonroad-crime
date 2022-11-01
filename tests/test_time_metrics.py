@@ -17,7 +17,7 @@ from commonroad_crime.metric.time_scale.thw import THW
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.metric.time_scale.wttr import WTTR
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-import commonroad_crime.utility.visualization as Utils_vis
+import commonroad_crime.utility.visualization as utils_vis
 
 
 class TestTimeMetrics(unittest.TestCase):
@@ -70,7 +70,7 @@ class TestTimeMetrics(unittest.TestCase):
         simulated_state3 = sim_long.simulate_state_list(10, rnd)
         self.assertEqual(sim_long.check_velocity_feasibility(
             simulated_state3[-1]), True)
-        Utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
+        utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
         self.config.debug.draw_visualization = True
@@ -84,7 +84,7 @@ class TestTimeMetrics(unittest.TestCase):
         simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
         sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
         simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
-        self.config.time_metrics.steer_width = 2
+        self.config.time_scale.steer_width = 2
         sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
         simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
 
@@ -97,7 +97,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(simulated_state3[-1].time_step,
                          ego_vehicle.prediction.final_time_step)
 
-        Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
+        utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
@@ -122,7 +122,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(tts, tts2)
 
     def test_ttr(self):
-        self.config.time_metrics.steer_width = 2
+        self.config.time_scale.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
@@ -136,14 +136,16 @@ class TestTimeMetrics(unittest.TestCase):
 
     def test_thw(self):
         thw_object = THW(self.config)
-        other_obs_id = 6
-        thw = thw_object.compute(other_obs_id, 0)
+        thw = thw_object.compute(6, 0)
         thw_object.visualize()
         self.assertEqual(thw, 2.9)
 
-        thw2 = thw_object.compute(other_obs_id, 10)
+        thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
         self.assertEqual(thw2, thw - 10 * thw_object.dt)
+
+        thw3 = thw_object.compute(7, 0)
+        self.assertEqual(thw3, math.inf)
 
     def test_wttc(self):
         wttc_object = WTTC(self.config)
