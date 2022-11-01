@@ -136,14 +136,16 @@ class TestTimeMetrics(unittest.TestCase):
 
     def test_thw(self):
         thw_object = THW(self.config)
-        other_obs_id = 6
-        thw = thw_object.compute(other_obs_id, 0)
+        thw = thw_object.compute(6, 0)
         thw_object.visualize()
         self.assertEqual(thw, 2.9)
 
-        thw2 = thw_object.compute(other_obs_id, 10)
+        thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
         self.assertEqual(thw2, thw - 10 * thw_object.dt)
+
+        thw3 = thw_object.compute(7, 0)
+        self.assertEqual(thw3, math.inf)
 
     def test_wttc(self):
         wttc_object = WTTC(self.config)

@@ -1,8 +1,9 @@
 # CommonRoad-CriMe
-
+![image info](./docs/figures/CriMe-banner.png)
 Toolbox to compute **Cri**ticality **Me**asures (e.g. time-to-collision, time-to-react, time-to-comply,...). Such measures can be used to trigger warnings and emergency maneuvers in driver assistance systems or repair an infeasible trajectory. 
 
-
+![stl-robustness](https://img.shields.io/badge/CommonRoad-CriMe-blue?style=plastic&logo=Coding-Ninjas)
+![test-passed](https://img.shields.io/badge/tests-passed-red?style=plastic&logo=Python)
 ## Installation Guide
 We recommend using [Anaconda](https://www.anaconda.com/) to manage your environment so that even if you mess something up, you can always have a safe and clean restart. A guide for managing python environments with Anaconda can be found [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
