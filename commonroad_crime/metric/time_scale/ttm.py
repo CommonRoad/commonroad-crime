@@ -15,7 +15,7 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_crime.metric.time_scale.ttc import TTC
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class TTM(CriMeBase):
-    metric_name = TimeScaleMetricType.TTM
+    metric_name = TypeTimeScale.TTM
 
     def __init__(self,
                  config: CriMeConfiguration,

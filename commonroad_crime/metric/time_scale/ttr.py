@@ -13,7 +13,7 @@ from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
 from commonroad_crime.metric.time_scale.ttm import TTM
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.data_structure.type import TypeTimeScale
 from commonroad_crime.utility.simulation import Maneuver
 import commonroad_crime.utility.logger as utils_log
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class TTR(TTM):
-    metric_name = TimeScaleMetricType.TTR
+    metric_name = TypeTimeScale.TTR
 
     def __init__(self, config: CriMeConfiguration):
         super(TTR, self).__init__(config, Maneuver.NONE)

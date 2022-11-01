@@ -23,7 +23,7 @@ from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch impor
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.metric import TimeScaleMetricType
+from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class TTC(CriMeBase):
-    metric_name = TimeScaleMetricType.TTC
+    metric_name = TypeTimeScale.TTC
 
     def __init__(self, config: CriMeConfiguration):
         super(TTC, self).__init__(config)
