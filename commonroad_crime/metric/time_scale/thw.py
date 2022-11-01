@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
 import logging
+import math
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -36,6 +37,11 @@ class THW(CriMeBase):
         self.time_step = time_step
         other_position = self.other_vehicle.state_at_time(time_step).position
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
+        if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
+                                               self.other_vehicle, time_step):
+            self.value = math.inf
+            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+            return self.value
         self.value = 0.  # at default, we assume that the ego vehicle is already in front
         for ts in range(time_step, self.ego_vehicle.prediction.final_time_step + 1):
             ego_position = self.ego_vehicle.state_at_time(ts).position

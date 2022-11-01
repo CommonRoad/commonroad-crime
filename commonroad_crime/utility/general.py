@@ -7,7 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
-from commonroad.scenario.scenario import Scenario
+from commonroad.scenario.scenario import Scenario, DynamicObstacle, Obstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
@@ -146,3 +146,12 @@ def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
         orientation.append(np.arctan2(tmp[1], tmp[0]))
 
     return np.array(orientation)
+
+
+def check_in_same_lanelet(lanelet_network: LaneletNetwork,
+                          vehicle_1: DynamicObstacle,
+                          vehicle_2: Union[DynamicObstacle, Obstacle],
+                          time_step: int):
+    lanelets_1 = lanelet_network.find_lanelet_by_shape(vehicle_1.occupancy_at_time(time_step).shape)
+    lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
+    return len(set(lanelets_1).intersection(lanelets_2)) > 0
