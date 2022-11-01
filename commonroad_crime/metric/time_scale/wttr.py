@@ -10,6 +10,8 @@ import math
 import copy
 import logging
 
+from commonroad.scenario.scenario import State
+
 try:
     from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
     from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
@@ -36,15 +38,17 @@ class WTTR(CriMeBase):
         self.ttc_object = TTC(config)
         self.ttc = None
         self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
-        # update the paths based on the
+        # update the paths based on CriMe
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
         self.reach_config.general.path_output = self.configuration.general.path_output
         self.reach_config.update()
-        self.reach_config.scenario.remove_obstacle(
-            self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
         self.reach_interface = ReachableSetInterface(self.reach_config)
-
         self._end_sim = None
+
+    def _update_initial_state(self, target_state: State):
+        self.reach_config.planning_problem.initial_state.position = target_state.position
+        self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
+        self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
 
     def compute(self, time_step: int = 0, verbose: bool = False):
         self.ttc = self.ttc_object.compute(time_step)
@@ -73,8 +77,7 @@ class WTTR(CriMeBase):
         while low < high:
             mid = int((low + high) / 2)
             mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(mid))
-            mid_state.time_step = 0
-            self.reach_config.planning_problem.initial_state = mid_state
+            self._update_initial_state(mid_state)
             self.reach_config.update(planning_problem=self.reach_config.planning_problem)
             self.reach_config.scenario.remove_obstacle(
                 self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
