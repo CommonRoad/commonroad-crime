@@ -13,5 +13,9 @@ class TimeScaleMetricType(str, Enum):
     WTTR = "worst-time-to-react"
 
 
-class DistanceMetricType(str, Enum):
+class DistanceScaleMetricType(str, Enum):
     THW = "headway time"
+
+
+class ReachableSetScaleMetricType(str, Enum):
+    DA = "drivable area"

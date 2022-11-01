@@ -25,7 +25,7 @@ $ cd <path-to-this-repo>
 $ pip install -r requirements.txt
 $ conda develop .
 ```
-(optional) In order to run reachability analysis related metrics (e.g., WTTR), you have to install the following repositories as well:
+(optional) In order to run reachability analysis related metrics (e.g., ``worst-time-to-react (WTTR)``, `drivable area (DA)`), you have to install the following repositories as well:
 
 - [commonroad-reach](https://gitlab.lrz.de/tum-cps/commonroad-reach)
 
