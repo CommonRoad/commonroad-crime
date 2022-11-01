@@ -17,7 +17,7 @@ from commonroad_crime.metric.time_scale.thw import THW
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.metric.time_scale.wttr import WTTR
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-import commonroad_crime.utility.visualization as Utils_vis
+import commonroad_crime.utility.visualization as utils_vis
 
 
 class TestTimeMetrics(unittest.TestCase):
@@ -70,7 +70,7 @@ class TestTimeMetrics(unittest.TestCase):
         simulated_state3 = sim_long.simulate_state_list(10, rnd)
         self.assertEqual(sim_long.check_velocity_feasibility(
             simulated_state3[-1]), True)
-        Utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
+        utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
         self.config.debug.draw_visualization = True
@@ -97,7 +97,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(simulated_state3[-1].time_step,
                          ego_vehicle.prediction.final_time_step)
 
-        Utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
+        utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
