@@ -24,9 +24,11 @@ class CriMeConfiguration:
         self.scene: Optional[Scene] = None
         self.general: GeneralConfiguration = GeneralConfiguration(config)
         self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
+        self.debug: DebugConfiguration = DebugConfiguration(config)
+
         self.time_metrics: TimeBasedConfiguration = TimeBasedConfiguration(config)
         self.space_metrics: SpaceBasedConfiguration = SpaceBasedConfiguration(config)
-        self.debug: DebugConfiguration = DebugConfiguration(config)
+        self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
 
     def update(self,
                ego_id: int = None,
@@ -91,6 +93,12 @@ class TimeBasedConfiguration:
         self.activated = config_relevant.activated
         self.metric = config_relevant.metric
         self.steer_width = config_relevant.steer_width
+
+
+class ReachableSetScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.reachable_set_scale
+        self.time_horizon = config_relevant.time_horizon
 
 
 class VehicleConfiguration:

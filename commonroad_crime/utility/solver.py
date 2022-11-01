@@ -1,8 +1,14 @@
-from typing import Tuple
+from typing import Tuple, List, Dict
 import numpy as np
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
 
+
+try:
+    from commonroad_reach.pycrreach import ReachPolygon, ReachNode
+    import commonroad_reach.utility.reach_operation as utils_ops
+except ModuleNotFoundError:
+    raise ModuleNotFoundError('commonroad_reach is not installed')
 
 def solver_wttc(veh_1: Obstacle,
                 veh_2: Obstacle,
@@ -95,3 +101,21 @@ def compute_disc_radius_and_distance(length: float, width: float, ref_point="CEN
         raise Exception("reference point has to be either 'CENTER' or 'REAR'")
 
     return radius_disc, dist_circles
+
+
+def compute_drivable_area_profile(reachable_set: Dict[int, List[ReachNode]]) -> np.ndarray:
+    """
+    Computes area profile for given reachability analysis.
+    """
+    area_profile = []
+    for t, reach_set_nodes in reachable_set.items():
+        area_profile.append(utils_ops.compute_area_of_reach_nodes(reach_set_nodes))
+    return np.array(area_profile)
+
+
+def compute_drivable_area(reachable_set: Dict[int, List[ReachNode]]):
+    """
+    Computes drivable area.
+    """
+    area_profile = compute_drivable_area_profile(reachable_set)
+    return np.sum(area_profile)
