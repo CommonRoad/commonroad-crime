@@ -25,7 +25,7 @@ class TypeTimeScale(str, Enum):
 
 
 class TypeDistanceScale(str, Enum):
-    THW = "headway time"
+    HW = "headway"
     AGS = "accepted gap size"
     DCE = "distance of closest encounter"
     PSE = "proportion of stopping distance"
@@ -68,7 +68,7 @@ class TypeProbabilityScale(str, Enum):
 class TypePotentialScale(str, Enum):
     PF = "potential functions as superposition of scoring functions"
     SF = "safety potential"
-    
+
 
 class TypeReachableSetScale(str, Enum):
     DA = "drivable area"

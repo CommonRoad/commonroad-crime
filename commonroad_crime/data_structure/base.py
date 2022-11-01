@@ -4,7 +4,7 @@ import copy
 from typing import Union
 
 # CommonRoad packages
-from commonroad.scenario.obstacle import Obstacle, DynamicObstacle
+from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstacle
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -39,7 +39,7 @@ class CriMeBase:
                                                                            'not contained in the scenario>'
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
-        self.other_vehicle: Union[Obstacle, None] = None  # optional
+        self.other_vehicle: Union[Obstacle, DynamicObstacle, StaticObstacle, None] = None  # optional
         self.clcs: CurvilinearCoordinateSystem = self.update_clcs()
         self.rnd: Union[MPRenderer, None] = None
 

@@ -29,28 +29,28 @@ class THW(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)
-        self._thw_ts = None  # the absolute thw
+
+    def cal_headway(self):
+        other_position = self.other_vehicle.state_at_time(self.time_step).position
+        other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
+        for ts in range(self.time_step, self.ego_vehicle.prediction.final_time_step + 1):
+            ego_position = self.ego_vehicle.state_at_time(ts).position
+            ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
+            if ego_s > other_s:
+                return utils_gen.int_round((ts - self.time_step) * self.dt,
+                                           str(self.dt)[::-1].find('.'))
+        return math.inf
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        other_position = self.other_vehicle.state_at_time(time_step).position
-        other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
                                                self.other_vehicle, time_step):
             self.value = math.inf
             utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
             return self.value
-        self.value = 0.  # at default, we assume that the ego vehicle is already in front
-        for ts in range(time_step, self.ego_vehicle.prediction.final_time_step + 1):
-            ego_position = self.ego_vehicle.state_at_time(ts).position
-            ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
-            if ego_s > other_s:
-                self._thw_ts = ts
-                self.value = (self._thw_ts - time_step) * self.dt
-                break
-        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
+        self.value = self.cal_headway()
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
@@ -64,8 +64,8 @@ class THW(CriMeBase):
                                   color=TUMcolor.TUMblue, linewidth=5)
         if self.value > 0:
             tshw = int(utils_gen.int_round(self.value / self.dt, 0))
-            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self._thw_ts))
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self._thw_ts)
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tshw + self.time_step))
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tshw + self.time_step)
         else:
             tshw = self.value
         plt.title(f"{self.metric_name} at time step {tshw}")
