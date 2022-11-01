@@ -20,7 +20,7 @@ from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, M
 import commonroad_crime.utility.visualization as utils_vis
 
 
-class TestTimeMetrics(unittest.TestCase):
+class TestTimeScale(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
