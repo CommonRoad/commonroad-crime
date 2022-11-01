@@ -68,7 +68,7 @@ class TypeProbabilityScale(str, Enum):
 class TypePotentialScale(str, Enum):
     PF = "potential functions as superposition of scoring functions"
     SF = "safety potential"
-    
+
 
 class TypeReachableSetScale(str, Enum):
     DA = "drivable area"
