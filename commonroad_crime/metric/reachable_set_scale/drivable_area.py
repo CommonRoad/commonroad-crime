@@ -1,6 +1,4 @@
-from typing import List, Union, Dict
 import copy
-import numpy as np
 import logging
 
 from commonroad.scenario.scenario import State
