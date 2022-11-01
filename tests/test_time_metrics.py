@@ -1,5 +1,5 @@
 """
-Unit tests of the module time metrics
+Unit tests of the module time-scale metrics
 """
 
 import unittest

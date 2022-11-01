@@ -25,7 +25,7 @@ class TypeTimeScale(str, Enum):
 
 
 class TypeDistanceScale(str, Enum):
-    THW = "headway time"
+    HW = "headway"
     AGS = "accepted gap size"
     DCE = "distance of closest encounter"
     PSE = "proportion of stopping distance"

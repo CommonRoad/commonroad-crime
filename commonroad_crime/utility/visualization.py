@@ -68,6 +68,14 @@ def draw_circle(rnd: MPRenderer, center: np.ndarray, radius: float,
     rnd.ax.add_patch(cir)
 
 
+def draw_reference_path(rnd: MPRenderer, ref_path: np.ndarray, color: TUMcolor = TUMcolor.TUMorange):
+    global zorder
+    rnd.ax.plot(ref_path[:, 0], ref_path[:, 1], color=color,
+                marker='.', markersize=1, zorder=zorder, linewidth=1.,
+                label='reference path')
+    zorder += 1
+
+
 def draw_state_list(rnd: MPRenderer, state_list: List[State],
                     start_time_step: Union[None, int] = None,
                     color: TUMcolor = TUMcolor.TUMdarkblue,
