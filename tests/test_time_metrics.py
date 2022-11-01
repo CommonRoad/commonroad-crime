@@ -84,7 +84,7 @@ class TestTimeMetrics(unittest.TestCase):
         simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
         sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
         simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
-        self.config.time_metrics.steer_width = 2
+        self.config.time_scale.steer_width = 2
         sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
         simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
 
@@ -122,7 +122,7 @@ class TestTimeMetrics(unittest.TestCase):
         self.assertEqual(tts, tts2)
 
     def test_ttr(self):
-        self.config.time_metrics.steer_width = 2
+        self.config.time_scale.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()

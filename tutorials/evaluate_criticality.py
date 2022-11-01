@@ -15,7 +15,7 @@ def main():
     config.print_configuration_summary()
 
     # steering based on the lane width
-    config.time_metrics.steer_width = 2
+    config.time_scale.steer_width = 2
 
     # ==== select the criticality metric you want to evaluate and then compute the value at a given time step
     # ttk_interface = TTK(config)
