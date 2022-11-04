@@ -1,3 +1,11 @@
+__author__ = "Yuanfei Lin"
+__copyright__ = "TUM Cyber-Physical Systems Group"
+__credits__ = ["KoSi"]
+__version__ = "0.0.1"
+__maintainer__ = "Yuanfei Lin"
+__email__ = "commonroad@lists.lrz.de"
+__status__ = "Pre-alpha"
+
 import math
 from enum import Enum
 import numpy as np
@@ -10,7 +18,6 @@ from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_general
-from commonroad_crime.utility.visualization import TUMcolor
 
 
 class Maneuver(str, Enum):
@@ -158,8 +165,6 @@ class SimulationLong(SimulationBase):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                 self.set_inputs(pre_state)
-        # if self.plot:
-        #     self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def check_velocity_feasibility(self, state: State) -> bool:

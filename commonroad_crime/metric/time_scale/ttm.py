@@ -55,8 +55,8 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self.initialize_vis(figsize=figsize,
-                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
                                                                              self.selected_state_list,
                                                                              margin=10))
         self.ttc_object.draw_collision_checker(self.rnd)
@@ -70,9 +70,6 @@ class TTM(CriMeBase):
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
-            # utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
-            # utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[tstc:],
-            #                           color=TUMcolor.TUMred, linewidth=5)
             utils_vis.draw_state_list(self.rnd, self.selected_state_list[tstm:],
                                       color=TUMcolor.TUMgreen, linewidth=5)
         else:
