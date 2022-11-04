@@ -12,13 +12,10 @@ import math
 
 import numpy as np
 
-from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeDistanceScale
 from commonroad_crime.metric.time_scale.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
-import commonroad_crime.utility.general as utils_gen
-import commonroad_crime.utility.logger as utils_log
 from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
@@ -27,6 +24,7 @@ logger = logging.getLogger(__name__)
 class HW(THW):
     """
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
+    This is taken as a inherited class from time headway
     """
     metric_name = TypeDistanceScale.HW
 
@@ -42,9 +40,10 @@ class HW(THW):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                             self.ego_vehicle.prediction.trajectory.state_list,
-                                                                             margin=10))
+                             plot_limit=utils_vis.
+                             plot_limits_from_state_list(self.time_step,
+                                                         self.ego_vehicle.prediction.trajectory.state_list,
+                                                         margin=10))
         self.rnd.render()
         utils_vis.draw_reference_path(self.rnd, np.array(self.clcs.reference_path()))
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],

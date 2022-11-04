@@ -17,8 +17,6 @@ from commonroad_crime.data_structure.type import TypeTimeScale
 from commonroad_crime.utility.simulation import Maneuver
 import commonroad_crime.utility.logger as utils_log
 
-from commonroad.visualization.mp_renderer import MPRenderer
-
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +28,9 @@ class TTR(TTM):
         self._evaluator = None
 
     def initialize_evaluator(self, time_step):
+        """
+        Initializes the evaluators for underestimating the ttr.
+        """
         self._evaluator = [TTB(self.configuration),
                            TTK(self.configuration),
                            TTS(self.configuration)]
@@ -45,6 +46,7 @@ class TTR(TTM):
             ttm[evl] = evl.compute(time_step, self.ttc, verbose=verbose)
             self.state_list_set += evl.state_list_set
         self.value = max(ttm.values())
+        # plots the selected state list as the last evasive maneuver.
         self.selected_state_list = max(ttm, key=ttm.get).selected_state_list
         self.maneuver = max(ttm, key=ttm.get).maneuver
         utils_log.print_and_log_info(logger, "*\t maximum of the values")

@@ -6,13 +6,11 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Union, List
 import logging
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle
+from commonroad.scenario.obstacle import StaticObstacle
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeTimeScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration

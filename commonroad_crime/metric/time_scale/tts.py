@@ -15,8 +15,6 @@ from commonroad_crime.metric.time_scale.ttm import TTM
 from commonroad_crime.utility.simulation import Maneuver
 import commonroad_crime.utility.logger as utils_log
 
-from commonroad.visualization.mp_renderer import MPRenderer
-
 logger = logging.getLogger(__name__)
 
 
@@ -25,6 +23,7 @@ class TTS(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(TTS, self).__init__(config)
+        # steer to the left or to the right
         self._left_evaluator = TTM(config, Maneuver.STEERLEFT)
         self._right_evaluator = TTM(config, Maneuver.STEERRIGHT)
         self._left_evaluator.metric_name = self.metric_name
@@ -37,15 +36,18 @@ class TTS(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
 
         tts_left = self._left_evaluator.compute(time_step, ttc, verbose=False)
+        self.state_list_set += self._left_evaluator.state_list_set
+
         tts_right = self._right_evaluator.compute(time_step, ttc, verbose=False)
+        self.state_list_set += self._right_evaluator.state_list_set
+
+        # decide the specific maneuver for steering
         if tts_left > tts_right:
             self.maneuver = Maneuver.STEERLEFT
             self.selected_state_list = self._left_evaluator.selected_state_list
         else:
             self.maneuver = Maneuver.STEERRIGHT
             self.selected_state_list = self._right_evaluator.selected_state_list
-        self.state_list_set += self._left_evaluator.state_list_set
-        self.state_list_set += self._right_evaluator.state_list_set
         self.value = max(tts_left, tts_right)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value

@@ -40,18 +40,20 @@ class TTC(CriMeBase):
         self.sce.remove_obstacle(self.ego_vehicle)
 
         # creat collision checker
-        # road_boundary_obstacle, road_boundary_sg_rectangles = boundary.create_road_boundary_obstacle(self.sce)
         road_boundary_obstacle, _ = boundary.create_road_boundary_obstacle(self.sce,
                                                                            method='aligned_triangulation',
                                                                            axis=2)
         self.sce.add_objects(road_boundary_obstacle)
         self.collision_checker = create_collision_checker(self.sce)
+        # remove the added objects from the scenario
         self.sce.remove_obstacle(road_boundary_obstacle)
         self.sce.add_objects(self.ego_vehicle)
 
     def detect_collision(self, state_list: List[State]) -> bool:
         """
         Returns whether the state list of the ego vehicle is collision-free.
+
+        :param state_list: list of vehicle states
         """
         # update the trajectory prediction
         updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
@@ -63,14 +65,18 @@ class TTC(CriMeBase):
         return self.collision_checker.collide(co)
 
     def draw_collision_checker(self, rnd: MPRenderer):
+        """
+        Plots the collision checker.
+        """
         self.collision_checker.draw(rnd,
                                     draw_params={'facecolor': TUMcolor.TUMgray, 'draw_mesh': False})
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                             self.ego_vehicle.prediction.trajectory.state_list,
-                                                                             margin=10))
+                             plot_limit=utils_vis.
+                             plot_limits_from_state_list(self.time_step,
+                                                         self.ego_vehicle.prediction.trajectory.state_list,
+                                                         margin=10))
         self.draw_collision_checker(self.rnd)
         self.rnd.render()
 
@@ -96,7 +102,7 @@ class TTC(CriMeBase):
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
         for i in range(time_step, len(state_list)):
-            # ith time step
+            # i-th time step
             pos1 = state_list[i].position[0]
             pos2 = state_list[i].position[1]
             theta = state_list[i].orientation

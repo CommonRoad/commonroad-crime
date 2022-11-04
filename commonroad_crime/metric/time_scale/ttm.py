@@ -70,9 +70,6 @@ class TTM(CriMeBase):
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
-            # utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
-            # utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[tstc:],
-            #                           color=TUMcolor.TUMred, linewidth=5)
             utils_vis.draw_state_list(self.rnd, self.selected_state_list[tstm:],
                                       color=TUMcolor.TUMgreen, linewidth=5)
         else:
