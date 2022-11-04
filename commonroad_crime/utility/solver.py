@@ -1,14 +1,22 @@
+__author__ = "Yuanfei Lin"
+__copyright__ = "TUM Cyber-Physical Systems Group"
+__credits__ = ["KoSi"]
+__version__ = "0.0.1"
+__maintainer__ = "Yuanfei Lin"
+__email__ = "commonroad@lists.lrz.de"
+__status__ = "Pre-alpha"
+
 from typing import Tuple, List, Dict
 import numpy as np
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
-
 
 try:
     from commonroad_reach.pycrreach import ReachPolygon, ReachNode
     import commonroad_reach.utility.reach_operation as utils_ops
 except ModuleNotFoundError:
     raise ModuleNotFoundError('commonroad_reach is not installed')
+
 
 def solver_wttc(veh_1: Obstacle,
                 veh_2: Obstacle,

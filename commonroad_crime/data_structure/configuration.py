@@ -1,3 +1,11 @@
+__author__ = "Yuanfei Lin"
+__copyright__ = "TUM Cyber-Physical Systems Group"
+__credits__ = ["KoSi"]
+__version__ = "0.0.1"
+__maintainer__ = "Yuanfei Lin"
+__email__ = "commonroad@lists.lrz.de"
+__status__ = "Pre-alpha"
+
 import logging
 from typing import Union, Optional
 from omegaconf import ListConfig, DictConfig
@@ -178,15 +186,3 @@ class DebugConfiguration:
         self.save_plots = config_relevant.save_plots
         self.draw_visualization = config_relevant.draw_visualization
         self.draw_icons = config_relevant.draw_icons
-
-        # self.save_config = config_relevant.save_config
-        # self.verbose_debug = config_relevant.verbose_debug
-        # self.verbose_info = config_relevant.verbose_info
-        # self.draw_ref_path = config_relevant.draw_ref_path
-        # self.draw_planning_problem = config_relevant.draw_planning_problem
-        # self.draw_icons = config_relevant.draw_icons
-        # self.draw_lanelet_labels = config_relevant.draw_lanelet_labels
-        # self.plot_limits = config_relevant.plot_limits
-        # self.plot_azimuth = config_relevant.plot_azimuth
-        # self.plot_elevation = config_relevant.plot_elevation
-        # self.ax_distance = config_relevant.ax_distance
