@@ -1,6 +1,3 @@
-"""
-Lane structure based on lanelets and curvilinear coordinate systems
-"""
 
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
@@ -30,7 +27,7 @@ class Scene(Scenario):
             self.scene_id = str(scenario.scenario_id) + '_' + str(time_step)
         else:
             self.scene_id = scene_id
-        self.lanelet_network = scenario.lanelet_network
+        self._lanelet_network = scenario.lanelet_network
         self.time_step = time_step
         self._scenario = scenario
 
@@ -50,4 +47,3 @@ class Scene(Scenario):
     def obstacles(self) -> List[Union[StaticObstacle, DynamicObstacle]]:
         """ Returns a list of all obstacles roles in the scene."""
         return [*self.static_obstacles, *self.dynamic_obstacles]
-
