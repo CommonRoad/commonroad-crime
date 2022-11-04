@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class CriMeBase:
     """Base class for CRIticality MEasures"""
-    metric_name = "base"
+    metric_name: str = "base"
 
     def __init__(self, config: CriMeConfiguration):
         """
@@ -68,6 +68,12 @@ class CriMeBase:
             return self.metric_name == other.metric_name
         else:
             return False
+
+    def __key(self):
+        return self.metric_name
+
+    def __hash__(self):
+        return hash(self.__key())
 
     def _update_clcs(self):
         """
