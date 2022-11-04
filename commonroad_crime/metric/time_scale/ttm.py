@@ -55,8 +55,8 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self.initialize_vis(figsize=figsize,
-                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
                                                                              self.selected_state_list,
                                                                              margin=10))
         self.ttc_object.draw_collision_checker(self.rnd)

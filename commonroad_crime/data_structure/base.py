@@ -1,6 +1,6 @@
-import math
 from abc import abstractmethod
 import copy
+import logging
 from typing import Union
 
 # CommonRoad packages
@@ -10,8 +10,11 @@ from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.logger as utils_log
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+
+logger = logging.getLogger(__name__)
 
 
 class CriMeBase:
@@ -19,19 +22,25 @@ class CriMeBase:
     metric_name = "base"
 
     def __init__(self, config: CriMeConfiguration):
-        assert isinstance(config, CriMeConfiguration), '<Criticality>: Provided configuration is not valid!'
-
-        self.value = None
-        self.time_step = 0
+        """
+        :param config: predefined configuration
+        """
+        if not isinstance(config, CriMeConfiguration):
+            message = "Provided configuration is not valid"
+            utils_log.print_and_log_error(logger, message)
+            assert TypeError(message)
         # ==========  configuration  =========
         self.configuration = config
+        self.value = None
+        self.time_step = 0
         # =======  Scenario or scene  ========
         if config.scenario:
             self.sce = copy.deepcopy(config.scenario)
         else:
             self.sce = copy.deepcopy(config.scene)
         if self.sce is None:
-            assert "<Criticality>: the scenario/scene in the configuration needs to be first updated"
+            utils_log.print_and_log_warning(logger,
+                                            "Scenario/scene in the configuration needs to be first updated")
         self.dt = self.sce.dt
 
         assert self.sce.obstacle_by_id(self.configuration.vehicle.ego_id), '<Criticality: the provided ego vehicle' \
@@ -40,10 +49,23 @@ class CriMeBase:
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
         self.other_vehicle: Union[Obstacle, DynamicObstacle, StaticObstacle, None] = None  # optional
-        self.clcs: CurvilinearCoordinateSystem = self.update_clcs()
+        self.clcs: CurvilinearCoordinateSystem = self._update_clcs()
         self.rnd: Union[MPRenderer, None] = None
 
-    def update_clcs(self):
+    def __repr__(self):
+        return f"{self.metric_name}"
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, CriMeBase):
+            return self.metric_name == other.metric_name
+        else:
+            return False
+
+    def _update_clcs(self):
+        """
+        Updates the curvilinear coordinate system in the configuration setting using the reference path from the lanelet
+        where the ego vehicle is currently located to the end of the lanelet.
+        """
         # default setting of ego vehicle's curvilinear coordinate system
         ego_initial_lanelet_id = list(self.ego_vehicle.prediction.center_lanelet_assignment[0])[0]
         reference_path = utils_gen.generate_reference_path(ego_initial_lanelet_id, self.sce.lanelet_network)
@@ -51,12 +73,18 @@ class CriMeBase:
         self.configuration.update(CLCS=clcs)
         return clcs
 
-    def initialize_vis(self,
-                       figsize: tuple = (25, 15), plot_limit: Union[list, None] = None):
+    def _initialize_vis(self,
+                        figsize: tuple = (25, 15), plot_limit: Union[list, None] = None):
+        """
+        Initializes the visualization with the scenario at the evaluated time step.
+
+        :param figsize: size of the figure
+        :param plot_limit: [xmin, xmax, ymin, ymax]
+        """
         self.rnd = MPRenderer(figsize=figsize, plot_limits=plot_limit)
         utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, self.time_step)
 
-    def set_other_vehicles(self, vehicle_id: int):
+    def _set_other_vehicles(self, vehicle_id: int):
         """
         Sets up the id for other metric-related vehicle.
         """
@@ -66,8 +94,14 @@ class CriMeBase:
 
     @abstractmethod
     def compute(self,  *args, **kwargs):
+        """
+        Computes the criticality, i.e., the value of the metric.
+        """
         pass
 
     @abstractmethod
     def visualize(self):
+        """
+        Visualize the result, which will be metric-dependent.
+        """
         pass
