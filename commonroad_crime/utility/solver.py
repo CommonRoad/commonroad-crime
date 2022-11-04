@@ -11,7 +11,6 @@ import numpy as np
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
 
-
 try:
     from commonroad_reach.pycrreach import ReachPolygon, ReachNode
     import commonroad_reach.utility.reach_operation as utils_ops

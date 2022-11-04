@@ -15,7 +15,7 @@ except ImportError:
     module_failed = True
 
 
-class TestSpaceMetrics(unittest.TestCase):
+class TestReachableSetScale(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         if module_failed:
