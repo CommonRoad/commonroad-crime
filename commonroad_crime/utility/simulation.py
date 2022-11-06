@@ -106,6 +106,23 @@ class SimulationBase(ABC):
         pass
 
 
+class SimulationMonteCarlo(SimulationBase):
+    """
+    Simulate the trajectory using Monte-Carlo sampling
+    """
+    def __init__(self,
+                 maneuver: Union[Maneuver],
+                 simulated_vehicle: DynamicObstacle,
+                 config: CriMeConfiguration):
+        super(SimulationMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+
+    def set_inputs(self, ref_state: State) -> None:
+        pass
+
+    def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None) -> List[State]:
+        pass
+
+
 class SimulationLong(SimulationBase):
     """
     Simulate the trajectory in the longitudinal direction.
