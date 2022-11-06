@@ -14,8 +14,10 @@ import numpy as np
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeAccelerationScale
-from commonroad_crime.metric.time_scale.thw import THW
+from commonroad_crime.metric.distance_scale.hw import HW
 import commonroad_crime.utility.visualization as utils_vis
+import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.logger as utils_log
 from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
@@ -30,10 +32,22 @@ class DST(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(DST, self).__init__(config)
+        self._hw_solver = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
+        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
+        self._set_other_vehicles(vehicle_id)
+        self.time_step = time_step
         # under the assumption that the velocity of the other object remains constant
-        pass
+        headway = self._hw_solver.compute(vehicle_id, time_step)
+        v_ego = self.ego_vehicle.state_at_time(time_step).velocity
+        v_otr = self.other_vehicle.state_at_time(time_step).velocity
+        # from (17) in Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic
+        # lane-change maneuvers." IEEE Transactions on Intelligent Transportation Systems 11.3 (2010): 607-616.
+        dst = 3 * (v_ego - v_otr)**2 / (2 * (headway - v_otr * self.configuration.acceleration_scale.safety_time))
+        self.value = utils_gen.int_round(dst, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def visualize(self):
         pass
