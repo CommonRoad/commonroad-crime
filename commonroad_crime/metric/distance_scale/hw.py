@@ -8,7 +8,6 @@ __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
 import logging
-import math
 
 import numpy as np
 
@@ -16,6 +15,7 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeDistanceScale
 from commonroad_crime.metric.time_scale.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
+import commonroad_crime.utility.solver as utils_sol
 from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
@@ -33,10 +33,8 @@ class HW(THW):
 
     def cal_headway(self):
         other_position = self.other_vehicle.state_at_time(self.time_step).position
-        other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
         ego_position = self.ego_vehicle.state_at_time(self.time_step).position
-        ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
-        return other_s - ego_s
+        return utils_sol.compute_clcs_distance(self.clcs, ego_position, other_position)[0]
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
