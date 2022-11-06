@@ -6,13 +6,11 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Union, List
 import logging
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle
+from commonroad.scenario.obstacle import StaticObstacle
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeTimeScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -38,7 +36,7 @@ class WTTC(CriMeBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         self.time_step = time_step
-        self.set_other_vehicles(vehicle_id)
+        self._set_other_vehicles(vehicle_id)
         wttc_list = utils_sol.solver_wttc(self.ego_vehicle,
                                           self.other_vehicle,
                                           time_step,
@@ -49,8 +47,8 @@ class WTTC(CriMeBase):
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self.initialize_vis(figsize=figsize,
-                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
                                                                              self.ego_vehicle.prediction.
                                                                              trajectory.state_list,
                                                                              margin=10))

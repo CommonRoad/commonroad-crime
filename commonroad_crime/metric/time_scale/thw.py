@@ -43,7 +43,7 @@ class THW(CriMeBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
-        self.set_other_vehicles(vehicle_id)
+        self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
                                                self.other_vehicle, time_step):
@@ -55,8 +55,8 @@ class THW(CriMeBase):
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self.initialize_vis(figsize=figsize,
-                            plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
                                                                              self.ego_vehicle.prediction.trajectory.state_list,
                                                                              margin=10))
         self.rnd.render()

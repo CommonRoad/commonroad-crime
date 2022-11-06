@@ -1,3 +1,11 @@
+__author__ = "Yuanfei Lin"
+__copyright__ = "TUM Cyber-Physical Systems Group"
+__credits__ = ["KoSi"]
+__version__ = "0.0.1"
+__maintainer__ = "Yuanfei Lin"
+__email__ = "commonroad@lists.lrz.de"
+__status__ = "Pre-alpha"
+
 import math
 from enum import Enum
 import numpy as np
@@ -10,7 +18,6 @@ from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_general
-from commonroad_crime.utility.visualization import TUMcolor
 
 
 class Maneuver(str, Enum):
@@ -137,6 +144,7 @@ class SimulationLong(SimulationBase):
         """
         Simulates the longitudinal state list from the given start time step.
         """
+        # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
@@ -158,8 +166,6 @@ class SimulationLong(SimulationBase):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                 self.set_inputs(pre_state)
-        # if self.plot:
-        #     self.viz_state_list(rnd, state_list[start_time_step:], start_time_step)
         return state_list
 
     def check_velocity_feasibility(self, state: State) -> bool:
@@ -235,6 +241,7 @@ class SimulationLat(SimulationBase):
         # update the input
         self.set_inputs(pre_state)
         state_list.append(pre_state)
+        lane_orient = 0.
         for _ in range(2):
             bang_bang_ts, lane_orient = self.set_bang_bang_timestep_orientation(pre_state.position)
             max_orient = self.set_maximal_orientation(lane_orient)
@@ -246,7 +253,7 @@ class SimulationLat(SimulationBase):
             else:
                 self.maneuver = Maneuver.STEERLEFT
         # updates the orientation
-        while pre_state.time_step < self.time_horizon: # not <= since the simulation stops at the final step
+        while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.set_inputs(pre_state)
             self.input.acceleration_y = 0
             # drives along the lane direction

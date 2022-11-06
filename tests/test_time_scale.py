@@ -6,6 +6,13 @@ import unittest
 import math
 
 from commonroad.visualization.mp_renderer import MPRenderer
+
+try:
+    import commonroad_reach.pycrreach
+    module_failed = False
+except ImportError:
+    module_failed = True
+
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.metric.time_scale.ttc import TTC
@@ -20,7 +27,7 @@ from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, M
 import commonroad_crime.utility.visualization as utils_vis
 
 
-class TestTimeMetrics(unittest.TestCase):
+class TestTimeScale(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
@@ -158,6 +165,7 @@ class TestTimeMetrics(unittest.TestCase):
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 
+    @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(0)
