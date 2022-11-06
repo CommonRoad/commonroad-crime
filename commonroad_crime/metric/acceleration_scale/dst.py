@@ -6,6 +6,8 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
+import math
+
 import matplotlib.pyplot as plt
 import logging
 
@@ -40,6 +42,8 @@ class DST(CriMeBase):
         self.time_step = time_step
         # under the assumption that the velocity of the other object remains constant
         headway = self._hw_solver.compute(vehicle_id, time_step)
+        if headway < 0:
+            return -math.inf
         v_ego = self.ego_vehicle.state_at_time(time_step).velocity
         v_otr = self.other_vehicle.state_at_time(time_step).velocity
         # from (17) in Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic
