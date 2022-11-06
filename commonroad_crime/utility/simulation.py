@@ -161,6 +161,7 @@ class SimulationLong(SimulationBase):
         """
         Simulates the longitudinal state list from the given start time step.
         """
+        # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
@@ -257,6 +258,7 @@ class SimulationLat(SimulationBase):
         # update the input
         self.set_inputs(pre_state)
         state_list.append(pre_state)
+        lane_orient = 0.
         for _ in range(2):
             bang_bang_ts, lane_orient = self.set_bang_bang_timestep_orientation(pre_state.position)
             max_orient = self.set_maximal_orientation(lane_orient)
@@ -268,7 +270,7 @@ class SimulationLat(SimulationBase):
             else:
                 self.maneuver = Maneuver.STEERLEFT
         # updates the orientation
-        while pre_state.time_step < self.time_horizon: # not <= since the simulation stops at the final step
+        while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.set_inputs(pre_state)
             self.input.acceleration_y = 0
             # drives along the lane direction
