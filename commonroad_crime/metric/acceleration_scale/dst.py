@@ -54,5 +54,10 @@ class DST(CriMeBase):
         return self.value
 
     def visualize(self):
-        pass
-
+        self._hw_solver.configuration.debug.draw_visualization = False
+        self._hw_solver.visualize()
+        plt.title(f"{self.metric_name} of {self.value} m")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+        else:
+            plt.show()

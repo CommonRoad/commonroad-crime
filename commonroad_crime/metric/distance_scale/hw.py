@@ -49,7 +49,8 @@ class HW(THW):
         utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self.time_step), color=TUMcolor.TUMblue)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, self.time_step, color=TUMcolor.TUMred)
         plt.title(f"{self.metric_name} of {self.value} m")
-        if self.configuration.debug.save_plots:
-            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
-        else:
-            plt.show()
+        if self.configuration.debug.draw_visualization:
+            if self.configuration.debug.save_plots:
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+            else:
+                plt.show()
