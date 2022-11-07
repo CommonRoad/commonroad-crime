@@ -26,6 +26,10 @@ class Maneuver(str, Enum):
     KICKDOWN = "kick-down"
     STEERLEFT = "steer to the left"
     STEERRIGHT = "steer to the right"
+    TURNLEFT = "turn to the left"
+    TURNRIGHT = "turn to the right"
+    OVERTAKE = "overtake"
+    RANDOM = "random"
     NONE = ''
 
 
@@ -99,7 +103,7 @@ class SimulationBase(ABC):
         pass
 
     @abstractmethod
-    def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None) -> List[State]:
+    def simulate_state_list(self, start_time_step: int) -> List[State]:
         """
         forward simulation of the state list
         """
@@ -157,7 +161,7 @@ class SimulationLong(SimulationBase):
             a_long = 0
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
-    def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None):
+    def simulate_state_list(self, start_time_step: int):
         """
         Simulates the longitudinal state list from the given start time step.
         """
@@ -200,15 +204,17 @@ class SimulationLat(SimulationBase):
     """
 
     def __init__(self,
-                 maneuver: Union[Maneuver],
+                 maneuver: Maneuver,
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        if maneuver is not Maneuver.STEERLEFT and not Maneuver.STEERRIGHT:
+        if maneuver not in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT, Maneuver.OVERTAKE,
+                            Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
         self._scenario = config.scenario
         self._lateral_distance_mode = config.time_scale.steer_width
+        self._sign_change: bool = False
 
     def set_inputs(self, ref_state: State) -> None:
         """
@@ -228,9 +234,13 @@ class SimulationLat(SimulationBase):
             a_lat = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
         else:
             a_lat = self.parameters.longitudinal.a_max
-        if self.maneuver in [Maneuver.STEERRIGHT]:
+        if self.maneuver in [Maneuver.STEERRIGHT, Maneuver.TURNRIGHT]:
+            a_lat = - a_lat
+        if self._sign_change:
             # right-hand coordinate
-            a_lat = -a_lat
+            a_lat = - a_lat
+        else:
+            a_lat = a_lat
         # includes the jerk limits
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
@@ -249,7 +259,7 @@ class SimulationLat(SimulationBase):
         total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
         return int(total_timestep / (2 * self.dt)), orientation
 
-    def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None):
+    def simulate_state_list(self, start_time_step: int):
         """
         Simulates the lateral state list from the given start time step.
         """
@@ -259,16 +269,16 @@ class SimulationLat(SimulationBase):
         self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
-        for _ in range(2):
+        for i in range(2):
             bang_bang_ts, lane_orient = self.set_bang_bang_timestep_orientation(pre_state.position)
             max_orient = self.set_maximal_orientation(lane_orient)
+            if i in [1]:
+                self._sign_change = True
+            else:
+                self._sign_change = False
             bang_state_list = self.bang_bang_simulation(pre_state, bang_bang_ts, max_orient)
             state_list += bang_state_list
             pre_state = bang_state_list[-1]
-            if self.maneuver is Maneuver.STEERLEFT:
-                self.maneuver = Maneuver.STEERRIGHT
-            else:
-                self.maneuver = Maneuver.STEERLEFT
         # updates the orientation
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.set_inputs(pre_state)
