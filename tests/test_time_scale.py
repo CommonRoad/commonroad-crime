@@ -59,7 +59,7 @@ class TestTimeScale(unittest.TestCase):
         rnd.render()
 
         sim_long = SimulationLong(Maneuver.BRAKE, ego_vehicle, self.config)
-        simulated_state1 = sim_long.simulate_state_list(0, rnd)
+        simulated_state1 = sim_long.simulate_state_list(0)
         for i in range(len(simulated_state1)):
             self.assertEqual(simulated_state1[i].time_step, i)
         self.assertEqual(
@@ -69,14 +69,18 @@ class TestTimeScale(unittest.TestCase):
             simulated_state1[-1]), True)
 
         sim_long.update_maneuver(Maneuver.KICKDOWN)
-        simulated_state2 = sim_long.simulate_state_list(20, rnd)
+        simulated_state2 = sim_long.simulate_state_list(20)
         self.assertEqual(sim_long.check_velocity_feasibility(
             simulated_state2[-1]), True)
 
         sim_long.update_maneuver(Maneuver.CONSTANT)
-        simulated_state3 = sim_long.simulate_state_list(10, rnd)
+        simulated_state3 = sim_long.simulate_state_list(10)
         self.assertEqual(sim_long.check_velocity_feasibility(
             simulated_state3[-1]), True)
+
+        utils_vis.draw_state_list(rnd, simulated_state1, 0)
+        utils_vis.draw_state_list(rnd, simulated_state2, 20)
+        utils_vis.draw_state_list(rnd, simulated_state3, 10)
         utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
@@ -88,12 +92,12 @@ class TestTimeScale(unittest.TestCase):
         rnd.render()
 
         sim_lat_left = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
-        simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
+        simulated_state1 = sim_lat_left.simulate_state_list(0)
         sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
-        simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
+        simulated_state2 = sim_lat_right.simulate_state_list(10)
         self.config.time_scale.steer_width = 2
         sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
-        simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
+        simulated_state3 = sim_lat_left_2.simulate_state_list(0)
 
         for i in range(len(simulated_state1)):
             self.assertEqual(simulated_state1[i].time_step, i)
@@ -104,6 +108,9 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(simulated_state3[-1].time_step,
                          ego_vehicle.prediction.final_time_step)
 
+        utils_vis.draw_state_list(rnd, simulated_state1, 0)
+        utils_vis.draw_state_list(rnd, simulated_state2, 10)
+        utils_vis.draw_state_list(rnd, simulated_state3, 0)
         utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 
     def test_ttm(self):
