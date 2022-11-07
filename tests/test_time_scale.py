@@ -128,8 +128,8 @@ class TestTimeScale(unittest.TestCase):
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
-        self.assertEqual(tts, 1.7)
         tts_object.visualize()
+        self.assertEqual(tts, 2.1)
 
         tts2 = tts_object.compute()
         tts_object.visualize()
@@ -144,9 +144,14 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(ttr, 2.0)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
-        ttr2 = ttr_object.compute(10)
+        ttr_2 = ttr_object.compute(10)
         ttr_object.visualize()
-        self.assertEqual(ttr2, ttr - 10 * ttr_object.dt)
+        self.assertEqual(ttr_2, ttr - 10 * ttr_object.dt)
+
+        ttr_object.configuration.time_scale.steer_width = 1
+        ttr_3 = ttr_object.compute()
+        ttr_object.visualize()
+        self.assertEqual(ttr_3, 2.1)
 
     def test_thw(self):
         thw_object = THW(self.config)
