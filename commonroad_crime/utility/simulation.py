@@ -230,14 +230,8 @@ class SimulationLat(SimulationBase):
         """
         Sets inputs for the lateral simulation
         """
-        check_elements_state(ref_state)
         # set the longitudinal acceleration to 0
         a_long = 0
-        self.input.acceleration = np.clip(0,
-                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                                              self.parameters.a_x_min),
-                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
-                                              self.parameters.a_x_max))
         # set the lateral acceleration based on the vehicle's capability and the maneuver
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
@@ -278,6 +272,7 @@ class SimulationLat(SimulationBase):
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
+        check_elements_state(pre_state)
         self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
@@ -296,6 +291,7 @@ class SimulationLat(SimulationBase):
             pre_state = bang_state_list[-1]
         # updates the orientation
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
+            check_elements_state(pre_state, state_list[-2], self.dt)
             self.set_inputs(pre_state)
             self.input.acceleration_y = 0
             # drives along the lane direction
@@ -303,7 +299,6 @@ class SimulationLat(SimulationBase):
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)
             pre_state = suc_state
-        self.set_inputs(state_list[-1])
         return state_list
 
     def set_maximal_orientation(self, lane_orientation, nr_stage):
@@ -331,7 +326,7 @@ class SimulationLat(SimulationBase):
         while pre_state.time_step < init_state.time_step + simulation_length:
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
-                check_elements_state(suc_state)
+                check_elements_state(suc_state, pre_state, self.dt)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 self.set_inputs(pre_state)
@@ -353,12 +348,10 @@ def check_elements_state(state: State, prev_state: State = None, dt: float = Non
     if not hasattr(state, "velocity_y"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
-
+    if not hasattr(state, "acceleration"):
+        state.acceleration = 0.
     if prev_state is not None:
-        if not hasattr(state, "acceleration"):
-            state.acceleration = (state.velocity - prev_state.velocity) / dt
-    else:
-        state.acceleration = 0
-    if hasattr(state, "acceleration") and not hasattr(state, "acceleration_y"):
+        state.acceleration = (state.velocity - prev_state.velocity) / dt
+    if not hasattr(state, "acceleration_y"):
         state.acceleration_y = state.acceleration * math.sin(state.orientation)
         state.acceleration = state.acceleration * math.cos(state.orientation)
