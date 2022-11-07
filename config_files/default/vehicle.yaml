@@ -29,10 +29,10 @@ curvilinear:
     a_max: 8.0
 
     # jerk in m/s^3
-    j_lon_min: -10.0
-    j_lon_max: 10.0
-    j_lat_min: -10.0
-    j_lat_max: 10.0
+    j_lon_min: -50.0
+    j_lon_max: 50.0
+    j_lat_min: -50.0
+    j_lat_max: 50.0
 
     reference_point: rear
 

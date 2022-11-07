@@ -28,7 +28,8 @@ class Maneuver(str, Enum):
     STEERRIGHT = "steer to the right"
     TURNLEFT = "turn to the left"
     TURNRIGHT = "turn to the right"
-    OVERTAKE = "overtake"
+    OVERTAKELEFT = "overtake from the left"
+    OVERTAKERIGHT = "overtake from the right"
     RANDOM = "random"
     NONE = ''
 
@@ -207,7 +208,7 @@ class SimulationLat(SimulationBase):
                  maneuver: Maneuver,
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        if maneuver not in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT, Maneuver.OVERTAKE,
+        if maneuver not in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT, Maneuver.OVERTAKELEFT, Maneuver.OVERTAKERIGHT,
                             Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
@@ -215,6 +216,15 @@ class SimulationLat(SimulationBase):
         self._scenario = config.scenario
         self._lateral_distance_mode = config.time_scale.steer_width
         self._sign_change: bool = False
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+            # one stage: a_y
+            self._nr_stage = 1
+        elif self.maneuver in [Maneuver.STEERRIGHT, Maneuver.STEERLEFT]:
+            # first stage: a_y, second stage: - a_y
+            self._nr_stage = 2
+        else:
+            # Overtake: a_y, -a_y, -a_y, -a_y
+            self._nr_stage = 4
 
     def set_inputs(self, ref_state: State) -> None:
         """
@@ -234,7 +244,7 @@ class SimulationLat(SimulationBase):
             a_lat = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
         else:
             a_lat = self.parameters.longitudinal.a_max
-        if self.maneuver in [Maneuver.STEERRIGHT, Maneuver.TURNRIGHT]:
+        if self.maneuver in [Maneuver.STEERRIGHT, Maneuver.TURNRIGHT, Maneuver.OVERTAKERIGHT]:
             a_lat = - a_lat
         if self._sign_change:
             # right-hand coordinate
@@ -249,6 +259,8 @@ class SimulationLat(SimulationBase):
         Sets the time for the bang–bang controller of the lane change.
         """
         lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
+        if not lanelet_id:
+            return None, None
         lateral_dis, orientation = utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
                                                                                    find_lanelet_by_id(lanelet_id[0]),
                                                                                    position)
@@ -257,7 +269,7 @@ class SimulationLat(SimulationBase):
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
         # self-driving vehicles based on formalized traffic rules. In IV 2017 (pp. 1477-1483). IEEE.
         total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
-        return int(total_timestep / (2 * self.dt)), orientation
+        return int(total_timestep / (2 * self.dt)) + (total_timestep % (2 * self.dt) > 0), orientation
 
     def simulate_state_list(self, start_time_step: int):
         """
@@ -269,10 +281,13 @@ class SimulationLat(SimulationBase):
         self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
-        for i in range(2):
+        for i in range(self._nr_stage):
             bang_bang_ts, lane_orient = self.set_bang_bang_timestep_orientation(pre_state.position)
-            max_orient = self.set_maximal_orientation(lane_orient)
-            if i in [1]:
+            if not bang_bang_ts:
+                lane_orient = pre_state.orientation
+                break
+            max_orient = self.set_maximal_orientation(lane_orient, i)
+            if i in [1, 2]:  # 1 for lane change, 2 for overtaking
                 self._sign_change = True
             else:
                 self._sign_change = False
@@ -291,16 +306,24 @@ class SimulationLat(SimulationBase):
         self.set_inputs(state_list[-1])
         return state_list
 
-    def set_maximal_orientation(self, lane_orientation):
+    def set_maximal_orientation(self, lane_orientation, nr_stage):
         """
         adds additional constraints for the orientation.
         """
-        if self.maneuver in [Maneuver.STEERLEFT]:
+        if self.maneuver == Maneuver.STEERLEFT or \
+                (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage <= 1) or \
+                (self.maneuver == Maneuver.OVERTAKERIGHT and nr_stage >= 2):
             return lane_orientation + math.pi / 4
-        elif self.maneuver in [Maneuver.STEERRIGHT]:
+        elif self.maneuver == Maneuver.STEERRIGHT or \
+                (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage >= 2) or \
+                (self.maneuver == Maneuver.OVERTAKERIGHT and nr_stage <= 1):
             return lane_orientation - math.pi / 4
+        elif self.maneuver == Maneuver.TURNLEFT:
+            return lane_orientation + math.pi / 2
+        elif self.maneuver == Maneuver.TURNRIGHT:
+            return lane_orientation - math.pi / 2
         else:
-            pass
+            return lane_orientation
 
     def bang_bang_simulation(self, init_state: State, simulation_length: int, max_orientation: float):
         pre_state = init_state
