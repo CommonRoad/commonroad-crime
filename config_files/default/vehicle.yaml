@@ -21,10 +21,10 @@ curvilinear:
     v_lat_max: 3.0
 
     # acceleration in m/s^2
-    a_lon_max: 2.0
-    a_lon_min: -8.0 # braking acceleration
-    a_lat_max: 2.0
-    a_lat_min: -2.0
+    a_lon_max: 11.5
+    a_lon_min: -11.5 # braking acceleration
+    a_lat_max: 8.0
+    a_lat_min: -8.0
     # engine power
     a_max: 8.0
 

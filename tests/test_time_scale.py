@@ -182,7 +182,7 @@ class TestTimeScale(unittest.TestCase):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(0)
         wttr_object.visualize()
-        self.assertEqual(wttr, 2.0)
+        self.assertEqual(wttr, 2.2)
 
 
 
