@@ -102,7 +102,7 @@ class TestTimeScale(unittest.TestCase):
 
         # overtaking
         sim_lat_left = SimulationLat(Maneuver.OVERTAKELEFT, ego_vehicle, self.config)
-        simulated_state4 = sim_lat_left.simulate_state_list(22)
+        simulated_state4 = sim_lat_left.simulate_state_list(5)
         sim_lat_right = SimulationLat(Maneuver.OVERTAKERIGHT, ego_vehicle, self.config)
         simulated_state5 = sim_lat_right.simulate_state_list(15)
 
@@ -122,7 +122,7 @@ class TestTimeScale(unittest.TestCase):
         utils_vis.draw_state_list(rnd, simulated_state1, 0)
         utils_vis.draw_state_list(rnd, simulated_state2, 10)
         utils_vis.draw_state_list(rnd, simulated_state3, 0)
-        utils_vis.draw_state_list(rnd, simulated_state4, 22)
+        utils_vis.draw_state_list(rnd, simulated_state4, 5)
         utils_vis.draw_state_list(rnd, simulated_state5, 15)
 
         utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
