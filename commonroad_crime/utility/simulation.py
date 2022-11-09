@@ -327,13 +327,15 @@ class SimulationLat(SimulationBase):
     def bang_bang_simulation(self, init_state: State, simulation_length: int, max_orientation: float):
         pre_state = init_state
         state_list = []
-        while pre_state.time_step < init_state.time_step + simulation_length and pre_state.time_step < self.time_horizon:
+
+        while pre_state.time_step < init_state.time_step + simulation_length \
+                and pre_state.time_step < self.time_horizon:
+            self.set_inputs(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
                 check_elements_state(suc_state, pre_state, self.dt)
                 state_list.append(suc_state)
                 pre_state = suc_state
-                self.set_inputs(pre_state)
                 if abs(suc_state.orientation) > abs(max_orientation):
                     break
             else:
