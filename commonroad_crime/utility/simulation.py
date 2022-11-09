@@ -267,7 +267,7 @@ class SimulationLat(SimulationBase):
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
         # self-driving vehicles based on formalized traffic rules. In IV 2017 (pp. 1477-1483). IEEE.
         total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
-        return int(total_timestep / (2 * self.dt)) + (total_timestep % (2 * self.dt) > 0), orientation
+        return int(total_timestep / (2 * self.dt)), orientation
 
     def simulate_state_list(self, start_time_step: int):
         """
@@ -314,6 +314,7 @@ class SimulationLat(SimulationBase):
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)
             pre_state = suc_state
+        check_elements_state(state_list[-1])
         return state_list
 
     def set_maximal_orientation(self, lane_orientation, nr_stage):

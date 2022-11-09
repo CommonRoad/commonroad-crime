@@ -146,11 +146,10 @@ class TestTimeScale(unittest.TestCase):
 
         ttk_object = TTK(self.config)
         ttk = ttk_object.compute()
-        self.assertEqual(ttk, 0.7)
+        self.assertEqual(ttk, 2.0)
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
-        tts_object.visualize()
         self.assertEqual(tts, 2.1)
 
         tts2 = tts_object.compute()
