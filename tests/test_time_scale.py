@@ -106,6 +106,12 @@ class TestTimeScale(unittest.TestCase):
         sim_lat_right = SimulationLat(Maneuver.OVERTAKERIGHT, ego_vehicle, self.config)
         simulated_state5 = sim_lat_right.simulate_state_list(15)
 
+        # turning
+        sim_lat_left.update_maneuver(Maneuver.TURNLEFT)
+        simulated_state6 = sim_lat_left.simulate_state_list(0)
+        sim_lat_right.update_maneuver(Maneuver.TURNRIGHT)
+        simulated_state7 = sim_lat_right.simulate_state_list(10)
+
         for i in range(len(simulated_state1)):
             self.assertEqual(simulated_state1[i].time_step, i)
         self.assertEqual(simulated_state1[-1].time_step,
@@ -124,6 +130,8 @@ class TestTimeScale(unittest.TestCase):
         utils_vis.draw_state_list(rnd, simulated_state3, 0)
         utils_vis.draw_state_list(rnd, simulated_state4, 5)
         utils_vis.draw_state_list(rnd, simulated_state5, 15)
+        utils_vis.draw_state_list(rnd, simulated_state6, 0)
+        utils_vis.draw_state_list(rnd, simulated_state7, 10)
 
         utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
 

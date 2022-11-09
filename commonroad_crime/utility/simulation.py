@@ -38,11 +38,12 @@ class SimulationBase(ABC):
     def __init__(self, maneuver: Union[Maneuver, None],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        self._maneuver = maneuver
         # currently: point mass model since KS model has some infeasibility issues
         self._input: State = State(acceleration=0,
                                    acceleration_y=0)
 
+        self.maneuver = maneuver
+        self.initialize_simulator()
         self.dt = config.scenario.dt
         self.time_horizon = simulated_vehicle.prediction.final_time_step
 
@@ -50,9 +51,6 @@ class SimulationBase(ABC):
         self.parameters = config.vehicle.cartesian
         self.vehicle_dynamics = config.vehicle.dynamic
         self.plot = config.debug.draw_visualization
-
-    def update_maneuver(self, maneuver: Maneuver):
-        self._maneuver = maneuver
 
     def update_inputs_x_y(self, ref_state: State, a_long: float, a_lat: float):
         # includes the jerk limits
@@ -84,13 +82,12 @@ class SimulationBase(ABC):
                 state_list.append(state)
         return state_list
 
-    @property
-    def maneuver(self):
-        return self._maneuver
+    def update_maneuver(self, maneuver: Maneuver):
+        self.maneuver = maneuver
+        self.initialize_simulator()
 
-    @maneuver.setter
-    def maneuver(self, maneuver: Maneuver):
-        self._maneuver = maneuver
+    def initialize_simulator(self):
+        pass
 
     @property
     def input(self):
@@ -212,10 +209,15 @@ class SimulationLat(SimulationBase):
                             Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
-        super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
+        self._nr_stage = 0
         self._scenario = config.scenario
         self._lateral_distance_mode = config.time_scale.steer_width
         self._sign_change: bool = False
+
+        super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
+
+    def initialize_simulator(self):
+        self._sign_change = False
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
             # one stage: a_y
             self._nr_stage = 1
@@ -258,6 +260,8 @@ class SimulationLat(SimulationBase):
         lateral_dis, orientation = utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
                                                                                    find_lanelet_by_id(lanelet_id[0]),
                                                                                    position)
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+            return math.inf, orientation
         if self._lateral_distance_mode == 1:
             lateral_dis = 0.8
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
@@ -276,6 +280,7 @@ class SimulationLat(SimulationBase):
         self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
+        max_orient = 0.
         for i in range(self._nr_stage):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if not bang_bang_ts:
@@ -295,11 +300,17 @@ class SimulationLat(SimulationBase):
                 break
         # updates the orientation
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
-            check_elements_state(pre_state, state_list[-2], self.dt)
-            self.set_inputs(pre_state)
-            self.input.acceleration_y = 0
-            # drives along the lane direction
-            pre_state.velocity_y = pre_state.velocity * math.sin(lane_orient)
+            check_elements_state(pre_state)
+            self.update_inputs_x_y(pre_state, 0, 0)
+            pre_velocity_sum = math.sqrt(pre_state.velocity**2 + pre_state.velocity_y**2)
+            if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+                # drives along the target direction
+                pre_state.velocity = pre_velocity_sum * math.cos(max_orient)
+                pre_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
+            else:
+                # drives along the lane direction
+                pre_state.velocity = pre_velocity_sum * math.cos(lane_orient)
+                pre_state.velocity_y = pre_state.velocity * math.sin(lane_orient)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)
             pre_state = suc_state
