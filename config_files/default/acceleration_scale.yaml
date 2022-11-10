@@ -1,0 +1,4 @@
+#  from Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic lane-change maneuvers."
+# IEEE Transactions on Intelligent Transportation Systems 11.3 (2010): 607-616.
+safety_time: 2 # s
+

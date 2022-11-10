@@ -9,7 +9,9 @@ __status__ = "Pre-alpha"
 from typing import Tuple, List, Dict
 import numpy as np
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle
+from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State
+from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+from numpy import ndarray
 
 try:
     from commonroad_reach.pycrreach import ReachPolygon, ReachNode
@@ -127,3 +129,23 @@ def compute_drivable_area(reachable_set: Dict[int, List[ReachNode]]):
     """
     area_profile = compute_drivable_area_profile(reachable_set)
     return np.sum(area_profile)
+
+
+def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
+                          veh_rear_pos: ndarray,
+                          veh_front_pos: ndarray) -> Tuple[float, float]:
+    """
+    Compute the distance between two vehicles along the curvilinear coordinate system. The sign of the distance
+    is based on the assumption of the relative position of the vehicles. If the distance > 0, the relative
+    position relationship holds. And vice versa.
+
+    :param clcs: curvi-linear coordinate system
+    :param veh_rear_pos: the position of the rear vehicle
+    :param veh_front_pos: the position of the front vehicle
+
+    :return the longitudinal and lateral relative distances
+    """
+    rear_s, rear_d = clcs.convert_to_curvilinear_coords(veh_rear_pos[0], veh_rear_pos[1])
+    front_s, front_d = clcs.convert_to_curvilinear_coords(veh_front_pos[0], veh_front_pos[1])
+    return front_s - rear_s, front_d - rear_d
+

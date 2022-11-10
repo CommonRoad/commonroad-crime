@@ -51,7 +51,7 @@ class CriMeBase:
                                             "Scenario/scene in the configuration needs to be first updated")
         self.dt = self.sce.dt
 
-        assert self.sce.obstacle_by_id(self.configuration.vehicle.ego_id), '<Criticality: the provided ego vehicle' \
+        assert self.sce.obstacle_by_id(self.configuration.vehicle.ego_id), '<Criticality: the provided ego vehicle ' \
                                                                            f'{self.configuration.vehicle.ego_id} is' \
                                                                            'not contained in the scenario>'
         # =======       Vehicles      ========
