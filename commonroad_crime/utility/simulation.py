@@ -316,20 +316,23 @@ class SimulationLat(SimulationBase):
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             check_elements_state(pre_state)
             self.update_inputs_x_y(pre_state, 0, 0)
-            pre_velocity_sum = math.sqrt(pre_state.velocity**2 + pre_state.velocity_y**2)
-            if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
-                # drives along the target direction
-                pre_state.velocity = pre_velocity_sum * math.cos(max_orient)
-                pre_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
-            else:
-                # drives along the lane direction
-                pre_state.velocity = pre_velocity_sum * math.cos(lane_orient)
-                pre_state.velocity_y = pre_state.velocity * math.sin(lane_orient)
+            self.adjust_velocity(pre_state, max_orient, lane_orient)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)
             pre_state = suc_state
         check_elements_state(state_list[-1])
         return state_list
+
+    def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
+        pre_velocity_sum = math.sqrt(target_state.velocity ** 2 + target_state.velocity_y ** 2)
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+            # drives along the target direction
+            target_state.velocity = pre_velocity_sum * math.cos(max_orient)
+            target_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
+        else:
+            # drives along the lane direction
+            target_state.velocity = pre_velocity_sum * math.cos(lane_orient)
+            target_state.velocity_y = pre_velocity_sum * math.sin(lane_orient)
 
     def set_maximal_orientation(self, lane_orientation, nr_stage):
         """
@@ -383,6 +386,9 @@ class SimulationLatMonteCarlo(SimulationLat):
         a_long, a_lat_sigma = self.set_a_long_and_a_lat(ref_state)
         a_lat = np.random.normal(0, abs(a_lat_sigma), 1)[0]
         self.update_inputs_x_y(ref_state, a_long, a_lat)
+
+    def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
+        pass
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
