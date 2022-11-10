@@ -10,7 +10,7 @@ import math
 from enum import Enum
 import numpy as np
 import copy
-from typing import Union, List
+from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
 from commonroad.scenario.obstacle import DynamicObstacle, State
@@ -94,6 +94,13 @@ class SimulationBase(ABC):
         return self._input
 
     @abstractmethod
+    def set_a_long_and_a_lat(self, ref_state: State) -> Tuple[float, float]:
+        """
+        sets the longitudinal and lateral acceleration
+        """
+        pass
+
+    @abstractmethod
     def set_inputs(self, ref_state: State) -> None:
         """
         sets the input pairs
@@ -139,11 +146,7 @@ class SimulationLong(SimulationBase):
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLong, self).__init__(maneuver, simulated_vehicle, config)
 
-    def set_inputs(self, ref_state: State) -> None:
-        """
-        Sets inputs for the longitudinal simulation
-        """
-        check_elements_state(ref_state)
+    def set_a_long_and_a_lat(self, ref_state: State) -> Tuple[float, float]:
         # set the lateral acceleration to 0
         a_lat = 0
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
@@ -157,6 +160,13 @@ class SimulationLong(SimulationBase):
                 a_long = self.parameters.longitudinal.a_max
         else:
             a_long = 0
+        return a_long, a_lat
+
+    def set_inputs(self, ref_state: State) -> None:
+        """
+        Sets inputs for the longitudinal simulation
+        """
+        a_long, a_lat = self.set_a_long_and_a_lat(ref_state)
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
     def simulate_state_list(self, start_time_step: int):
@@ -167,16 +177,16 @@ class SimulationLong(SimulationBase):
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
-        self.set_inputs(pre_state)
+        check_elements_state(pre_state)
         state_list.append(pre_state)
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
+            self.set_inputs(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
                 check_elements_state(suc_state, pre_state, self.dt)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 # update the input
-                self.set_inputs(pre_state)
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 self.maneuver = Maneuver.CONSTANT
@@ -228,10 +238,7 @@ class SimulationLat(SimulationBase):
             # Overtake: a_y, -a_y, -a_y, -a_y
             self._nr_stage = 4
 
-    def set_inputs(self, ref_state: State) -> None:
-        """
-        Sets inputs for the lateral simulation
-        """
+    def set_a_long_and_a_lat(self, ref_state: State) -> Tuple[float, float]:
         # set the longitudinal acceleration to 0
         a_long = 0
         # set the lateral acceleration based on the vehicle's capability and the maneuver
@@ -247,6 +254,14 @@ class SimulationLat(SimulationBase):
             a_lat = - a_lat
         else:
             a_lat = a_lat
+        return a_long, a_lat
+
+    def set_inputs(self, ref_state: State) -> None:
+        """
+        Sets inputs for the lateral simulation
+        """
+        # set the longitudinal acceleration to 0
+        a_long, a_lat = self.set_a_long_and_a_lat(ref_state)
         # includes the jerk limits
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
@@ -267,7 +282,7 @@ class SimulationLat(SimulationBase):
         # Modified from Eq. (11) in Pek, C., Zahn, P. and Althoff, M., Verifying the safety of lane change maneuvers of
         # self-driving vehicles based on formalized traffic rules. In IV 2017 (pp. 1477-1483). IEEE.
         total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
-        return int(total_timestep / (2 * self.dt)), orientation
+        return int(total_timestep / (2 * self.dt)) + (total_timestep % (2 * self.dt) > 0), orientation
 
     def simulate_state_list(self, start_time_step: int):
         """
@@ -277,7 +292,6 @@ class SimulationLat(SimulationBase):
         state_list = self.initialize_state_list(start_time_step)
         # update the input
         check_elements_state(pre_state)
-        self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
         max_orient = 0.
