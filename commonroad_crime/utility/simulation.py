@@ -115,23 +115,6 @@ class SimulationBase(ABC):
         pass
 
 
-class SimulationMonteCarlo(SimulationBase):
-    """
-    Simulate the trajectory using Monte-Carlo sampling
-    """
-    def __init__(self,
-                 maneuver: Union[Maneuver],
-                 simulated_vehicle: DynamicObstacle,
-                 config: CriMeConfiguration):
-        super(SimulationMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
-
-    def set_inputs(self, ref_state: State) -> None:
-        pass
-
-    def simulate_state_list(self, start_time_step: int, rnd: MPRenderer = None) -> List[State]:
-        pass
-
-
 class SimulationLong(SimulationBase):
     """
     Simulate the trajectory in the longitudinal direction.
@@ -204,6 +187,22 @@ class SimulationLong(SimulationBase):
                 state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
             return False
         return True
+
+
+class SimulationLongMonteCarlo(SimulationLong):
+    """
+    Simulate the longitudinal trajectory using Monte-Carlo sampling
+    """
+    def __init__(self,
+                 maneuver: Union[Maneuver],
+                 simulated_vehicle: DynamicObstacle,
+                 config: CriMeConfiguration):
+        super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+
+    def set_inputs(self, ref_state: State) -> None:
+        a_long_sigma, a_lat = self.set_a_long_and_a_lat(ref_state)
+        a_long = np.random.normal(0, abs(a_long_sigma), 1)[0]
+        self.update_inputs_x_y(ref_state, a_long, a_lat)
 
 
 class SimulationLat(SimulationBase):
@@ -367,6 +366,22 @@ class SimulationLat(SimulationBase):
             else:
                 self.input.acceleration_y = 0
         return state_list
+
+
+class SimulationLatMonteCarlo(SimulationLat):
+    """
+    Simulate the longitudinal trajectory using Monte-Carlo sampling
+    """
+    def __init__(self,
+                 maneuver: Union[Maneuver],
+                 simulated_vehicle: DynamicObstacle,
+                 config: CriMeConfiguration):
+        super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+
+    def set_inputs(self, ref_state: State) -> None:
+        a_long, a_lat_sigma = self.set_a_long_and_a_lat(ref_state)
+        a_lat = np.random.normal(0, abs(a_lat_sigma), 1)[0]
+        self.update_inputs_x_y(ref_state, a_long, a_lat)
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
