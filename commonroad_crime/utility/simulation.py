@@ -297,10 +297,11 @@ class SimulationLat(SimulationBase):
         for i in range(self._nr_stage):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if not bang_bang_ts:
-                break
+                bang_bang_ts = math.inf
+                max_orient = pre_state.orientation
             else:
                 lane_orient = lane_orient_updated
-            max_orient = self.set_maximal_orientation(lane_orient, i)
+                max_orient = self.set_maximal_orientation(lane_orient, i)
             if i in [1, 2]:  # 1 for lane change, 2 for overtaking
                 self._sign_change = True
             else:

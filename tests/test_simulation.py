@@ -64,7 +64,7 @@ class TestSimulation(unittest.TestCase):
         for sim_state_list in sim_stat_list_total:
             utils_vis.draw_state_list(self.rnd, sim_state_list, 0)
 
-        utils_vis.save_fig("test_simulate_mc_long", self.config.general.path_output, 10)
+        utils_vis.save_fig("test_simulate_mc_long", self.config.general.path_output, 0)
 
     def test_simulation_lat_mc(self):
         sim_stat_list_total = []
@@ -78,7 +78,7 @@ class TestSimulation(unittest.TestCase):
         for sim_state_list in sim_stat_list_total:
             utils_vis.draw_state_list(self.rnd, sim_state_list, 0)
 
-        utils_vis.save_fig("test_simulate_mc_lat", self.config.general.path_output, 10)
+        utils_vis.save_fig("test_simulate_mc_lat", self.config.general.path_output, 0)
 
     def test_simulation_lat(self):
         # steering
