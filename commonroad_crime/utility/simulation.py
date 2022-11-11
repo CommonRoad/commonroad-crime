@@ -14,7 +14,6 @@ from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
 from commonroad.scenario.obstacle import DynamicObstacle, State
-from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_general
@@ -30,8 +29,13 @@ class Maneuver(str, Enum):
     TURNRIGHT = "turn to the right"
     OVERTAKELEFT = "overtake from the left"
     OVERTAKERIGHT = "overtake from the right"
-    RANDOM = "random"
     NONE = ''
+
+    STOPMC = "stop with Monte Carlo"
+    LANECHANGEMC = "lane change with Monte Carlo"
+    TURNMC = "turn with Monte Carlo"
+    OVERTAKEMC = "overtake with Monte Carlo"
+    RANDOMMC = "random with Monte Carlo"
 
 
 class SimulationBase(ABC):
@@ -214,8 +218,11 @@ class SimulationLat(SimulationBase):
                  maneuver: Maneuver,
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        if maneuver not in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT, Maneuver.OVERTAKELEFT, Maneuver.OVERTAKERIGHT,
-                            Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+        if maneuver not in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT,
+                            Maneuver.OVERTAKELEFT, Maneuver.OVERTAKERIGHT,
+                            Maneuver.TURNLEFT, Maneuver.TURNRIGHT,
+                            Maneuver.LANECHANGEMC, Maneuver.TURNMC,
+                            Maneuver.OVERTAKEMC]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         self._nr_stage = 0
@@ -227,10 +234,10 @@ class SimulationLat(SimulationBase):
 
     def initialize_simulator(self):
         self._sign_change = False
-        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
             # one stage: a_y
             self._nr_stage = 1
-        elif self.maneuver in [Maneuver.STEERRIGHT, Maneuver.STEERLEFT]:
+        elif self.maneuver in [Maneuver.STEERRIGHT, Maneuver.STEERLEFT, Maneuver.LANECHANGEMC]:
             # first stage: a_y, second stage: - a_y
             self._nr_stage = 2
         else:
@@ -326,7 +333,7 @@ class SimulationLat(SimulationBase):
     def adjust_velocity(self, ref_state: State, max_orient: float, lane_orient: float):
         # using P-controller
         pre_velocity_sum = math.sqrt(ref_state.velocity ** 2 + ref_state.velocity_y ** 2)
-        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
             # drives along the target direction
             target_velocity_x = pre_velocity_sum * math.cos(max_orient)
             target_velocity_y = pre_velocity_sum * math.sin(max_orient)
@@ -360,10 +367,14 @@ class SimulationLat(SimulationBase):
                 (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage >= 2) or \
                 (self.maneuver == Maneuver.OVERTAKERIGHT and nr_stage <= 1):
             return lane_orientation - math.pi / 4
+        elif self.maneuver in [Maneuver.LANECHANGEMC, Maneuver.OVERTAKEMC]:
+            return np.random.choice([lane_orientation + math.pi / 4, lane_orientation - math.pi / 4])
         elif self.maneuver == Maneuver.TURNLEFT:
             return lane_orientation + math.pi / 2
         elif self.maneuver == Maneuver.TURNRIGHT:
             return lane_orientation - math.pi / 2
+        elif self.maneuver == Maneuver.TURNMC:
+            return np.random.choice([lane_orientation + math.pi / 2, lane_orientation - math.pi / 2])
         else:
             return lane_orientation
 
@@ -394,23 +405,15 @@ class SimulationLatMonteCarlo(SimulationLat):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
+        if maneuver not in [Maneuver.LANECHANGEMC, Maneuver.TURNMC, Maneuver.OVERTAKEMC]:
+            raise ValueError(
+                f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
 
     def set_inputs(self, ref_state: State) -> None:
         a_long, a_lat_sigma = self.set_a_long_and_a_lat(ref_state)
         a_lat = np.random.normal(0, abs(a_lat_sigma), 1)[0]
         self.update_inputs_x_y(ref_state, a_long, a_lat)
-
-    # def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
-    #     # don't adjust the velocity for monte carlo simulation
-    #     pass
-        # pre_velocity_sum = math.sqrt(target_state.velocity ** 2 + target_state.velocity_y ** 2)
-        # if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
-        #     # drives along the target direction
-        #     target_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
-        # else:
-        #     # drives along the lane direction
-        #     target_state.velocity_y = pre_velocity_sum * math.sin(lane_orient)
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
