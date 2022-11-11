@@ -23,7 +23,7 @@ class TestSimulation(unittest.TestCase):
         self.config.update()
         self.ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
 
-        self.rnd = MPRenderer()
+        self.rnd = MPRenderer(plot_limits=[50, 100, -5, 7.5])
         self.config.scenario.draw(self.rnd)
         self.rnd.render()
 
@@ -69,11 +69,11 @@ class TestSimulation(unittest.TestCase):
 
     def test_simulation_lat_mc(self):
         sim_stat_list_total = []
-        self.config.time_scale.steer_width = 1
+        self.config.time_scale.steer_width = 2
         sim_lat_left = SimulationLatMonteCarlo(Maneuver.STEERLEFT, self.ego_vehicle, self.config)
         for i in range(10):
             sim_stat_list_total.append(sim_lat_left.simulate_state_list(0))
-        sim_lat_left.update_maneuver(Maneuver.OVERTAKELEFT)
+        sim_lat_left.update_maneuver(Maneuver.TURNLEFT)
         for i in range(10):
             sim_stat_list_total.append(sim_lat_left.simulate_state_list(0))
         for sim_state_list in sim_stat_list_total:

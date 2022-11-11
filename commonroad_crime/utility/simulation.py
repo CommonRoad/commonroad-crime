@@ -323,16 +323,30 @@ class SimulationLat(SimulationBase):
         check_elements_state(state_list[-1])
         return state_list
 
-    def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
-        pre_velocity_sum = math.sqrt(target_state.velocity ** 2 + target_state.velocity_y ** 2)
+    def adjust_velocity(self, ref_state: State, max_orient: float, lane_orient: float):
+        # using P-controller
+        pre_velocity_sum = math.sqrt(ref_state.velocity ** 2 + ref_state.velocity_y ** 2)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
             # drives along the target direction
-            target_state.velocity = pre_velocity_sum * math.cos(max_orient)
-            target_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
+            target_velocity_x = pre_velocity_sum * math.cos(max_orient)
+            target_velocity_y = pre_velocity_sum * math.sin(max_orient)
         else:
             # drives along the lane direction
-            target_state.velocity = pre_velocity_sum * math.cos(lane_orient)
-            target_state.velocity_y = pre_velocity_sum * math.sin(lane_orient)
+            target_velocity_x = pre_velocity_sum * math.cos(lane_orient)
+            target_velocity_y = pre_velocity_sum * math.sin(lane_orient)
+        self.input.acceleration = np.clip((target_velocity_x - ref_state.velocity)/self.dt,
+                                          max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
+                                              self.parameters.a_x_min),
+                                          min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
+                                              self.parameters.a_x_max))
+        self.input.acceleration_y = np.clip((target_velocity_y - ref_state.velocity_y)/self.dt,
+                                            max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
+                                                self.parameters.a_y_min),
+                                            min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
+                                                self.parameters.a_y_max))
+        self.input.time_step = ref_state.time_step
+        ref_state.acceleration = self.input.acceleration
+        ref_state.acceleration_y = self.input.acceleration_y
 
     def set_maximal_orientation(self, lane_orientation, nr_stage):
         """
@@ -387,8 +401,16 @@ class SimulationLatMonteCarlo(SimulationLat):
         a_lat = np.random.normal(0, abs(a_lat_sigma), 1)[0]
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
-    def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
-        pass
+    # def adjust_velocity(self, target_state: State, max_orient: float, lane_orient: float):
+    #     # don't adjust the velocity for monte carlo simulation
+    #     pass
+        # pre_velocity_sum = math.sqrt(target_state.velocity ** 2 + target_state.velocity_y ** 2)
+        # if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+        #     # drives along the target direction
+        #     target_state.velocity_y = pre_velocity_sum * math.sin(max_orient)
+        # else:
+        #     # drives along the lane direction
+        #     target_state.velocity_y = pre_velocity_sum * math.sin(lane_orient)
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):

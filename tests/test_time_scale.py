@@ -5,8 +5,6 @@ Unit tests of the module time-scale metrics
 import unittest
 import math
 
-from commonroad.visualization.mp_renderer import MPRenderer
-
 try:
     import commonroad_reach.pycrreach
     module_failed = False
@@ -23,8 +21,7 @@ from commonroad_crime.metric.time_scale.ttr import TTR
 from commonroad_crime.metric.time_scale.thw import THW
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.metric.time_scale.wttr import WTTR
-from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.simulation import Maneuver
 
 
 class TestTimeScale(unittest.TestCase):
