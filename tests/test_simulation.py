@@ -55,7 +55,7 @@ class TestSimulation(unittest.TestCase):
 
     def test_simulation_long_mc(self):
         sim_stat_list_total = []
-        sim_long = SimulationLongMonteCarlo(Maneuver.KICKDOWN, self.ego_vehicle, self.config)
+        sim_long = SimulationLongMonteCarlo(Maneuver.STOPMC, self.ego_vehicle, self.config)
 
         for _ in range(10):
             sim_stat_list_total.append(sim_long.simulate_state_list(0))

@@ -128,7 +128,7 @@ class SimulationLong(SimulationBase):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        if maneuver is not Maneuver.BRAKE and not Maneuver.KICKDOWN and not Maneuver.CONSTANT:
+        if maneuver not in [Maneuver.BRAKE, Maneuver.KICKDOWN, Maneuver.CONSTANT, Maneuver.STOPMC]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLong, self).__init__(maneuver, simulated_vehicle, config)
@@ -137,14 +137,17 @@ class SimulationLong(SimulationBase):
         # set the lateral acceleration to 0
         a_lat = 0
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
+        v_switch = self.parameters.longitudinal.v_switch
         if self.maneuver is Maneuver.BRAKE:
             a_long = - self.parameters.longitudinal.a_max
         elif self.maneuver is Maneuver.KICKDOWN:
-            v_switch = self.parameters.longitudinal.v_switch
             if ref_state.velocity > v_switch:
                 a_long = self.parameters.longitudinal.a_max * v_switch / ref_state.velocity
             else:
                 a_long = self.parameters.longitudinal.a_max
+        elif self.maneuver is Maneuver.STOPMC:
+            a_long = np.random.choice([self.parameters.longitudinal.a_max * v_switch / ref_state.velocity,
+                                       v_switch])
         else:
             a_long = 0
         return a_long, a_lat
@@ -201,6 +204,9 @@ class SimulationLongMonteCarlo(SimulationLong):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
+        if maneuver not in [Maneuver.STOPMC]:
+            raise ValueError(
+                f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
 
     def set_inputs(self, ref_state: State) -> None:
