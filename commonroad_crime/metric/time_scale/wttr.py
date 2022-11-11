@@ -41,6 +41,11 @@ class WTTR(CriMeBase):
         # update the paths based on CriMe
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
         self.reach_config.general.path_output = self.configuration.general.path_output
+        self.reach_config.vehicle.ego.a_lon_min = self.configuration.vehicle.curvilinear.a_lon_min
+        self.reach_config.vehicle.ego.a_lon_max = self.configuration.vehicle.curvilinear.a_lon_max
+        self.reach_config.vehicle.ego.a_lat_min = self.configuration.vehicle.curvilinear.a_lat_min
+        self.reach_config.vehicle.ego.a_lat_max = self.configuration.vehicle.curvilinear.a_lat_max
+
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
         self._end_sim = None

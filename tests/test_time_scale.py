@@ -5,8 +5,6 @@ Unit tests of the module time-scale metrics
 import unittest
 import math
 
-from commonroad.visualization.mp_renderer import MPRenderer
-
 try:
     import commonroad_reach.pycrreach
     module_failed = False
@@ -23,8 +21,7 @@ from commonroad_crime.metric.time_scale.ttr import TTR
 from commonroad_crime.metric.time_scale.thw import THW
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.metric.time_scale.wttr import WTTR
-from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.simulation import Maneuver
 
 
 class TestTimeScale(unittest.TestCase):
@@ -51,61 +48,6 @@ class TestTimeScale(unittest.TestCase):
         ttc_2 = ttc_object_2.compute()
         assert math.isclose(ttc_2, math.inf, abs_tol=1e-2)
 
-    def test_simulation_long(self):
-        ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
-
-        rnd = MPRenderer()
-        self.config.scenario.draw(rnd)
-        rnd.render()
-
-        sim_long = SimulationLong(Maneuver.BRAKE, ego_vehicle, self.config)
-        simulated_state1 = sim_long.simulate_state_list(0, rnd)
-        for i in range(len(simulated_state1)):
-            self.assertEqual(simulated_state1[i].time_step, i)
-        self.assertEqual(
-            simulated_state1[-1].time_step,
-            ego_vehicle.prediction.final_time_step)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state1[-1]), True)
-
-        sim_long.update_maneuver(Maneuver.KICKDOWN)
-        simulated_state2 = sim_long.simulate_state_list(20, rnd)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state2[-1]), True)
-
-        sim_long.update_maneuver(Maneuver.CONSTANT)
-        simulated_state3 = sim_long.simulate_state_list(10, rnd)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state3[-1]), True)
-        utils_vis.save_fig("test_simulate_long", self.config.general.path_output, 0)
-
-    def test_simulation_lat(self):
-        self.config.debug.draw_visualization = True
-        ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
-
-        rnd = MPRenderer()
-        self.config.scenario.draw(rnd)
-        rnd.render()
-
-        sim_lat_left = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
-        simulated_state1 = sim_lat_left.simulate_state_list(0, rnd)
-        sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, ego_vehicle, self.config)
-        simulated_state2 = sim_lat_right.simulate_state_list(10, rnd)
-        self.config.time_scale.steer_width = 2
-        sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, ego_vehicle, self.config)
-        simulated_state3 = sim_lat_left_2.simulate_state_list(0, rnd)
-
-        for i in range(len(simulated_state1)):
-            self.assertEqual(simulated_state1[i].time_step, i)
-        self.assertEqual(simulated_state1[-1].time_step,
-                         ego_vehicle.prediction.final_time_step)
-        self.assertEqual(simulated_state2[-1].time_step,
-                         ego_vehicle.prediction.final_time_step)
-        self.assertEqual(simulated_state3[-1].time_step,
-                         ego_vehicle.prediction.final_time_step)
-
-        utils_vis.save_fig("test_simulate_lat", self.config.general.path_output, 0)
-
     def test_ttm(self):
         self.config.debug.draw_visualization = True
         ttb_object = TTB(self.config)
@@ -117,12 +59,11 @@ class TestTimeScale(unittest.TestCase):
 
         ttk_object = TTK(self.config)
         ttk = ttk_object.compute()
-        self.assertEqual(ttk, 0.7)
+        self.assertEqual(ttk, 2.0)
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
-        self.assertEqual(tts, 1.7)
-        tts_object.visualize()
+        self.assertEqual(tts, 1.1)
 
         tts2 = tts_object.compute()
         tts_object.visualize()
@@ -137,9 +78,14 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(ttr, 2.0)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
-        ttr2 = ttr_object.compute(10)
+        ttr_2 = ttr_object.compute(10)
         ttr_object.visualize()
-        self.assertEqual(ttr2, ttr - 10 * ttr_object.dt)
+        self.assertEqual(ttr_2, ttr - 10 * ttr_object.dt)
+
+        ttr_object.configuration.time_scale.steer_width = 1
+        ttr_3 = ttr_object.compute()
+        ttr_object.visualize()
+        self.assertEqual(ttr_3, 2.0)
 
     def test_thw(self):
         thw_object = THW(self.config)
@@ -170,7 +116,7 @@ class TestTimeScale(unittest.TestCase):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(0)
         wttr_object.visualize()
-        self.assertEqual(wttr, 2.0)
+        self.assertEqual(wttr, 2.2)
 
 
 
