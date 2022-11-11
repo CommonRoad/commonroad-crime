@@ -35,6 +35,7 @@ class CriMeConfiguration:
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
         self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
+        self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
         self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
 
     def update(self,
@@ -99,6 +100,12 @@ class ReachableSetScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.reachable_set_scale
         self.time_horizon = config_relevant.time_horizon
+
+
+class AccelerationScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.acceleration_scale
+        self.safety_time = config_relevant.safety_time
 
 
 class VehicleConfiguration:
