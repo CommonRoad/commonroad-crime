@@ -123,6 +123,61 @@ class SimulationBase(ABC):
         """
         pass
 
+    def check_velocity_feasibility(self, state: State) -> bool:
+        # the vehicle model in highD doesn't comply with commonroad vehicle models, thus the velocity limit
+        # doesn't work for highD scenarios
+        if state.velocity < 0 or \
+                state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
+            return False
+        return True
+
+
+class SimulationRandoMonteCarlo(SimulationBase):
+    """
+    Simulate the random behavior of vehicles.
+    """
+
+    def __init__(self,
+                 maneuver: Union[Maneuver],
+                 simulated_vehicle: DynamicObstacle,
+                 config: CriMeConfiguration):
+        if maneuver not in [Maneuver.RANDOMMC]:
+            raise ValueError(
+                f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
+        super(SimulationRandoMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+
+    def set_a_long_and_a_lat(self, ref_state: State):
+        self.a_long = self.a_lat = self.parameters.longitudinal.a_max / 4
+
+    def set_inputs(self, ref_state: State) -> None:
+        self.set_a_long_and_a_lat(ref_state)
+        self.a_long = np.random.normal(0, abs(self.a_long), 1)[0]
+        self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
+
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[State]:
+        # using copy to prevent the change of the initial trajectory
+        pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
+        state_list = self.initialize_state_list(start_time_step)
+        # update the input
+        check_elements_state(pre_state)
+        self.set_inputs(pre_state)
+        state_list.append(pre_state)
+        if given_time_limit:
+            self.time_horizon = given_time_limit
+        while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
+            self.update_inputs_x_y(pre_state)
+            suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
+            if suc_state and self.check_velocity_feasibility(suc_state):
+                check_elements_state(suc_state, pre_state, self.dt)
+                state_list.append(suc_state)
+                pre_state = suc_state
+                # update the input
+                self.set_inputs(pre_state)
+            else:
+                # re-simulate for infeasible cases
+                self.set_inputs(pre_state)
+        return state_list
+
 
 class SimulationLong(SimulationBase):
     """
@@ -152,7 +207,7 @@ class SimulationLong(SimulationBase):
                 self.a_long = self.parameters.longitudinal.a_max
         elif self.maneuver is Maneuver.STOPMC:
             self.a_long = np.random.choice([self.parameters.longitudinal.a_max * v_switch / ref_state.velocity,
-                                       v_switch])
+                                            v_switch])
         else:
             self.a_long = 0
 
@@ -193,19 +248,12 @@ class SimulationLong(SimulationBase):
                 self.update_inputs_x_y(pre_state)
         return state_list
 
-    def check_velocity_feasibility(self, state: State) -> bool:
-        # the vehicle model in highD doesn't comply with commonroad vehicle models, thus the velocity limit
-        # doesn't work for highD scenarios
-        if state.velocity < 0 or \
-                state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
-            return False
-        return True
-
 
 class SimulationLongMonteCarlo(SimulationLong):
     """
     Simulate the longitudinal trajectory using Monte-Carlo sampling
     """
+
     def __init__(self,
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
@@ -214,15 +262,12 @@ class SimulationLongMonteCarlo(SimulationLong):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
-        self.pdf = None  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
-        a_long_norm = norm(0, abs(self.a_long))
         self.a_long = np.random.normal(0, abs(self.a_long), 1)[0]
         if self.maneuver == Maneuver.STOPMC:
             self.a_long = -self.a_long
-        self.pdf = a_long_norm.pdf(self.a_long)
 
 
 class SimulationLat(SimulationBase):
@@ -359,12 +404,12 @@ class SimulationLat(SimulationBase):
             # drives along the lane direction
             target_velocity_x = pre_velocity_sum * math.cos(lane_orient)
             target_velocity_y = pre_velocity_sum * math.sin(lane_orient)
-        self.input.acceleration = np.clip((target_velocity_x - ref_state.velocity)/self.dt,
+        self.input.acceleration = np.clip((target_velocity_x - ref_state.velocity) / self.dt,
                                           max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
                                               self.parameters.a_x_min),
                                           min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
                                               self.parameters.a_x_max))
-        self.input.acceleration_y = np.clip((target_velocity_y - ref_state.velocity_y)/self.dt,
+        self.input.acceleration_y = np.clip((target_velocity_y - ref_state.velocity_y) / self.dt,
                                             max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
                                                 self.parameters.a_y_min),
                                             min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
@@ -418,6 +463,7 @@ class SimulationLatMonteCarlo(SimulationLat):
     """
     Simulate the longitudinal trajectory using Monte-Carlo sampling
     """
+
     def __init__(self,
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
@@ -426,13 +472,10 @@ class SimulationLatMonteCarlo(SimulationLat):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
-        self.pdf = None  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
-        a_lat_norm = norm(0, abs(self.a_lat))
-        self.a_lat = np.sign(self.a_lat) * np.random.normal(0, abs(self.a_lat), 1)[0]
-        self.pdf = a_lat_norm.pdf(self.a_lat)
+        self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):

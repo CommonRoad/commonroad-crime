@@ -22,3 +22,5 @@ class TestProbabilityScale(unittest.TestCase):
         p_mc_object = P_MC(self.config)
         p_mc = p_mc_object.compute(0)
         p_mc_object.visualize()
+        assert abs(p_mc - 0.8) < 0.1
+        self.assertLessEqual(p_mc, 1.)

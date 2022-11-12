@@ -4,4 +4,4 @@ monte_carlo:
   prediction_horizon: 3 # second
   nr_samples: 50
   # weights for maneuvers [stop, turn, lane change, overtake, random]
-  weights: [5, 1, 1, 1, 1]
+  weights: [1, 1, 1, 1, 5]

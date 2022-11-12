@@ -15,7 +15,8 @@ import logging
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.utility.simulation import SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver
+from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver,
+                                                 SimulationRandoMonteCarlo)
 from commonroad_crime.metric.time_scale.ttc import TTC
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeProbabilityScale
@@ -101,6 +102,8 @@ class P_MC(CriMeBase):
             simulator = SimulationLongMonteCarlo(maneuver, vehicle, self.configuration)
         elif maneuver in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
             simulator = SimulationLatMonteCarlo(maneuver, vehicle, self.configuration)
+        elif maneuver in [Maneuver.RANDOMMC]:
+            simulator = SimulationRandoMonteCarlo(maneuver, vehicle, self.configuration)
         else:
             return state_list_bundle
         for _ in range(nr_samples):
