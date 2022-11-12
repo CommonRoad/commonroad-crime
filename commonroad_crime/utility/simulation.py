@@ -214,7 +214,7 @@ class SimulationLongMonteCarlo(SimulationLong):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
-        self.pdf = None
+        self.pdf = None  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
@@ -426,7 +426,7 @@ class SimulationLatMonteCarlo(SimulationLat):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
-        self.pdf = None
+        self.pdf = None  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)

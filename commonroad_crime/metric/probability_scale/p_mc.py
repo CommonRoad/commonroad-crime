@@ -53,14 +53,12 @@ class P_MC(CriMeBase):
         self.nr_samples = config_mc.nr_samples
         self.sample_prob = np.array(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
         self.ego_state_list_set = []
-        self.other_state_list_set = []
         self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
 
-    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+    def compute(self, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         utils_log.print_and_log_info(logger, f"* \tnr of samples "
                                              f"{self.configuration.probability_scale.monte_carlo.nr_samples}")
-        self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
         colliding_prob_list = []
         for i in range(len(self.maneuver_list)):
@@ -68,30 +66,20 @@ class P_MC(CriMeBase):
             # randomly rounding to integer
             nr_sample_maneuver = int(self.nr_samples * self.sample_prob[i] + np.random.random())
             ego_sl_bundle = self.monte_carlo_simulation(self.ego_vehicle, maneuver, nr_sample_maneuver)
-            other_sl_bundle = self.monte_carlo_simulation(self.other_vehicle, maneuver, nr_sample_maneuver)
             colliding_sample_nr = 0
-            if len(ego_sl_bundle) == 0 or len(other_sl_bundle) == 0:
+            if len(ego_sl_bundle) == 0:
                 colliding_prob_list.append(1.)  # assume all trajectories are infeasible
                 continue
-            for j in range(len(other_sl_bundle)):
-                for k in range(len(ego_sl_bundle)):
-                    if isinstance(self.other_vehicle, StaticObstacle):
-                        ttc_object = TTC(self.configuration)
-                    else:
-                        # to avoid the error:  AssertionError: state_list[0].time_step=0 != self.initial_time_step=1
-                        self.other_vehicle.prediction. \
-                            trajectory.state_list = other_sl_bundle[j][
-                                                    self.other_vehicle.prediction.initial_time_step:]
-                        ttc_object = TTC(self.configuration)
-                    if ttc_object.detect_collision(ego_sl_bundle[k]):
-                        colliding_sample_nr += 1
+            for j in range(len(ego_sl_bundle)):
+                ttc_object = TTC(self.configuration)
+                if ttc_object.detect_collision(ego_sl_bundle[j]):
+                    colliding_sample_nr += 1
                 # to make sure only compute the successfully simulated trajectories
-            colliding_prob_list.append(colliding_sample_nr/(len(other_sl_bundle) * len(ego_sl_bundle)))
+            colliding_prob_list.append(colliding_sample_nr/len(ego_sl_bundle))
             self.ego_state_list_set += ego_sl_bundle
-            self.other_state_list_set += other_sl_bundle
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
-        p_mc = np.average(np.array(colliding_prob_list)/self.sample_prob)
+        p_mc = np.average(np.array(colliding_prob_list))
         self.value = utils_gen.int_round(p_mc, 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
@@ -117,6 +105,7 @@ class P_MC(CriMeBase):
             return state_list_bundle
         for _ in range(nr_samples):
             state_list_bundle.append(simulator.simulate_state_list(self.time_step, self.sim_time_steps))
+
         return state_list_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -128,9 +117,6 @@ class P_MC(CriMeBase):
 
         for sl in self.ego_state_list_set:
             utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMblue)
-        for sl in self.other_state_list_set:
-            utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMred)
-
         # plt.title(f"{self.metric_name} at time step {tstm - self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
