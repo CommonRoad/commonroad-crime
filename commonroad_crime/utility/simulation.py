@@ -292,7 +292,7 @@ class SimulationLat(SimulationBase):
         lateral_dis, orientation = utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
                                                                                    find_lanelet_by_id(lanelet_id[0]),
                                                                                    position)
-        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]:
+        if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
         if self._lateral_distance_mode == 1:
             lateral_dis = 0.8
@@ -337,6 +337,10 @@ class SimulationLat(SimulationBase):
             self.a_lat = 0
             self.a_long = 0
             self.update_inputs_x_y(pre_state)
+            _, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
+            if lane_orient_updated:
+                lane_orient = lane_orient_updated
+                max_orient = self.set_maximal_orientation(lane_orient, 4)  # 4 as possible last stage for turning
             self.adjust_velocity(pre_state, max_orient, lane_orient)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)

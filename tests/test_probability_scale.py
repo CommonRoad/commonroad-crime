@@ -21,4 +21,4 @@ class TestProbabilityScale(unittest.TestCase):
     def test_p_mc(self):
         p_mc_object = P_MC(self.config)
         p_mc = p_mc_object.compute(201, 0)
-        #p_mc_object.visualize()
+        p_mc_object.visualize()
