@@ -49,6 +49,7 @@ class P_MC(CriMeBase):
         self.sample_nr_list = config_mc.nr_samples * np.asarray(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
         self.ego_state_list_set = []
         self.other_state_list_set = []
+        self.sim_time_steps = int(config_mc.prediction_horizon/self.sce.dt)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
@@ -91,7 +92,7 @@ class P_MC(CriMeBase):
             else:
                 return state_list_bundle
             for _ in range(int(self.sample_nr_list[i])):
-                state_list_bundle.append(simulator.simulate_state_list(self.time_step))
+                state_list_bundle.append(simulator.simulate_state_list(self.time_step, self.sim_time_steps))
         return state_list_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):

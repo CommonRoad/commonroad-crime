@@ -113,7 +113,7 @@ class SimulationBase(ABC):
         pass
 
     @abstractmethod
-    def simulate_state_list(self, start_time_step: int) -> List[State]:
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[State]:
         """
         forward simulation of the state list
         """
@@ -160,7 +160,7 @@ class SimulationLong(SimulationBase):
         a_long, a_lat = self.set_a_long_and_a_lat(ref_state)
         self.update_inputs_x_y(ref_state, a_long, a_lat)
 
-    def simulate_state_list(self, start_time_step: int):
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
         """
         Simulates the longitudinal state list from the given start time step.
         """
@@ -170,6 +170,8 @@ class SimulationLong(SimulationBase):
         # update the input
         check_elements_state(pre_state)
         state_list.append(pre_state)
+        if given_time_limit:
+            self.time_horizon = given_time_limit
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.set_inputs(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
@@ -297,7 +299,7 @@ class SimulationLat(SimulationBase):
         total_timestep = math.sqrt(4 * lateral_dis / min(abs(self.parameters.a_y_max), abs(self.parameters.a_y_min)))
         return int(total_timestep / (2 * self.dt)) + (total_timestep % (2 * self.dt) > 0), orientation
 
-    def simulate_state_list(self, start_time_step: int):
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
         """
         Simulates the lateral state list from the given start time step.
         """
@@ -308,6 +310,8 @@ class SimulationLat(SimulationBase):
         state_list.append(pre_state)
         lane_orient = 0.
         max_orient = 0.
+        if given_time_limit:
+            self.time_horizon = given_time_limit
         for i in range(self._nr_stage):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if not bang_bang_ts:
