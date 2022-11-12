@@ -39,6 +39,7 @@ class Maneuver(str, Enum):
 
 
 class SimulationBase(ABC):
+
     def __init__(self, maneuver: Union[Maneuver, None],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
