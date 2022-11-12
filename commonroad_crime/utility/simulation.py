@@ -273,11 +273,9 @@ class SimulationLat(SimulationBase):
             self.a_lat = self.parameters.longitudinal.a_max
         if self.maneuver in [Maneuver.STEERRIGHT, Maneuver.TURNRIGHT, Maneuver.OVERTAKERIGHT]:
             self.a_lat = - self.a_lat
-        if self._sign_change:
-            # right-hand coordinate
-            self.a_lat = - self.a_lat
-        else:
-            self.a_lat = self.a_lat
+
+    def sign_change(self):
+        self.a_lat = - self.a_lat
 
     def set_inputs(self, ref_state: State) -> None:
         """
@@ -285,8 +283,6 @@ class SimulationLat(SimulationBase):
         """
         # set the longitudinal acceleration to 0
         self.set_a_long_and_a_lat(ref_state)
-        # includes the jerk limits
-        self.update_inputs_x_y(ref_state)
 
     def set_bang_bang_timestep_orientation(self, position: np.ndarray):
         """
@@ -315,6 +311,7 @@ class SimulationLat(SimulationBase):
         state_list = self.initialize_state_list(start_time_step)
         # update the input
         check_elements_state(pre_state)
+        self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.
         max_orient = 0.
@@ -328,10 +325,8 @@ class SimulationLat(SimulationBase):
             else:
                 lane_orient = lane_orient_updated
                 max_orient = self.set_maximal_orientation(lane_orient, i)
-            if i in [1, 2]:  # 1 for lane change, 2 for overtaking
-                self._sign_change = True
-            else:
-                self._sign_change = False
+            if i in [1, 3]:  # 1 for lane change; 1, 3 for overtaking
+                self.sign_change()
             bang_state_list = self.bang_bang_simulation(pre_state, bang_bang_ts, max_orient)
             if bang_state_list:
                 state_list += bang_state_list
@@ -402,10 +397,8 @@ class SimulationLat(SimulationBase):
     def bang_bang_simulation(self, init_state: State, simulation_length: int, max_orientation: float):
         pre_state = init_state
         state_list = []
-
         while pre_state.time_step < init_state.time_step + simulation_length \
                 and pre_state.time_step < self.time_horizon:
-            self.set_a_long_and_a_lat(pre_state)
             self.update_inputs_x_y(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
@@ -436,9 +429,8 @@ class SimulationLatMonteCarlo(SimulationLat):
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
         a_lat_norm = norm(0, abs(self.a_lat))
-        self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
+        self.a_lat = np.sign(self.a_lat) * np.random.normal(0, abs(self.a_lat), 1)[0]
         self.pdf = a_lat_norm.pdf(self.a_lat)
-        self.update_inputs_x_y(ref_state)
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
