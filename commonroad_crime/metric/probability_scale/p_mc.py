@@ -46,6 +46,10 @@ class P_MC(CriMeBase):
         config_mc = self.configuration.probability_scale.monte_carlo
         assert len(self.maneuver_list) == len(
             config_mc.mvr_weights), "Please follow the configuration guide for defining the weights of the maneuvers!"
+        if config_mc.nr_samples < len(self.maneuver_list):
+            id_random_mvr = np.random.choice(range(len(self.maneuver_list)), size=config_mc.nr_samples)
+            self.maneuver_list = [self.maneuver_list[id_m] for id_m in id_random_mvr]
+            config_mc.mvr_weights = np.array(config_mc.mvr_weights)[id_random_mvr]
         self.sample_nr_list = config_mc.nr_samples * np.asarray(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
         self.ego_state_list_set = []
         self.other_state_list_set = []
@@ -85,6 +89,7 @@ class P_MC(CriMeBase):
         state_list_bundle = []
         for i in range(len(self.maneuver_list)):
             mvr = self.maneuver_list[i]
+            print(mvr)
             if mvr in [Maneuver.STOPMC]:
                 simulator = SimulationLongMonteCarlo(mvr, vehicle, self.configuration)
             elif mvr in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
