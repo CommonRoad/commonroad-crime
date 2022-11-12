@@ -161,7 +161,6 @@ class SimulationLong(SimulationBase):
         Sets inputs for the longitudinal simulation
         """
         self.set_a_long_and_a_lat(ref_state)
-        self.update_inputs_x_y(ref_state)
 
     def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
         """
@@ -224,7 +223,6 @@ class SimulationLongMonteCarlo(SimulationLong):
         if self.maneuver == Maneuver.STOPMC:
             self.a_long = -self.a_long
         self.pdf = a_long_norm.pdf(self.a_long)
-        self.update_inputs_x_y(ref_state)
 
 
 class SimulationLat(SimulationBase):
