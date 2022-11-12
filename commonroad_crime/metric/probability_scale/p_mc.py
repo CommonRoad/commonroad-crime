@@ -15,7 +15,8 @@ import logging
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.utility.simulation import SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver
+from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver,
+                                                 SimulationRandoMonteCarlo)
 from commonroad_crime.metric.time_scale.ttc import TTC
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeProbabilityScale
@@ -32,8 +33,8 @@ class P_MC(CriMeBase):
     P-MC produces a collision probability estimation based on future evolutions from a Monte Carlo path planning
     prediction.
 
-    See Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE Proceedings.
-    Intelligent Vehicles Symposium, 2005.. IEEE, 2005.
+    See Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE Proceedings of
+    Intelligent Vehicles Symposium IEEE, 2005.
     """
     metric_name = TypeProbabilityScale.P_MC
 
@@ -50,36 +51,46 @@ class P_MC(CriMeBase):
             id_random_mvr = np.random.choice(range(len(self.maneuver_list)), size=config_mc.nr_samples)
             self.maneuver_list = [self.maneuver_list[id_m] for id_m in id_random_mvr]
             config_mc.mvr_weights = np.array(config_mc.mvr_weights)[id_random_mvr]
-        self.sample_nr_list = config_mc.nr_samples * np.asarray(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
+        self.nr_samples = config_mc.nr_samples
+        self.sample_prob = np.array(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
         self.ego_state_list_set = []
-        self.other_state_list_set = []
-        self.sim_time_steps = int(config_mc.prediction_horizon/self.sce.dt)
+        self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
 
-    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+    def compute(self, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
-        self._set_other_vehicles(vehicle_id)
+        utils_log.print_and_log_info(logger, f"* \tnr of samples "
+                                             f"{self.configuration.probability_scale.monte_carlo.nr_samples}")
         self.time_step = time_step
-        self.ego_state_list_set = self.monte_carlo_simulation(self.ego_vehicle)
-        self.other_state_list_set = self.monte_carlo_simulation(self.other_vehicle)
-        colliding_sample_nr = 0
-        for i in range(len(self.other_state_list_set)):
-            for j in range(len(self.ego_state_list_set)):
-                if isinstance(self.other_vehicle, StaticObstacle):
-                    ttc_object = TTC(self.configuration)
-                else:
-                    # to avoid the error:  AssertionError: state_list[0].time_step=0 != self.initial_time_step=1
-                    self.other_vehicle.prediction.trajectory.state_list = self.other_state_list_set[i][
-                        self.other_vehicle.prediction.initial_time_step:
-                    ]
-                    ttc_object = TTC(self.configuration)
-                if ttc_object.detect_collision(self.ego_state_list_set[j]):
+        colliding_prob_list = []
+        for i in range(len(self.maneuver_list)):
+            maneuver = self.maneuver_list[i]
+            # randomly rounding to integer
+            nr_sample_maneuver = int(self.nr_samples * self.sample_prob[i] + np.random.random())
+            ego_sl_bundle = self.monte_carlo_simulation(self.ego_vehicle, maneuver, nr_sample_maneuver)
+            colliding_sample_nr = 0
+            if len(ego_sl_bundle) == 0:
+                colliding_prob_list.append(1.)  # assume all trajectories are infeasible
+                continue
+            for j in range(len(ego_sl_bundle)):
+                ttc_object = TTC(self.configuration)
+                if ttc_object.detect_collision(ego_sl_bundle[j]):
                     colliding_sample_nr += 1
-                    print(colliding_sample_nr)
+                # to make sure only compute the successfully simulated trajectories
+            colliding_prob_list.append(colliding_sample_nr/len(ego_sl_bundle))
+            self.ego_state_list_set += ego_sl_bundle
+        # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
+        # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
+        p_mc = np.average(np.array(colliding_prob_list))
+        self.value = utils_gen.int_round(p_mc, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
-    def monte_carlo_simulation(self, vehicle: DynamicObstacle):
+    def monte_carlo_simulation(self, vehicle: DynamicObstacle, maneuver: Maneuver, nr_samples: int):
         """
         Monte Carlo simulation of the given vehicle.
         :param vehicle: dynamic obstacles
+        :param maneuver: maneuver of vehicle
+        :param nr_samples: number of samples
         """
         # static obstacle: no trajectory is simulated
         if isinstance(vehicle, StaticObstacle):
@@ -87,34 +98,30 @@ class P_MC(CriMeBase):
             utils_log.print_and_log_error(logger, msg)
             raise ValueError(msg)
         state_list_bundle = []
-        for i in range(len(self.maneuver_list)):
-            mvr = self.maneuver_list[i]
-            print(mvr)
-            if mvr in [Maneuver.STOPMC]:
-                simulator = SimulationLongMonteCarlo(mvr, vehicle, self.configuration)
-            elif mvr in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
-                simulator = SimulationLatMonteCarlo(mvr, vehicle, self.configuration)
-            else:
-                return state_list_bundle
-            for _ in range(int(self.sample_nr_list[i])):
-                state_list_bundle.append(simulator.simulate_state_list(self.time_step, self.sim_time_steps))
+        if maneuver in [Maneuver.STOPMC]:
+            simulator = SimulationLongMonteCarlo(maneuver, vehicle, self.configuration)
+        elif maneuver in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
+            simulator = SimulationLatMonteCarlo(maneuver, vehicle, self.configuration)
+        elif maneuver in [Maneuver.RANDOMMC]:
+            simulator = SimulationRandoMonteCarlo(maneuver, vehicle, self.configuration)
+        else:
+            return state_list_bundle
+        for _ in range(nr_samples):
+            state_list_bundle.append(simulator.simulate_state_list(self.time_step, self.sim_time_steps))
+
         return state_list_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize, plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                                               self.ego_state_list_set[-1],
-                                                                                               margin=20))
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                              self.ego_state_list_set[-1],
+                                                                              margin=20))
         self.rnd.render()
 
         for sl in self.ego_state_list_set:
             utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMblue)
-        for sl in self.other_state_list_set:
-            utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMred)
-
-        #plt.title(f"{self.metric_name} at time step {tstm - self.time_step}")
+        # plt.title(f"{self.metric_name} at time step {tstm - self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
         else:
             plt.show()
-
-
