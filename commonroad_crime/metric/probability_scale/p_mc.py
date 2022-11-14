@@ -53,7 +53,8 @@ class P_MC(CriMeBase):
             config_mc.mvr_weights = np.array(config_mc.mvr_weights)[id_random_mvr]
         self.nr_samples = config_mc.nr_samples
         self.sample_prob = np.array(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
-        self.ego_state_list_set = []
+        self.ego_state_list_set_cf = []  # collision-free
+        self.ego_state_list_set_wc = []  # with collisions
         self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
         self.ttc_object = TTC(self.configuration)
 
@@ -75,9 +76,11 @@ class P_MC(CriMeBase):
             for j in range(len(ego_sl_bundle)):
                 if self.ttc_object.detect_collision(ego_sl_bundle[j]):
                     colliding_sample_nr += 1
+                    self.ego_state_list_set_wc.append(ego_sl_bundle[j])
+                else:
+                    self.ego_state_list_set_cf.append(ego_sl_bundle[j])
                 # to make sure only compute the successfully simulated trajectories
             colliding_prob_list.append(colliding_sample_nr/len(ego_sl_bundle))
-            self.ego_state_list_set += ego_sl_bundle
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
         p_mc = np.average(np.array(colliding_prob_list))
@@ -114,13 +117,15 @@ class P_MC(CriMeBase):
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
                              plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                              self.ego_state_list_set[-1],
+                                                                              self.ego_vehicle.prediction.
+                                                                              trajectory.state_list,
                                                                               margin=20))
         self.rnd.render()
-
-        for sl in self.ego_state_list_set:
+        for sl in self.ego_state_list_set_wc:
+            utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMred)
+        for sl in self.ego_state_list_set_cf:
             utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMblue)
-        # plt.title(f"{self.metric_name} at time step {tstm - self.time_step}")
+        plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
         else:
