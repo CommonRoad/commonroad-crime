@@ -289,12 +289,10 @@ class SimulationLat(SimulationBase):
         self._nr_stage = 0
         self._scenario = config.scenario
         self._lateral_distance_mode = config.time_scale.steer_width
-        self._sign_change: bool = False
-
+        self._direction = 'left'  # 'right'
         super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
 
     def initialize_simulator(self):
-        self._sign_change = False
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
             # one stage: a_y
             self._nr_stage = 1
@@ -326,6 +324,10 @@ class SimulationLat(SimulationBase):
         """
         # set the longitudinal acceleration to 0
         self.set_a_long_and_a_lat(ref_state)
+        if self.a_lat > 0:
+            self._direction = 'left'
+        else:
+            self._direction = 'right'
 
     def set_bang_bang_timestep_orientation(self, position: np.ndarray):
         """
@@ -379,13 +381,14 @@ class SimulationLat(SimulationBase):
         # updates the orientation
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             check_elements_state(pre_state)
-            self.a_lat = 0
-            self.a_long = 0
-            self.update_inputs_x_y(pre_state)
             _, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if lane_orient_updated:
                 lane_orient = lane_orient_updated
-                max_orient = self.set_maximal_orientation(lane_orient, 4)  # 4 as possible last stage for turning
+                max_orient = self.set_maximal_orientation(lane_orient, 4)  # 4 as possible last stage for overtaking
+            # only when the orientation is set, the inputs are updated, otherwise the a_lat/a_long is wrong
+            self.a_lat = 0
+            self.a_long = 0
+            self.update_inputs_x_y(pre_state)
             self.adjust_velocity(pre_state, max_orient, lane_orient)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             state_list.append(suc_state)
@@ -431,13 +434,15 @@ class SimulationLat(SimulationBase):
                 (self.maneuver == Maneuver.OVERTAKERIGHT and nr_stage <= 1):
             return lane_orientation - math.pi / 4
         elif self.maneuver in [Maneuver.LANECHANGEMC, Maneuver.OVERTAKEMC]:
-            return np.random.choice([lane_orientation + math.pi / 4, lane_orientation - math.pi / 4])
-        elif self.maneuver == Maneuver.TURNLEFT:
-            return lane_orientation + math.pi / 2
-        elif self.maneuver == Maneuver.TURNRIGHT:
-            return lane_orientation - math.pi / 2
-        elif self.maneuver == Maneuver.TURNMC:
-            return np.random.choice([lane_orientation + math.pi / 2, lane_orientation - math.pi / 2])
+            if self._direction == 'left':  # Lane change to the left
+                return lane_orientation + math.pi / 4
+            else:
+                return lane_orientation - math.pi / 4
+        elif self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
+            if self._direction == 'left':  # Lane change to the left
+                return lane_orientation + math.pi / 2
+            else:
+                return lane_orientation - math.pi / 2
         else:
             return lane_orientation
 
@@ -476,6 +481,10 @@ class SimulationLatMonteCarlo(SimulationLat):
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
         self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
+        if self.a_lat > 0:
+            self._direction = 'left'
+        else:
+            self._direction = 'right'
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
