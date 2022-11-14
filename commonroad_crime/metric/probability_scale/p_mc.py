@@ -55,6 +55,7 @@ class P_MC(CriMeBase):
         self.sample_prob = np.array(config_mc.mvr_weights) / np.sum(config_mc.mvr_weights)
         self.ego_state_list_set = []
         self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
+        self.ttc_object = TTC(self.configuration)
 
     def compute(self, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
@@ -72,8 +73,7 @@ class P_MC(CriMeBase):
                 colliding_prob_list.append(1.)  # assume all trajectories are infeasible
                 continue
             for j in range(len(ego_sl_bundle)):
-                ttc_object = TTC(self.configuration)
-                if ttc_object.detect_collision(ego_sl_bundle[j]):
+                if self.ttc_object.detect_collision(ego_sl_bundle[j]):
                     colliding_sample_nr += 1
                 # to make sure only compute the successfully simulated trajectories
             colliding_prob_list.append(colliding_sample_nr/len(ego_sl_bundle))
