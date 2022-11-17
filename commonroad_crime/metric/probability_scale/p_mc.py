@@ -68,19 +68,13 @@ class P_MC(CriMeBase):
             maneuver = self.maneuver_list[i]
             # randomly rounding to integer
             nr_sample_maneuver = int(self.nr_samples * self.sample_prob[i] + np.random.random())
-            ego_sl_bundle = self.monte_carlo_simulation(self.ego_vehicle, maneuver, nr_sample_maneuver)
-            colliding_sample_nr = 0
-            if len(ego_sl_bundle) == 0:
-                colliding_prob_list.append(1.)  # assume all trajectories are infeasible
-                continue
+            ego_sl_bundle, pdf_bundle = self.monte_carlo_simulation(self.ego_vehicle, maneuver, nr_sample_maneuver)
             for j in range(len(ego_sl_bundle)):
                 if self.ttc_object.detect_collision(ego_sl_bundle[j]):
-                    colliding_sample_nr += 1
+                    colliding_prob_list.append(pdf_bundle[j])
                     self.ego_state_list_set_wc.append(ego_sl_bundle[j])
                 else:
                     self.ego_state_list_set_cf.append(ego_sl_bundle[j])
-                # to make sure only compute the successfully simulated trajectories
-            colliding_prob_list.append(colliding_sample_nr/len(ego_sl_bundle))
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
         p_mc = np.average(np.array(colliding_prob_list))
@@ -101,6 +95,7 @@ class P_MC(CriMeBase):
             utils_log.print_and_log_error(logger, msg)
             raise ValueError(msg)
         state_list_bundle = []
+        pdf_bundle = []
         if maneuver in [Maneuver.STOPMC]:
             simulator = SimulationLongMonteCarlo(maneuver, vehicle, self.configuration)
         elif maneuver in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
@@ -111,8 +106,8 @@ class P_MC(CriMeBase):
             return state_list_bundle
         for _ in range(nr_samples):
             state_list_bundle.append(simulator.simulate_state_list(self.time_step, self.sim_time_steps))
-
-        return state_list_bundle
+            pdf_bundle.append(simulator.pdf)
+        return state_list_bundle, pdf_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,

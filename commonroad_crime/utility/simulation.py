@@ -145,14 +145,18 @@ class SimulationRandoMonteCarlo(SimulationBase):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationRandoMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+        self.pdf = None  # probability density function
 
     def set_a_long_and_a_lat(self, ref_state: State):
         self.a_long = self.a_lat = self.parameters.longitudinal.a_max / 4
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
+        a_long_norm = norm(0, abs(self.a_long))
+        a_lat_norm = norm(0, abs(self.a_lat))
         self.a_long = np.random.normal(0, abs(self.a_long), 1)[0]
         self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
+        self.pdf = a_lat_norm.pdf(self.a_lat) * a_long_norm.pdf(self.a_long)
 
     def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[State]:
         # using copy to prevent the change of the initial trajectory
@@ -262,10 +266,13 @@ class SimulationLongMonteCarlo(SimulationLong):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+        self.pdf = 1  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
+        a_long_norm = norm(0, abs(self.a_long))
         self.a_long = np.random.normal(0, abs(self.a_long), 1)[0]
+        self.pdf = a_long_norm.pdf(self.a_long)
         if self.maneuver == Maneuver.STOPMC:
             self.a_long = -self.a_long
 
@@ -477,14 +484,17 @@ class SimulationLatMonteCarlo(SimulationLat):
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
+        self.pdf = 1  # probability density function
 
     def set_inputs(self, ref_state: State) -> None:
         self.set_a_long_and_a_lat(ref_state)
+        a_lat_norm = norm(0, self.a_lat)
         self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
         if self.a_lat > 0:
             self._direction = 'left'
         else:
             self._direction = 'right'
+        self.pdf = a_lat_norm.pdf(self.a_lat)
 
 
 def check_elements_state(state: State, prev_state: State = None, dt: float = None):
