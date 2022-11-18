@@ -176,7 +176,7 @@ class SimulationRandoMonteCarlo(SimulationBase):
                 state_list.append(suc_state)
                 pre_state = suc_state
                 # update the input
-                self.set_inputs(pre_state)
+                # self.set_inputs(pre_state)
             else:
                 # re-simulate for infeasible cases
                 self.set_inputs(pre_state)
