@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 def solver_wttc(veh_1: Obstacle,
                 veh_2: Obstacle,
                 time_step: int,
-                a_max: float,):
+                a_max: float, ):
     """
     Analytical solution of the worst-time-to-collision.
     """
@@ -43,7 +43,7 @@ def solver_wttc(veh_1: Obstacle,
     if isinstance(veh_2, StaticObstacle):
         a_20 = 0
     # compute the parameters
-    A = -1/4 * (a_10 + a_20) ** 2
+    A = -1 / 4 * (a_10 + a_20) ** 2
     B = 0
     C = -(a_20 + a_10) * (r_v1 + r_v2) + (v_2x0 - v_1x0) ** 2 + (v_2y0 - v_1y0) ** 2
     D = 2 * (v_2x0 - v_1x0) * (x_20 - x_10) + 2 * (v_2y0 - v_1y0) * (y_20 - y_10)
@@ -149,3 +149,30 @@ def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
     front_s, front_d = clcs.convert_to_curvilinear_coords(veh_front_pos[0], veh_front_pos[1])
     return front_s - rear_s, front_d - rear_d
 
+
+def compute_jerk(current_acceleration: float, next_acceleration: float,
+                 dt: float) -> float:
+    """
+    Computes jerk given acceleration
+
+    :param current_acceleration: acceleration of current time step
+    :param next_acceleration: acceleration of previous time step
+    :param dt: time step size
+    :return: jerk
+    """
+    jerk = (next_acceleration - current_acceleration) / dt
+    return jerk
+
+
+def compute_acceleration(current_velocity: float, next_velocity: float,
+                         dt: float):
+    """
+    Computes acceleration given velocity
+
+    :param current_velocity: velocity of current time step
+    :param next_velocity: velocity of previous time step
+    :param dt: time step size
+    :return: acceleration
+    """
+    acceleration = (next_velocity - current_velocity) / dt
+    return acceleration
