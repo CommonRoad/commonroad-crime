@@ -6,10 +6,8 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Optional
 import logging
 
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
@@ -60,7 +58,7 @@ class P_MC(CriMeBase):
 
     def compute(self, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
-        utils_log.print_and_log_info(logger, f"* \tnr of samples "
+        utils_log.print_and_log_info(logger, f"* \t\t nr of samples "
                                              f"{self.configuration.probability_scale.monte_carlo.nr_samples}")
         self.time_step = time_step
         colliding_prob_list = []
