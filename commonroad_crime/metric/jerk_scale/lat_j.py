@@ -82,7 +82,7 @@ class LatJ(CriMeBase):
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
         jerk = self._compute_jerk(evaluated_state)
         if jerk is not None:
-            self.value = utils_gen.int_round(jerk * math.cos(evaluated_state.orientation), 2)
+            self.value = utils_gen.int_round(jerk * math.sin(evaluated_state.orientation), 2)
             utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         else:
             self.value = None
