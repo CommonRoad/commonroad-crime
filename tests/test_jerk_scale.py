@@ -29,4 +29,10 @@ class TestJerkScale(unittest.TestCase):
         lat_j_3 = lat_j_obj.compute(85)
         self.assertEqual(lat_j_3, None)  # last time step
 
+        lat_j_4 = lat_j_obj.compute(84)
+        self.assertEqual(lat_j_4, None)  # time step before the last one
+
+        lat_j_5 = lat_j_obj.compute(83)
+        self.assertNotEqual(lat_j_5, None)  # two time steps before the last one
+
 
