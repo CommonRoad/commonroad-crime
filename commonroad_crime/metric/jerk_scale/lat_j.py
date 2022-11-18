@@ -6,28 +6,17 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import copy
 import math
 import logging
-from typing import List
-import matplotlib.pyplot as plt
 
-from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction
-from commonroad.scenario.trajectory import Trajectory
-
-import commonroad_dc.boundary.boundary as boundary
-from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import (create_collision_checker,
-                                                                                   create_collision_object)
+from commonroad.scenario.scenario import State
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeJerkScale
-import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
-from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 

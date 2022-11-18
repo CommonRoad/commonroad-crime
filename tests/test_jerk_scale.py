@@ -6,6 +6,7 @@ import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.jerk_scale.lat_j import LatJ
+from commonroad_crime.metric.jerk_scale.long_j import LongJ
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -35,4 +36,10 @@ class TestJerkScale(unittest.TestCase):
         lat_j_5 = lat_j_obj.compute(83)
         self.assertNotEqual(lat_j_5, None)  # two time steps before the last one
 
+    def test_long_j(self):
+        long_j_obj = LongJ(self.config)
+        long_j_1 = long_j_obj.compute(0)
+        self.assertEqual(long_j_1, 0.0)
 
+        long_j_2 = long_j_obj.compute(40)
+        self.assertEqual(long_j_2, -0.38)
