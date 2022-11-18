@@ -12,7 +12,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestJerkScale(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Gar-1_1_T-1'
+        scenario_id = 'ZAM_Zip-1_56_T-1'
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -23,6 +23,10 @@ class TestJerkScale(unittest.TestCase):
         lat_j_1 = lat_j_obj.compute(0)
         self.assertEqual(lat_j_1, 0.0)
 
-        lat_j_2 = lat_j_obj.compute(20)  # last time step
-        self.assertEqual(lat_j_2, None)
+        lat_j_2 = lat_j_obj.compute(40)
+        self.assertEqual(lat_j_2, -0.38)
+
+        lat_j_3 = lat_j_obj.compute(85)
+        self.assertEqual(lat_j_3, None)  # last time step
+
 

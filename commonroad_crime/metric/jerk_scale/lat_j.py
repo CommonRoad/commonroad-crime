@@ -47,12 +47,14 @@ class LatJ(CriMeBase):
         else:
             if hasattr(evaluated_state, 'acceleration'):
                 current_acc = evaluated_state.acceleration
-            else:
+            elif self.ego_vehicle.state_at_time(self.time_step + 1):
                 current_acc = utils_sol.compute_acceleration(
                     evaluated_state.velocity,
                     self.ego_vehicle.state_at_time(self.time_step + 1).velocity,
                     self.dt
                 )
+            else:
+                current_acc = None
             if self.ego_vehicle.state_at_time(self.time_step + 1):
                 if hasattr(self.ego_vehicle.state_at_time(self.time_step + 1), 'acceleration'):
                     next_acc = self.ego_vehicle.state_at_time(self.time_step + 1).acceleration
@@ -81,9 +83,11 @@ class LatJ(CriMeBase):
         jerk = self._compute_jerk(evaluated_state)
         if jerk is not None:
             self.value = utils_gen.int_round(jerk * math.cos(evaluated_state.orientation), 2)
+            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         else:
             self.value = None
-        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} is none, but you can interpolate it using "
+                                                 f"the values from previous time steps")
         return self.value
 
     def visualize(self):
