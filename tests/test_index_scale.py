@@ -18,10 +18,11 @@ class TestIndexScale(unittest.TestCase):
         self.config.print_configuration_summary()
         self.config.update()
 
-    def test_lat_j(self):
+    def test_bnt(self):
         btn_object = BTN(self.config)
         # vehicle in the same lanelet and in front
         btn_1 = btn_object.compute(3, 0)
+        btn_object.visualize()
         self.assertEqual(btn_1, 0.09)
 
         # vehicle in another lanelet
