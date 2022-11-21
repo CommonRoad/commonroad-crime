@@ -7,6 +7,7 @@ import math
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.acceleration_scale.dst import DST
+from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -26,3 +27,15 @@ class TestAccelerationScale(unittest.TestCase):
         self.assertEqual(dst_1, 0.)
         self.assertEqual(dst_2, 7.75)
         dst_object.visualize()
+
+    def test_a_long_req(self):
+        a_long_req_object = ALongReq(self.config)
+        a_long_req_1 = a_long_req_object.compute(202, 0)
+        self.assertEqual(a_long_req_1, -0.67)
+
+        a_long_req_2 = a_long_req_object.compute(201, 0)
+        self.assertLessEqual(a_long_req_2, 0.0)
+
+        self.config.acceleration_scale.acceleration_mode = 2
+        a_long_req_3 = a_long_req_object.compute(202, 0)
+        self.assertEqual(a_long_req_3, -4.75)

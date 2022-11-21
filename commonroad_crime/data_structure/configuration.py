@@ -107,6 +107,7 @@ class AccelerationScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.acceleration_scale
         self.safety_time = config_relevant.safety_time
+        self.acceleration_mode = config_relevant.acceleration_mode
 
 
 class ProbabilityScaleConfiguration:
