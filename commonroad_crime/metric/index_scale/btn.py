@@ -16,7 +16,6 @@ from commonroad_crime.metric.distance_scale.hw import HW
 from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
-import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
 
 logger = logging.getLogger(__name__)

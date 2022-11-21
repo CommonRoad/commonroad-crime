@@ -59,9 +59,10 @@ class ALongReq(CriMeBase):
         x_rel = self._hw_object.compute(vehicle_id, time_step)
         if self.configuration.acceleration_scale.acceleration_mode == 1:
             # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
-            # implications for autonomous vehicles."
-            v_rel = self.ego_vehicle.state_at_time(time_step).velocity - self.other_vehicle.state_at_time(
-                time_step).velocity
+            # implications for autonomous vehicles." is in correct
+            v_rel = self.other_vehicle.state_at_time(time_step).velocity -\
+                    self.ego_vehicle.state_at_time(time_step).velocity
+            utils_log.print_and_log_info(logger, f"*\t\t relative velocity is {v_rel}")
             a_req = a_obj - v_rel**2/(2*x_rel)
         else:
             # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
