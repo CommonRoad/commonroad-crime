@@ -13,6 +13,7 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndexScale
 from commonroad_crime.metric.distance_scale.hw import HW
+from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
@@ -33,34 +34,17 @@ class BTN(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(BTN, self).__init__(config)
+        self._a_long_req_object = ALongReq(config)
         self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        if self._except_obstacle_in_same_lanelet(expected_value=0.0):
-            # no negative acceleration is needed for avoiding a collision
-            return self.value
-        if hasattr(self.other_vehicle.state_at_time(time_step), 'acceleration'):
-            a_obj = self.other_vehicle.state_at_time(time_step).acceleration
-        elif self.other_vehicle.state_at_time(time_step + 1):
-            a_obj = utils_sol.compute_acceleration(self.other_vehicle.state_at_time(time_step).velocity,
-                                                   self.other_vehicle.state_at_time(time_step).velocity,
-                                                   self.dt)
-        else:
-            a_obj = 0.
-        # compute the relative longitudinal velocity
-        v_rel = self.ego_vehicle.state_at_time(time_step).velocity-self.other_vehicle.state_at_time(time_step).velocity
-        # compute the headway distance
-        x_rel = self._hw_object.compute(vehicle_id, time_step)
-        a_req = a_obj - v_rel**2/(2*x_rel)
-        if a_req > 0:  # the object is non-closing
-            self.value = 0.
-        else:
-            # (9) in "Using extreme value theory for vehicle level safety validation and implications
-            # for autonomous vehicles."
-            self.value = utils_gen.int_round(a_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
+        a_req = self._a_long_req_object.compute(vehicle_id, time_step)
+        # (9) in "Using extreme value theory for vehicle level safety validation and implications
+        # for autonomous vehicles."
+        self.value = utils_gen.int_round(a_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
