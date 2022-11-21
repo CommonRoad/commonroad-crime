@@ -17,7 +17,6 @@ import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
-from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -40,12 +39,8 @@ class BTN(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
-                                               self.other_vehicle, time_step):
-            utils_log.print_and_log_info(logger, f"*\t\t vehicle {vehicle_id} is not in the same lanelet as the "
-                                                 f"ego vehicle {self.ego_vehicle.obstacle_id}")
-            self.value = 0.  # no negative acceleration is needed for avoiding a collision
-            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        if self._except_obstacle_in_same_lanelet(expected_value=0.0):
+            # no negative acceleration is needed for avoiding a collision
             return self.value
         if hasattr(self.other_vehicle.state_at_time(time_step), 'acceleration'):
             a_obj = self.other_vehicle.state_at_time(time_step).acceleration
