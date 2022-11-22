@@ -31,14 +31,8 @@ class LongJ(LatJ):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        jerk = self._compute_jerk(evaluated_state)
-        if jerk is not None:
-            self.value = utils_gen.int_round(jerk * math.cos(evaluated_state.orientation), 2)
-            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
-        else:
-            self.value = None
-            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} is none, but you can interpolate it using "
-                                                 f"the values from previous time steps")
+        self.value = utils_gen.int_round(evaluated_state.jerk * math.cos(evaluated_state.orientation), 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
     def visualize(self):
