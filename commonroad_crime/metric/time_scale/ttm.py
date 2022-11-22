@@ -13,7 +13,7 @@ import logging
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.visualization as utils_vis
@@ -41,7 +41,7 @@ class TTM(CriMeBase):
             self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
         else:
             self.simulator = None
-        self.ttc_object = TTC(config)
+        self.ttc_object = TTCStar(config)
         self.ttc = None
         self.selected_state_list = None
         self.state_list_set = []

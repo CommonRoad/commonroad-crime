@@ -20,7 +20,7 @@ except ModuleNotFoundError:
     raise ModuleNotFoundError('commonroad_reach is not installed')
 
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.general as utils_gen
@@ -35,7 +35,7 @@ class WTTR(CriMeBase):
     def __init__(self,
                  config: CriMeConfiguration):
         super(WTTR, self).__init__(config)
-        self.ttc_object = TTC(config)
+        self.ttc_object = TTCStar(config)
         self.ttc = None
         self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
         # update the paths based on CriMe

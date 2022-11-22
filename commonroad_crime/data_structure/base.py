@@ -106,6 +106,17 @@ class CriMeBase:
             raise ValueError(f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!")
         self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
 
+    def _except_obstacle_in_same_lanelet(self, expected_value: float):
+        if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
+                                               self.other_vehicle, self.time_step):
+            utils_log.print_and_log_info(logger, f"*\t\t vehicle {self.other_vehicle.obstacle_id} is not "
+                                                 f"in the same lanelet as the "
+                                                 f"ego vehicle {self.ego_vehicle.obstacle_id}")
+            self.value = expected_value
+            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+            return True
+        return False
+
     @abstractmethod
     def compute(self,  *args, **kwargs):
         """

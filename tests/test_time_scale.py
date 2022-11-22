@@ -13,7 +13,7 @@ except ImportError:
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.metric.time_scale.ttb import TTB
 from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
@@ -36,7 +36,7 @@ class TestTimeScale(unittest.TestCase):
     def test_ttc(self):
         self.config.debug.draw_visualization = True
         self.config.debug.save_plots = True
-        ttc_object_1 = TTC(self.config)
+        ttc_object_1 = TTCStar(self.config)
         ttc_1 = ttc_object_1.compute()
         ttc_object_1.visualize()
         assert math.isclose(ttc_1, 2.4, abs_tol=1e-2)
@@ -44,7 +44,7 @@ class TestTimeScale(unittest.TestCase):
         # remove the colliding obstacle
         self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
         self.config.update(sce=self.config.scenario)
-        ttc_object_2 = TTC(self.config)
+        ttc_object_2 = TTCStar(self.config)
         ttc_2 = ttc_object_2.compute()
         assert math.isclose(ttc_2, math.inf, abs_tol=1e-2)
 
@@ -107,7 +107,7 @@ class TestTimeScale(unittest.TestCase):
         wttc_object.visualize()
         self.assertEqual(wttc, 1.3)
 
-        ttc_object = TTC(self.config)
+        ttc_object = TTCStar(self.config)
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 

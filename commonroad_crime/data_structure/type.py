@@ -15,6 +15,7 @@ from enum import Enum
 
 class TypeTimeScale(str, Enum):
     TTC = "time-to-collision"
+    TTCStar = "time-to-collision with predicted trajectories"
     TTR = "time-to-react"
     TTB = "time-to-brake"
     TTM = "time-to-maneuver"
@@ -60,6 +61,7 @@ class TypeJerkScale(str, Enum):
 class TypeIndexScale(str, Enum):
     ACI = "aggregated Crash Index"
     AM = "accident metric"
+    BTN = "brake threat number"
     CI = "conflict index"
     CPI = "crash potential index"
     PRI = "pedestrian risk index"

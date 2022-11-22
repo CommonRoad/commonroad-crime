@@ -15,7 +15,7 @@ from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver,
                                                  SimulationRandoMonteCarlo)
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeProbabilityScale
 import commonroad_crime.utility.visualization as utils_vis
@@ -54,7 +54,7 @@ class P_MC(CriMeBase):
         self.ego_state_list_set_cf = []  # collision-free
         self.ego_state_list_set_wc = []  # with collisions
         self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
-        self.ttc_object = TTC(self.configuration)
+        self.ttc_object = TTCStar(self.configuration)
 
     def compute(self, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
