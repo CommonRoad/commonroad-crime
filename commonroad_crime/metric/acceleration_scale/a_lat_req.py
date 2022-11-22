@@ -64,7 +64,7 @@ class ALatReq(CriMeBase):
             return self.value
         ego_lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
                                                                            position])[0]
-        lanelet_orientation = utils_gen.compute_lanelet_width_orientation(
+        lanelet_orientation = utils_sol.compute_lanelet_width_orientation(
             self.sce.lanelet_network.find_lanelet_by_id(ego_lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position
         )[1]

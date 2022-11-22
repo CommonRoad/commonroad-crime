@@ -17,7 +17,8 @@ from abc import ABC, abstractmethod
 from commonroad.scenario.obstacle import DynamicObstacle, State
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-import commonroad_crime.utility.general as utils_general
+from commonroad_crime.utility.general import check_elements_state
+from commonroad_crime.utility.solver import compute_lanelet_width_orientation
 
 
 class Maneuver(str, Enum):
@@ -344,9 +345,9 @@ class SimulationLat(SimulationBase):
         lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
         if not lanelet_id:
             return None, None
-        lateral_dis, orientation = utils_general.compute_lanelet_width_orientation(self._scenario.lanelet_network.
-                                                                                   find_lanelet_by_id(lanelet_id[0]),
-                                                                                   position)
+        lateral_dis, orientation = compute_lanelet_width_orientation(self._scenario.lanelet_network.
+                                                                     find_lanelet_by_id(lanelet_id[0]),
+                                                                     position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
         if self._lateral_distance_mode == 1:
@@ -497,23 +498,3 @@ class SimulationLatMonteCarlo(SimulationLat):
             self._direction = 'right'
         self.pdf = a_lat_norm.pdf(self.a_lat)
 
-
-def check_elements_state(state: State, veh_input: State = None):
-    """
-    checks the missing elements needed for PM model
-    """
-    if not hasattr(state, "slip_angle"):
-        state.slip_angle = 0
-    if not hasattr(state, "yaw_rate"):
-        state.yaw_rate = 0
-    if not hasattr(state, "velocity_y"):
-        state.velocity_y = state.velocity * math.sin(state.orientation)
-        state.velocity = state.velocity * math.cos(state.orientation)
-    if not hasattr(state, "acceleration"):
-        state.acceleration = 0.
-    if veh_input is not None:
-        state.acceleration = veh_input.acceleration
-        state.acceleration_y = veh_input.acceleration_y
-    if not hasattr(state, "acceleration_y"):
-        state.acceleration_y = state.acceleration * math.sin(state.orientation)
-        state.acceleration = state.acceleration * math.cos(state.orientation)
