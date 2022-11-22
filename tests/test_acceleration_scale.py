@@ -38,7 +38,7 @@ class TestAccelerationScale(unittest.TestCase):
 
         self.config.acceleration_scale.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_3, -4.75)
+        self.assertEqual(a_long_req_3, -5.27)
 
     def test_a_lat_req(self):
         a_lat_req_object = ALatReq(self.config)

@@ -56,7 +56,8 @@ class CriMeBase:
                                                                            'not contained in the scenario>'
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
-        utils_gen.check_elements_state_list(self.ego_vehicle.prediction.trajectory.state_list, self.dt)
+        utils_gen.check_elements_state_list([self.ego_vehicle.initial_state] +
+                                            self.ego_vehicle.prediction.trajectory.state_list, self.dt)
         self.other_vehicle: Union[Obstacle, DynamicObstacle, StaticObstacle, None] = None  # optional
         self.clcs: CurvilinearCoordinateSystem = self._update_clcs()
         self.rnd: Union[MPRenderer, None] = None
@@ -107,7 +108,8 @@ class CriMeBase:
             raise ValueError(f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!")
         self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         if isinstance(self.other_vehicle, DynamicObstacle):
-            utils_gen.check_elements_state_list(self.other_vehicle.prediction.trajectory.state_list, self.dt)
+            utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
+                                                self.other_vehicle.prediction.trajectory.state_list, self.dt)
 
     def _except_obstacle_in_same_lanelet(self, expected_value: float):
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,

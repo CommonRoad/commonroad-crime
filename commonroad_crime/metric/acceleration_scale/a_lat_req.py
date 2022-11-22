@@ -74,22 +74,17 @@ class ALatReq(CriMeBase):
             # no lateral acceleration is needed for avoiding a collision
             self.value = 0.
             return self.value
-        if hasattr(self.other_vehicle.state_at_time(time_step), 'acceleration_y'):
-            a_obj_lat = (self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
-                         self.other_vehicle.state_at_time(time_step).acceleration) * math.sin(lanelet_orientation)
-        elif self.other_vehicle.state_at_time(time_step + 1):
-            a_obj_lat = utils_sol.compute_acceleration(self.other_vehicle.state_at_time(time_step).velocity,
-                                                       self.other_vehicle.state_at_time(time_step + 1).velocity,
-                                                       self.dt) * \
-                        math.sin(lanelet_orientation)
-        else:
-            a_obj_lat = 0.
+        a_obj_lat = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
+                              self.other_vehicle.state_at_time(time_step).acceleration) * math.sin(lanelet_orientation)
+
         # compute the headway distance
         d_rel_lat = utils_sol.compute_clcs_distance(self.clcs,
                                                     self.ego_vehicle.state_at_time(time_step).position,
                                                     self.ego_vehicle.state_at_time(time_step).position)[1]
-        v_rel_lat = (self.other_vehicle.state_at_time(time_step).velocity -
-                     self.ego_vehicle.state_at_time(time_step).velocity) * math.sin(lanelet_orientation)
+        v_rel_lat = (math.sqrt(self.other_vehicle.state_at_time(time_step).velocity**2 +
+                               self.other_vehicle.state_at_time(time_step).velocity_y**2) -
+                     math.sqrt(self.ego_vehicle.state_at_time(time_step).velocity**2 +
+                               self.ego_vehicle.state_at_time(time_step).velocity_y**2)) * math.sin(lanelet_orientation)
 
         self.value = utils_gen.int_round(min(
             abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, 'left')),

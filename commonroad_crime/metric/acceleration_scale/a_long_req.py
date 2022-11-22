@@ -47,21 +47,32 @@ class ALongReq(CriMeBase):
         if self._except_obstacle_in_same_lanelet(expected_value=0.0):
             # no negative acceleration is needed for avoiding a collision
             return self.value
-        a_obj = self.other_vehicle.state_at_time(time_step).acceleration
+        ego_lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
+                                                                           position])[0]
+        lanelet_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(ego_lanelet_id[0]),
+            self.ego_vehicle.state_at_time(time_step).position
+        )[1]
+        a_obj = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration ** 2 +
+                          self.other_vehicle.state_at_time(time_step).acceleration_y ** 2) * math.cos(
+            lanelet_orientation)
         # compute the headway distance
         x_rel = self._hw_object.compute(vehicle_id, time_step)
+        v_ego_long = math.sqrt(self.ego_vehicle.state_at_time(time_step).velocity ** 2 + self.ego_vehicle.state_at_time(
+            time_step).velocity_y ** 2) * math.cos(lanelet_orientation)
+        v_other_long = math.sqrt(
+            self.other_vehicle.state_at_time(time_step).velocity ** 2 + self.other_vehicle.state_at_time(
+                time_step).velocity_y ** 2) * math.cos(lanelet_orientation)
         if self.configuration.acceleration_scale.acceleration_mode == 1:
             # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
             # implications for autonomous vehicles." is in correct
-            v_rel = self.other_vehicle.state_at_time(time_step).velocity -\
-                    self.ego_vehicle.state_at_time(time_step).velocity
+            v_rel = v_other_long - v_ego_long
             utils_log.print_and_log_info(logger, f"*\t\t relative velocity is {v_rel}")
-            a_req = a_obj - v_rel**2/(2*x_rel)
+            a_req = a_obj - v_rel ** 2 / (2 * x_rel)
         else:
             # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
             # Collision Mitigation"
-            a_req = - self.ego_vehicle.state_at_time(time_step).velocity**2 / (
-                    2 * (x_rel - self.other_vehicle.state_at_time(time_step).velocity**2/2*a_obj))
+            a_req = - v_ego_long ** 2 / (2 * (x_rel - v_other_long ** 2 / 2 * a_obj))
         if a_req > 0:  # the object is non-closing
             self.value = 0.
         else:
