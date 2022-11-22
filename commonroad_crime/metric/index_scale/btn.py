@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndexScale
-from commonroad_crime.metric.distance_scale.hw import HW
 from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -34,16 +33,15 @@ class BTN(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(BTN, self).__init__(config)
         self._a_long_req_object = ALongReq(config)
-        self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        a_req = self._a_long_req_object.compute(vehicle_id, time_step)
+        a_long_req = self._a_long_req_object.compute(vehicle_id, time_step)
         # (9) in "Using extreme value theory for vehicle level safety validation and implications
         # for autonomous vehicles."
-        self.value = utils_gen.int_round(a_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
+        self.value = utils_gen.int_round(a_long_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 

@@ -59,6 +59,9 @@ class ALatReq(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
+        if self._except_obstacle_in_same_lanelet(expected_value=0.0):
+            # no negative acceleration is needed for avoiding a collision
+            return self.value
         ego_lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
                                                                            position])[0]
         lanelet_orientation = utils_gen.compute_lanelet_width_orientation(
