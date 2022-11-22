@@ -17,7 +17,8 @@ from abc import ABC, abstractmethod
 from commonroad.scenario.obstacle import DynamicObstacle, State
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.utility.general import compute_lanelet_width_orientation, check_elements_state
+from commonroad_crime.utility.general import check_elements_state
+from commonroad_crime.utility.solver import compute_lanelet_width_orientation
 
 
 class Maneuver(str, Enum):

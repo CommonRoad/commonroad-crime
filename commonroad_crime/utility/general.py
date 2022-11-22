@@ -88,7 +88,7 @@ def check_elements_state_list(state_list: List[State], dt: float):
         check_elements_state(state_list[i], dt=dt)
 
 
-def check_elements_state(state: State, next_state: State = None, veh_input: State = None, dt: float = 0.1):
+def check_elements_state(state: State, veh_input: State = None, next_state: State = None, dt: float = 0.1):
     """
     checks the missing elements needed for PM model
     """
