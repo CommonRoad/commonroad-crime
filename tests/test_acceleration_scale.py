@@ -7,6 +7,7 @@ import unittest
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.acceleration_scale.dst import DST
 from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
+from commonroad_crime.metric.acceleration_scale.a_lat_req import ALatReq
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -38,3 +39,7 @@ class TestAccelerationScale(unittest.TestCase):
         self.config.acceleration_scale.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
         self.assertEqual(a_long_req_3, -4.75)
+
+    def test_a_lat_req(self):
+        a_lat_req_object = ALatReq(self.config)
+        a_lat_req_1 = a_lat_req_object.compute(202, 0)
