@@ -86,6 +86,7 @@ class TTM(CriMeBase):
             plt.show()
 
     def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = True):
+        self.state_list_set = []
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.time_step = time_step
         if ttc:

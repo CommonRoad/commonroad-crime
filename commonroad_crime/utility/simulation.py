@@ -163,8 +163,8 @@ class SimulationRandoMonteCarlo(SimulationBase):
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
-        check_elements_state(pre_state)
         self.set_inputs(pre_state)
+        check_elements_state(pre_state, self.input)
         state_list.append(pre_state)
         if given_time_limit:
             self.time_horizon = given_time_limit
@@ -172,7 +172,7 @@ class SimulationRandoMonteCarlo(SimulationBase):
             self.update_inputs_x_y(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
-                check_elements_state(suc_state, pre_state, self.dt)
+                check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 # update the input
@@ -229,8 +229,9 @@ class SimulationLong(SimulationBase):
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
-        check_elements_state(pre_state)
+        check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
+
         state_list.append(pre_state)
         if given_time_limit:
             self.time_horizon = given_time_limit
@@ -238,7 +239,7 @@ class SimulationLong(SimulationBase):
             self.update_inputs_x_y(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
-                check_elements_state(suc_state, pre_state, self.dt)
+                check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 # update the input
@@ -387,7 +388,6 @@ class SimulationLat(SimulationBase):
                 break
         # updates the orientation
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
-            check_elements_state(pre_state)
             _, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if lane_orient_updated:
                 lane_orient = lane_orient_updated
@@ -395,6 +395,7 @@ class SimulationLat(SimulationBase):
             # only when the orientation is set, the inputs are updated, otherwise the a_lat/a_long is wrong
             self.a_lat = 0
             self.a_long = 0
+            check_elements_state(pre_state, self.input)
             self.update_inputs_x_y(pre_state)
             self.adjust_velocity(pre_state, max_orient, lane_orient)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
@@ -461,7 +462,7 @@ class SimulationLat(SimulationBase):
             self.update_inputs_x_y(pre_state)
             suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
             if suc_state:
-                check_elements_state(suc_state, pre_state, self.dt)
+                check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 if abs(suc_state.orientation) > abs(max_orientation):
@@ -497,7 +498,7 @@ class SimulationLatMonteCarlo(SimulationLat):
         self.pdf = a_lat_norm.pdf(self.a_lat)
 
 
-def check_elements_state(state: State, prev_state: State = None, dt: float = None):
+def check_elements_state(state: State, veh_input: State = None):
     """
     checks the missing elements needed for PM model
     """
@@ -510,8 +511,9 @@ def check_elements_state(state: State, prev_state: State = None, dt: float = Non
         state.velocity = state.velocity * math.cos(state.orientation)
     if not hasattr(state, "acceleration"):
         state.acceleration = 0.
-    if prev_state is not None:
-        state.acceleration = (state.velocity - prev_state.velocity) / dt
+    if veh_input is not None:
+        state.acceleration = veh_input.acceleration
+        state.acceleration_y = veh_input.acceleration_y
     if not hasattr(state, "acceleration_y"):
         state.acceleration_y = state.acceleration * math.sin(state.orientation)
         state.acceleration = state.acceleration * math.cos(state.orientation)
