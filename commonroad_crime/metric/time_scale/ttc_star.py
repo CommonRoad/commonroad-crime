@@ -32,11 +32,11 @@ from commonroad_crime.utility.visualization import TUMcolor
 logger = logging.getLogger(__name__)
 
 
-class TTC(CriMeBase):
-    metric_name = TypeTimeScale.TTC
+class TTCStar(CriMeBase):
+    metric_name = TypeTimeScale.TTCStar
 
     def __init__(self, config: CriMeConfiguration):
-        super(TTC, self).__init__(config)
+        super(TTCStar, self).__init__(config)
         self.sce.remove_obstacle(self.ego_vehicle)
 
         # creat collision checker

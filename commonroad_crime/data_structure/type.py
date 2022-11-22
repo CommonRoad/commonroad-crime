@@ -15,6 +15,7 @@ from enum import Enum
 
 class TypeTimeScale(str, Enum):
     TTC = "time-to-collision"
+    TTCStar = "time-to-collision with predicted trajectories"
     TTR = "time-to-react"
     TTB = "time-to-brake"
     TTM = "time-to-maneuver"

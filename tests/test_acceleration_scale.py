@@ -3,7 +3,6 @@ Unit tests of the module acceleration-scale metrics
 """
 
 import unittest
-import math
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.acceleration_scale.dst import DST
