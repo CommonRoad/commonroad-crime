@@ -47,14 +47,7 @@ class ALongReq(CriMeBase):
         if self._except_obstacle_in_same_lanelet(expected_value=0.0):
             # no negative acceleration is needed for avoiding a collision
             return self.value
-        if hasattr(self.other_vehicle.state_at_time(time_step), 'acceleration'):
-            a_obj = self.other_vehicle.state_at_time(time_step).acceleration
-        elif self.other_vehicle.state_at_time(time_step + 1):
-            a_obj = utils_sol.compute_acceleration(self.other_vehicle.state_at_time(time_step).velocity,
-                                                   self.other_vehicle.state_at_time(time_step + 1).velocity,
-                                                   self.dt)
-        else:
-            a_obj = 0.
+        a_obj = self.other_vehicle.state_at_time(time_step).acceleration
         # compute the headway distance
         x_rel = self._hw_object.compute(vehicle_id, time_step)
         if self.configuration.acceleration_scale.acceleration_mode == 1:

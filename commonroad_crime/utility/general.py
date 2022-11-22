@@ -6,16 +6,18 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
+from commonroad.scenario.lanelet import LaneletNetwork
 from commonroad.scenario.scenario import State, Scenario, DynamicObstacle, Obstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
 
+import commonroad_crime.utility.solver as utils_sol
+
 import numpy as np
 import math
-from typing import Union, Tuple
+from typing import Union, List
 import functools
 
 
@@ -66,89 +68,6 @@ def int_round(some_float, tolerance=1):
         return int(some_float * p + 0.5) / p
 
 
-def compute_lanelet_width_orientation(lanelet: Lanelet, position: np.ndarray) -> Tuple[Union[float, None],
-                                                                                       Union[float, None]]:
-    """
-    Computes the width and the orientation of the lanelet at given position
-
-    :param lanelet: a lanelet
-    :param position: position of the vehicle
-    """
-    width_list = _compute_width_from_lanalet_boundary(lanelet.left_vertices, lanelet.right_vertices)
-    orient_list = _compute_orientation_from_polyline(lanelet.center_vertices)
-
-    path_length = _compute_path_length_from_polyline(lanelet.center_vertices)
-    lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
-    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
-    return np.interp(position_s, path_length, width_list), np.interp(position_s, path_length, orient_list)
-
-
-def _compute_width_from_lanalet_boundary(
-        left_polyline: np.ndarray, right_polyline: np.ndarray
-) -> np.ndarray:
-    """
-    Computes the width of a lanelet. Credit: Sebastian Maierhofer.
-
-    :param left_polyline: left boundary of lanelet
-    :param right_polyline: right boundary of lanelet
-    :return: width along lanelet
-    """
-    width_along_lanelet = np.zeros((len(left_polyline),))
-    for i in range(len(left_polyline)):
-        width_along_lanelet[i] = np.linalg.norm(
-            left_polyline[i] - right_polyline[i]
-        )
-    return width_along_lanelet
-
-
-def _compute_path_length_from_polyline(polyline: np.ndarray) -> np.ndarray:
-    """
-    Computes the path length of a polyline. Credit: Sebastian Maierhofer.
-
-    :param polyline: polyline for which path length should be calculated
-    :return: path length along polyline
-    """
-    assert (
-            isinstance(polyline, np.ndarray)
-            and polyline.ndim == 2
-            and len(polyline[:, 0]) > 2
-    ), "Polyline malformed for pathlenth computation p={}".format(polyline)
-
-    distance = np.zeros((len(polyline),))
-    for i in range(1, len(polyline)):
-        distance[i] = distance[i - 1] + np.linalg.norm(
-            polyline[i] - polyline[i - 1]
-        )
-
-    return np.array(distance)
-
-
-def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
-    """
-    Computes orientation along a polyline. Credit: Sebastian Maierhofer.
-
-    :param polyline: polyline for which orientation should be calculated
-    :return: orientation along polyline
-    """
-    assert (
-            isinstance(polyline, np.ndarray)
-            and len(polyline) > 1
-            and polyline.ndim == 2
-            and len(polyline[0, :]) == 2
-    ), "<Math>: not a valid polyline. polyline = {}".format(polyline)
-    if len(polyline) < 2:
-        raise ValueError("Cannot create orientation from polyline of length < 2")
-
-    orientation = [0]
-    for i in range(1, len(polyline)):
-        pt1 = polyline[i - 1]
-        pt2 = polyline[i]
-        tmp = pt2 - pt1
-        orientation.append(np.arctan2(tmp[1], tmp[0]))
-
-    return np.array(orientation)
-
-
 def check_in_same_lanelet(lanelet_network: LaneletNetwork,
                           vehicle_1: DynamicObstacle,
                           vehicle_2: Union[DynamicObstacle, Obstacle],
@@ -157,7 +76,19 @@ def check_in_same_lanelet(lanelet_network: LaneletNetwork,
     lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
-def check_elements_state(state: State, veh_input: State = None):
+
+def check_elements_state_list(state_list: List[State], dt: float):
+    v_list = [state.velocity for state in state_list]
+    t_list = [state.time_step*dt for state in state_list]
+    a_list = np.gradient(np.array(v_list), t_list)
+    j_list = np.gradient(np.array(a_list), t_list)
+    for i in range(len(state_list)):
+        state_list[i].acceleration = a_list[i]
+        state_list[i].jerk = j_list[i]
+        check_elements_state(state_list[i], dt=dt)
+
+
+def check_elements_state(state: State, next_state: State = None, veh_input: State = None, dt: float = 0.1):
     """
     checks the missing elements needed for PM model
     """
@@ -168,11 +99,20 @@ def check_elements_state(state: State, veh_input: State = None):
     if not hasattr(state, "velocity_y"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
+
+    # check the acceleration
     if not hasattr(state, "acceleration"):
-        state.acceleration = 0.
+        if next_state:
+            state.acceleration = utils_sol.compute_acceleration(
+                next_state.velocity, state.velocity, dt
+            )
+        else:
+            state.acceleration = 0.
     if veh_input is not None:
         state.acceleration = veh_input.acceleration
         state.acceleration_y = veh_input.acceleration_y
     if not hasattr(state, "acceleration_y"):
         state.acceleration_y = state.acceleration * math.sin(state.orientation)
         state.acceleration = state.acceleration * math.cos(state.orientation)
+
+
