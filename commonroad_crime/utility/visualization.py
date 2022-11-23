@@ -19,12 +19,12 @@ from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
 
-zorder = 22
 
 
 class TUMcolor(tuple, Enum):
     TUMblue = (0, 101 / 255, 189 / 255)
     TUMred = (227 / 255, 27 / 255, 35 / 255)
+    TUMdarkred = (139 / 255, 0, 0)
     TUMgreen = (162 / 255, 173 / 255, 0)
     TUMgray = (156 / 255, 157 / 255, 159 / 255)
     TUMdarkgray = (88 / 255, 88 / 255, 99 / 255)
@@ -34,6 +34,26 @@ class TUMcolor(tuple, Enum):
     TUMblack = (0, 0, 0)
     TUMlightgray = (217 / 255, 218 / 255, 219 / 255)
 
+zorder = 22
+
+OTHER_VEHICLE_DRAW_PARAMS = {"trajectory": {
+    "draw_trajectory": False},
+    "dynamic_obstacle":
+        {"draw_icon": True,
+         "vehicle_shape": {"occupancy": {"shape": {
+             "polygon": {
+                 "facecolor": TUMcolor.TUMred,
+                 "edgecolor": TUMcolor.TUMdarkred,
+             },
+             "rectangle": {
+                 "facecolor": TUMcolor.TUMred,
+                 "edgecolor": TUMcolor.TUMdarkred,
+             },
+             "circle": {
+                 "facecolor": TUMcolor.TUMred,
+                 "edgecolor": TUMcolor.TUMdarkred,
+             }
+         }}}}}
 
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg

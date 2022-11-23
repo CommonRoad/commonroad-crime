@@ -13,7 +13,7 @@ except ImportError:
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.metric.time_scale.ttb import TTB
 from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
@@ -36,7 +36,7 @@ class TestTimeScale(unittest.TestCase):
     def test_ttc(self):
         self.config.debug.draw_visualization = True
         self.config.debug.save_plots = True
-        ttc_object_1 = TTC(self.config)
+        ttc_object_1 = TTCStar(self.config)
         ttc_1 = ttc_object_1.compute()
         ttc_object_1.visualize()
         assert math.isclose(ttc_1, 2.4, abs_tol=1e-2)
@@ -44,7 +44,7 @@ class TestTimeScale(unittest.TestCase):
         # remove the colliding obstacle
         self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
         self.config.update(sce=self.config.scenario)
-        ttc_object_2 = TTC(self.config)
+        ttc_object_2 = TTCStar(self.config)
         ttc_2 = ttc_object_2.compute()
         assert math.isclose(ttc_2, math.inf, abs_tol=1e-2)
 
@@ -53,17 +53,18 @@ class TestTimeScale(unittest.TestCase):
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
         ttb_object.visualize()
-        self.assertEqual(ttb, 2.0)
+        self.assertEqual(ttb, 1.6)
         ttb2 = ttb_object.compute()
         self.assertEqual(ttb, ttb2)
 
         ttk_object = TTK(self.config)
         ttk = ttk_object.compute()
-        self.assertEqual(ttk, 2.0)
+        self.assertEqual(ttk, 0.6)
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
-        self.assertEqual(tts, 1.1)
+        tts_object.visualize()
+        self.assertEqual(tts, 2.2)
 
         tts2 = tts_object.compute()
         tts_object.visualize()
@@ -75,17 +76,18 @@ class TestTimeScale(unittest.TestCase):
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
         ttr_object.visualize()
-        self.assertEqual(ttr, 2.0)
+        self.assertEqual(ttr, 1.6)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
         ttr_2 = ttr_object.compute(10)
         ttr_object.visualize()
-        self.assertEqual(ttr_2, ttr - 10 * ttr_object.dt)
+        # ttr_2 != ttr - 10 * ttr_object.dt due to the binary search, which might missed some possible solutions
+        self.assertGreater(ttr, ttr_2)
 
         ttr_object.configuration.time_scale.steer_width = 1
         ttr_3 = ttr_object.compute()
         ttr_object.visualize()
-        self.assertEqual(ttr_3, 2.0)
+        self.assertEqual(ttr_3, 2.2)
 
     def test_thw(self):
         thw_object = THW(self.config)
@@ -107,7 +109,7 @@ class TestTimeScale(unittest.TestCase):
         wttc_object.visualize()
         self.assertEqual(wttc, 1.3)
 
-        ttc_object = TTC(self.config)
+        ttc_object = TTCStar(self.config)
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 

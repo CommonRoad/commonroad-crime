@@ -8,10 +8,10 @@ cartesian:
     a_y_min: -8.0
 
     # jerk in m/s^3
-    j_x_min: -50.0
-    j_x_max: 50.0
-    j_y_min: -50.0
-    j_y_max: 50.0
+    j_x_min: -25.0
+    j_x_max: 25.0
+    j_y_min: -25.0
+    j_y_max: 25.0
 
 curvilinear:
     # velocity in m/s
@@ -29,10 +29,10 @@ curvilinear:
     a_max: 8.0
 
     # jerk in m/s^3
-    j_lon_min: -50.0
-    j_lon_max: 50.0
-    j_lat_min: -50.0
-    j_lat_max: 50.0
+    j_lon_min: -25.0
+    j_lon_max: 25.0
+    j_lat_min: -25.0
+    j_lat_max: 25.0
 
     reference_point: rear
 
