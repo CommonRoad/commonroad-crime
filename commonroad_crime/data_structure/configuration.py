@@ -35,6 +35,8 @@ class CriMeConfiguration:
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
         self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
+        self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
+        self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
         self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
 
     def update(self,
@@ -101,13 +103,32 @@ class ReachableSetScaleConfiguration:
         self.time_horizon = config_relevant.time_horizon
 
 
+class AccelerationScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.acceleration_scale
+        self.safety_time = config_relevant.safety_time
+        self.acceleration_mode = config_relevant.acceleration_mode
+
+
+class ProbabilityScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.probability_scale
+        self.monte_carlo = ProbabilityScaleConfiguration.MonteCarlo(config_relevant)
+        
+    class MonteCarlo:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_mc = dict_config.monte_carlo
+            self.prediction_horizon = dict_mc.prediction_horizon
+            self.nr_samples = dict_mc.nr_samples
+            self.mvr_weights = dict_mc.weights
+
+
 class VehicleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.vehicle
         self.ego_id = config_relevant.ego_id
 
         # vehicle configuration in the curvilinear coordinate system
-        # fixme: check whether this is actually runable
         self.curvilinear = VehicleConfiguration.Curvilinear(config_relevant)
 
         # vehicle configuration in the cartesian frame
@@ -130,7 +151,7 @@ class VehicleConfiguration:
     class Curvilinear:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_curvilinear = dict_config.curvilinear
-            self.clcs = None  # fixme: other assignment?
+            self.clcs = None
 
             self.v_lon_min = dict_curvilinear.v_lon_min
             self.v_lon_max = dict_curvilinear.v_lon_max

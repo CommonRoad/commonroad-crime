@@ -7,37 +7,42 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import logging
-import math
-
 import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeIndexScale
+from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
+import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
 
 logger = logging.getLogger(__name__)
 
 
-class TTC(CriMeBase):
+class BTN(CriMeBase):
     """
-    With a constant acceleration decision model of the vehicles motion
+    the relation between the negative acceleration needed to marginally avoid a collision and the maximum deceleration
+    available for the vehicle.
 
-    -- using (5.24) in "Collision Avoidance Theory with Application to Automotive Collision Mitigation"
+    -- from Åsljung, Daniel, Jonas Nilsson, and Jonas Fredriksson. "Using extreme value theory for vehicle level safety
+    validation and implications for autonomous vehicles." IEEE Transactions on Intelligent Vehicles 2.4 (2017): 288-297.
     """
-    metric_name = TypeTimeScale.TTC
+    metric_name = TypeIndexScale.BTN
 
     def __init__(self, config: CriMeConfiguration):
-        super(TTC, self).__init__(config)
+        super(BTN, self).__init__(config)
+        self._a_long_req_object = ALongReq(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        ######### to be implemented ##############
-        self.value = 0.5 #math.inf
-        ##########################################
+        a_long_req = self._a_long_req_object.compute(vehicle_id, time_step)
+        # (9) in "Using extreme value theory for vehicle level safety validation and implications
+        # for autonomous vehicles."
+        self.value = utils_gen.int_round(a_long_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
     def visualize(self):

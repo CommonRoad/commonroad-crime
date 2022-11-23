@@ -6,10 +6,14 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union
 import numpy as np
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle
+from commonroad.scenario.lanelet import Lanelet
+
+from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
+from numpy import ndarray
 
 try:
     from commonroad_reach.pycrreach import ReachPolygon, ReachNode
@@ -21,7 +25,7 @@ except ModuleNotFoundError:
 def solver_wttc(veh_1: Obstacle,
                 veh_2: Obstacle,
                 time_step: int,
-                a_max: float,):
+                a_max: float, ):
     """
     Analytical solution of the worst-time-to-collision.
     """
@@ -41,7 +45,7 @@ def solver_wttc(veh_1: Obstacle,
     if isinstance(veh_2, StaticObstacle):
         a_20 = 0
     # compute the parameters
-    A = -1/4 * (a_10 + a_20) ** 2
+    A = -1 / 4 * (a_10 + a_20) ** 2
     B = 0
     C = -(a_20 + a_10) * (r_v1 + r_v2) + (v_2x0 - v_1x0) ** 2 + (v_2y0 - v_1y0) ** 2
     D = 2 * (v_2x0 - v_1x0) * (x_20 - x_10) + 2 * (v_2y0 - v_1y0) * (y_20 - y_10)
@@ -127,3 +131,134 @@ def compute_drivable_area(reachable_set: Dict[int, List[ReachNode]]):
     """
     area_profile = compute_drivable_area_profile(reachable_set)
     return np.sum(area_profile)
+
+
+def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
+                          veh_rear_pos: ndarray,
+                          veh_front_pos: ndarray) -> Tuple[float, float]:
+    """
+    Compute the distance between two vehicles along the curvilinear coordinate system. The sign of the distance
+    is based on the assumption of the relative position of the vehicles. If the distance > 0, the relative
+    position relationship holds. And vice versa.
+
+    :param clcs: curvi-linear coordinate system
+    :param veh_rear_pos: the position of the rear vehicle
+    :param veh_front_pos: the position of the front vehicle
+
+    :return the longitudinal and lateral relative distances
+    """
+    rear_s, rear_d = clcs.convert_to_curvilinear_coords(veh_rear_pos[0], veh_rear_pos[1])
+    front_s, front_d = clcs.convert_to_curvilinear_coords(veh_front_pos[0], veh_front_pos[1])
+    return front_s - rear_s, front_d - rear_d
+
+
+def compute_jerk(current_acceleration: float, next_acceleration: float,
+                 dt: float) -> float:
+    """
+    Computes jerk given acceleration
+
+    :param current_acceleration: acceleration of current time step
+    :param next_acceleration: acceleration of previous time step
+    :param dt: time step size
+    :return: jerk
+    """
+    jerk = (next_acceleration - current_acceleration) / dt
+    return jerk
+
+
+def compute_acceleration(current_velocity: float, next_velocity: float,
+                         dt: float):
+    """
+    Computes acceleration given velocity
+
+    :param current_velocity: velocity of current time step
+    :param next_velocity: velocity of previous time step
+    :param dt: time step size
+    :return: acceleration
+    """
+    acceleration = (next_velocity - current_velocity) / dt
+    return acceleration
+
+
+def compute_lanelet_width_orientation(lanelet: Lanelet, position: np.ndarray) -> Tuple[Union[float, None],
+                                                                                       Union[float, None]]:
+    """
+    Computes the width and the orientation of the lanelet at given position
+
+    :param lanelet: a lanelet
+    :param position: position of the vehicle
+    """
+    width_list = _compute_width_from_lanalet_boundary(lanelet.left_vertices, lanelet.right_vertices)
+    orient_list = _compute_orientation_from_polyline(lanelet.center_vertices)
+
+    path_length = _compute_path_length_from_polyline(lanelet.center_vertices)
+    lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
+    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
+    return np.interp(position_s, path_length, width_list), np.interp(position_s, path_length, orient_list)
+
+
+def _compute_width_from_lanalet_boundary(
+        left_polyline: np.ndarray, right_polyline: np.ndarray
+) -> np.ndarray:
+    """
+    Computes the width of a lanelet. Credit: Sebastian Maierhofer.
+
+    :param left_polyline: left boundary of lanelet
+    :param right_polyline: right boundary of lanelet
+    :return: width along lanelet
+    """
+    width_along_lanelet = np.zeros((len(left_polyline),))
+    for i in range(len(left_polyline)):
+        width_along_lanelet[i] = np.linalg.norm(
+            left_polyline[i] - right_polyline[i]
+        )
+    return width_along_lanelet
+
+
+def _compute_path_length_from_polyline(polyline: np.ndarray) -> np.ndarray:
+    """
+    Computes the path length of a polyline. Credit: Sebastian Maierhofer.
+
+    :param polyline: polyline for which path length should be calculated
+    :return: path length along polyline
+    """
+    assert (
+            isinstance(polyline, np.ndarray)
+            and polyline.ndim == 2
+            and len(polyline[:, 0]) > 2
+    ), "Polyline malformed for pathlenth computation p={}".format(polyline)
+
+    distance = np.zeros((len(polyline),))
+    for i in range(1, len(polyline)):
+        distance[i] = distance[i - 1] + np.linalg.norm(
+            polyline[i] - polyline[i - 1]
+        )
+
+    return np.array(distance)
+
+
+def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
+    """
+    Computes orientation along a polyline. Credit: Sebastian Maierhofer.
+
+    :param polyline: polyline for which orientation should be calculated
+    :return: orientation along polyline
+    """
+    assert (
+            isinstance(polyline, np.ndarray)
+            and len(polyline) > 1
+            and polyline.ndim == 2
+            and len(polyline[0, :]) == 2
+    ), "<Math>: not a valid polyline. polyline = {}".format(polyline)
+    if len(polyline) < 2:
+        raise ValueError("Cannot create orientation from polyline of length < 2")
+
+    orientation = [0]
+    for i in range(1, len(polyline)):
+        pt1 = polyline[i - 1]
+        pt2 = polyline[i]
+        tmp = pt2 - pt1
+        orientation.append(np.arctan2(tmp[1], tmp[0]))
+
+    return np.array(orientation)
+

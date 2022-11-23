@@ -13,7 +13,7 @@ import logging
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-from commonroad_crime.metric.time_scale.ttc import TTC
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.visualization as utils_vis
@@ -41,7 +41,7 @@ class TTM(CriMeBase):
             self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
         else:
             self.simulator = None
-        self.ttc_object = TTC(config)
+        self.ttc_object = TTCStar(config)
         self.ttc = None
         self.selected_state_list = None
         self.state_list_set = []
@@ -55,10 +55,13 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                             self.selected_state_list,
-                                                                             margin=10))
+        if self.selected_state_list:
+            self._initialize_vis(figsize=figsize,
+                                 plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                                  self.selected_state_list,
+                                                                                  margin=10))
+        else:
+            self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)
         self.rnd.render()
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
@@ -83,6 +86,7 @@ class TTM(CriMeBase):
             plt.show()
 
     def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = True):
+        self.state_list_set = []
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.time_step = time_step
         if ttc:
@@ -111,7 +115,8 @@ class TTM(CriMeBase):
         high = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.'))) + initial_step
         while low < high:
             mid = int((low + high) / 2)
-            state_list = self.simulator.simulate_state_list(mid, self.rnd)
+            state_list = self.simulator.simulate_state_list(mid)
+            utils_gen.check_elements_state_list(state_list, self.dt)
             self.state_list_set.append(state_list[mid:])
             # flag for successful simulation, 0: False, 1: True
             flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step

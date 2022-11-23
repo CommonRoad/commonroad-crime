@@ -1,0 +1,8 @@
+#  from Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic lane-change maneuvers."
+# IEEE Transactions on Intelligent Transportation Systems 11.3 (2010): 607-616.
+safety_time: 2 # s
+
+# the assumption of acceleration values
+# 1. constant acceleration
+# 2. piecewise constant motion: all vehicles will remain stationary when zero velocity is reached
+acceleration_mode: 1

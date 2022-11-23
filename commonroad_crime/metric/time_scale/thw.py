@@ -45,12 +45,10 @@ class THW(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
-                                               self.other_vehicle, time_step):
-            self.value = math.inf
-            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+
+        if self._except_obstacle_in_same_lanelet(expected_value=math.inf):
             return self.value
-        self.value = self.cal_headway()
+        self.value = utils_gen.int_round(self.cal_headway(), 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
