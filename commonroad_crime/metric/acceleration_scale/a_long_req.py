@@ -49,7 +49,7 @@ class ALongReq(CriMeBase):
             return self.value
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
                                                                        position])[0]
-        # orientation of the ego vehicle and other other vehicle
+        # orientation of the ego vehicle and the other vehicle
         ego_orientation = utils_sol.compute_lanelet_width_orientation(
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position
