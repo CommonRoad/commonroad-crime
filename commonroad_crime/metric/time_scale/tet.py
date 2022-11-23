@@ -13,6 +13,10 @@ class TET(CriMeBase):
         super(TET, self).__init__(config)
 
     def compute(self, time_step: int = 0, tau: int = 0):
+        """
+        Iterate through all states, calculate ttc, compare it to tau and then add dt to the result
+        if ttc is smaller than tau
+        """
         self.value = 0;
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         for i in range(time_step, len(state_list)):
