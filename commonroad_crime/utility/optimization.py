@@ -64,27 +64,29 @@ class TCIOptimizer(OptimizerBase):
         self.dt = sce.dt
         self.sce = sce
 
-    def vehicle_model(self):
+    def vehicle_model(self, ref_state: State):
         # initializing the model using the velocity in the reference path
-        # v_old = math.sqrt(ref_state_list[time_step].velocity ** 2 + ref_state_list[time_step].velocity_y ** 2)
+        v_old = math.sqrt(ref_state.velocity ** 2 + ref_state.velocity_y ** 2)
         return lambda x_, u_: ca.vertcat(*[x_[2],
-                                           x_[3],
+                                           x_[3] * v_old,
                                            u_[0],
-                                           u_[1]])
+                                           u_[1] / v_old])
 
     def constraints(self, x_initial: State, ref_state_list: List[State]):
         # initial condition
         ini_x = np.array([[x_initial.position[0]],
                           [x_initial.position[1]],
-                          [x_initial.velocity],
-                          [x_initial.velocity_y]]).T
+                          [x_initial.velocity**2 + x_initial.velocity_y**2],
+                          [x_initial.orientation]]).T
         self.opti.subject_to(self._opt_states[0, :] == ini_x)
         for k in range(self.tci_config.N):
-            x_next = self._opt_states[k, :] + self.vehicle_model()(self._opt_states[k, :],
-                                                                   self._opt_controls[k, :]).T * self.dt
+            x_next = self._opt_states[k, :] + self.vehicle_model(ref_state_list[k])(self._opt_states[k, :],
+                                                                                    self._opt_controls[k,
+                                                                                    :]).T * self.dt
             self.opti.subject_to(self._opt_states[k + 1, :] == x_next)
             self.opti.subject_to(self._opt_controls[k, 0]**2 + self._opt_controls[k, 1]**2 <=
                                  self.veh_config.cartesian.longitudinal.a_max**2)
+            # todo: add road boundary
 
     def cost_function(self, x_initial: State, ref_state_list: List[State], d_y: float, r_y: float, d_x: float):
         obj = 0.
