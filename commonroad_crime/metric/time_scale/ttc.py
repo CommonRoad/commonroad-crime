@@ -10,6 +10,7 @@ import logging
 import math
 
 import matplotlib.pyplot as plt
+import numpy as np
 from commonroad_dc import pycrcc
 from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker
 
@@ -18,8 +19,10 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
-import commonroad_crime.utility.general as utils_gen
 import commonroad_dc.boundary.boundary as boundary
+
+from commonroad_crime.metric.distance_scale import hw
+from commonroad_crime.metric.distance_scale.hw import HW
 
 logger = logging.getLogger(__name__)
 
@@ -45,41 +48,41 @@ class TTC(CriMeBase):
         # remove the added objects from the scenario
         self.sce.remove_obstacle(road_boundary_obstacle)
         self.sce.add_objects(self.ego_vehicle)
+        self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self._set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        state_list = self.ego_vehicle.prediction.trajectory.state_list
-        pos1 = state_list[0].position[0]
-        pos2 = state_list[0].position[1]
-        vx = state_list[0].velocity
-        vy = state_list[0].velocity_y
-        theta = state_list[0].orientation
-        ######### to be implemented ##############
-        self.value = 0.5 #math.inf
-        for i in range(time_step, len(state_list)):
-            """
-            Evaluation of collisions should be the same as in ttcstar, only the calculation of the state is different.
-            Instead of getting the state from the state_list, we have a fixed orientation and fixed velocity.
-            So for each time step we derive the new position by the velocity * dt added to the old position
-            """
-            ego = pycrcc.TimeVariantCollisionObject(i)
-            ego.append_obstacle(pycrcc.RectOBB(0.5 * self.ego_vehicle.obstacle_shape.length,
-                                               0.5 * self.ego_vehicle.obstacle_shape.width,
-                                               theta, pos1, pos2))
-            ego_obb = pycrcc.RectOBB(0.5 * self.ego_vehicle.obstacle_shape.length,
-                                     0.5 * self.ego_vehicle.obstacle_shape.width,
-                                     theta, pos1, pos2)
-            ego.append_obstacle(ego_obb)
-            if self.collision_checker.collide(ego):
-                self.value = utils_gen.int_round((i - time_step) * self.dt, str(self.dt)[::-1].find('.'))
-                # once collides, loop ends -> the first colliding timestep as the ttc
-                break
+        state = self.ego_vehicle.state_at_time(time_step)
+        state_other = self.other_vehicle.state_at_time(time_step)
+        """
+        Using https://www.diva-portal.org/smash/get/diva2:617438/FULLTEXT01.pdf 
+        "Collision Avoidance Theory with Application to Automotive Collision Mitigation" formula 5.26
+        """
+        delta_d = self._hw_object.compute(vehicle_id, time_step)
 
-            pos1 += self.dt * vx
-            pos2 += self.dt * vy
-        ##########################################
+        v_ego = np.sqrt(state.velocity ** 2 + state.velocity_y ** 2)
+        v_other = np.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2)
+        delta_v = v_other - v_ego
+
+        a_ego = np.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2)
+        a_other = np.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2)
+        delta_a = a_other - a_ego
+
+        if delta_d != np.Inf and delta_d != np.NINF:
+            if delta_v < 0 and delta_a < 0:
+                self.value = - (delta_d / delta_v)
+            elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
+                first = - (delta_v / delta_a)
+                second = np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a
+                if delta_v < 0:
+                    self.value = first - second
+                else:
+                    self.value = first + second
+            else:  # (delta_v >= 0 and delta_a >= 0) or (delta_v ** 2 - 2 * delta_d * delta_a < 0)
+                self.value = np.Inf
+
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
@@ -95,4 +98,3 @@ class TTC(CriMeBase):
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
         else:
             plt.show()
-

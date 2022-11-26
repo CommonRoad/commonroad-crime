@@ -11,3 +11,5 @@ metric: 1, 2
 # 1. default value from the paper "A flexible method for criticality assessment in driver assistance systems"
 # 2. based on the lane width
 steer_width: 1
+# threshold for TET and TIT
+tau: 2
