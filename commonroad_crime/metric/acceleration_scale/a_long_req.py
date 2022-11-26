@@ -47,22 +47,29 @@ class ALongReq(CriMeBase):
         if self._except_obstacle_in_same_lanelet(expected_value=0.0):
             # no negative acceleration is needed for avoiding a collision
             return self.value
-        ego_lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
-                                                                           position])[0]
-        lanelet_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(ego_lanelet_id[0]),
+        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
+                                                                       position])[0]
+        # orientation of the ego vehicle and the other vehicle
+        ego_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position
         )[1]
+        other_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+            self.other_vehicle.state_at_time(time_step).position
+        )[1]
+        # acceleration of the other vehicle along the lanelet
         a_obj = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration ** 2 +
                           self.other_vehicle.state_at_time(time_step).acceleration_y ** 2) * math.cos(
-            lanelet_orientation)
-        # compute the headway distance
+            other_orientation)
+        # compute the headway (relative distance) along the lanelet
         x_rel = self._hw_object.compute(vehicle_id, time_step)
+        # compute the vehicles' velocity along the lanelet direction
         v_ego_long = math.sqrt(self.ego_vehicle.state_at_time(time_step).velocity ** 2 + self.ego_vehicle.state_at_time(
-            time_step).velocity_y ** 2) * math.cos(lanelet_orientation)
+            time_step).velocity_y ** 2) * math.cos(ego_orientation)
         v_other_long = math.sqrt(
             self.other_vehicle.state_at_time(time_step).velocity ** 2 + self.other_vehicle.state_at_time(
-                time_step).velocity_y ** 2) * math.cos(lanelet_orientation)
+                time_step).velocity_y ** 2) * math.cos(other_orientation)
         if self.configuration.acceleration_scale.acceleration_mode == 1:
             # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
             # implications for autonomous vehicles." is in correct

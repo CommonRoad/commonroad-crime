@@ -14,6 +14,7 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeJerkScale
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
+import commonroad_crime.utility.solver as utils_sol
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,14 @@ class LongJ(LatJ):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        self.value = utils_gen.int_round(evaluated_state.jerk * math.cos(evaluated_state.orientation), 2)
+        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
+                                                                       position])[0]
+        # orientation of the ego vehicle and the other vehicle
+        ego_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+            self.ego_vehicle.state_at_time(time_step).position
+        )[1]
+        self.value = utils_gen.int_round(evaluated_state.jerk * math.cos(ego_orientation), 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
