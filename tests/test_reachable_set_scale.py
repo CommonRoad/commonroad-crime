@@ -11,7 +11,7 @@ import commonroad_crime.utility.logger as util_logger
 try:
     import commonroad_reach.pycrreach
     module_failed = False
-except ImportError:
+except ModuleNotFoundError:
     module_failed = True
 
 
