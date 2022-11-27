@@ -44,3 +44,5 @@ class TestIndexScale(unittest.TestCase):
     def test_tci(self):
         tci_object = TCI(self.config)
         tci_1 = tci_object.compute(0)
+        tci_object.visualize()
+        pass

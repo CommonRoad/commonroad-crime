@@ -14,6 +14,7 @@ from abc import abstractmethod
 
 import numpy as np
 from commonroad.scenario.scenario import State, Scenario
+from commonroad.scenario.trajectory import Trajectory
 from commonroad.scenario.lanelet import Lanelet
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
@@ -58,8 +59,8 @@ class TCIOptimizer(OptimizerBase):
         self._a_x = self._opt_controls[:, 0]
         self._a_y = self._opt_controls[:, 1]
 
-        # parameters, these parameters are the reference trajectories of the states
-        self.opt_x_ref = self.opti.parameter(self.tci_config.N + 1, 4)
+        # # parameters, these parameters are the reference trajectories of the states
+        # self.opt_x_ref = self.opti.parameter(self.tci_config.N + 1, 4)
 
         self.dt = sce.dt
         self.sce = sce
@@ -76,7 +77,7 @@ class TCIOptimizer(OptimizerBase):
         # initial condition
         ini_x = np.array([[x_initial.position[0]],
                           [x_initial.position[1]],
-                          [x_initial.velocity**2 + x_initial.velocity_y**2],
+                          [math.sqrt(x_initial.velocity**2 + x_initial.velocity_y**2)],
                           [x_initial.orientation]]).T
         self.opti.subject_to(self._opt_states[0, :] == ini_x)
         for k in range(self.tci_config.N):
@@ -101,20 +102,20 @@ class TCIOptimizer(OptimizerBase):
 
     def optimize(self,
                  ego_vehicle,
-                 time_step: int):
+                 time_step: int) ->  ca.OptiSol:
         # find the state with the maximum lateral distance to all obstacles
         d_y = 0.
         d_x = 0.
         r_y = 0.
         for obs in self.sce.obstacles:
             if obs is not ego_vehicle:
-                for i in range(self.tci_config.N + 1):
-                    if ego_vehicle.state_at_time(i) and obs.state_at_time(i):
-                        r_y = abs(ego_vehicle.state_at_time(i).position[1] - obs.state_at_time(i).position[1])
+                for k in range(self.tci_config.N + 1):
+                    if ego_vehicle.state_at_time(k) and obs.state_at_time(k):
+                        r_y = abs(ego_vehicle.state_at_time(k).position[1] - obs.state_at_time(k).position[1])
                         if r_y > d_y:
                             d_y = r_y
-                            d_x = abs(ego_vehicle.state_at_time(i).position[0] - obs.state_at_time(i).position[0])
-                            r_y = ego_vehicle.state_at_time(i).position[1]
+                            d_x = abs(ego_vehicle.state_at_time(k).position[0] - obs.state_at_time(k).position[0])
+                            r_y = ego_vehicle.state_at_time(k).position[1]
         obj = self.cost_function(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
         self.constraints(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list)
         self.opti.minimize(obj)
@@ -122,4 +123,21 @@ class TCIOptimizer(OptimizerBase):
                         'ipopt.acceptable_tol': 1e-8, 'ipopt.acceptable_obj_change_tol': 1e-6, }
         self.opti.solver('ipopt', opts_setting)
         sol = self.opti.solve()
-        print(sol.value(self._opt_states))
+        return sol
+
+    def convert_result_to_cr_trajectory(self, sol: ca.OptiSol):
+        """
+        Converts the current result to the CommonRoad trajectory
+        """
+        state_list = []
+        opt_x = sol.value(self._opt_states)
+        for k in range(self.tci_config.N):
+            kwarg = {
+                'position': np.array([opt_x[k, 0], opt_x[k, 1]]),
+                'velocity': opt_x[k, 2],
+                'orientation': opt_x[k, 3],
+                'time_step': k
+            }
+            state_list.append(State(**kwarg))
+        return Trajectory(0, state_list)
+
