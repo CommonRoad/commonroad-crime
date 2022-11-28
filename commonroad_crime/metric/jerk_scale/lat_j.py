@@ -33,8 +33,15 @@ class LatJ(CriMeBase):
     def compute(self, time_step: int):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
+        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
+                                                                       position])[0]
+        # orientation of the ego vehicle and the other vehicle
+        ego_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+            self.ego_vehicle.state_at_time(time_step).position
+        )[1]
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        self.value = utils_gen.int_round(evaluated_state.jerk * math.sin(evaluated_state.orientation), 2)
+        self.value = utils_gen.int_round(evaluated_state.jerk * math.sin(ego_orientation), 2)
         return self.value
 
     def visualize(self):

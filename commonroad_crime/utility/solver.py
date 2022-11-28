@@ -6,7 +6,7 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-from typing import Tuple, List, Dict, Union
+from typing import Tuple, Union
 import numpy as np
 from scipy.spatial.distance import cdist
 
@@ -16,11 +16,7 @@ from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.geometry.util import resample_polyline
 
-try:
-    from commonroad_reach.pycrreach import ReachPolygon, ReachNode
-    import commonroad_reach.utility.reach_operation as utils_ops
-except ModuleNotFoundError:
-    raise ModuleNotFoundError('commonroad_reach is not installed')
+logger = logging.getLogger(__name__)
 
 
 def solver_wttc(veh_1: Obstacle,
@@ -143,25 +139,6 @@ def compute_disc_radius_and_distance(length: float, width: float, ref_point="CEN
         raise Exception("reference point has to be either 'CENTER' or 'REAR'")
 
     return radius_disc, dist_circles
-
-
-def compute_drivable_area_profile(reachable_set: Dict[int, List[ReachNode]]) -> np.ndarray:
-    """
-    Computes area profile for given reachability analysis.
-    """
-    area_profile = []
-    for t, reach_set_nodes in reachable_set.items():
-        area_profile.append(utils_ops.compute_area_of_reach_nodes(reach_set_nodes))
-    return np.array(area_profile)
-
-
-def compute_drivable_area(reachable_set: Dict[int, List[ReachNode]]):
-    """
-    Computes drivable area.
-    """
-    area_profile = compute_drivable_area_profile(reachable_set)
-    return np.sum(area_profile)
-
 
 def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
                           veh_rear_pos: np.ndarray,

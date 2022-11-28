@@ -25,7 +25,7 @@ class TestJerkScale(unittest.TestCase):
         self.assertEqual(lat_j_1, 0.0)
 
         lat_j_2 = lat_j_obj.compute(40)
-        self.assertEqual(lat_j_2, -0.04)
+        self.assertEqual(lat_j_2, 0.0)
 
         lat_j_3 = lat_j_obj.compute(85)
         self.assertNotEqual(lat_j_3, None)  # last time step
@@ -43,6 +43,3 @@ class TestJerkScale(unittest.TestCase):
 
         long_j_2 = long_j_obj.compute(40)
         self.assertEqual(long_j_2, -1.71)
-        self.assertAlmostEqual(long_j_obj.ego_vehicle.state_at_time(41).acceleration -
-                               long_j_obj.ego_vehicle.state_at_time(40).acceleration,
-                               -1.71 * long_j_obj.dt, 2)
