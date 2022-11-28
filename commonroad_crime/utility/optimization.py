@@ -68,7 +68,7 @@ class TCIOptimizer(OptimizerBase):
                                            u_[0],
                                            u_[1] / v_old])
 
-    def constraints(self, x_initial: State, ref_state_list: List[State]):
+    def constraints(self, x_initial: State, ref_state_list: List[State], boundary_limit_list: List[List]):
         # initial condition
         ini_x = np.array([[x_initial.position[0]],
                           [x_initial.position[1]],
@@ -82,7 +82,11 @@ class TCIOptimizer(OptimizerBase):
             self.opti.subject_to(self._opt_states[k + 1, :] == x_next)
             self.opti.subject_to(self._opt_controls[k, 0] ** 2 + self._opt_controls[k, 1] ** 2 <=
                                  self.veh_config.cartesian.longitudinal.a_max ** 2)
-            # todo: add road boundary
+            # road boundary
+            self.opti.subject_to(self.opti.bounded(boundary_limit_list[k][0],
+                                                   self._opt_states[k, 1],
+                                                   boundary_limit_list[k][1]))
+        # todo: three circle approximation
 
     def cost_function(self, x_initial: State, ref_state_list: List[State],
                       d_y: float, r_y: float, d_x: float):
@@ -108,30 +112,34 @@ class TCIOptimizer(OptimizerBase):
         d_x_list = []
         d_y_list = []
         r_y_list = []
+        boundary_limit_list = []
         for obs in self.sce.obstacles:
             if obs is not vehicle:
                 for k in range(time_step, time_step + self.tci_config.N + 1):
                     if vehicle.state_at_time(k):
-                        d_y = dis_bound = utils_sol.compute_veh_dis_to_boundary(vehicle.state_at_time(k),
-                                                                                self.sce.lanelet_network)
+                        dis_bound = utils_sol.compute_veh_dis_to_boundary(vehicle.state_at_time(k),
+                                                                          self.sce.lanelet_network)
+                        d_y = max(dis_bound)
+                        boundary_limit_list.append([obs.state_at_time(k).position[1] - dis_bound[1],
+                                                    obs.state_at_time(k).position[1] + dis_bound[0]])
                         d_x = math.inf
                         if obs.state_at_time(k):
                             dis_other = abs(vehicle.state_at_time(k).position[1] - obs.state_at_time(k).position[1])
-                            d_y = max(dis_other, dis_bound)
+                            d_y = max(dis_other, d_y)
                             d_x = abs(vehicle.state_at_time(k).position[0] - obs.state_at_time(k).position[0])
                         d_y_list.append(d_y)
                         d_x_list.append(d_x)
                         r_y_list.append(vehicle.state_at_time(k).position[1])
         idx = np.argmax(d_y_list)
-        return r_y_list[idx], d_y_list[idx], d_x_list[idx]
+        return r_y_list[idx], d_y_list[idx], d_x_list[idx], boundary_limit_list
 
     def optimize(self,
                  ego_vehicle: DynamicObstacle,
                  time_step: int) -> ca.OptiSol:
-        r_y, d_y, d_x = self.compute_params(ego_vehicle, time_step)
+        r_y, d_y, d_x, boundary_limit_list = self.compute_params(ego_vehicle, time_step)
         obj = self.cost_function(ego_vehicle.state_at_time(time_step),
                                  ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
-        self.constraints(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list)
+        self.constraints(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list, boundary_limit_list)
         self.opti.minimize(obj)
         opts_setting = {'ipopt.max_iter': 100, 'ipopt.print_level': 0, 'print_time': 0,
                         'ipopt.acceptable_tol': 1e-8, 'ipopt.acceptable_obj_change_tol': 1e-6, }

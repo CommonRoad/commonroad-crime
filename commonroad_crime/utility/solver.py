@@ -54,9 +54,11 @@ def solver_wttc(veh_1: Obstacle,
     return np.roots(np.array([A, B, C, D, E]))
 
 
-def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -> float:
+def obtain_road_boundary(state: State, lanelet_network: LaneletNetwork) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Computes the distance between the vehicle cenver and the road boundary
+    Obtains the road boundaries based on the vehicle state.
+
+    return: (left boundary, right boundary)
     """
     veh_lanelet_id = lanelet_network.find_lanelet_by_position([state.position])[0]
     lanelet_leftmost = lanelet_rightmost = lanelet_network.find_lanelet_by_id(veh_lanelet_id[0])
@@ -66,10 +68,19 @@ def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -
         lanelet_rightmost = lanelet_network.find_lanelet_by_id(lanelet_rightmost.adj_right)
     left_bounds = resample_polyline(lanelet_leftmost.left_vertices)
     right_bounds = resample_polyline(lanelet_rightmost.right_vertices)
-    return max(
-        np.min(cdist(np.array([state.position]), left_bounds, "euclidean")),
-        np.min(cdist(np.array([state.position]), right_bounds, "euclidean"))
-    )
+    return left_bounds, right_bounds
+
+
+def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -> Tuple[float, float]:
+    """
+    Computes the distance between the vehicle cenver and the road boundary
+
+    return: (distance to the right boundary,
+             distance to the left boundary)
+    """
+    left_b, right_b = obtain_road_boundary(state, lanelet_network)
+    return np.min(cdist(np.array([state.position]), right_b, "euclidean")), \
+           np.min(cdist(np.array([state.position]), left_b, "euclidean"))
 
 
 def compute_disc_radius_and_distance(length: float, width: float, ref_point="CENTER", dist_axle_rear=None) \
