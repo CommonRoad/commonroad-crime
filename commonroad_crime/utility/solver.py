@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 from typing import Tuple, Union
 import numpy as np
+import logging
 from scipy.spatial.distance import cdist
 
 from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State
