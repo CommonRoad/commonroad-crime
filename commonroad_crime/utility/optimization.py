@@ -11,13 +11,15 @@ import math
 import casadi as ca
 from typing import List, Union
 from abc import abstractmethod
+from scipy.spatial.distance import cdist
 
 import numpy as np
-from commonroad.scenario.scenario import State, Scenario
+from commonroad.scenario.scenario import State, Scenario, DynamicObstacle
 from commonroad.scenario.trajectory import Trajectory
-from commonroad.scenario.lanelet import Lanelet
+from commonroad.scenario.lanelet import LaneletNetwork
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
+import commonroad_crime.utility.solver as utils_sol
 
 
 class OptimizerBase:
@@ -49,18 +51,11 @@ class TCIOptimizer(OptimizerBase):
 
         self.opti = ca.Opti()
         # define state and input variables
+        # x_w, y_w, v_v, psi
         self._opt_states = self.opti.variable(self.tci_config.N + 1, 4)
-        self._x_w = self._opt_states[:, 0]
-        self._y_w = self._opt_states[:, 1]
-        self._v_v = self._opt_states[:, 2]
-        self._psi = self._opt_states[:, 3]
 
+        # a_x, a_y
         self._opt_controls = self.opti.variable(self.tci_config.N, 2)
-        self._a_x = self._opt_controls[:, 0]
-        self._a_y = self._opt_controls[:, 1]
-
-        # # parameters, these parameters are the reference trajectories of the states
-        # self.opt_x_ref = self.opti.parameter(self.tci_config.N + 1, 4)
 
         self.dt = sce.dt
         self.sce = sce
@@ -77,7 +72,7 @@ class TCIOptimizer(OptimizerBase):
         # initial condition
         ini_x = np.array([[x_initial.position[0]],
                           [x_initial.position[1]],
-                          [math.sqrt(x_initial.velocity**2 + x_initial.velocity_y**2)],
+                          [math.sqrt(x_initial.velocity ** 2 + x_initial.velocity_y ** 2)],
                           [x_initial.orientation]]).T
         self.opti.subject_to(self._opt_states[0, :] == ini_x)
         for k in range(self.tci_config.N):
@@ -85,38 +80,57 @@ class TCIOptimizer(OptimizerBase):
                                                                                     self._opt_controls[k,
                                                                                     :]).T * self.dt
             self.opti.subject_to(self._opt_states[k + 1, :] == x_next)
-            self.opti.subject_to(self._opt_controls[k, 0]**2 + self._opt_controls[k, 1]**2 <=
-                                 self.veh_config.cartesian.longitudinal.a_max**2)
+            self.opti.subject_to(self._opt_controls[k, 0] ** 2 + self._opt_controls[k, 1] ** 2 <=
+                                 self.veh_config.cartesian.longitudinal.a_max ** 2)
             # todo: add road boundary
 
-    def cost_function(self, x_initial: State, ref_state_list: List[State], d_y: float, r_y: float, d_x: float):
+    def cost_function(self, x_initial: State, ref_state_list: List[State],
+                      d_y: float, r_y: float, d_x: float):
         obj = 0.
-        for k in range(min(self.tci_config.N, len(ref_state_list))):
-            v_old = math.sqrt(ref_state_list[k].velocity ** 2 + ref_state_list[k].velocity_y ** 2)
-            obj += self.tci_config.w_y * (self._opt_states[k, 1] - r_y) ** 2 * v_old / (d_y ** 2 * self.veh_config.
-                                                                                        cartesian.longitudinal.v_max) + \
-                self.tci_config.w_x * (ca.fmax(0, self._opt_states[k, 0] - 0.5 * self._opt_states[k, 2])) / d_x + \
-                self.tci_config.w_ax * self._opt_controls[k, 0] ** 2/self.veh_config.cartesian.longitudinal.a_max**2 + \
-                self.tci_config.w_ay * self._opt_controls[k, 1] ** 2/self.veh_config.cartesian.longitudinal.a_max**2
+        for k in range(x_initial.time_step,
+                       min(x_initial.time_step + self.tci_config.N + 1, len(ref_state_list))):
+            if d_x is not math.inf and d_x and d_y:
+                v_old = math.sqrt(ref_state_list[k].velocity ** 2 + ref_state_list[k].velocity_y ** 2)
+                obj += self.tci_config.w_y * (self._opt_states[k, 1] - r_y) ** 2 * v_old / \
+                       (d_y ** 2 * self.veh_config.cartesian.longitudinal.v_max) + \
+                       self.tci_config.w_x * (ca.fmax(0, self._opt_states[k, 0] - 0.5 * self._opt_states[k, 2])) / d_x
+            if k != x_initial.time_step + self.tci_config.N:
+                obj += self.tci_config.w_ax * \
+                       self._opt_controls[k, 0] ** 2 / self.veh_config.cartesian.longitudinal.a_max ** 2 + \
+                       self.tci_config.w_ay * \
+                       self._opt_controls[k, 1] ** 2 / self.veh_config.cartesian.longitudinal.a_max ** 2
         return obj
 
-    def optimize(self,
-                 ego_vehicle,
-                 time_step: int) ->  ca.OptiSol:
-        # find the state with the maximum lateral distance to all obstacles
-        d_y = 0.
-        d_x = 0.
-        r_y = 0.
+    def compute_params(self, vehicle: DynamicObstacle, time_step: int):
+        """
+        Computes the state with the maximum lateral distance to all obstacles
+        """
+        d_x_list = []
+        d_y_list = []
+        r_y_list = []
         for obs in self.sce.obstacles:
-            if obs is not ego_vehicle:
-                for k in range(self.tci_config.N + 1):
-                    if ego_vehicle.state_at_time(k) and obs.state_at_time(k):
-                        r_y = abs(ego_vehicle.state_at_time(k).position[1] - obs.state_at_time(k).position[1])
-                        if r_y > d_y:
-                            d_y = r_y
-                            d_x = abs(ego_vehicle.state_at_time(k).position[0] - obs.state_at_time(k).position[0])
-                            r_y = ego_vehicle.state_at_time(k).position[1]
-        obj = self.cost_function(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
+            if obs is not vehicle:
+                for k in range(time_step, time_step + self.tci_config.N + 1):
+                    if vehicle.state_at_time(k):
+                        d_y = dis_bound = utils_sol.compute_veh_dis_to_boundary(vehicle.state_at_time(k),
+                                                                                self.sce.lanelet_network)
+                        d_x = math.inf
+                        if obs.state_at_time(k):
+                            dis_other = abs(vehicle.state_at_time(k).position[1] - obs.state_at_time(k).position[1])
+                            d_y = max(dis_other, dis_bound)
+                            d_x = abs(vehicle.state_at_time(k).position[0] - obs.state_at_time(k).position[0])
+                        d_y_list.append(d_y)
+                        d_x_list.append(d_x)
+                        r_y_list.append(vehicle.state_at_time(k).position[1])
+        idx = np.argmax(d_y_list)
+        return r_y_list[idx], d_y_list[idx], d_x_list[idx]
+
+    def optimize(self,
+                 ego_vehicle: DynamicObstacle,
+                 time_step: int) -> ca.OptiSol:
+        r_y, d_y, d_x = self.compute_params(ego_vehicle, time_step)
+        obj = self.cost_function(ego_vehicle.state_at_time(time_step),
+                                 ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
         self.constraints(ego_vehicle.initial_state, ego_vehicle.prediction.trajectory.state_list)
         self.opti.minimize(obj)
         opts_setting = {'ipopt.max_iter': 100, 'ipopt.print_level': 0, 'print_time': 0,
@@ -140,4 +154,3 @@ class TCIOptimizer(OptimizerBase):
             }
             state_list.append(State(**kwarg))
         return Trajectory(0, state_list)
-

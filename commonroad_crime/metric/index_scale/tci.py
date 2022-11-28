@@ -18,6 +18,7 @@ import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.optimization as utils_opt
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -47,4 +48,12 @@ class TCI(CriMeBase):
 
     def visualize(self):
         traj = self._optimizer.convert_result_to_cr_trajectory(self._sol)
-        pass
+        self._initialize_vis(plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                              traj.state_list,
+                                                                              margin=50))
+        self.rnd.render()
+        utils_vis.draw_state_list(self.rnd,  traj.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=5)
+        plt.title(f"{self.metric_name} at time step {self.time_step}")
+        utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                           self.time_step)
