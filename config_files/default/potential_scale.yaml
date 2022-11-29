@@ -1,0 +1,4 @@
+# from Wolf, M.T. and Burdick, J.W., 2008, May. Artificial potential functions for highway driving with collision
+# avoidance. In 2008 IEEE International Conference on Robotics and Automation (pp. 3731-3736). IEEE.
+A_lane: 2 # maximum amplitude of the lane divider potential
+sigma_factor: 3 # * lane width - how quickly the potential rises/falls

@@ -36,6 +36,7 @@ class CriMeConfiguration:
 
         self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
         self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
+        self.potential_scale: PotentialScaleConfiguration = PotentialScaleConfiguration(config)
         self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
         self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
         self.index_scale: IndexScaleConfiguration = IndexScaleConfiguration(config)
@@ -109,6 +110,13 @@ class AccelerationScaleConfiguration:
         config_relevant = config.acceleration_scale
         self.safety_time = config_relevant.safety_time
         self.acceleration_mode = config_relevant.acceleration_mode
+
+
+class PotentialScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.potential_scale
+        self.A_lane = config_relevant.A_lane
+        self.sigma_factor = config_relevant.sigma_factor
 
 
 class ProbabilityScaleConfiguration:
