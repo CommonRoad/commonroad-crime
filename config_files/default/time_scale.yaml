@@ -12,4 +12,5 @@ metric: 1, 2
 # 2. based on the lane width
 steer_width: 1
 # threshold for TET and TIT
+# default value as recommended by Yuanfei
 tau: 2

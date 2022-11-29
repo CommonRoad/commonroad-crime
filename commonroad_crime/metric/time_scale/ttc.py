@@ -11,6 +11,7 @@ import math
 
 import matplotlib.pyplot as plt
 import numpy as np
+from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad_dc import pycrcc
 from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker
 
@@ -18,6 +19,7 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.logger as utils_log
+import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_dc.boundary.boundary as boundary
 
@@ -37,17 +39,6 @@ class TTC(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(TTC, self).__init__(config)
-        self.sce.remove_obstacle(self.ego_vehicle)
-
-        # creat collision checker
-        road_boundary_obstacle, _ = boundary.create_road_boundary_obstacle(self.sce,
-                                                                           method='aligned_triangulation',
-                                                                           axis=2)
-        self.sce.add_objects(road_boundary_obstacle)
-        self.collision_checker = create_collision_checker(self.sce)
-        # remove the added objects from the scenario
-        self.sce.remove_obstacle(road_boundary_obstacle)
-        self.sce.add_objects(self.ego_vehicle)
         self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
@@ -56,20 +47,38 @@ class TTC(CriMeBase):
         self.time_step = time_step
         state = self.ego_vehicle.state_at_time(time_step)
         state_other = self.other_vehicle.state_at_time(time_step)
+        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
+                                                                       position])[0]
         """
         Using https://www.diva-portal.org/smash/get/diva2:617438/FULLTEXT01.pdf 
         "Collision Avoidance Theory with Application to Automotive Collision Mitigation" formula 5.26
         """
+        # orientation of the ego vehicle and the other vehicle
+        ego_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+            self.ego_vehicle.state_at_time(time_step).position
+        )[1]
+        other_orientation = utils_sol.compute_lanelet_width_orientation(
+            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+            self.other_vehicle.state_at_time(time_step).position
+        )[1]
+
+        # distance along the lanelet
         delta_d = self._hw_object.compute(vehicle_id, time_step)
 
-        v_ego = np.sqrt(state.velocity ** 2 + state.velocity_y ** 2)
-        v_other = np.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2)
+        # actual velocity and acceleration of both vehicles along the lanelet
+        v_ego = math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(ego_orientation)
+        a_ego = math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(ego_orientation)
+        if isinstance(self.other_vehicle, DynamicObstacle):
+            v_other = math.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
+            a_other = math.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
+        else:
+            v_other = 0
+            a_other = 0
         delta_v = v_other - v_ego
-
-        a_ego = np.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2)
-        a_other = np.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2)
         delta_a = a_other - a_ego
 
+        self.value = math.inf
         if delta_d != np.Inf and delta_d != np.NINF:
             if delta_v < 0 and delta_a < 0:
                 self.value = - (delta_d / delta_v)
