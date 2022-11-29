@@ -7,6 +7,7 @@ import unittest
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.index_scale.btn import BTN
 from commonroad_crime.metric.index_scale.stn import STN
+from commonroad_crime.metric.index_scale.tci import TCI
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -39,3 +40,10 @@ class TestIndexScale(unittest.TestCase):
         # vehicle in another lanelet
         stn_2 = stn_object.compute(1, 0)
         self.assertEqual(stn_2, 0.0)
+
+    def test_tci(self):
+        self.config.vehicle.ego_id = 1
+        tci_object = TCI(self.config)
+        tci_1 = tci_object.compute(0)
+        tci_object.visualize()
+        self.assertEqual(tci_1, 0.0)

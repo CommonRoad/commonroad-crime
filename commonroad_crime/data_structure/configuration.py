@@ -38,6 +38,7 @@ class CriMeConfiguration:
         self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
         self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
         self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
+        self.index_scale: IndexScaleConfiguration = IndexScaleConfiguration(config)
 
     def update(self,
                ego_id: int = None,
@@ -121,6 +122,21 @@ class ProbabilityScaleConfiguration:
             self.prediction_horizon = dict_mc.prediction_horizon
             self.nr_samples = dict_mc.nr_samples
             self.mvr_weights = dict_mc.weights
+
+
+class IndexScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.index_scale
+        self.tci = IndexScaleConfiguration.TCI(config_relevant)
+
+    class TCI:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_tci = dict_config.TCI
+            self.w_x = dict_tci.w_x
+            self.w_y = dict_tci.w_y
+            self.w_ax = dict_tci.w_ax
+            self.w_ay = dict_tci.w_ay
+            self.N = dict_tci.prediction_horizon
 
 
 class VehicleConfiguration:

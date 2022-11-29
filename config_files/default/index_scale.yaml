@@ -1,0 +1,10 @@
+# Trajectory Criticality Index
+TCI:
+  # params are obtained from P. Junietz, F. Bonakdar, B. Klamann, and H. Winner, “Criticality metric for the safety
+  # validation of automated driving using model predictive trajectory optimization,” in 21st International Conference
+  # on Intelligent Transportation Systems (ITSC), pp. 60–65, IEEE, 2018.
+  w_x: 1.
+  w_y: 1.
+  w_ax: 0.1
+  w_ay: 1.
+  prediction_horizon: 20 # nr of time steps

@@ -9,12 +9,13 @@ __status__ = "Pre-alpha"
 from typing import Tuple, Union
 import numpy as np
 import logging
+from scipy.spatial.distance import cdist
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle
-from commonroad.scenario.lanelet import Lanelet
+from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State
+from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
-from numpy import ndarray
+from commonroad_dc.geometry.util import resample_polyline
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,35 @@ def solver_wttc(veh_1: Obstacle,
     D = 2 * (v_2x0 - v_1x0) * (x_20 - x_10) + 2 * (v_2y0 - v_1y0) * (y_20 - y_10)
     E = (x_20 - x_10) ** 2 + (y_20 - y_10) ** 2 - (r_v1 + r_v2) ** 2
     return np.roots(np.array([A, B, C, D, E]))
+
+
+def obtain_road_boundary(state: State, lanelet_network: LaneletNetwork) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Obtains the road boundaries based on the vehicle state.
+
+    return: (left boundary, right boundary)
+    """
+    veh_lanelet_id = lanelet_network.find_lanelet_by_position([state.position])[0]
+    lanelet_leftmost = lanelet_rightmost = lanelet_network.find_lanelet_by_id(veh_lanelet_id[0])
+    while lanelet_leftmost.adj_left_same_direction:
+        lanelet_leftmost = lanelet_network.find_lanelet_by_id(lanelet_leftmost.adj_left)
+    while lanelet_rightmost.adj_right_same_direction:
+        lanelet_rightmost = lanelet_network.find_lanelet_by_id(lanelet_rightmost.adj_right)
+    left_bounds = resample_polyline(lanelet_leftmost.left_vertices)
+    right_bounds = resample_polyline(lanelet_rightmost.right_vertices)
+    return left_bounds, right_bounds
+
+
+def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -> Tuple[float, float]:
+    """
+    Computes the distance between the vehicle cenver and the road boundary
+
+    return: (distance to the right boundary,
+             distance to the left boundary)
+    """
+    left_b, right_b = obtain_road_boundary(state, lanelet_network)
+    return np.min(cdist(np.array([state.position]), right_b, "euclidean")), \
+           np.min(cdist(np.array([state.position]), left_b, "euclidean"))
 
 
 def compute_disc_radius_and_distance(length: float, width: float, ref_point="CENTER", dist_axle_rear=None) \
@@ -111,9 +141,10 @@ def compute_disc_radius_and_distance(length: float, width: float, ref_point="CEN
 
     return radius_disc, dist_circles
 
+
 def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
-                          veh_rear_pos: ndarray,
-                          veh_front_pos: ndarray) -> Tuple[float, float]:
+                          veh_rear_pos: np.ndarray,
+                          veh_front_pos: np.ndarray) -> Tuple[float, float]:
     """
     Compute the distance between two vehicles along the curvilinear coordinate system. The sign of the distance
     is based on the assumption of the relative position of the vehicles. If the distance > 0, the relative
