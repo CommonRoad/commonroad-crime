@@ -9,7 +9,7 @@ __status__ = "Pre-alpha"
 import math
 
 import casadi as ca
-from typing import List, Union
+from typing import List, Union, Tuple
 from abc import abstractmethod
 from scipy.spatial.distance import cdist
 
@@ -89,9 +89,9 @@ class TCIOptimizer(OptimizerBase):
             self.opti.subject_to(self._opt_controls[k, 0] ** 2 + self._opt_controls[k, 1] ** 2 <=
                                  self.veh_config.cartesian.longitudinal.a_max ** 2)
             # road boundary + ego's shape
-            self.opti.subject_to(self.opti.bounded(boundary_limit_list[k][0],
+            self.opti.subject_to(self.opti.bounded(boundary_limit_list[k][0] + rad_ego,
                                                    self._opt_states[k, 1],
-                                                   boundary_limit_list[k][1]))
+                                                   boundary_limit_list[k][1] - rad_ego))
             for obs in self.sce.obstacles:
                 if obs is not ego_veh:
                     rad_obs, dis_obs = utils_sol.compute_disc_radius_and_distance(obs.obstacle_shape.length,
@@ -156,7 +156,7 @@ class TCIOptimizer(OptimizerBase):
 
     def optimize(self,
                  ego_vehicle: DynamicObstacle,
-                 time_step: int) -> ca.OptiSol:
+                 time_step: int) -> Tuple[ca.OptiSol, float]:
         r_y, d_y, d_x, boundary_limit_list = self.compute_params(ego_vehicle, time_step)
         obj = self.cost_function(ego_vehicle.state_at_time(time_step),
                                  ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
@@ -166,7 +166,7 @@ class TCIOptimizer(OptimizerBase):
                         'ipopt.acceptable_tol': 1e-8, 'ipopt.acceptable_obj_change_tol': 1e-6, }
         self.opti.solver('ipopt', opts_setting)
         sol = self.opti.solve()
-        return sol
+        return sol, self.opti.value(obj)
 
     def convert_result_to_cr_trajectory(self, sol: ca.OptiSol):
         """

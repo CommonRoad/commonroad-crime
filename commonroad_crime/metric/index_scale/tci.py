@@ -44,7 +44,10 @@ class TCI(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self.time_step = time_step
 
-        self._sol = self._optimizer.optimize(self.ego_vehicle, time_step)
+        self._sol, self.value = self._optimizer.optimize(self.ego_vehicle, time_step)
+        self.value = utils_gen.int_round(self.value, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def visualize(self):
         traj = self._optimizer.convert_result_to_cr_trajectory(self._sol)

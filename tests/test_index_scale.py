@@ -46,4 +46,4 @@ class TestIndexScale(unittest.TestCase):
         tci_object = TCI(self.config)
         tci_1 = tci_object.compute(0)
         tci_object.visualize()
-        pass
+        self.assertEqual(tci_1, 0.0)
