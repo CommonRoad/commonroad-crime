@@ -141,6 +141,7 @@ def compute_disc_radius_and_distance(length: float, width: float, ref_point="CEN
 
     return radius_disc, dist_circles
 
+
 def compute_clcs_distance(clcs: CurvilinearCoordinateSystem,
                           veh_rear_pos: np.ndarray,
                           veh_front_pos: np.ndarray) -> Tuple[float, float]:

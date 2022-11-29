@@ -140,8 +140,8 @@ class TCIOptimizer(OptimizerBase):
                 dis_bound = utils_sol.compute_veh_dis_to_boundary(vehicle.state_at_time(k),
                                                                   self.sce.lanelet_network)
                 d_y = max(dis_bound)
-                boundary_limit_list.append([vehicle.state_at_time(k).position[1] - dis_bound[1],
-                                            vehicle.state_at_time(k).position[1] + dis_bound[0]])
+                boundary_limit_list.append([vehicle.state_at_time(k).position[1] - dis_bound[0],
+                                            vehicle.state_at_time(k).position[1] + dis_bound[1]])
                 for obs in self.sce.obstacles:
                     if obs is not vehicle:
                         if obs.state_at_time(k):
