@@ -117,6 +117,7 @@ class PotentialScaleConfiguration:
         config_relevant = config.potential_scale
         self.A_lane = config_relevant.A_lane
         self.sigma_factor = config_relevant.sigma_factor
+        self.scale_factor = config_relevant.scale_factor
 
 
 class ProbabilityScaleConfiguration:
