@@ -11,12 +11,10 @@ import math
 import casadi as ca
 from typing import List, Union, Tuple
 from abc import abstractmethod
-from scipy.spatial.distance import cdist
 
 import numpy as np
 from commonroad.scenario.scenario import State, Scenario, DynamicObstacle
 from commonroad.scenario.trajectory import Trajectory
-from commonroad.scenario.lanelet import LaneletNetwork
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
 import commonroad_crime.utility.solver as utils_sol
@@ -107,9 +105,7 @@ class TCIOptimizer(OptimizerBase):
                                                 obs_state.orientation)) ** 2 +
                                     (self._opt_states[k, 1] + (i - 1) * dis_ego / 2 * ca.sin(self._opt_states[k, 3]) -
                                      obs_state.position[1] - (j - 1) * dis_obs / 2 * ca.sin(
-                                                obs_state.orientation)) ** 2) \
-                                                     >= rad_obs + rad_ego
-                                                     )
+                                                obs_state.orientation)) ** 2) >= rad_obs + rad_ego)
 
     def cost_function(self, x_initial: State, ref_state_list: List[State],
                       d_y: float, r_y: float, d_x: float):

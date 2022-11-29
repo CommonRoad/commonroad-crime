@@ -10,7 +10,6 @@ from commonroad.scenario.lanelet import LaneletNetwork
 from commonroad.scenario.scenario import State, Scenario, DynamicObstacle, Obstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
 
 import commonroad_crime.utility.solver as utils_sol

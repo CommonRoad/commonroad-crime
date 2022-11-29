@@ -12,11 +12,9 @@ import matplotlib.pyplot as plt
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndexScale
-from commonroad_crime.metric.acceleration_scale.a_lat_req import ALatReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.optimization as utils_opt
-import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.utility.visualization import TUMcolor
 
