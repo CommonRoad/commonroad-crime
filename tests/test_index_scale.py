@@ -42,6 +42,7 @@ class TestIndexScale(unittest.TestCase):
         self.assertEqual(stn_2, 0.0)
 
     def test_tci(self):
+        self.config.vehicle.ego_id = 1
         tci_object = TCI(self.config)
         tci_1 = tci_object.compute(0)
         tci_object.visualize()

@@ -89,9 +89,9 @@ class TCIOptimizer(OptimizerBase):
             self.opti.subject_to(self._opt_controls[k, 0] ** 2 + self._opt_controls[k, 1] ** 2 <=
                                  self.veh_config.cartesian.longitudinal.a_max ** 2)
             # road boundary + ego's shape
-            self.opti.subject_to(self.opti.bounded(boundary_limit_list[k][0] + rad_ego,
+            self.opti.subject_to(self.opti.bounded(boundary_limit_list[k][0],
                                                    self._opt_states[k, 1],
-                                                   boundary_limit_list[k][1] - rad_ego))
+                                                   boundary_limit_list[k][1]))
             for obs in self.sce.obstacles:
                 if obs is not ego_veh:
                     rad_obs, dis_obs = utils_sol.compute_disc_radius_and_distance(obs.obstacle_shape.length,
@@ -102,12 +102,14 @@ class TCIOptimizer(OptimizerBase):
                         for i in range(0, 3):
                             for j in range(0, 3):
                                 self.opti.subject_to(ca.sqrt(
-                                    (self._opt_states[k, 0] + (i - 1) * dis_ego * ca.cos(self._opt_states[k, 3]) -
-                                     obs_state.position[0] - (j - 1) * dis_obs * ca.cos(obs_state.orientation)) ** 2 +
-                                    (self._opt_states[k, 1] + (i - 1) * dis_ego * ca.sin(self._opt_states[k, 3]) -
-                                     obs_state.position[1] - (j - 1) * dis_obs * ca.sin(obs_state.orientation)) ** 2) \
-                                    >= rad_obs + rad_ego
-                                )
+                                    (self._opt_states[k, 0] + (i - 1) * dis_ego / 2 * ca.cos(self._opt_states[k, 3]) -
+                                     obs_state.position[0] - (j - 1) * dis_obs / 2 * ca.cos(
+                                                obs_state.orientation)) ** 2 +
+                                    (self._opt_states[k, 1] + (i - 1) * dis_ego / 2 * ca.sin(self._opt_states[k, 3]) -
+                                     obs_state.position[1] - (j - 1) * dis_obs / 2 * ca.sin(
+                                                obs_state.orientation)) ** 2) \
+                                                     >= rad_obs + rad_ego
+                                                     )
 
     def cost_function(self, x_initial: State, ref_state_list: List[State],
                       d_y: float, r_y: float, d_x: float):
