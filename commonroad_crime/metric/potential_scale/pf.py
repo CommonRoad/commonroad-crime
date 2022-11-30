@@ -11,6 +11,7 @@ import logging
 
 import numpy as np
 from commonroad.scenario.scenario import State
+from commonroad.scenario.obstacle import DynamicObstacle, StaticObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -35,10 +36,11 @@ class PF(CriMeBase):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
-                                                        evaluated_state.position[1])[1]
+        s_ego, d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
+                                                               evaluated_state.position[1])
         u_total = self._calc_lane_potential(evaluated_state, d_ego) +\
-            self._calc_road_potential(evaluated_state, d_ego)
+            self._calc_road_potential(evaluated_state, d_ego) +\
+            self._calc_car_potential(s_ego, d_ego, time_step)
         print(u_total)
 
     def _calc_lane_potential(self, veh_state: State, d_veh: float):
@@ -95,12 +97,31 @@ class PF(CriMeBase):
         # left_b, right_b = utils_sol.obtain_road_boundary(veh_state, self.sce.lanelet_network)
         # d_yb_l = self.clcs.convert_to_curvilinear_coords(left_b[0][0], left_b[0][1])[1]
         # d_yb_r = self.clcs.convert_to_curvilinear_coords(right_b[0][0], right_b[0][1])[1]
+
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(veh_state, self.sce.lanelet_network)
 
         u_road = 0.
         for d_yb in [d_veh - dis_right, d_veh + dis_left]:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
         return u_road
+
+    def _calc_car_potential(self, s_veh: float, d_veh: float, time_step: int):
+
+        list_obs_shapes = [obs.occupancy_at_time(time_step).shape.shapely_object.exterior.coords
+                           for obs in self.sce.obstacles]
+        clcs_shapes, _ = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+            list_obs_shapes, list(range(0, len(list_obs_shapes))), len(list_obs_shapes), 4
+        )
+        for obs in self.sce.obstacles:
+            if isinstance(obs, StaticObstacle):
+                pass
+            elif isinstance(obs, DynamicObstacle):
+                pass
+            else:
+                pass
+        return 0
+
+
 
     def visualize(self):
         pass
