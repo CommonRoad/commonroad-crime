@@ -8,8 +8,9 @@ __status__ = "Pre-alpha"
 
 import math
 import logging
-
+from shapely.geometry import Polygon, Point
 import numpy as np
+
 from commonroad.scenario.scenario import State
 from commonroad.scenario.obstacle import DynamicObstacle, StaticObstacle
 
@@ -106,15 +107,17 @@ class PF(CriMeBase):
         return u_road
 
     def _calc_car_potential(self, s_veh: float, d_veh: float, time_step: int):
-
-        list_obs_shapes = [obs.occupancy_at_time(time_step).shape.shapely_object.exterior.coords
-                           for obs in self.sce.obstacles]
-        clcs_shapes, _ = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-            list_obs_shapes, list(range(0, len(list_obs_shapes))), len(list_obs_shapes), 4
-        )
         for obs in self.sce.obstacles:
-            if isinstance(obs, StaticObstacle):
-                pass
+            # shape in curvilinear coordinate system
+            obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+                [obs.occupancy_at_time(time_step).shape.shapely_object.exterior.coords], [0], 1, 4
+            )[0]
+            obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
+            obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
+            if isinstance(obs, StaticObstacle) or (isinstance(obs, StaticObstacle) and s_veh > obs_s_min):
+                # static obstacle or forward/side of obstacle -> Euclidean distance to the nearest point on the obstacle
+                K = Point(s_veh, d_veh).distance(obs_clcs_poly)
+                print(K)
             elif isinstance(obs, DynamicObstacle):
                 pass
             else:
