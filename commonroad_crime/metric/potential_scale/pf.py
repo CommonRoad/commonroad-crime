@@ -55,23 +55,30 @@ class PF(CriMeBase):
         # the lanelet that the vehicle is currently occupying
         left_adj_lanelet = right_adj_lanelet = veh_lanelet = self.sce.lanelet_network.find_lanelet_by_id(
             self.sce.lanelet_network.find_lanelet_by_position([veh_state.position])[0][0])
-        lanelet_list = [veh_lanelet]
+        # assme that all the lanelets have the same width
+        ll_width = utils_sol.compute_lanelet_width_orientation(veh_lanelet, veh_state.position)[0]
 
+        vertices_list = []
+        if left_adj_lanelet.adj_left_same_direction:
+            vertices_list.append(left_adj_lanelet.left_vertices)
+        if right_adj_lanelet.adj_right_same_direction:
+            vertices_list.append(right_adj_lanelet.right_vertices)
         # collects all the lanelets
         while left_adj_lanelet.adj_left_same_direction:
             left_adj_lanelet = self.sce.lanelet_network.find_lanelet_by_id(left_adj_lanelet.adj_left)
-            lanelet_list.append(left_adj_lanelet)
+            if left_adj_lanelet.adj_left_same_direction:
+                vertices_list.append(left_adj_lanelet.left_vertices)
         while right_adj_lanelet.adj_right_same_direction:
             right_adj_lanelet = self.sce.lanelet_network.find_lanelet_by_id(right_adj_lanelet.adj_left)
-            lanelet_list.append(right_adj_lanelet)
+            if right_adj_lanelet.adj_right_same_direction:
+                vertices_list.append(right_adj_lanelet.right_vertices)
 
         # compute the lane potential
-        u_lane = 0
-        for ll in lanelet_list:
-            # the d-coordinate of the lanelet center
-            d_yc = self.clcs.convert_to_curvilinear_coords(ll.center_vertices[0][0],
-                                                           ll.center_vertices[0][1])[1]
-            ll_width = utils_sol.compute_lanelet_width_orientation(ll, veh_state.position)[0]
+        u_lane = 0.
+        for vts in vertices_list:
+            closest_vts = utils_sol.compute_closest_coordinate_from_list_of_points(veh_state, vts)
+            # the d-coordinate of the lanelet bounds
+            d_yc = self.clcs.convert_to_curvilinear_coords(closest_vts[0], closest_vts[1])[1]
             u_lane += gaussian_like_function(d_veh, d_yc,
                                              self.configuration.potential_scale.sigma_factor * ll_width,
                                              self.configuration.potential_scale.A_lane)
@@ -83,13 +90,15 @@ class PF(CriMeBase):
         """
         def repulsive_potential(eta: float, y: float, y_0: float):
             return 0.5 * eta * (1/(y - y_0))**2
-        left_b, right_b = utils_sol.obtain_road_boundary(veh_state, self.sce.lanelet_network)
-        
+
         # possibly: Coordinate outside of projection domain.
+        # left_b, right_b = utils_sol.obtain_road_boundary(veh_state, self.sce.lanelet_network)
         # d_yb_l = self.clcs.convert_to_curvilinear_coords(left_b[0][0], left_b[0][1])[1]
         # d_yb_r = self.clcs.convert_to_curvilinear_coords(right_b[0][0], right_b[0][1])[1]
-        u_road = 0
-        for d_yb in [d_yb_l, d_yb_r]:
+        dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(veh_state, self.sce.lanelet_network)
+
+        u_road = 0.
+        for d_yb in [d_veh - dis_right, d_veh + dis_left]:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
         return u_road
 
