@@ -8,7 +8,7 @@ __status__ = "Pre-alpha"
 
 import math
 import logging
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -34,18 +34,20 @@ class PF(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(PF, self).__init__(config)
-        self._d_bounds = None
         self._s_ego = None
         self._d_egp = None
 
-    def compute(self,  time_step: int):
+    def compute(self, time_step: int):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
         self._s_ego, self._d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
-                                                               evaluated_state.position[1])
+                                                                           evaluated_state.position[1])
         u_total = self.calc_total_potential(evaluated_state, self._s_ego, self._d_ego)
-        self.value = utils_gen.int_round(u_total, 2)
+        if u_total == np.inf or u_total >= 100:
+            self.value = 100
+        else:
+            self.value = utils_gen.int_round(u_total, 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
@@ -55,17 +57,21 @@ class PF(CriMeBase):
                   self._calc_car_potential(veh_state, s_veh, d_veh)
         if self.configuration.potential_scale.desired_speed:
             u_total += self._calc_velocity_potential(veh_state, s_veh)
-        return u_total
+        if u_total == np.inf or u_total >= 50:
+            return 50
+        else:
+            return utils_gen.int_round(u_total, 2)
 
     def _calc_lane_potential(self, veh_state: State, d_veh: float):
         """
         Calculates the lane potential.
         """
+
         def gaussian_like_function(y, y_c, sigma, A_lane):
             # Sec.II.A in Wolf, M.T. and Burdick, J.W., 2008, May. Artificial potential functions for highway
             # driving with collision avoidance. In 2008 IEEE International Conference on Robotics and
             # Automation (pp. 3731-3736). IEEE.
-            return A_lane * np.exp(-(y - y_c)**2/(2 * sigma)**2)
+            return A_lane * np.exp(-(y - y_c) ** 2 / (2 * sigma) ** 2)
 
         # we assume that the lanelet are straight after converting to the curvilinear coordinate system
         # the lanelet that the vehicle is currently occupying
@@ -104,8 +110,9 @@ class PF(CriMeBase):
         """
         Calculates the road potential, which prevents the vehicle from leaving the highway
         """
+
         def repulsive_potential(eta: float, y: float, y_0: float):
-            return 0.5 * eta * (1/(y - y_0))**2
+            return 0.5 * eta * (1 / (y - y_0)) ** 2
 
         # possibly: Coordinate outside of projection domain.
         # left_b, right_b = utils_sol.obtain_road_boundary(veh_state, self.sce.lanelet_network)
@@ -113,9 +120,8 @@ class PF(CriMeBase):
         # d_yb_r = self.clcs.convert_to_curvilinear_coords(right_b[0][0], right_b[0][1])[1]
 
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(veh_state, self.sce.lanelet_network)
-        self._d_bounds = [d_veh - dis_right, d_veh + dis_left]
         u_road = 0.
-        for d_yb in self._d_bounds:
+        for d_yb in [d_veh - dis_right, d_veh + dis_left]:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
         return u_road
 
@@ -127,6 +133,7 @@ class PF(CriMeBase):
                 xi_0 = 1
             xi_m = xi_0 * np.exp(-beta * (v - v_m))
             return xi_m * x
+
         config_pot = self.configuration.potential_scale
         u_car = 0
         for obs in self.sce.obstacles:
@@ -151,32 +158,57 @@ class PF(CriMeBase):
                 scaled_s = scale_x_position(s_veh, config_pot.d_0, veh_state.velocity, config_pot.follow_time,
                                             config_pot.beta, obs.state_at_time(self.time_step).velocity)
                 K = Point(scaled_s, d_veh).distance(obs_with_wedge)
-            u_car += config_pot.A_car * np.exp(- config_pot.alpha * K)/K
-        return 0
+            u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / K
+        return u_car
 
     def _calc_velocity_potential(self, veh_state: State, s_veh: float):
         return self.configuration.potential_scale.slope_scale * (
-            veh_state.velocity - self.configuration.potential_scale.desired_speed
+                veh_state.velocity - self.configuration.potential_scale.desired_speed
         ) * s_veh
 
     def visualize(self, figsize: tuple = (25, 15)):
-        # self._initialize_vis(figsize=figsize,
-        #                      plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-        #                                                                       self.ego_vehicle.prediction.
-        #                                                                       trajectory.state_list,
-        #                                                                       margin=10))
-        # self.rnd.render()
-        s = np.linspace(self._s_ego - 25, self._s_ego + 50, 20)
-        d = np.linspace(self._d_bounds[0], self._d_bounds[1], 20)
+        dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(self.ego_vehicle.state_at_time(self.time_step),
+                                                                    self.sce.lanelet_network)
+        d_bounds = [self._d_ego - dis_right, self._d_ego + dis_left]
+        s = np.linspace(self._s_ego - 55, self._s_ego + 100, 30)
+        d = np.linspace(d_bounds[0], d_bounds[1], 30)
         S, D = np.meshgrid(s, d)
         u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state', 's_veh', 'd_veh'])
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
         U = u_func(evaluated_state, S, D)
-        plt.contour(S, D, U, 20, cmap='RdGy')
-        plt.colorbar();
-        plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")
-        # if self.configuration.debug.save_plots:
-        #     utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
-        # else:
-        plt.show()
 
+        # polygons
+        for obs in self.sce.obstacles:
+            # shape in curvilinear coordinate system
+            obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+                [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
+            )[0]
+            obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
+            if isinstance(obs, StaticObstacle):
+                plt.plot(*obs_clcs_poly.exterior.xy)
+            else:
+                topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
+                bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
+                wedge_point_l = LineString(
+                    [topmost_then_leftmost_point,
+                     (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
+                    abs(self.configuration.potential_scale.wedge_vertex), 'left'
+                ).boundary[1]
+                wedge = Polygon([wedge_point_l,
+                                 topmost_then_leftmost_point, bottommost_then_leftmost_point])
+                obs_with_wedge = obs_clcs_poly.union(wedge)
+                plt.plot(*obs_with_wedge.exterior.xy)
+                plt.show()
+        plt.contour(S, D, U, 50, cmap='RdGy')
+        plt.colorbar()
+        # lane boundaries
+        plt.plot([self._s_ego - 55, self._s_ego + 100],
+                 [d_bounds[0], d_bounds[0]], 'k', linewidth=3)
+        plt.plot([self._s_ego - 55, self._s_ego + 100],
+                 [d_bounds[1], d_bounds[1]], 'k', linewidth=3)
+        plt.axis('equal')
+        plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+        else:
+            plt.show()
