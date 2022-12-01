@@ -80,6 +80,14 @@ def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -
            np.min(cdist(np.array([state.position]), left_b, "euclidean"))
 
 
+def compute_closest_coordinate_from_list_of_points(state: State, vertices: np.ndarray):
+    """
+    Computes the closest coordinate from a list of points
+    """
+    vertices = resample_polyline(vertices)
+    return vertices[np.argmin(cdist(np.array([state.position]), vertices, "euclidean"))]
+
+
 def compute_disc_radius_and_distance(length: float, width: float, ref_point="CENTER", dist_axle_rear=None) \
         -> Tuple[float, float]:
     """
