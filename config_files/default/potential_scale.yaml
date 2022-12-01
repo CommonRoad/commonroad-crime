@@ -9,5 +9,5 @@ alpha: 0.5 # Yukawa scale
 beta: 0.6 # exponential scale of car potential
 follow_time: 3. # desired following time
 wedge_vertex: -0.5 # the location of the rear-most vertex of the triangle
-desired_speed: !!null # to guide the vehicle towards a desired speed
-d_0: 7.5 # the maximum distance at which the car potential exerts an influence
+desired_speed: 20 #!!null # to guide the vehicle towards a desired speed
+d_0: 50 # the maximum distance at which the car potential exerts an influence

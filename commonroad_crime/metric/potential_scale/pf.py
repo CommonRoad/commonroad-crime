@@ -126,39 +126,53 @@ class PF(CriMeBase):
         return u_road
 
     def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
-        def scale_x_position(x, d_0, v, T_f, beta, v_m):
+        def calc_scale_factor(d_0, v, T_f, beta, v_m):
             if v >= d_0 / T_f:
                 xi_0 = d_0 / (T_f * v)
             else:
                 xi_0 = 1
             xi_m = xi_0 * np.exp(-beta * (v - v_m))
-            return xi_m * x
+            return xi_m
 
         config_pot = self.configuration.potential_scale
         u_car = 0
         for obs in self.sce.obstacles:
-            # shape in curvilinear coordinate system
-            obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
-            )[0]
-            obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
-            obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
-            if isinstance(obs, StaticObstacle) or (isinstance(obs, DynamicObstacle) and (s_veh > obs_s_min).any()):
-                # static obstacle or forward/side of obstacle -> Euclidean distance to the nearest point on the obstacle
-                K = Point(s_veh, d_veh).distance(obs_clcs_poly)
-            else:
-                # behind dynamic obstacle
-                obs_d_min = np.min(obs_clcs_poly.exterior.xy[1])
-                obs_d_max = np.max(obs_clcs_poly.exterior.xy[1])
-                wedge = Polygon([(obs_s_min - config_pot.wedge_vertex,
-                                  0.5 * (obs_d_min + obs_d_max)),
-                                 (obs_s_min, obs_d_min), (obs_s_min, obs_d_max)])
-                obs_with_wedge = obs_clcs_poly.union(wedge)
-                # scaled s-coordinate
-                scaled_s = scale_x_position(s_veh, config_pot.d_0, veh_state.velocity, config_pot.follow_time,
-                                            config_pot.beta, obs.state_at_time(self.time_step).velocity)
-                K = Point(scaled_s, d_veh).distance(obs_with_wedge)
-            u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / K
+            if obs is not self.ego_vehicle:
+                # shape in curvilinear coordinate system
+                obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+                    [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
+                )[0]
+                obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
+                obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
+                if isinstance(obs, StaticObstacle) or (isinstance(obs, DynamicObstacle)
+                                                       and (s_veh > obs_s_min).any()):
+                    # static obstacle or forward/side of obstacle ->
+                    # Euclidean distance to the nearest point on the obstacle
+                    if obs_clcs_poly.contains(Point(s_veh, d_veh)):
+                        K = 0.
+                    else:
+                        K = Point(s_veh, d_veh).distance(obs_clcs_poly)
+                else:
+                    # behind dynamic obstacle
+                    topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
+                    bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
+                    wedge_point_l = LineString(
+                        [topmost_then_leftmost_point,
+                         (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
+                        abs(self.configuration.potential_scale.wedge_vertex), 'left'
+                    ).boundary[1]
+                    wedge = Polygon([wedge_point_l,
+                                     topmost_then_leftmost_point, bottommost_then_leftmost_point])
+                    obs_with_wedge = obs_clcs_poly.union(wedge)
+                    # scaled s-coordinate
+                    scale = calc_scale_factor(config_pot.d_0, veh_state.velocity, config_pot.follow_time,
+                                              config_pot.beta, obs.state_at_time(self.time_step).velocity)
+                    s_veh_scaled = scale * (s_veh - obs_s_min) + obs_s_min
+                    if obs_with_wedge.contains(Point(s_veh_scaled, d_veh)):
+                        K = 0.
+                    else:
+                        K = Point(s_veh_scaled, d_veh).distance(obs_with_wedge)
+                u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / K
         return u_car
 
     def _calc_velocity_potential(self, veh_state: State, s_veh: float):
@@ -170,8 +184,8 @@ class PF(CriMeBase):
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(self.ego_vehicle.state_at_time(self.time_step),
                                                                     self.sce.lanelet_network)
         d_bounds = [self._d_ego - dis_right, self._d_ego + dis_left]
-        s = np.linspace(self._s_ego - 55, self._s_ego + 100, 30)
-        d = np.linspace(d_bounds[0], d_bounds[1], 30)
+        s = np.linspace(self._s_ego - 25, self._s_ego + 50, 50)
+        d = np.linspace(d_bounds[0], d_bounds[1], 50)
         S, D = np.meshgrid(s, d)
         u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state', 's_veh', 'd_veh'])
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
@@ -179,32 +193,32 @@ class PF(CriMeBase):
 
         # polygons
         for obs in self.sce.obstacles:
-            # shape in curvilinear coordinate system
-            obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
-            )[0]
-            obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
-            if isinstance(obs, StaticObstacle):
-                plt.plot(*obs_clcs_poly.exterior.xy)
-            else:
-                topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
-                bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
-                wedge_point_l = LineString(
-                    [topmost_then_leftmost_point,
-                     (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
-                    abs(self.configuration.potential_scale.wedge_vertex), 'left'
-                ).boundary[1]
-                wedge = Polygon([wedge_point_l,
-                                 topmost_then_leftmost_point, bottommost_then_leftmost_point])
-                obs_with_wedge = obs_clcs_poly.union(wedge)
-                plt.plot(*obs_with_wedge.exterior.xy)
-                plt.show()
+            if obs is not self.ego_vehicle:
+                # shape in curvilinear coordinate system
+                obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+                    [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
+                )[0]
+                obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
+                if isinstance(obs, StaticObstacle):
+                    plt.plot(*obs_clcs_poly.exterior.xy)
+                else:
+                    topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
+                    bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
+                    wedge_point_l = LineString(
+                        [topmost_then_leftmost_point,
+                         (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
+                        abs(self.configuration.potential_scale.wedge_vertex), 'left'
+                    ).boundary[1]
+                    wedge = Polygon([wedge_point_l,
+                                     topmost_then_leftmost_point, bottommost_then_leftmost_point])
+                    obs_with_wedge = obs_clcs_poly.union(wedge)
+                    plt.plot(*obs_with_wedge.exterior.xy)
         plt.contour(S, D, U, 50, cmap='RdGy')
         plt.colorbar()
         # lane boundaries
-        plt.plot([self._s_ego - 55, self._s_ego + 100],
+        plt.plot([self._s_ego - 25, self._s_ego + 50],
                  [d_bounds[0], d_bounds[0]], 'k', linewidth=3)
-        plt.plot([self._s_ego - 55, self._s_ego + 100],
+        plt.plot([self._s_ego - 25, self._s_ego + 50],
                  [d_bounds[1], d_bounds[1]], 'k', linewidth=3)
         plt.axis('equal')
         plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")
