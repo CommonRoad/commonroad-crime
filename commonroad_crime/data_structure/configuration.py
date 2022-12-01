@@ -116,8 +116,19 @@ class PotentialScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.potential_scale
         self.A_lane = config_relevant.A_lane
+        self.A_car = config_relevant.A_car
+
         self.sigma_factor = config_relevant.sigma_factor
         self.scale_factor = config_relevant.scale_factor
+        self.slope_scale = config_relevant.slope_scale
+
+        self.alpha = config_relevant.alpha
+        self.beta = config_relevant.beta
+        self.d_0 = config_relevant.d_0
+
+        self.follow_time = config_relevant.follow_time
+        self.wedge_vertex = config_relevant.wedge_vertex
+        self.desired_speed = config_relevant.desired_speed
 
 
 class ProbabilityScaleConfiguration:

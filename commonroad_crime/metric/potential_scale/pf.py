@@ -20,6 +20,7 @@ from commonroad_crime.data_structure.type import TypePotentialScale
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.visualization as utils_vis
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class PF(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(PF, self).__init__(config)
+        self._d_bounds = None
 
     def compute(self,  time_step: int):
         self.time_step = time_step
@@ -41,8 +43,12 @@ class PF(CriMeBase):
                                                                evaluated_state.position[1])
         u_total = self._calc_lane_potential(evaluated_state, d_ego) +\
             self._calc_road_potential(evaluated_state, d_ego) +\
-            self._calc_car_potential(s_ego, d_ego, time_step)
-        print(u_total)
+            self._calc_car_potential(evaluated_state, s_ego, d_ego, time_step)
+        if self.configuration.potential_scale.desired_speed:
+            u_total += self._calc_velocity_potential(evaluated_state, s_ego)
+        self.value = utils_gen.int_round(u_total, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def _calc_lane_potential(self, veh_state: State, d_veh: float):
         """
@@ -100,31 +106,56 @@ class PF(CriMeBase):
         # d_yb_r = self.clcs.convert_to_curvilinear_coords(right_b[0][0], right_b[0][1])[1]
 
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(veh_state, self.sce.lanelet_network)
-
+        self._d_bounds = [d_veh - dis_right, d_veh + dis_left]
         u_road = 0.
-        for d_yb in [d_veh - dis_right, d_veh + dis_left]:
+        for d_yb in self._d_bounds:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
         return u_road
 
-    def _calc_car_potential(self, s_veh: float, d_veh: float, time_step: int):
+    def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
+        def scale_x_position(x, d_0, v, T_f, beta, v_m):
+            if v >= d_0 / T_f:
+                xi_0 = d_0 / (T_f * v)
+            else:
+                xi_0 = 1
+            xi_m = xi_0 * np.exp(-beta * (v - v_m))
+            return xi_m * x
+        config_pot = self.configuration.potential_scale
+        u_car = 0
         for obs in self.sce.obstacles:
             # shape in curvilinear coordinate system
             obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                [obs.occupancy_at_time(time_step).shape.shapely_object.exterior.coords], [0], 1, 4
+                [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
             )[0]
             obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
             obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
             if isinstance(obs, StaticObstacle) or (isinstance(obs, StaticObstacle) and s_veh > obs_s_min):
                 # static obstacle or forward/side of obstacle -> Euclidean distance to the nearest point on the obstacle
                 K = Point(s_veh, d_veh).distance(obs_clcs_poly)
-                print(K)
-            elif isinstance(obs, DynamicObstacle):
-                pass
             else:
-                pass
+                # behind dynamic obstacle
+                obs_d_min = np.min(obs_clcs_poly.exterior.xy[1])
+                obs_d_max = np.max(obs_clcs_poly.exterior.xy[1])
+                wedge = Polygon([(obs_s_min - config_pot.wedge_vertex,
+                                  0.5 * (obs_d_min + obs_d_max)),
+                                 (obs_s_min, obs_d_min), (obs_s_min, obs_d_max)])
+                obs_with_wedge = obs_clcs_poly.union(wedge)
+                # scaled s-coordinate
+                scaled_s = scale_x_position(s_veh, config_pot.d_0, veh_state.velocity, config_pot.follow_time,
+                                            config_pot.beta, obs.state_at_time(self.time_step).velocity)
+                K = Point(scaled_s, d_veh).distance(obs_with_wedge)
+            u_car += config_pot.A_car * np.exp(- config_pot.alpha * K)/K
         return 0
 
+    def _calc_velocity_potential(self, veh_state: State, s_veh: float):
+        return self.configuration.potential_scale.slope_scale * (
+            veh_state.velocity - self.configuration.potential_scale.desired_speed
+        ) * s_veh
 
-
-    def visualize(self):
-        pass
+    def visualize(self, figsize: tuple = (25, 15)):
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                              self.ego_vehicle.prediction.
+                                                                              trajectory.state_list,
+                                                                              margin=10))
+        self.rnd.render()
