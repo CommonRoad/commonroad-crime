@@ -21,4 +21,5 @@ class TestPotentialScale(unittest.TestCase):
     def test_pf(self):
         pf_object = PF(self.config)
         pf = pf_object.compute(0)
+        pf_object.visualize()
 

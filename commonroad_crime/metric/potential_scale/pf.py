@@ -10,9 +10,10 @@ import math
 import logging
 from shapely.geometry import Polygon, Point
 import numpy as np
+import matplotlib.pyplot as plt
 
 from commonroad.scenario.scenario import State
-from commonroad.scenario.obstacle import DynamicObstacle, StaticObstacle
+from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -34,21 +35,27 @@ class PF(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(PF, self).__init__(config)
         self._d_bounds = None
+        self._s_ego = None
+        self._d_egp = None
 
     def compute(self,  time_step: int):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        s_ego, d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
+        self._s_ego, self._d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
                                                                evaluated_state.position[1])
-        u_total = self._calc_lane_potential(evaluated_state, d_ego) +\
-            self._calc_road_potential(evaluated_state, d_ego) +\
-            self._calc_car_potential(evaluated_state, s_ego, d_ego, time_step)
-        if self.configuration.potential_scale.desired_speed:
-            u_total += self._calc_velocity_potential(evaluated_state, s_ego)
+        u_total = self.calc_total_potential(evaluated_state, self._s_ego, self._d_ego)
         self.value = utils_gen.int_round(u_total, 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
+
+    def calc_total_potential(self, veh_state: State, s_veh: float, d_veh: float):
+        u_total = self._calc_lane_potential(veh_state, d_veh) + \
+                  self._calc_road_potential(veh_state, d_veh) + \
+                  self._calc_car_potential(veh_state, s_veh, d_veh)
+        if self.configuration.potential_scale.desired_speed:
+            u_total += self._calc_velocity_potential(veh_state, s_veh)
+        return u_total
 
     def _calc_lane_potential(self, veh_state: State, d_veh: float):
         """
@@ -129,7 +136,7 @@ class PF(CriMeBase):
             )[0]
             obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
             obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
-            if isinstance(obs, StaticObstacle) or (isinstance(obs, StaticObstacle) and s_veh > obs_s_min):
+            if isinstance(obs, StaticObstacle) or (isinstance(obs, DynamicObstacle) and (s_veh > obs_s_min).any()):
                 # static obstacle or forward/side of obstacle -> Euclidean distance to the nearest point on the obstacle
                 K = Point(s_veh, d_veh).distance(obs_clcs_poly)
             else:
@@ -153,9 +160,23 @@ class PF(CriMeBase):
         ) * s_veh
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                              self.ego_vehicle.prediction.
-                                                                              trajectory.state_list,
-                                                                              margin=10))
-        self.rnd.render()
+        # self._initialize_vis(figsize=figsize,
+        #                      plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+        #                                                                       self.ego_vehicle.prediction.
+        #                                                                       trajectory.state_list,
+        #                                                                       margin=10))
+        # self.rnd.render()
+        s = np.linspace(self._s_ego - 25, self._s_ego + 50, 20)
+        d = np.linspace(self._d_bounds[0], self._d_bounds[1], 20)
+        S, D = np.meshgrid(s, d)
+        u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state', 's_veh', 'd_veh'])
+        evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
+        U = u_func(evaluated_state, S, D)
+        plt.contour(S, D, U, 20, cmap='RdGy')
+        plt.colorbar();
+        plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")
+        # if self.configuration.debug.save_plots:
+        #     utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+        # else:
+        plt.show()
+
