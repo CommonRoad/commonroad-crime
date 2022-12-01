@@ -65,8 +65,8 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
 def plot_limits_from_state_list(time_step: int, state_list: List[State], margin: float = 10.0):
     return [state_list[time_step].position[0] - margin,
             state_list[-1].position[0] + margin,
-            state_list[time_step].position[1] - margin,
-            state_list[time_step].position[1] + margin]
+            state_list[time_step].position[1] - margin/2,
+            state_list[time_step].position[1] + margin/2]
 
 
 def draw_state(rnd: MPRenderer, state: State, color: TUMcolor = TUMcolor.TUMgreen):

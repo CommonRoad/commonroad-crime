@@ -59,7 +59,7 @@ class TypeJerkScale(str, Enum):
 
 
 class TypeIndexScale(str, Enum):
-    ACI = "aggregated Crash Index"
+    ACI = "aggregated crash index"
     AM = "accident metric"
     BTN = "brake threat number"
     CI = "conflict index"

@@ -7,13 +7,6 @@ import math
 
 from commonroad_crime.metric.time_scale.tet import TET
 from commonroad_crime.metric.time_scale.tit import TIT
-
-try:
-    import commonroad_reach.pycrreach
-    module_failed = False
-except ImportError:
-    module_failed = True
-
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.metric.time_scale.ttc_star import TTCStar
@@ -23,8 +16,14 @@ from commonroad_crime.metric.time_scale.tts import TTS
 from commonroad_crime.metric.time_scale.ttr import TTR
 from commonroad_crime.metric.time_scale.thw import THW
 from commonroad_crime.metric.time_scale.wttc import WTTC
-from commonroad_crime.metric.time_scale.wttr import WTTR
 from commonroad_crime.utility.simulation import Maneuver
+
+try:
+    import commonroad_reach.pycrreach
+    from commonroad_crime.metric.time_scale.wttr import WTTR
+    module_failed = False
+except ImportError:
+    module_failed = True
 
 
 class TestTimeScale(unittest.TestCase):

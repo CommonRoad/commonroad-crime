@@ -7,25 +7,29 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import copy
+import numpy as np
 import logging
+from typing import Dict, List
 
 from commonroad.scenario.scenario import State
-
-try:
-    from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
-    from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
-    from commonroad_reach.pycrreach import ReachPolygon, ReachNode
-    from commonroad_reach.utility import visualization as util_visual
-except ModuleNotFoundError:
-    raise ModuleNotFoundError('commonroad_reach is not installed')
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeReachableSetScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)
+
+try:
+    from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
+    from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
+    from commonroad_reach.pycrreach import ReachPolygon, ReachNode
+    from commonroad_reach.utility import visualization as util_visual
+    import commonroad_reach.utility.reach_operation as utils_ops
+except ModuleNotFoundError:
+    utils_log.print_and_log_warning(logger, 'commonroad_reach is not installed')
 
 
 class DrivableArea(CriMeBase):
@@ -66,3 +70,21 @@ class DrivableArea(CriMeBase):
 
     def visualize(self):
         util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
+
+
+def compute_drivable_area_profile(reachable_set: Dict[int, List[ReachNode]]) -> np.ndarray:
+    """
+    Computes area profile for given reachability analysis.
+    """
+    area_profile = []
+    for t, reach_set_nodes in reachable_set.items():
+        area_profile.append(utils_ops.compute_area_of_reach_nodes(reach_set_nodes))
+    return np.array(area_profile)
+
+
+def compute_drivable_area(reachable_set: Dict[int, List[ReachNode]]):
+    """
+    Computes drivable area.
+    """
+    area_profile = compute_drivable_area_profile(reachable_set)
+    return np.sum(area_profile)

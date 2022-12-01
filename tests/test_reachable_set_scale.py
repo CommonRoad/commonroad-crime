@@ -4,15 +4,15 @@ Unit tests of the module reachable set scale metrics
 
 import unittest
 
-from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-import commonroad_crime.utility.logger as util_logger
-
 try:
     import commonroad_reach.pycrreach
+    from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
     module_failed = False
-except ImportError:
+except ModuleNotFoundError:
     module_failed = True
+
+from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+import commonroad_crime.utility.logger as util_logger
 
 
 class TestReachableSetScale(unittest.TestCase):

@@ -52,7 +52,7 @@ class CriMeBase:
         self.dt = self.sce.dt
 
         assert self.sce.obstacle_by_id(self.configuration.vehicle.ego_id), '<Criticality: the provided ego vehicle ' \
-                                                                           f'{self.configuration.vehicle.ego_id} is' \
+                                                                           f'{self.configuration.vehicle.ego_id} is ' \
                                                                            'not contained in the scenario>'
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
