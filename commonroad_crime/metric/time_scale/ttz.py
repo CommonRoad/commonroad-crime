@@ -20,7 +20,7 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.logger as utils_log
-import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
 
 from commonroad_crime.metric.time_scale.ttc import TTC
@@ -36,28 +36,35 @@ class TTZ(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(TTZ, self).__init__(config)
-        self._ttc_object = TTC(config)
 
     def compute(self, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         self.time_step = time_step
         zebra_list = []
         for ll in self.sce.lanelet_network.lanelets:
-            if ll.lanelet_type == LaneletType.CROSSWALK:
+            if LaneletType.CROSSWALK in ll.lanelet_type:
                 zebra_list.append(ll)
         if zebra_list:
             ttz_list = []
             for zebra in zebra_list:
-                init_state = State(**{"position": [zebra.center_vertices[int(len(zebra.center_vertices) / 2)]],
+                init_state = State(**{"position": zebra.center_vertices[int(len(zebra.center_vertices) / 2)],
                                       "orientation": np.tan(zebra.center_vertices[1][1] - zebra.center_vertices[0][1] /
                                                             zebra.center_vertices[0][1] - zebra.center_vertices[0][0]),
                                       "velocity": 0.})
                 zebra_obs = \
                     StaticObstacle(self.sce.generate_object_id(), ObstacleType.ROAD_BOUNDARY, zebra.polygon, init_state)
-                self.sce.add_objects(zebra_obs)
+                if self.configuration.scenario:
+                    self.configuration.scenario.add_objects(zebra_obs)
+                else:
+                    self.configuration.scene.add_objects(zebra_obs)
+                ttc_object = TTC(self.configuration)
                 ttz_list.append(
-                    self._ttc_object.compute(zebra_obs.obstacle_id, self.time_step)
+                    ttc_object.compute(zebra_obs.obstacle_id, self.time_step)
                 )
+            if min(ttz_list) is not math.inf:
+                self.value = utils_gen.int_round(min(ttz_list), 2)
+            else:
+                self.value = min(ttz_list)
         else:
             utils_log.print_and_log_info(logger, f"*\t\t there exists no zebra")
             self.value = math.inf
