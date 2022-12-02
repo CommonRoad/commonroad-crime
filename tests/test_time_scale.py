@@ -160,7 +160,6 @@ class TestTimeScale(unittest.TestCase):
         sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).\
             open(lanelet_assignment=True)
         self.config.update(ego_id=1, sce=sce_crosswalk)
-        self.config.print_configuration_summary()
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
         ttz_object.visualize()

@@ -8,7 +8,7 @@ __status__ = "Pre-alpha"
 
 import logging
 import math
-
+from shapely.geometry import Point
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 import numpy as np
@@ -90,18 +90,35 @@ class TTZ(CriMeBase):
             return im
 
         pictogram = plt.imread(self.configuration.general.path_icons + 'crosswalk.png')
-        width, height = 7, 3
-        xi, yi, deg = self._zebra_list[0].initial_state.position[0], self._zebra_list[0].initial_state.position[1], \
-                      math.degrees(self._zebra_list[0].initial_state.orientation)
-        im = imshow_affine(self.rnd.ax, pictogram, interpolation='none',
-                           extent=[0, width, 0, height], clip_on=True,
-                           alpha=1.0, zorder=15)
-        center_x, center_y = width / 2, height / 2
-        im_trans = (mtransforms.Affine2D()
-                    .rotate_deg_around(center_x, center_y, deg)
-                    .translate(xi - center_x, yi - center_y)
-                    + self.rnd.ax.transData)
-        im.set_transform(im_trans)
+        for zebra in self._zebra_list:
+            obs_zebra = zebra.obstacle_shape.shapely_object
+            # get minimum bounding box around polygon
+            box = obs_zebra.minimum_rotated_rectangle
+
+            # get coordinates of polygon vertices
+            x, y = box.exterior.coords.xy
+
+            # get length of bounding box edges
+            edge_length = (Point(x[0], y[0]).distance(Point(x[1], y[1])), Point(x[1], y[1]).distance(Point(x[2], y[2])))
+
+            # get length of polygon as the longest edge of the bounding box
+            width = max(edge_length)
+
+            # get width of polygon as the shortest edge of the bounding box
+            height = min(edge_length)
+
+            xi, yi, deg = zebra.initial_state.position[0], zebra.initial_state.position[1], \
+                          math.degrees(zebra.initial_state.orientation)
+
+            im = imshow_affine(self.rnd.ax, pictogram, interpolation='none',
+                               extent=[0, width, 0, height], clip_on=True,
+                               alpha=1.0, zorder=15)
+            center_x, center_y = width / 2, height / 2
+            im_trans = (mtransforms.Affine2D()
+                        .rotate_deg_around(center_x, center_y, deg)
+                        .translate(xi - center_x, yi - center_y)
+                        + self.rnd.ax.transData)
+            im.set_transform(im_trans)
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
                                   color=TUMcolor.TUMblue, linewidth=5)
         plt.title(f"{self.metric_name} at time step {self.time_step}")
