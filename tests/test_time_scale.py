@@ -1,9 +1,11 @@
 """
 Unit tests of the module time-scale metrics
 """
-
+import copy
 import unittest
 import math
+
+from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_crime.metric.time_scale.tet import TET
 from commonroad_crime.metric.time_scale.tit import TIT
@@ -15,6 +17,7 @@ from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
 from commonroad_crime.metric.time_scale.ttr import TTR
 from commonroad_crime.metric.time_scale.thw import THW
+from commonroad_crime.metric.time_scale.ttz import TTZ
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.utility.simulation import Maneuver
 
@@ -152,7 +155,12 @@ class TestTimeScale(unittest.TestCase):
         wttr_object.visualize()
         self.assertEqual(wttr, 2.2)
 
-
+    def test_ttz(self):
+        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenarios + 'ZAM_Zip-2_1_T-1.xml').\
+            open(lanelet_assignment=True)
+        config_copied = copy.deepcopy(self.config)
+        config_copied.update(ego_id=1, sce=sce_crosswalk)
+        ttz_object = TTZ(config_copied)
 
 
 

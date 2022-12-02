@@ -60,11 +60,14 @@ class CriMeConfiguration:
             self.scene = sce
         elif isinstance(sce, Scenario):
             self.scenario = sce
+        elif not sce and (self.scene or self.scenario): # prevent reloading the existing scenario
+            pass
         else:
             self.scenario = utils_general.load_scenario(self)  # if none is provided, scenario is at default
-        self.vehicle.curvilinear.clcs = CLCS
+        if CLCS:
+            self.vehicle.curvilinear.clcs = CLCS
         if ego_id:
-            if self.scenario.obstacle_by_id(ego_id) is None or self.scene.obstacle_by_id(ego_id):
+            if self.scenario.obstacle_by_id(ego_id) is None and self.scene.obstacle_by_id(ego_id) is None:
                 assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
             self.vehicle.ego_id = ego_id
 
