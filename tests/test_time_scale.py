@@ -1,7 +1,7 @@
 """
 Unit tests of the module time-scale metrics
 """
-import copy
+
 import unittest
 import math
 
@@ -156,11 +156,13 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(wttr, 2.2)
 
     def test_ttz(self):
-        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenarios + 'ZAM_Zip-2_1_T-1.xml').\
+        self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
+        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).\
             open(lanelet_assignment=True)
-        config_copied = copy.deepcopy(self.config)
-        config_copied.update(ego_id=1, sce=sce_crosswalk)
-        ttz_object = TTZ(config_copied)
+        self.config.update(ego_id=1, sce=sce_crosswalk)
+        self.config.print_configuration_summary()
+        ttz_object = TTZ(self.config)
+        ttz = ttz_object.compute(0)
 
 
 

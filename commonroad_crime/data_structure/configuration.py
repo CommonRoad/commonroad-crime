@@ -60,15 +60,19 @@ class CriMeConfiguration:
             self.scene = sce
         elif isinstance(sce, Scenario):
             self.scenario = sce
-        elif not sce and (self.scene or self.scenario): # prevent reloading the existing scenario
+        elif not sce and (self.scene or self.scenario):  # prevent reloading the existing scenario
             pass
         else:
             self.scenario = utils_general.load_scenario(self)  # if none is provided, scenario is at default
         if CLCS:
             self.vehicle.curvilinear.clcs = CLCS
         if ego_id:
-            if self.scenario.obstacle_by_id(ego_id) is None and self.scene.obstacle_by_id(ego_id) is None:
-                assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
+            if self.scenario:
+                if self.scenario.obstacle_by_id(ego_id) is None:
+                    assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
+            if self.scene:
+                if self.scene.obstacle_by_id(ego_id) is None:
+                    assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
             self.vehicle.ego_id = ego_id
 
     def print_configuration_summary(self):
@@ -89,9 +93,12 @@ class GeneralConfiguration:
 
         self.name_scenario = name_scenario
         self.path_scenarios = config_relevant.path_scenarios
-        self.path_scenario = config_relevant.path_scenarios + name_scenario + ".xml"
         self.path_output = config_relevant.path_output + name_scenario + "/"
         self.path_logs = config_relevant.path_logs
+
+    @property
+    def path_scenario(self):
+        return self.path_scenarios + self.name_scenario + ".xml"
 
 
 class TimeScaleConfiguration:
