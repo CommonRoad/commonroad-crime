@@ -5,6 +5,10 @@ Unit tests of the module time-scale metrics
 import unittest
 import math
 
+from commonroad.common.file_reader import CommonRoadFileReader
+
+from commonroad_crime.metric.time_scale.tet import TET
+from commonroad_crime.metric.time_scale.tit import TIT
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.metric.time_scale.ttc_star import TTCStar
@@ -13,6 +17,7 @@ from commonroad_crime.metric.time_scale.ttk import TTK
 from commonroad_crime.metric.time_scale.tts import TTS
 from commonroad_crime.metric.time_scale.ttr import TTR
 from commonroad_crime.metric.time_scale.thw import THW
+from commonroad_crime.metric.time_scale.ttz import TTZ
 from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.utility.simulation import Maneuver
 
@@ -32,6 +37,36 @@ class TestTimeScale(unittest.TestCase):
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
         self.config.update()
+
+    def test_tet(self):
+        self.config.debug.draw_visualization = True
+        self.config.debug.save_plots = True
+        tet_object_1 = TET(self.config)
+        tet_1 = tet_object_1.compute(6)
+        tet_object_1.visualize()
+        assert math.isclose(tet_1, 2.8, abs_tol=1e-2)
+
+        self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
+        self.config.update(sce=self.config.scenario)
+        tet_object_2 = TET(self.config)
+        tet_2 = tet_object_2.compute(7)
+        print(tet_2)
+        assert math.isclose(tet_2, 1.4, abs_tol=1e-2)
+
+    def test_tit(self):
+        self.config.debug.draw_visualization = True
+        self.config.debug.save_plots = True
+        tit_object_1 = TIT(self.config)
+        tit_1 = tit_object_1.compute(6)
+        tit_object_1.visualize()
+        assert math.isclose(tit_1, 3.7, abs_tol=1e-2)
+
+        self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
+        self.config.update(sce=self.config.scenario)
+        tit_object_2 = TIT(self.config)
+        tit_2 = tit_object_2.compute(7)
+        print(tit_2)
+        assert math.isclose(tit_2, 1.84, abs_tol=1e-2)
 
     def test_ttc(self):
         self.config.debug.draw_visualization = True
@@ -120,7 +155,13 @@ class TestTimeScale(unittest.TestCase):
         wttr_object.visualize()
         self.assertEqual(wttr, 2.2)
 
-
-
+    def test_ttz(self):
+        self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
+        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).\
+            open(lanelet_assignment=True)
+        self.config.update(ego_id=1, sce=sce_crosswalk)
+        ttz_object = TTZ(self.config)
+        ttz = ttz_object.compute(0)
+        ttz_object.visualize()
 
 

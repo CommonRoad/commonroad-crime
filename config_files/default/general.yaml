@@ -2,3 +2,4 @@
 path_scenarios: scenarios/
 path_output: output/
 path_logs: output/logs/
+path_icons: docs/icons/

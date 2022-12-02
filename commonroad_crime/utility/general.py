@@ -7,7 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import LaneletNetwork
-from commonroad.scenario.scenario import State, Scenario, DynamicObstacle, Obstacle
+from commonroad.scenario.scenario import State, Scenario, DynamicObstacle, StaticObstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
@@ -69,10 +69,13 @@ def int_round(some_float, tolerance=1):
 
 def check_in_same_lanelet(lanelet_network: LaneletNetwork,
                           vehicle_1: DynamicObstacle,
-                          vehicle_2: Union[DynamicObstacle, Obstacle],
+                          vehicle_2: Union[DynamicObstacle, StaticObstacle],
                           time_step: int):
     lanelets_1 = lanelet_network.find_lanelet_by_shape(vehicle_1.occupancy_at_time(time_step).shape)
-    lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
+    if isinstance(vehicle_2, StaticObstacle):
+        lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.obstacle_shape)
+    else:
+        lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 
