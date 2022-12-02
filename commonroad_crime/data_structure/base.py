@@ -56,8 +56,11 @@ class CriMeBase:
                                                                            'not contained in the scenario>'
         # =======       Vehicles      ========
         self.ego_vehicle: DynamicObstacle = self.sce.obstacle_by_id(self.configuration.vehicle.ego_id)
-        utils_gen.check_elements_state_list([self.ego_vehicle.initial_state] +
-                                            self.ego_vehicle.prediction.trajectory.state_list, self.dt)
+        utils_gen.check_elements_state_list([self.ego_vehicle.initial_state] + self.ego_vehicle.
+                                            prediction.trajectory.states_in_time_interval(time_begin=1,
+                                                                                          time_end=self.ego_vehicle.
+                                                                                          prediction.final_time_step),
+                                            self.dt)
         self.other_vehicle: Union[Obstacle, DynamicObstacle, StaticObstacle, None] = None  # optional
         self.clcs: CurvilinearCoordinateSystem = self._update_clcs()
         self.rnd: Union[MPRenderer, None] = None
