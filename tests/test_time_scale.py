@@ -163,6 +163,6 @@ class TestTimeScale(unittest.TestCase):
         self.config.print_configuration_summary()
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
-
+        ttz_object.visualize()
 
 

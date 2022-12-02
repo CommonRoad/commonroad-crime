@@ -10,7 +10,9 @@ import logging
 import math
 
 import matplotlib.pyplot as plt
+import matplotlib.transforms as mtransforms
 import numpy as np
+
 from commonroad.scenario.obstacle import DynamicObstacle, StaticObstacle, ObstacleType, State
 from commonroad.scenario.lanelet import LaneletType
 from commonroad_dc import pycrcc
@@ -22,7 +24,7 @@ from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
-
+from commonroad_crime.utility.visualization import TUMcolor
 from commonroad_crime.metric.time_scale.ttc import TTC
 
 logger = logging.getLogger(__name__)
@@ -36,6 +38,7 @@ class TTZ(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(TTZ, self).__init__(config)
+        self._zebra_list = []
 
     def compute(self, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
@@ -47,12 +50,13 @@ class TTZ(CriMeBase):
         if zebra_list:
             ttz_list = []
             for zebra in zebra_list:
-                init_state = State(**{"position": zebra.center_vertices[int(len(zebra.center_vertices) / 2)],
-                                      "orientation": np.tan(zebra.center_vertices[1][1] - zebra.center_vertices[0][1] /
-                                                            zebra.center_vertices[0][1] - zebra.center_vertices[0][0]),
+                init_state = State(**{"position": zebra.polygon.center,
+                                      "orientation": np.arctan((zebra.center_vertices[1][1] - zebra.center_vertices[0][1]) /
+                                                               (zebra.center_vertices[1][0] - zebra.center_vertices[0][0])),
                                       "velocity": 0.})
                 zebra_obs = \
                     StaticObstacle(self.sce.generate_object_id(), ObstacleType.ROAD_BOUNDARY, zebra.polygon, init_state)
+                self._zebra_list.append(zebra_obs)
                 if self.configuration.scenario:
                     self.configuration.scenario.add_objects(zebra_obs)
                 else:
@@ -70,5 +74,39 @@ class TTZ(CriMeBase):
             self.value = math.inf
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
 
-    def visualize(self):
-        pass
+    def visualize(self, figsize: tuple = (25, 15)):
+        self._initialize_vis(figsize=figsize,
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                              self.ego_vehicle.prediction.
+                                                                              trajectory.state_list,
+                                                                              margin=10))
+        self.rnd.render()
+        # ------------- Plot zebra crossing ------------------
+
+        def imshow_affine(ax, z, *args, **kwargs):
+            im = ax.imshow(z, *args, **kwargs)
+            x1, x2, y1, y2 = im.get_extent()
+            im._image_skew_coordinate = (x2, y1)
+            return im
+
+        pictogram = plt.imread(self.configuration.general.path_icons + 'crosswalk.png')
+        width, height = 7, 3
+        xi, yi, deg = self._zebra_list[0].initial_state.position[0], self._zebra_list[0].initial_state.position[1], \
+                      math.degrees(self._zebra_list[0].initial_state.orientation)
+        im = imshow_affine(self.rnd.ax, pictogram, interpolation='none',
+                           extent=[0, width, 0, height], clip_on=True,
+                           alpha=1.0, zorder=15)
+        center_x, center_y = width / 2, height / 2
+        im_trans = (mtransforms.Affine2D()
+                    .rotate_deg_around(center_x, center_y, deg)
+                    .translate(xi - center_x, yi - center_y)
+                    + self.rnd.ax.transData)
+        im.set_transform(im_trans)
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=5)
+        plt.title(f"{self.metric_name} at time step {self.time_step}")
+        if self.configuration.debug.save_plots:
+            utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
+                               self.time_step)
+        else:
+            plt.show()

@@ -95,6 +95,7 @@ class GeneralConfiguration:
         self.path_scenarios = config_relevant.path_scenarios
         self.path_output = config_relevant.path_output + name_scenario + "/"
         self.path_logs = config_relevant.path_logs
+        self.path_icons = config_relevant.path_icons
 
     @property
     def path_scenario(self):
