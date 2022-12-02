@@ -97,6 +97,7 @@ class TimeScaleConfiguration:
         self.activated = config_relevant.activated
         self.metric = config_relevant.metric
         self.steer_width = config_relevant.steer_width
+        self.tau = config_relevant.tau
 
 
 class ReachableSetScaleConfiguration:
