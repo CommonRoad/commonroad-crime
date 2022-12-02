@@ -103,10 +103,15 @@ def check_elements_state(state: State, veh_input: State = None, next_state: Stat
     if not hasattr(state, "acceleration"):
         if next_state:
             state.acceleration = utils_sol.compute_acceleration(
-                next_state.velocity, state.velocity, dt
+                state.velocity, next_state.velocity, dt
             )
         else:
             state.acceleration = 0.
+        state.jerk = 0.
+    else:
+        if next_state:
+            if hasattr(next_state, 'acceleration'):
+                state.jerk = utils_sol.compute_jerk(state.acceleration, next_state.acceleration)
     if veh_input is not None:
         state.acceleration = veh_input.acceleration
         state.acceleration_y = veh_input.acceleration_y

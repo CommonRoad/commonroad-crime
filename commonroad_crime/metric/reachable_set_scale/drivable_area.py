@@ -17,7 +17,6 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeReachableSetScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_gen
-import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)
@@ -63,7 +62,7 @@ class DrivableArea(CriMeBase):
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
         self.reach_interface.reset(self.reach_config)
         self.reach_interface.compute_reachable_sets()
-        self.value = utils_sol.compute_drivable_area(self.reach_interface.reachable_set)
+        self.value = compute_drivable_area(self.reach_interface.reachable_set)
         self.value = utils_gen.int_round(self.value, 2)
 
         return self.value

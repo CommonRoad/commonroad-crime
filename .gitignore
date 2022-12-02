@@ -9,3 +9,5 @@
 *.log
 
 output/
+
+*.egg-info/
