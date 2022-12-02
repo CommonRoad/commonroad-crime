@@ -17,7 +17,6 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeReachableSetScale
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_gen
-import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)

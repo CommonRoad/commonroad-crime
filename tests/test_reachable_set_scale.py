@@ -4,6 +4,14 @@ Unit tests of the module reachable set scale metrics
 
 import unittest
 
+try:
+    import commonroad_reach.pycrreach
+    module_failed = False
+except ImportError:
+    module_failed = True
+else:
+    from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
+
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 
@@ -11,21 +19,14 @@ import commonroad_crime.utility.logger as util_logger
 class TestReachableSetScale(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Test-1_1_T-1'
+        scenario_id = 'ZAM_Urban-3_3_Repair'
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
-        self.logger = util_logger.initialize_logger(self.config)
+        util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
         self.config.update()
 
+    @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_drivable_area(self):
-
-        try:
-            import commonroad_reach.pycrreach
-            from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
-        except ModuleNotFoundError:
-            util_logger.print_and_log_error(self.logger, "No module commonroad_reach installed")
-        else:
-            da_solver = DrivableArea(self.config)
-            self.assertAlmostEqual(da_solver.compute(), 21.1)
-            da_solver.visualize()
-
+        da_solver = DrivableArea(self.config)
+        self.assertAlmostEqual(da_solver.compute(), 60.13)
+        da_solver.visualize()
