@@ -159,6 +159,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
+        self.assertEqual(ttz, 1.28)
         ttz_object.visualize()
 
 
