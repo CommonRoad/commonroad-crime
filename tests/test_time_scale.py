@@ -46,12 +46,9 @@ class TestTimeScale(unittest.TestCase):
         tet_object_1.visualize()
         assert math.isclose(tet_1, 2.8, abs_tol=1e-2)
 
-        self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
-        self.config.update(sce=self.config.scenario)
         tet_object_2 = TET(self.config)
         tet_2 = tet_object_2.compute(7)
-        print(tet_2)
-        assert math.isclose(tet_2, 1.4, abs_tol=1e-2)
+        assert math.isclose(tet_2, 2.8, abs_tol=1e-2)
 
     def test_tit(self):
         self.config.debug.draw_visualization = True
