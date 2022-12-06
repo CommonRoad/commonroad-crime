@@ -13,10 +13,8 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 import numpy as np
 
-from commonroad.scenario.obstacle import DynamicObstacle, StaticObstacle, ObstacleType, State
+from commonroad.scenario.obstacle import StaticObstacle, ObstacleType, State
 from commonroad.scenario.lanelet import LaneletType
-from commonroad_dc import pycrcc
-from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch import create_collision_checker
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
