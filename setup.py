@@ -12,13 +12,18 @@ setup(name='commonroad-crime',
       packages=find_packages(),
       install_requires=[
           'commonroad-io>=2021.4,<2022.2',
-          'commonroad-drivability-checker>=2021.4',
+          'commonroad-drivability-checker==2021.4',
           'commonroad-vehicle-models>=1.0.0'
           'matplotlib>=3.5.2'
           'numpy>=1.19.5',
+          'scipy>=1.6.2',
+          'shapely>=1.7.0',
+          'omegaconf>=2.1.1',
+          'casadi>=3.5.5',
       ],
       extras_require={
           'tests': [
               'pytest>=7.1'
           ]
       })
+
