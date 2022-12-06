@@ -54,8 +54,11 @@ class TTZ(CriMeBase):
                                       "orientation": np.arctan((zebra.center_vertices[1][1] - zebra.center_vertices[0][1]) /
                                                                (zebra.center_vertices[1][0] - zebra.center_vertices[0][0])),
                                       "velocity": 0.})
+                obstacle_center_shape = zebra.polygon.translate_rotate(translation=-zebra.polygon.center, angle=0.)
                 zebra_obs = \
-                    StaticObstacle(self.sce.generate_object_id(), ObstacleType.ROAD_BOUNDARY, zebra.polygon, init_state)
+                    StaticObstacle(self.sce.generate_object_id(), ObstacleType.CONSTRUCTION_ZONE,
+                                   obstacle_center_shape, init_state,)
+
                 self._zebra_list.append(zebra_obs)
                 if self.configuration.scenario:
                     self.configuration.scenario.add_objects(zebra_obs)
@@ -73,6 +76,7 @@ class TTZ(CriMeBase):
             utils_log.print_and_log_info(logger, f"*\t\t there exists no zebra")
             self.value = math.inf
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
