@@ -35,7 +35,7 @@ class TestIndexScale(unittest.TestCase):
         stn_object = STN(self.config)
         # vehicle in the same lanelet and in front
         stn_1 = stn_object.compute(3, 0)
-        self.assertEqual(stn_1, 1.99)
+        self.assertEqual(stn_1, 0.02)
 
         # vehicle in another lanelet
         stn_2 = stn_object.compute(1, 0)

@@ -20,6 +20,7 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTimeScale
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_dc.boundary.boundary as boundary
 
@@ -78,19 +79,20 @@ class TTC(CriMeBase):
         delta_v = v_other - v_ego
         delta_a = a_other - a_ego
 
-        self.value = math.inf
-        if delta_d != np.Inf and delta_d != np.NINF:
-            if delta_v < 0 and delta_a < 0:
-                self.value = - (delta_d / delta_v)
+        if delta_d != math.inf:
+            if delta_v < 0 and delta_a == 0:
+                self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
             elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
                 first = - (delta_v / delta_a)
                 second = np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a
                 if delta_v < 0:
-                    self.value = first - second
+                    self.value = utils_gen.int_round(first - second, 2)
                 else:
-                    self.value = first + second
+                    self.value = utils_gen.int_round(first + second, 2)
             else:  # (delta_v >= 0 and delta_a >= 0) or (delta_v ** 2 - 2 * delta_d * delta_a < 0)
-                self.value = np.Inf
+                self.value = math.inf
+        else:
+            self.value = math.inf
 
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
