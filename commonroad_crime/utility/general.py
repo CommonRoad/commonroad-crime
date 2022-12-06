@@ -72,10 +72,7 @@ def check_in_same_lanelet(lanelet_network: LaneletNetwork,
                           vehicle_2: Union[DynamicObstacle, StaticObstacle],
                           time_step: int):
     lanelets_1 = lanelet_network.find_lanelet_by_shape(vehicle_1.occupancy_at_time(time_step).shape)
-    if isinstance(vehicle_2, StaticObstacle):
-        lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.obstacle_shape)
-    else:
-        lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
+    lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 

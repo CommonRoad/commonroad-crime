@@ -48,7 +48,7 @@ class TestTimeScale(unittest.TestCase):
 
         tet_object_2 = TET(self.config)
         tet_2 = tet_object_2.compute(7)
-        assert math.isclose(tet_2, 2.8, abs_tol=1e-2)
+        assert math.isclose(tet_2, 1.4, abs_tol=1e-2)
 
     def test_tit(self):
         self.config.debug.draw_visualization = True
@@ -56,10 +56,8 @@ class TestTimeScale(unittest.TestCase):
         tit_object_1 = TIT(self.config)
         tit_1 = tit_object_1.compute(6)
         tit_object_1.visualize()
-        assert math.isclose(tit_1, 3.7, abs_tol=1e-2)
+        assert math.isclose(tit_1, 3.72, abs_tol=1e-2)
 
-        self.config.scenario.remove_obstacle(self.config.scenario.static_obstacles)
-        self.config.update(sce=self.config.scenario)
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)
         print(tit_2)
@@ -159,6 +157,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
+        self.assertEqual(ttz, 1.28)
         ttz_object.visualize()
 
 
