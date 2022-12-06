@@ -43,3 +43,4 @@ class TestAccelerationScale(unittest.TestCase):
     def test_a_lat_req(self):
         a_lat_req_object = ALatReq(self.config)
         a_lat_req_1 = a_lat_req_object.compute(202, 0)
+        self.assertEqual(a_lat_req_1, 0.11)
