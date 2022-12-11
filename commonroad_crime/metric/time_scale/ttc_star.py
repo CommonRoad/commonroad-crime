@@ -111,10 +111,6 @@ class TTCStar(CriMeBase):
             ego.append_obstacle(pycrcc.RectOBB(0.5 * self.ego_vehicle.obstacle_shape.length,
                                                0.5 * self.ego_vehicle.obstacle_shape.width,
                                                theta, pos1, pos2))
-            ego_obb = pycrcc.RectOBB(0.5 * self.ego_vehicle.obstacle_shape.length,
-                                     0.5 * self.ego_vehicle.obstacle_shape.width,
-                                     theta, pos1, pos2)
-            ego.append_obstacle(ego_obb)
             if self.collision_checker.collide(ego):
                 self.value = utils_gen.int_round((i - time_step) * self.dt, str(self.dt)[::-1].find('.'))
                 # once collides, loop ends -> the first colliding timestep as the ttc
