@@ -84,3 +84,4 @@ class TypePotentialScale(str, Enum):
 
 class TypeReachableSetScale(str, Enum):
     DA = "drivable area"
+    ISS = "invariable safe set"

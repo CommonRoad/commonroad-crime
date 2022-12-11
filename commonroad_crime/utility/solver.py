@@ -88,23 +88,10 @@ def compute_closest_coordinate_from_list_of_points(state: State, vertices: np.nd
     return vertices[np.argmin(cdist(np.array([state.position]), vertices, "euclidean"))]
 
 
-def compute_disc_radius_and_distance(length: float, width: float, ref_point="CENTER", dist_axle_rear=None) \
+def compute_disc_radius_and_distance(length: float, width: float) \
         -> Tuple[float, float]:
     """
     Computes the radius of discs and their distances used as the approximation of the shape of the ego vehicle.
-    Credits: Gerald Würsching.
-
-    .. note::
-        Vehicle occupancy is approximated by three equally sized discs with equidistant center points.
-        (see Ziegler, J. and Stiller, C. (2010) **"Fast collision checking for intelligent vehicle motion planning"**,
-        IEEE IV
-
-    :param length: vehicle length
-    :param width: vehicle width
-    :param ref_point: "CENTER" or "REAR"
-    :param dist_axle_rear: if ref_point == "REAR", the distance between vehicle center and rear axle has to be provided
-    :return: radius_disc: radius of discs
-    :return: dist_circles: distance between the first and the third circle
     """
     assert length >= 0 and width >= 0, f"Invalid vehicle dimensions: length = {length}, width = {width}"
 
@@ -114,38 +101,13 @@ def compute_disc_radius_and_distance(length: float, width: float, ref_point="CEN
     # half width of the ego vehicle
     half_width = width / 2
 
-    if ref_point == "CENTER":
-        # second circle center point is exactly at the geometric center of vehicle model
-        # the other circles are placed equidistant along the longitudinal axis
-        half_length = (length / 3) / 2
-        radius = (half_length ** 2 + half_width ** 2) ** 0.5
+    half_length = (length / 3) / 2
+    radius = (half_length ** 2 + half_width ** 2) ** 0.5
 
-        # ceil up to 1 digit
-        # radius_disc = np.ceil(radius * 10) / 10
-        radius_disc = radius
-        dist_circles = length / 3 * 2
-
-    elif ref_point == "REAR":
-        # first circle center point has to be exactly on rear axis position of vehicle model
-        assert dist_axle_rear >= 0, f"Please provide a valid value for the rear axle distance (dist_axle_rear = " \
-                                    f"{dist_axle_rear})"
-        if dist_axle_rear < length / 3:
-            half_length = length / 2 - dist_axle_rear
-            radius = (half_length ** 2 + half_width ** 2) ** 0.5
-
-            # ceil up to 1 digit
-            # radius_disc = np.ceil(radius * 10) / 10
-            radius_disc = radius
-            dist_circles = dist_axle_rear * 2
-
-        else:
-            half_length = (length / 3) / 2 + (dist_axle_rear - length / 3)
-            radius = (half_length ** 2 + half_width ** 2) ** 0.5
-
-            radius_disc = radius
-            dist_circles = dist_axle_rear * 2
-    else:
-        raise Exception("reference point has to be either 'CENTER' or 'REAR'")
+    # ceil up to 1 digit
+    # radius_disc = np.ceil(radius * 10) / 10
+    radius_disc = radius
+    dist_circles = length / 3 * 2
 
     return radius_disc, dist_circles
 
