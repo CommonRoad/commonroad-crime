@@ -16,8 +16,8 @@ setup(name='commonroad-crime',
           'commonroad-vehicle-models>=1.0.0'
           'matplotlib>=3.5.2'
           'numpy>=1.19.5',
-          'scipy>=1.6.2',
-          'shapely>=1.7.0',
+          'scipy==1.7.3',
+          'shapely==1.7.1',
           'omegaconf>=2.1.1',
           'casadi>=3.5.5',
       ],
