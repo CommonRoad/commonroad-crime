@@ -11,3 +11,5 @@
 output/
 
 *.egg-info/
+
+/scenarios/batch
