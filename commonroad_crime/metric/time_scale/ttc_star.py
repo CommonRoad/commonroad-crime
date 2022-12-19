@@ -73,10 +73,7 @@ class TTCStar(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.
-                             plot_limits_from_state_list(self.time_step,
-                                                         self.ego_vehicle.prediction.trajectory.state_list,
-                                                         margin=10))
+                             plot_limit=[65, 105, -4, 7.5])
         self.draw_collision_checker(self.rnd)
         self.rnd.render()
 

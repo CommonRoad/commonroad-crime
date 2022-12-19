@@ -146,9 +146,9 @@ class TestTimeScale(unittest.TestCase):
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
-        wttr = wttr_object.compute(0)
+        wttr = wttr_object.compute(10)
         wttr_object.visualize()
-        self.assertEqual(wttr, 2.2)
+        self.assertEqual(wttr, 1.2)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"

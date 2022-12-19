@@ -99,6 +99,8 @@ class WTTR(CriMeBase):
         return wttr
 
     def visualize(self):
-        util_visual.plot_scenario_with_reachable_sets(self.reach_interface, step_end= self._end_sim)
+        util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
+                                                      plot_limits=[65, 105, -4, 7.5],
+                                                      step_end=self._end_sim)
 
 
