@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 import numpy as np
 
-from commonroad.scenario.obstacle import StaticObstacle, ObstacleType, State
+from commonroad.scenario.obstacle import StaticObstacle, ObstacleType
+from commonroad.scenario.state import InitialState
 from commonroad.scenario.lanelet import LaneletType
 
 from commonroad_crime.data_structure.base import CriMeBase
@@ -48,10 +49,11 @@ class TTZ(CriMeBase):
         if zebra_list:
             ttz_list = []
             for zebra in zebra_list:
-                init_state = State(**{"position": zebra.polygon.center,
-                                      "orientation": np.arctan((zebra.center_vertices[1][1] - zebra.center_vertices[0][1]) /
-                                                               (zebra.center_vertices[1][0] - zebra.center_vertices[0][0])),
-                                      "velocity": 0.})
+                init_state = InitialState(**{"position": zebra.polygon.center,
+                                             "orientation": np.arctan(
+                                                 (zebra.center_vertices[1][1] - zebra.center_vertices[0][1]) /
+                                                 (zebra.center_vertices[1][0] - zebra.center_vertices[0][0])),
+                                             "velocity": 0.})
                 obstacle_center_shape = zebra.polygon.translate_rotate(translation=-zebra.polygon.center, angle=0.)
                 zebra_obs = \
                     StaticObstacle(self.sce.generate_object_id(), ObstacleType.CONSTRUCTION_ZONE,
