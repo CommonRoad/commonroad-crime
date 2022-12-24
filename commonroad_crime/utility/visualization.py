@@ -13,12 +13,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, Scenario
+from commonroad.scenario.state import PMState
+from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
-
 
 
 class TUMcolor(tuple, Enum):
@@ -62,14 +62,14 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
                 transparent=False)
 
 
-def plot_limits_from_state_list(time_step: int, state_list: List[State], margin: float = 10.0):
+def plot_limits_from_state_list(time_step: int, state_list: List[PMState], margin: float = 10.0):
     return [state_list[time_step].position[0] - margin,
             state_list[-1].position[0] + margin,
             state_list[time_step].position[1] - margin/2,
             state_list[time_step].position[1] + margin/2]
 
 
-def draw_state(rnd: MPRenderer, state: State, color: TUMcolor = TUMcolor.TUMgreen):
+def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgreen):
     global zorder
     cir_c = plt.Circle((state.position[0], state.position[1]), 0.12, color=color,
                        linewidth=10., zorder=zorder)
@@ -104,7 +104,7 @@ def draw_reference_path(rnd: MPRenderer, ref_path: np.ndarray, color: TUMcolor =
     zorder += 1
 
 
-def draw_state_list(rnd: MPRenderer, state_list: List[State],
+def draw_state_list(rnd: MPRenderer, state_list: List[PMState],
                     start_time_step: Union[None, int] = None,
                     color: TUMcolor = TUMcolor.TUMdarkblue,
                     linewidth: float = 0.75) -> None:
@@ -128,32 +128,10 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                           config: CriMeConfiguration,
                           sce: Union[Scenario, Scene],
                           time_step: int):
-    sce.draw(rnd, draw_params={'time_begin': time_step,
-                               "trajectory": {
-                                   "draw_trajectory": False},
-                               "dynamic_obstacle": {
-                                   "draw_icon": config.debug.draw_icons,
-                               },
-                               "static_obstacle": {
-                                   "occupancy": {
-                                       "shape": {
-                                           "polygon": {
-                                               "facecolor": TUMcolor.TUMgray,
-                                               "edgecolor": TUMcolor.TUMdarkgray,
-                                           },
-                                           "rectangle": {
-                                               "facecolor": TUMcolor.TUMgray,
-                                               "edgecolor": TUMcolor.TUMdarkgray,
-                                           },
-                                           "circle": {
-                                               "facecolor": TUMcolor.TUMgray,
-                                               "edgecolor": TUMcolor.TUMdarkgray,
-                                           }
-                                       }
-
-                                   }
-                               },
-                               "lanelet": {
-                                   "fill_lanelet": False,
-                               }
-                               })
+    rnd.draw_params.time_begin = time_step
+    rnd.draw_params.trajectory.draw_trajectory = False
+    rnd.draw_params.dynamic_obstacle.draw_icon = config.debug.draw_icons
+    rnd.draw_params.static_obstacle.occupancy.shape.edgecolor = TUMcolor.TUMdarkgray
+    rnd.draw_params.static_obstacle.occupancy.shape.facecolor = TUMcolor.TUMgray
+    rnd.draw_params.lanelet_network.lanelet.fill_lanelet = False
+    sce.draw(rnd)

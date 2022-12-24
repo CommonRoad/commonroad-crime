@@ -13,8 +13,9 @@ from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction
+from commonroad.scenario.scenario import TrajectoryPrediction
 from commonroad.scenario.trajectory import Trajectory
+from commonroad.scenario.state import State, CustomState
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
@@ -57,6 +58,23 @@ class TTCStar(CriMeBase):
         """
         # update the trajectory prediction
         updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
+        updated_ego_vehicle.initial_state = CustomState(
+            position=updated_ego_vehicle.initial_state.position,
+            velocity=updated_ego_vehicle.initial_state.velocity,
+            velocity_y=updated_ego_vehicle.initial_state.velocity_y,
+            time_step=updated_ego_vehicle.initial_state.time_step,
+            orientation=math.atan2(updated_ego_vehicle.initial_state.velocity_y,
+                                   updated_ego_vehicle.initial_state.velocity)
+        )
+        for i in range(len(state_list)):
+            state_list[i] = CustomState(
+                position=state_list[i].position,
+                velocity=state_list[i].velocity,
+                velocity_y=state_list[i].velocity_y,
+                time_step=state_list[i].time_step,
+                orientation=math.atan2(state_list[i].velocity_y,
+                                       state_list[i].velocity)
+            )
         dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step, state_list)
         dynamic_obstacle_prediction = TrajectoryPrediction(dynamic_obstacle_trajectory,
                                                            updated_ego_vehicle.obstacle_shape)
@@ -68,8 +86,9 @@ class TTCStar(CriMeBase):
         """
         Plots the collision checker.
         """
-        self.collision_checker.draw(rnd,
-                                    draw_params={'facecolor': TUMcolor.TUMgray, 'draw_mesh': False})
+        rnd.draw_params.shape.facecolor = TUMcolor.TUMgray
+        rnd.draw_params.shape.edgecolor = TUMcolor.TUMdarkgray
+        self.collision_checker.draw(rnd)
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
