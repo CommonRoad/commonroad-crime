@@ -7,7 +7,8 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import LaneletNetwork
-from commonroad.scenario.scenario import State, Scenario, DynamicObstacle, StaticObstacle
+from commonroad.scenario.state import KSState, LongitudinalState, PMInputState, PMState
+from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
@@ -76,7 +77,7 @@ def check_in_same_lanelet(lanelet_network: LaneletNetwork,
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 
-def check_elements_state_list(state_list: List[State], dt: float):
+def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState]], dt: float):
     v_list = [state.velocity for state in state_list]
     t_list = [state.time_step*dt for state in state_list]
     a_list = np.gradient(np.array(v_list), t_list)
@@ -84,10 +85,13 @@ def check_elements_state_list(state_list: List[State], dt: float):
     for i in range(len(state_list)):
         state_list[i].acceleration = a_list[i]
         state_list[i].jerk = j_list[i]
-        check_elements_state(state_list[i], dt=dt)
+        if not isinstance(state_list[i], KSState):
+            check_elements_state(state_list[i], dt=dt)
 
 
-def check_elements_state(state: State, veh_input: State = None, next_state: State = None, dt: float = 0.1):
+def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
+                         veh_input: PMInputState = None,
+                         next_state: Union[KSState, LongitudinalState] = None, dt: float = 0.1):
     """
     checks the missing elements needed for PM model
     """
@@ -111,12 +115,16 @@ def check_elements_state(state: State, veh_input: State = None, next_state: Stat
     else:
         if next_state:
             if hasattr(next_state, 'acceleration'):
-                state.jerk = utils_sol.compute_jerk(state.acceleration, next_state.acceleration)
+                state.jerk = utils_sol.compute_jerk(state.acceleration, next_state.acceleration, dt)
     if veh_input is not None:
         state.acceleration = veh_input.acceleration
         state.acceleration_y = veh_input.acceleration_y
+    if not hasattr(state, "orientation"):
+        ref_orientation = math.atan2(state.velocity_y, state.velocity)
+    else:
+        ref_orientation = state.orientation
     if not hasattr(state, "acceleration_y"):
-        state.acceleration_y = state.acceleration * math.sin(state.orientation)
-        state.acceleration = state.acceleration * math.cos(state.orientation)
+        state.acceleration_y = state.acceleration * math.sin(ref_orientation)
+        state.acceleration = state.acceleration * math.cos(ref_orientation)
 
 
