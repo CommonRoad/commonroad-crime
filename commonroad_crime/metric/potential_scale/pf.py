@@ -12,7 +12,7 @@ from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt
 
-from commonroad.scenario.state import InitialState
+from commonroad.scenario.state import InitialState, State
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
@@ -24,12 +24,10 @@ import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
 
 logger = logging.getLogger(__name__)
+del State.__array__
 
 
 class PF(CriMeBase):
-    """
-    Jerk is the rate of change in acceleration, and thus quantifies over the abruptness of a maneuver.
-    """
     metric_name = TypePotentialScale.PF
 
     def __init__(self, config: CriMeConfiguration):
