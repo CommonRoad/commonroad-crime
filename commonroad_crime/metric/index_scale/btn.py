@@ -16,6 +16,7 @@ from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,11 @@ class BTN(CriMeBase):
                                                                               self.ego_vehicle.prediction.
                                                                               trajectory.state_list,
                                                                               margin=10))
-        self.other_vehicle.draw(self.rnd, {'time_begin': self.time_step, **utils_vis.OTHER_VEHICLE_DRAW_PARAMS})
+        self.rnd.draw_params.time_begin = self.time_step
+        self.rnd.draw_params.dynamic_obstacle.draw_icon = True
+        self.rnd.draw_params.dynamic_obstacle.vehicle_shape.occupancy.shape.edgecolor = TUMcolor.TUMdarkred
+        self.rnd.draw_params.dynamic_obstacle.vehicle_shape.occupancy.shape.facecolor = TUMcolor.TUMred
+        self.other_vehicle.draw(self.rnd)
         self.rnd.render()
         plt.title(f"{self.metric_name} at time step {self.time_step}")
         if self.configuration.debug.save_plots:

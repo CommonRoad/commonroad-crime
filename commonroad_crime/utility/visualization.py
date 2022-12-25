@@ -36,24 +36,6 @@ class TUMcolor(tuple, Enum):
 
 zorder = 22
 
-OTHER_VEHICLE_DRAW_PARAMS = {"trajectory": {
-    "draw_trajectory": False},
-    "dynamic_obstacle":
-        {"draw_icon": True,
-         "vehicle_shape": {"occupancy": {"shape": {
-             "polygon": {
-                 "facecolor": TUMcolor.TUMred,
-                 "edgecolor": TUMcolor.TUMdarkred,
-             },
-             "rectangle": {
-                 "facecolor": TUMcolor.TUMred,
-                 "edgecolor": TUMcolor.TUMdarkred,
-             },
-             "circle": {
-                 "facecolor": TUMcolor.TUMred,
-                 "edgecolor": TUMcolor.TUMdarkred,
-             }
-         }}}}}
 
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg
