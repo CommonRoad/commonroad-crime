@@ -12,7 +12,7 @@ from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt
 
-from commonroad.scenario.scenario import State
+from commonroad.scenario.state import InitialState
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
@@ -51,7 +51,7 @@ class PF(CriMeBase):
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
-    def calc_total_potential(self, veh_state: State, s_veh: float, d_veh: float):
+    def calc_total_potential(self, veh_state: InitialState, s_veh: float, d_veh: float):
         u_total = self._calc_lane_potential(veh_state, d_veh) + \
                   self._calc_road_potential(veh_state, d_veh) + \
                   self._calc_car_potential(veh_state, s_veh, d_veh)
@@ -62,7 +62,7 @@ class PF(CriMeBase):
         else:
             return utils_gen.int_round(u_total, 2)
 
-    def _calc_lane_potential(self, veh_state: State, d_veh: float):
+    def _calc_lane_potential(self, veh_state: InitialState, d_veh: float):
         """
         Calculates the lane potential.
         """
@@ -106,7 +106,7 @@ class PF(CriMeBase):
                                              self.configuration.potential_scale.A_lane)
         return u_lane
 
-    def _calc_road_potential(self, veh_state: State, d_veh: float):
+    def _calc_road_potential(self, veh_state: InitialState, d_veh: float):
         """
         Calculates the road potential, which prevents the vehicle from leaving the highway
         """
@@ -125,7 +125,7 @@ class PF(CriMeBase):
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
         return u_road
 
-    def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
+    def _calc_car_potential(self, veh_state: InitialState, s_veh: float, d_veh: float):
         def calc_scale_factor(d_0, v, T_f, beta, v_m):
             if v >= d_0 / T_f:
                 xi_0 = d_0 / (T_f * v)
@@ -175,7 +175,7 @@ class PF(CriMeBase):
                 u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / K
         return u_car
 
-    def _calc_velocity_potential(self, veh_state: State, s_veh: float):
+    def _calc_velocity_potential(self, veh_state: InitialState, s_veh: float):
         return self.configuration.potential_scale.slope_scale * (
                 veh_state.velocity - self.configuration.potential_scale.desired_speed
         ) * s_veh
@@ -187,7 +187,7 @@ class PF(CriMeBase):
         s = np.linspace(self._s_ego - 25, self._s_ego + 50, 50)
         d = np.linspace(d_bounds[0], d_bounds[1], 50)
         S, D = np.meshgrid(s, d)
-        u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state', 's_veh', 'd_veh'])
+        u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state'])
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
         U = u_func(evaluated_state, S, D)
 
