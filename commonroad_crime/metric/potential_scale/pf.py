@@ -24,7 +24,6 @@ import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
 
 logger = logging.getLogger(__name__)
-del State.__array__
 
 
 class PF(CriMeBase):
@@ -49,7 +48,8 @@ class PF(CriMeBase):
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
-    def calc_total_potential(self, veh_state: InitialState, s_veh: float, d_veh: float):
+    def calc_total_potential(self, veh_state: [InitialState, np.ndarray],
+                             s_veh: float, d_veh: float):
         u_total = self._calc_lane_potential(veh_state, d_veh) + \
                   self._calc_road_potential(veh_state, d_veh) + \
                   self._calc_car_potential(veh_state, s_veh, d_veh)
@@ -185,10 +185,15 @@ class PF(CriMeBase):
         s = np.linspace(self._s_ego - 25, self._s_ego + 50, 50)
         d = np.linspace(d_bounds[0], d_bounds[1], 50)
         S, D = np.meshgrid(s, d)
-        u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state'])
+        U = []
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        U = u_func(evaluated_state, S, D)
-
+        for j in range(len(S)):
+            for i in range(len(S[0])):
+                U.append(self.calc_total_potential(evaluated_state, S[j][i], D[j][i]))
+        U = np.array(U).reshape(S.shape)
+        # previously used vectorization
+        # u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state'])
+        # U = u_func(evaluated_state, S, D)
         # polygons
         for obs in self.sce.obstacles:
             if obs is not self.ego_vehicle:
