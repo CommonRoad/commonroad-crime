@@ -11,7 +11,7 @@ import numpy as np
 import logging
 from typing import Dict, List
 
-from commonroad.scenario.scenario import State
+from commonroad.scenario.state import InitialState
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeReachableSetScale
@@ -48,7 +48,7 @@ class DrivableArea(CriMeBase):
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
 
-    def _update_initial_state(self, target_state: State):
+    def _update_initial_state(self, target_state: InitialState):
         self.reach_config.planning_problem.initial_state.position = target_state.position
         self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation

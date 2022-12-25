@@ -9,8 +9,6 @@ __status__ = "Pre-alpha"
 import math
 import logging
 
-from commonroad.scenario.scenario import State
-
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeJerkScale

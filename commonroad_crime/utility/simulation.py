@@ -389,7 +389,10 @@ class SimulationLat(SimulationBase):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if not bang_bang_ts:
                 bang_bang_ts = math.inf
-                max_orient = pre_state.orientation
+                if hasattr(pre_state, 'orientation'):
+                    max_orient = pre_state.orientation
+                else:
+                    max_orient = math.atan2(pre_state.velocity_y, pre_state.velocity)
             else:
                 lane_orient = lane_orient_updated
                 max_orient = self.set_maximal_orientation(lane_orient, i)

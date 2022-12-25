@@ -6,14 +6,13 @@ import unittest
 
 try:
     import commonroad_reach.pycrreach
+    from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+    import commonroad_crime.utility.logger as util_logger
     module_failed = False
 except ImportError:
     module_failed = True
 else:
     from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
-
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-import commonroad_crime.utility.logger as util_logger
 
 
 class TestReachableSetScale(unittest.TestCase):
