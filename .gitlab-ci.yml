@@ -5,8 +5,8 @@ image: continuumio/anaconda3
 
 before_script:
     - apt-get update && apt-get install -y build-essential
-    - conda create -n commonroad-py37 python=3.7 -y
-    - source activate commonroad-py37
+    - conda create -n commonroad-py38 python=3.8 -y
+    - source activate commonroad-py38
     - conda info
 
 unittest:
