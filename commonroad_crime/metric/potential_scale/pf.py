@@ -108,7 +108,6 @@ class PF(CriMeBase):
         """
 
         def repulsive_potential(eta: float, y: float, y_0: float):
-            print('calculating', y - y_0)
             return 0.5 * eta * (1 / (y - y_0)) ** 2
 
         # possibly: Coordinate outside of projection domain.
@@ -121,7 +120,7 @@ class PF(CriMeBase):
         u_road = 0.
         for d_yb in [self._d_ego + dis_left, self._d_ego - dis_right]:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
-        print()
+
         return u_road
 
     def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
