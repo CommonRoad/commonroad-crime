@@ -123,6 +123,8 @@ class PF(CriMeBase):
         u_road = 0.
         for d_yb in [d_veh - dis_right, d_veh + dis_left]:
             u_road += repulsive_potential(self.configuration.potential_scale.scale_factor, d_veh, d_yb)
+        print(d_veh - d_yb)
+
         return u_road
 
     def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
@@ -184,8 +186,8 @@ class PF(CriMeBase):
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(self.ego_vehicle.state_at_time(self.time_step),
                                                                     self.sce.lanelet_network)
         d_bounds = [self._d_ego - dis_right, self._d_ego + dis_left]
-        s = np.linspace(self._s_ego - 25, self._s_ego + 50, 50)
-        d = np.linspace(d_bounds[0], d_bounds[1], 50)
+        s = np.linspace(self._s_ego - 35, self._s_ego + 40, 100)
+        d = np.linspace(d_bounds[0]-1, d_bounds[1]+1, 100)
         S, D = np.meshgrid(s, d)
         u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state', 's_veh', 'd_veh'])
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
@@ -213,12 +215,12 @@ class PF(CriMeBase):
                                      topmost_then_leftmost_point, bottommost_then_leftmost_point])
                     obs_with_wedge = obs_clcs_poly.union(wedge)
                     plt.plot(*obs_with_wedge.exterior.xy)
-        plt.contour(S, D, U, 50, cmap='RdGy')
+        plt.contourf(S, D, U, 20, cmap='RdBu_r')
         plt.colorbar()
         # lane boundaries
-        plt.plot([self._s_ego - 25, self._s_ego + 50],
+        plt.plot([self._s_ego - 35, self._s_ego + 40],
                  [d_bounds[0], d_bounds[0]], 'k', linewidth=3)
-        plt.plot([self._s_ego - 25, self._s_ego + 50],
+        plt.plot([self._s_ego - 35, self._s_ego + 40],
                  [d_bounds[1], d_bounds[1]], 'k', linewidth=3)
         plt.axis('equal')
         plt.title(f"{self.metric_name} at time step {self.time_step} is {self.value}")

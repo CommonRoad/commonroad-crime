@@ -97,6 +97,8 @@ class P_MC(CriMeBase):
         if maneuver in [Maneuver.STOPMC]:
             simulator = SimulationLongMonteCarlo(maneuver, vehicle, self.configuration)
         elif maneuver in [Maneuver.TURNMC, Maneuver.OVERTAKEMC, Maneuver.LANECHANGEMC]:
+            # change the lane width mode
+            self.configuration.time_scale.steer_width = 2
             simulator = SimulationLatMonteCarlo(maneuver, vehicle, self.configuration)
         elif maneuver in [Maneuver.RANDOMMC]:
             simulator = SimulationRandoMonteCarlo(maneuver, vehicle, self.configuration)

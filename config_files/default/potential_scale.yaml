@@ -3,7 +3,7 @@
 A_lane: 2 # maximum amplitude of the lane divider potential
 A_car: 10 # Yukawa amplitude
 sigma_factor: 3 # * lane width - how quickly the potential rises/falls
-scale_factor: 3 # scaling factor for road potential
+scale_factor: 100 # scaling factor for road potential
 slope_scale: 0.2 # slope scale of velocity potential
 alpha: 0.5 # Yukawa scale
 beta: 0.6 # exponential scale of car potential
