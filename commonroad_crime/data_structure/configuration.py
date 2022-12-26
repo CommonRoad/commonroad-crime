@@ -146,6 +146,8 @@ class PotentialScaleConfiguration:
         self.wedge_vertex = config_relevant.wedge_vertex
         self.desired_speed = config_relevant.desired_speed
 
+        self.u_max = config_relevant.u_max
+
 
 class ProbabilityScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
