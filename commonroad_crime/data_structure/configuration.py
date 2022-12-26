@@ -93,13 +93,17 @@ class GeneralConfiguration:
 
         self.name_scenario = name_scenario
         self.path_scenarios = config_relevant.path_scenarios
-        self.path_output = config_relevant.path_output + name_scenario + "/"
+        self.path_output_abs = config_relevant.path_output
         self.path_logs = config_relevant.path_logs
         self.path_icons = config_relevant.path_icons
 
     @property
     def path_scenario(self):
         return self.path_scenarios + self.name_scenario + ".xml"
+
+    @property
+    def path_output(self):
+        return self.path_output_abs + self.name_scenario + "/"
 
 
 class TimeScaleConfiguration:
@@ -141,6 +145,8 @@ class PotentialScaleConfiguration:
         self.follow_time = config_relevant.follow_time
         self.wedge_vertex = config_relevant.wedge_vertex
         self.desired_speed = config_relevant.desired_speed
+
+        self.u_max = config_relevant.u_max
 
 
 class ProbabilityScaleConfiguration:

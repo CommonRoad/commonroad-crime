@@ -62,8 +62,13 @@ class TTM(CriMeBase):
             self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)
         self.rnd.render()
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMblue, linewidth=5)
+        if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
+            utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +
+                                      self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
+        else:
+            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
         for sl in self.state_list_set:
             utils_vis.draw_state_list(self.rnd, sl)
         if self.value not in [math.inf, -math.inf] and self.ttc:
