@@ -12,4 +12,4 @@ wedge_vertex: -0.5 # the location of the rear-most vertex of the triangle
 desired_speed: 20 #!!null # to guide the vehicle towards a desired speed
 d_0: 50 # the maximum distance at which the car potential exerts an influence
 
-u_max: 50 # maximum potential for visualization purposes, otherwise it would be inf
+u_max: 100 # maximum potential for visualization purposes, otherwise it would be inf
