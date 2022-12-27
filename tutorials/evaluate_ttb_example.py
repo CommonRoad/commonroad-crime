@@ -3,6 +3,9 @@ Exemplary evaluation of TTB using set-based prediction
 """
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.metric.time_scale.ttb import TTB
+from commonroad_crime.metric.time_scale.ttr import TTR
+from commonroad_crime.metric.time_scale.wttr import WTTR
+from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 
 
 def main():
@@ -14,15 +17,36 @@ def main():
     config.update()
     config.print_configuration_summary()
 
-    # ********** TTB **********
+    # ********** TTC **********
     # ==== select the criticality metric
-    ttb_interface = TTB(config)
-    # ==== evaluate at time step 0
-    ttb_interface.compute(0, verbose=True)
+    # ttc_interface = TTCStar(config)
+    # # ==== evaluate at time step 0
+    # ttc_interface.compute(0)
+    #
+    # # ==== visualize the result
+    # #config.debug.save_plots = False
+    # ttc_interface.visualize()
 
-    # ==== visualize the result
-    config.debug.save_plots = False
-    ttb_interface.visualize()
+    # ********** TTR **********
+    # # ==== select the criticality metric
+    # ttr_interface = TTR(config)
+    # # ==== evaluate at time step 0
+    # ttr_interface.compute(0, verbose=True)
+    #
+    # # ==== visualize the result
+    # #config.debug.save_plots = False
+    # ttr_interface.visualize()
+
+    # ************************
+    # ********** WTTR **********
+    # ==== select the criticality metric
+    wttr_interface = WTTR(config)
+    # # ==== evaluate at time step 0
+    wttr_interface.compute(0, verbose=True)
+    #
+    # # ==== visualize the result
+    #config.debug.save_plots = False
+    wttr_interface.visualize()
     # ************************
 
 
