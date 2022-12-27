@@ -57,10 +57,13 @@ class TTM(CriMeBase):
     def visualize(self, figsize: tuple = (25, 15)):
         if self.selected_state_list:
             self._initialize_vis(figsize=figsize,
-                                 plot_limit=[65, 105, -4, 7.5])
+                                 plot_limit=[30, 80, -3.5, 7]) #[65, 105, -4, 7.5])
         else:
             self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)
+        for veh in self.sce.obstacles:
+            if veh is not self.ego_vehicle:
+                veh.draw(self.rnd)
         self.rnd.render()
         if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
             utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +
@@ -74,6 +77,9 @@ class TTM(CriMeBase):
         if self.value not in [math.inf, -math.inf] and self.ttc:
             tstm = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
+            tstc = int(utils_gen.int_round(self.ttc_object.value / self.dt, 0))
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
+
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
             utils_vis.draw_state_list(self.rnd, self.selected_state_list[tstm:],

@@ -45,7 +45,8 @@ class WTTR(CriMeBase):
         self.reach_config.vehicle.ego.a_lon_max = self.configuration.vehicle.curvilinear.a_lon_max
         self.reach_config.vehicle.ego.a_lat_min = self.configuration.vehicle.curvilinear.a_lat_min
         self.reach_config.vehicle.ego.a_lat_max = self.configuration.vehicle.curvilinear.a_lat_max
-
+        self.reach_config.planning.dt = self.sce.dt
+        # self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
         self._end_sim = None
@@ -100,7 +101,7 @@ class WTTR(CriMeBase):
 
     def visualize(self):
         util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                      plot_limits=[65, 105, -4, 7.5],
+                                                      plot_limits= [30, 80, -8, 15],# [65, 105, -4, 7.5],
                                                       step_end=self._end_sim)
 
 

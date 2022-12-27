@@ -69,7 +69,8 @@ class TTCStar(CriMeBase):
         Plots the collision checker.
         """
         self.collision_checker.draw(rnd,
-                                    draw_params={'facecolor': TUMcolor.TUMgray, 'draw_mesh': False})
+                                    draw_params={'facecolor': TUMcolor.TUMgray,
+                                                 'edgecolor': TUMcolor.TUMdarkgray ,'draw_mesh': False})
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
