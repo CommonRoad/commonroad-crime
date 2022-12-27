@@ -13,6 +13,7 @@ from typing import Union
 
 # CommonRoad packages
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstacle
+from commonroad.prediction.prediction import TrajectoryPrediction
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -111,8 +112,9 @@ class CriMeBase:
             raise ValueError(f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!")
         self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         if isinstance(self.other_vehicle, DynamicObstacle):
-            utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
-                                                self.other_vehicle.prediction.trajectory.state_list, self.dt)
+            if isinstance(self.other_vehicle.prediction, TrajectoryPrediction):
+                utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
+                                                    self.other_vehicle.prediction.trajectory.state_list, self.dt)
 
     def _except_obstacle_in_same_lanelet(self, expected_value: float):
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
