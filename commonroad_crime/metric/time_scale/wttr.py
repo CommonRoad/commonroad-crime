@@ -55,6 +55,7 @@ class WTTR(CriMeBase):
         self.reach_config.planning_problem.initial_state.position = target_state.position
         self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
+        self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
 
     def compute(self, time_step: int = 0, verbose: bool = False):
         self.ttc = self.ttc_object.compute(time_step)
