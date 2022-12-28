@@ -13,8 +13,9 @@ from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction
+from commonroad.scenario.scenario import State, TrajectoryPrediction, Scenario
 from commonroad.scenario.trajectory import Trajectory
+from commonroad.geometry.shape import ShapeGroup
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
@@ -62,6 +63,7 @@ class TTCStar(CriMeBase):
                                                            updated_ego_vehicle.obstacle_shape)
         updated_ego_vehicle.prediction = dynamic_obstacle_prediction
         co = create_collision_object(updated_ego_vehicle)
+
         return self.collision_checker.collide(co)
 
     def draw_collision_checker(self, rnd: MPRenderer):
@@ -74,8 +76,11 @@ class TTCStar(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=[65, 105, -4, 7.5])
-        self.draw_collision_checker(self.rnd)
+                             plot_limit=[30, 80, -3.5, 7],)# [65, 105, -4, 7.5],
+        # self.draw_collision_checker(self.rnd)
+        tstc = int(utils_gen.int_round(self.value / self.dt, 0))
+
+        self.sce.obstacle_by_id(99).draw(self.rnd, draw_params={'time_begin': tstc})
         self.rnd.render()
 
         if self.value not in [math.inf, -math.inf]:
@@ -101,15 +106,16 @@ class TTCStar(CriMeBase):
         self.value = math.inf
         for i in range(time_step, len(state_list)):
             # i-th time step
-            pos1 = state_list[i].position[0]
-            pos2 = state_list[i].position[1]
-            theta = state_list[i].orientation
+            pos1 = self.ego_vehicle.state_at_time(i).position[0]
+            pos2 = self.ego_vehicle.state_at_time(i).position[1]
+            theta = self.ego_vehicle.state_at_time(i).orientation
             # i: time_start_idx
             ego = pycrcc.TimeVariantCollisionObject(i)
             ego.append_obstacle(pycrcc.RectOBB(0.5 * self.ego_vehicle.obstacle_shape.length,
                                                0.5 * self.ego_vehicle.obstacle_shape.width,
                                                theta, pos1, pos2))
-            if self.collision_checker.collide(ego):
+            flag_collide = self.collision_checker.collide(ego)
+            if flag_collide:
                 self.value = utils_gen.int_round((i - time_step) * self.dt, str(self.dt)[::-1].find('.'))
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break
