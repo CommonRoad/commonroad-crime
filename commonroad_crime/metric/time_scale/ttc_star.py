@@ -78,11 +78,6 @@ class TTCStar(CriMeBase):
         self._initialize_vis(figsize=figsize,
                              plot_limit=[30, 80, -3.5, 7],)# [65, 105, -4, 7.5],
         # self.draw_collision_checker(self.rnd)
-        tstc = int(utils_gen.int_round(self.value / self.dt, 0))
-
-        self.sce.obstacle_by_id(99).draw(self.rnd, draw_params={'time_begin': tstc})
-        self.rnd.render()
-
         if self.value not in [math.inf, -math.inf]:
             tstc = int(utils_gen.int_round(self.value / self.dt, 0))
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)

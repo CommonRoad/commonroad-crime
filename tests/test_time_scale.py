@@ -85,7 +85,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_3 = TTCStar(self.config)
         ttc_3 = ttc_object_3.compute()
-        assert math.isclose(ttc_3, 7*sce_set.dt, abs_tol=1e-2)
+        assert math.isclose(ttc_3, 9*sce_set.dt, abs_tol=1e-2)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
@@ -166,7 +166,7 @@ class TestTimeScale(unittest.TestCase):
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)
-        wttr_object.visualize()
+        # wttr_object.visualize()
         self.assertEqual(wttr, 1.2)
 
     def test_ttz(self):
