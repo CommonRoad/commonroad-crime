@@ -115,6 +115,10 @@ class CriMeBase:
             if isinstance(self.other_vehicle.prediction, TrajectoryPrediction):
                 utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
                                                     self.other_vehicle.prediction.trajectory.state_list, self.dt)
+            else:
+                utils_gen.check_elements_state(self.other_vehicle.initial_state, dt=self.dt)
+        else:
+            utils_gen.check_elements_state(self.other_vehicle.initial_state, dt=self.dt)
 
     def _except_obstacle_in_same_lanelet(self, expected_value: float):
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,

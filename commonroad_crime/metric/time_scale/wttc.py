@@ -48,13 +48,18 @@ class WTTC(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                             self.ego_vehicle.prediction.
-                                                                             trajectory.state_list,
-                                                                             margin=10))
+                             plot_limit= [30, 80, -3.5, 7])#utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                             # self.ego_vehicle.prediction.
+                                                                             # trajectory.state_list,
+                                                                             # margin=10))
         self.rnd.render()
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMblue, linewidth=5)
+        if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
+            utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +
+                                      self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
+        else:
+            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
         r_1 = r_2 = 1/2 * self.configuration.vehicle.cartesian.longitudinal.a_max * self.value ** 2
         if isinstance(self.other_vehicle, StaticObstacle):
             r_2 = 0
@@ -63,19 +68,27 @@ class WTTC(CriMeBase):
         r_v2, _ = utils_sol.compute_disc_radius_and_distance(self.other_vehicle.obstacle_shape.length,
                                                              self.other_vehicle.obstacle_shape.width)
         wtstc = int(utils_gen.int_round(self.value / self.dt, 0))
-        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, wtstc)
-        utils_vis.draw_circle(self.rnd, self.ego_vehicle.state_at_time(wtstc).position,
+        new_x_1 = self.ego_vehicle.state_at_time(self.time_step).position[0] + \
+                  self.value * self.ego_vehicle.state_at_time(self.time_step).velocity
+        new_y_1 = self.ego_vehicle.state_at_time(self.time_step).position[1] + \
+                  self.value * self.ego_vehicle.state_at_time(self.time_step).velocity_y
+        new_x_2 = self.other_vehicle.state_at_time(self.time_step).position[0] + \
+                  self.value * self.other_vehicle.state_at_time(self.time_step).velocity
+        new_y_2 = self.other_vehicle.state_at_time(self.time_step).position[1] + \
+                  self.value * self.other_vehicle.state_at_time(self.time_step).velocity_y
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, self.time_step)
+        utils_vis.draw_circle(self.rnd, np.array([new_x_1, new_y_1]),
                               r_v1 + r_1, color=TUMcolor.TUMblue)
-        utils_vis.draw_circle(self.rnd, self.ego_vehicle.state_at_time(wtstc).position,
+        utils_vis.draw_circle(self.rnd, np.array([new_x_1, new_y_1]),
                               r_v1, color=TUMcolor.TUMdarkblue)
-        utils_vis.draw_circle(self.rnd, self.other_vehicle.state_at_time(wtstc).position,
+        utils_vis.draw_circle(self.rnd, np.array([new_x_2, new_y_2]),
                               r_v2 + r_2, color=TUMcolor.TUMlightgray)
-        utils_vis.draw_circle(self.rnd, self.other_vehicle.state_at_time(wtstc).position,
+        utils_vis.draw_circle(self.rnd, np.array([new_x_2, new_y_2]),
                               r_v2, color=TUMcolor.TUMdarkgray)
-        plt.title(f"{self.metric_name} at time step {wtstc}")
+        plt.title(f"{self.metric_name} at time step {self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.metric_name, self.configuration.general.path_output,
-                               wtstc)
+                               self.time_step)
         else:
             plt.show()
 
