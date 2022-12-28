@@ -166,7 +166,7 @@ class TestTimeScale(unittest.TestCase):
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)
-        # wttr_object.visualize()
+        wttr_object.visualize()
         self.assertEqual(wttr, 1.2)
 
     def test_ttz(self):

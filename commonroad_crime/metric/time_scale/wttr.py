@@ -58,6 +58,7 @@ class WTTR(CriMeBase):
         self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
 
     def compute(self, time_step: int = 0, verbose: bool = False):
+        self.time_step = time_step
         self.ttc = self.ttc_object.compute(time_step)
         if self.ttc == 0:
             self.value = -math.inf
@@ -90,8 +91,8 @@ class WTTR(CriMeBase):
                 self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
             self.reach_interface.reset(self.reach_config)
             self._end_sim = time_end - mid
-            self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
-            if self.reach_interface.reachable_set_at_step(self._end_sim):
+            self.reach_interface.compute_reachable_sets(0, time_end, verbose=True)
+            if self.reach_interface.reachable_set_at_step(time_end):
                 # the final step is still reachable without causing the collision
                 low = mid + 1
             else:
@@ -101,19 +102,19 @@ class WTTR(CriMeBase):
         return wttr
 
     def visualize(self):
-        wtstr =  int(utils_gen.int_round(self.value / self.dt, 0))
+        wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
         mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(wtstr))
         self._update_initial_state(mid_state)
         self.reach_config.update(planning_problem=self.reach_config.planning_problem)
         self.reach_config.scenario.remove_obstacle(
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
         self.reach_interface.reset(self.reach_config)
-        self._end_sim = self.ego_vehicle.prediction.final_time_step - wtstr
+        self._end_sim = self.ego_vehicle.prediction.final_time_step
         print(wtstr, self._end_sim)
 
         self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
         util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                      plot_limits=[30, 80, -3.5, 7],# [65, 105, -4, 7.5],
+                                                      plot_limits= [65, 105, -4, 7.5],#[30, 80, -3.5, 7],# [65, 105, -4, 7.5],
                                                       step_start=0,
                                                       step_end=self._end_sim)
         # util_visual.plot_collision_checker(self.reach_interface)
