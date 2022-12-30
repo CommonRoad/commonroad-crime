@@ -21,7 +21,7 @@ def main():
     # ttk_interface = TTK(config)
     # ttc_interface = TTC(config)
     ttr_interface = TTR(config)
-    ttr_interface.compute(0, verbose=True)
+    ttr_interface.compute_criticality(0, verbose=True)
 
     # ==== visualize the result
     config.debug.save_plots = False

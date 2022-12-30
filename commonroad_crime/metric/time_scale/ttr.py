@@ -7,6 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import logging
+from typing import Union
 
 from commonroad_crime.metric.time_scale.ttb import TTB
 from commonroad_crime.metric.time_scale.ttk import TTK
@@ -38,7 +39,7 @@ class TTR(TTM):
         self.state_list_set = []
         self.ttc = self.ttc_object.compute(time_step)
 
-    def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = False):
+    def compute(self, time_step: int = 0,  vehicle_id: Union[int, None] = None, ttc: float = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.initialize_evaluator(time_step)
         ttm = dict()
