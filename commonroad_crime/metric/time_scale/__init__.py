@@ -10,4 +10,7 @@ from .thw import *
 from .ttk import *
 from .ttz import *
 from .wttc import *
-from .wttr import *
+try:
+    from .wttr import *
+except ImportWarning:
+    print("commonroad_reach is not installed")
