@@ -2,7 +2,7 @@
 Exemplary evaluation of TTB using set-based prediction
 """
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.time_scale.ttb import TTB
+from commonroad_crime.metric.time_scale import TTB
 
 
 def main():
