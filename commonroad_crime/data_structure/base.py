@@ -138,7 +138,7 @@ class CriMeBase:
         """
         Wrapper for computing the criticality, i.e., the value of the metric.
         """
-        utils_log.print_and_log_info(logger, "* Computing the criticality ...", verbose)
+        utils_log.print_and_log_info(logger, "*********************************", verbose)
 
         self.time_step = time_step
         if vehicle_id:
@@ -151,14 +151,15 @@ class CriMeBase:
         criti_list = []
         if self.metric_name in [TypeTimeScale.TTR, TypeTimeScale.TTM, TypeTimeScale.TTB,
                                 TypeTimeScale.TTK, TypeTimeScale.TTS]:
-            criti = self.compute(time_step, None)
+            criti = self.compute(time_step=time_step, vehicle_id=None)
         else:
             for v_id in other_veh_ids:
-                criti_list.append(self.compute(time_step, v_id))
+                criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
             criti = min(criti_list)
         time_computation = time.time() - time_start
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti: .3f}")
         utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)
+        return criti
 
     @abstractmethod
     def visualize(self):
