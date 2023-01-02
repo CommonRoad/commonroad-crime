@@ -10,7 +10,7 @@ try:
 except ImportError:
     module_failed = True
 else:
-    from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
+    from commonroad_crime.metric.reachable_set_scale.drivable_area import DA
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
@@ -27,6 +27,6 @@ class TestReachableSetScale(unittest.TestCase):
 
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_drivable_area(self):
-        da_solver = DrivableArea(self.config)
+        da_solver = DA(self.config)
         self.assertAlmostEqual(da_solver.compute(), 60.13)
         da_solver.visualize()

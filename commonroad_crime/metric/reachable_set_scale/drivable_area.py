@@ -31,7 +31,7 @@ except ImportWarning:
     utils_log.print_and_log_warning(logger, 'commonroad_reach is not installed')
 
 
-class DrivableArea(CriMeBase):
+class DA(CriMeBase):
     """
     Klischat, Moritz, et al. "Scenario factory: Creating safety-critical traffic scenarios for automated vehicles."
     2020 IEEE 23rd International Conference on Intelligent Transportation Systems (ITSC). IEEE, 2020.
@@ -39,7 +39,7 @@ class DrivableArea(CriMeBase):
     metric_name = TypeReachableSetScale.DA
 
     def __init__(self, config: CriMeConfiguration):
-        super(DrivableArea, self).__init__(config)
+        super(DA, self).__init__(config)
         self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
         # update the paths based on CriMe
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario

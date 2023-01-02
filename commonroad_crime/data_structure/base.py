@@ -164,7 +164,7 @@ class CriMeBase:
                 criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
             criti = min(criti_list)
         time_computation = time.time() - time_start
-        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti: .3f}")
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti}")
         utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)
         return criti
 
