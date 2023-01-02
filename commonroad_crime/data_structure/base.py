@@ -19,7 +19,7 @@ from commonroad.prediction.prediction import TrajectoryPrediction
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone, TypeReachableSetScale
+from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone, TypeReachableSetScale, TypeMonotone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 class CriMeBase:
     """Base class for CRIticality MEasures"""
     metric_name: Enum = TypeNone.NONE
+    monotone: Enum = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         """
@@ -162,7 +163,10 @@ class CriMeBase:
         else:
             for v_id in other_veh_ids:
                 criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
-            criti = min(criti_list)
+            if self.monotone == TypeMonotone.POS:
+                criti = max(criti_list)
+            else:
+                criti = min(criti_list)
         time_computation = time.time() - time_start
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti}")
         utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)

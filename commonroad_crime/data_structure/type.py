@@ -13,6 +13,14 @@ Types of different criticality metrics categorized by the output, see https://cr
 from enum import Enum
 
 
+class TypeMonotone(str, Enum):
+    """
+    Monotonic relationship between the metric value and the criticality
+    """
+    POS = "positive monotonic"
+    NEG = "negative monotonic"
+
+
 class TypeNone(str, Enum):
     NONE = "not defined"
 

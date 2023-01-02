@@ -14,7 +14,7 @@ import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.type import TypeAccelerationScale
+from commonroad_crime.data_structure.type import TypeAccelerationScale, TypeMonotone
 from commonroad_crime.metric.time_scale.ttc import TTC
 
 import commonroad_crime.utility.visualization as utils_vis
@@ -34,6 +34,7 @@ class ALatReq(CriMeBase):
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     metric_name = TypeAccelerationScale.ALatReq
+    monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):
         super(ALatReq, self).__init__(config)
