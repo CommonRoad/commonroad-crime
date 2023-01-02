@@ -35,8 +35,7 @@ class ALongReq(CriMeBase):
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     metric_name = TypeAccelerationScale.ALongReq
-    monotone = TypeMonotone.POS
-
+    monotone = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         super(ALongReq, self).__init__(config)
