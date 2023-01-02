@@ -45,6 +45,7 @@ class DrivableArea(CriMeBase):
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
         self.reach_config.general.path_output = self.configuration.general.path_output
         self.reach_config.planning.steps_computation = self.configuration.reachable_set_scale.time_horizon
+        self.reach_config.planning.dt = self.sce.dt
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
 
@@ -64,7 +65,7 @@ class DrivableArea(CriMeBase):
         self.reach_interface.compute_reachable_sets()
         self.value = compute_drivable_area(self.reach_interface.reachable_set)
         self.value = utils_gen.int_round(self.value, 2)
-
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
     def visualize(self):
