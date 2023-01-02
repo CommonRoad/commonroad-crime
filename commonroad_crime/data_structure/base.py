@@ -19,7 +19,8 @@ from commonroad.prediction.prediction import TrajectoryPrediction
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone, TypeReachableSetScale, TypeMonotone
+from commonroad_crime.data_structure.type import (TypeTimeScale, TypeNone, TypeReachableSetScale, TypeMonotone,
+                                                  TypePotentialScale, TypeProbabilityScale)
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -158,7 +159,8 @@ class CriMeBase:
         time_start = time.time()
         criti_list = []
         if self.metric_name in [TypeTimeScale.TTR, TypeTimeScale.TTM, TypeTimeScale.TTB,
-                                TypeTimeScale.TTK, TypeTimeScale.TTS, TypeReachableSetScale.DA]:
+                                TypeTimeScale.TTK, TypeTimeScale.TTS, TypeReachableSetScale.DA,
+                                TypePotentialScale.PF, TypeProbabilityScale.P_MC]:
             criti = self.compute(time_step=time_step, vehicle_id=None)
         else:
             for v_id in other_veh_ids:

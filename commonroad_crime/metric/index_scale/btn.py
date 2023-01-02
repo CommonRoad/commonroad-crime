@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeIndexScale
+from commonroad_crime.data_structure.type import TypeIndexScale, TypeMonotone
 from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -29,6 +29,7 @@ class BTN(CriMeBase):
     validation and implications for autonomous vehicles." IEEE Transactions on Intelligent Vehicles 2.4 (2017): 288-297.
     """
     metric_name = TypeIndexScale.BTN
+    monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):
         super(BTN, self).__init__(config)

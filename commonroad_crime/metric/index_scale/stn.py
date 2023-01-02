@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeIndexScale
+from commonroad_crime.data_structure.type import TypeIndexScale, TypeMonotone
 from commonroad_crime.metric.acceleration_scale.a_lat_req import ALatReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -30,6 +30,7 @@ class STN(CriMeBase):
     2016 American Control Conference (ACC). IEEE, 2016.
     """
     metric_name = TypeIndexScale.STN
+    monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):
         super(STN, self).__init__(config)
