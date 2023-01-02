@@ -27,7 +27,7 @@ try:
     from commonroad_reach.pycrreach import ReachPolygon, ReachNode
     from commonroad_reach.utility import visualization as util_visual
     import commonroad_reach.utility.reach_operation as utils_ops
-except ModuleNotFoundError:
+except ImportWarning:
     utils_log.print_and_log_warning(logger, 'commonroad_reach is not installed')
 
 

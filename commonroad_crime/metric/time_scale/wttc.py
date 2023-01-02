@@ -36,7 +36,7 @@ class WTTC(CriMeBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         self.time_step = time_step
-        self._set_other_vehicles(vehicle_id)
+        self.set_other_vehicles(vehicle_id)
         wttc_list = utils_sol.solver_wttc(self.ego_vehicle,
                                           self.other_vehicle,
                                           time_step,

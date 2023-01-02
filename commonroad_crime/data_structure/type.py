@@ -13,6 +13,10 @@ Types of different criticality metrics categorized by the output, see https://cr
 from enum import Enum
 
 
+class TypeNone(str, Enum):
+    NONE = "not defined"
+
+
 class TypeTimeScale(str, Enum):
     TTC = "time-to-collision"
     TTCStar = "time-to-collision with predicted trajectories"

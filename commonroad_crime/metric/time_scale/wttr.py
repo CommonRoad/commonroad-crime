@@ -16,7 +16,7 @@ try:
     from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
     from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
     from commonroad_reach.utility import visualization as util_visual
-except ModuleNotFoundError:
+except ImportWarning:
     raise ModuleNotFoundError('commonroad_reach is not installed')
 
 from commonroad_crime.data_structure.base import CriMeBase
