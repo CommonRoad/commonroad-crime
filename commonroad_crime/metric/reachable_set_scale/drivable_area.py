@@ -54,7 +54,7 @@ class DrivableArea(CriMeBase):
         self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
 
-    def compute(self, time_step: int = 0, verbose: bool = True):
+    def compute(self, time_step: int = 0, vehicle_id:int = None, verbose: bool = True):
         self.value = 0.
         evaluated_state = copy.deepcopy(self.ego_vehicle.state_at_time(time_step))
         self._update_initial_state(target_state=evaluated_state)

@@ -30,7 +30,7 @@ class LatJ(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(LatJ, self).__init__(config)
 
-    def compute(self, time_step: int):
+    def compute(self, time_step: int, vehicle_id=None):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).

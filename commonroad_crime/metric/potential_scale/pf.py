@@ -37,7 +37,7 @@ class PF(CriMeBase):
         self._s_ego = None
         self._d_egp = None
 
-    def compute(self, time_step: int):
+    def compute(self, time_step: int, vehicle_id: int=None):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
@@ -87,7 +87,7 @@ class PF(CriMeBase):
             if left_adj_lanelet.adj_left_same_direction:
                 vertices_list.append(left_adj_lanelet.left_vertices)
         while right_adj_lanelet.adj_right_same_direction:
-            right_adj_lanelet = self.sce.lanelet_network.find_lanelet_by_id(right_adj_lanelet.adj_left)
+            right_adj_lanelet = self.sce.lanelet_network.find_lanelet_by_id(right_adj_lanelet.adj_right)
             if right_adj_lanelet.adj_right_same_direction:
                 vertices_list.append(right_adj_lanelet.right_vertices)
 

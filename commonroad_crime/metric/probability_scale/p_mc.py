@@ -56,7 +56,7 @@ class P_MC(CriMeBase):
         self.sim_time_steps = int(config_mc.prediction_horizon / self.sce.dt)
         self.ttc_object = TTCStar(self.configuration)
 
-    def compute(self, time_step: int = 0, verbose: bool = True):
+    def compute(self, time_step: int = 0, vehicle_id = None, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         utils_log.print_and_log_info(logger, f"* \t\t nr of samples "
                                              f"{self.configuration.probability_scale.monte_carlo.nr_samples}")
