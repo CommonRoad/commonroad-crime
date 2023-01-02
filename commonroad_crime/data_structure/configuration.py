@@ -119,6 +119,7 @@ class ReachableSetScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.reachable_set_scale
         self.time_horizon = config_relevant.time_horizon
+        self.cosy = config_relevant.coordinate_system
 
 
 class AccelerationScaleConfiguration:

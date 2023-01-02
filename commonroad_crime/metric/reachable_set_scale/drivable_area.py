@@ -46,6 +46,8 @@ class DA(CriMeBase):
         self.reach_config.general.path_output = self.configuration.general.path_output
         self.reach_config.planning.steps_computation = self.configuration.reachable_set_scale.time_horizon
         self.reach_config.planning.dt = self.sce.dt
+        if self.configuration.reachable_set_scale.cosy == 1:
+            self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
 
@@ -53,6 +55,7 @@ class DA(CriMeBase):
         self.reach_config.planning_problem.initial_state.position = target_state.position
         self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
+        self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
 
     def compute(self, time_step: int = 0, vehicle_id:int = None, verbose: bool = True):
         self.value = 0.
@@ -69,7 +72,8 @@ class DA(CriMeBase):
         return self.value
 
     def visualize(self):
-        util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
+        #util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
+        util_visual.plot_collision_checker(self.reach_interface)
 
 
 def compute_drivable_area_profile(reachable_set: Dict[int, List[ReachNode]]) -> np.ndarray:
