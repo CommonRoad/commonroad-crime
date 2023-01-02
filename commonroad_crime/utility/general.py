@@ -95,7 +95,8 @@ def check_elements_state(state: State, veh_input: State = None, next_state: Stat
         state.slip_angle = 0
     if not hasattr(state, "yaw_rate"):
         state.yaw_rate = 0
-    if not hasattr(state, "velocity_y"):
+
+    if not hasattr(state, "velocity_y") and hasattr(state, "velocity"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
 
