@@ -31,6 +31,6 @@ class CriMeInterface:
         utils_log.print_and_log_info(logger, "*********************************", verbose)
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
         utils_log.print_and_log_info(logger,
-                                     '\n'.join('\t {}: {}'.format(m, value) for m, value in self.criticality_dict.items()),
+                                     '\n'.join('* {}: {}'.format(m, value) for m, value in self.criticality_dict.items()),
                                      verbose)
 

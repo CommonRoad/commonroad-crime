@@ -7,6 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import time
+from enum import Enum
 from abc import abstractmethod
 import copy
 import logging
@@ -17,7 +18,7 @@ from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstac
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -29,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class CriMeBase:
     """Base class for CRIticality MEasures"""
-    metric_name: str = "base"
+    metric_name: Enum = TypeNone.NONE
 
     def __init__(self, config: CriMeConfiguration):
         """
