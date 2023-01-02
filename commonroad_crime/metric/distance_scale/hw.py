@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
 import logging
+import math
 
 import numpy as np
 
@@ -34,7 +35,11 @@ class HW(THW):
     def cal_headway(self):
         other_position = self.other_vehicle.state_at_time(self.time_step).position
         ego_position = self.ego_vehicle.state_at_time(self.time_step).position
-        return utils_sol.compute_clcs_distance(self.clcs, ego_position, other_position)[0]
+        headway = utils_sol.compute_clcs_distance(self.clcs, ego_position, other_position)[0]
+        if headway < 0:
+            return math.inf
+        else:
+            return headway
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
