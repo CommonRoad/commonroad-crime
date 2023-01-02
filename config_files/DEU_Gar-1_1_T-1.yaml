@@ -1,2 +1,4 @@
 vehicle:
   ego_id: 200
+reachable_set_scale:
+  coordinate_system: 1
