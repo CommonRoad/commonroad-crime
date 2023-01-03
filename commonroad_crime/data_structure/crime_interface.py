@@ -49,14 +49,15 @@ class CriMeInterface:
         utils_log.print_and_log_info(logger, f"* Given metrics for the whole scenario: "
                                              f"{', '.join([metric.metric_name.value for metric in metrics])}...",
                                      verbose)
-        for time_step in range(time_start, time_end):
+        for time_step in range(time_start, time_end + 1):
             self.evaluate_scene(metrics, time_step, vehicle_id, verbose=False)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(logger, "*********************************", verbose)
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
-        for time_step in range(time_start, time_end):
+        for time_step in range(time_start, time_end + 1):
             utils_log.print_and_log_info(logger, '* At time step {}: '.format(time_step) +
                                          ', '.join(
                                              '{} = {}'.format(m, value) for m, value in
                                              self.criticality_dict[time_step].items()),
                                          verbose)
+
