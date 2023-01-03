@@ -15,8 +15,8 @@ from commonroad_crime.metric.velocity_scale import DeltaV
 
 def main():
 
-    scenario_id = 'ZAM_Urban-7_1_S-2'
-    # scenario_id = "DEU_Gar-1_1_T-1"
+    # scenario_id = 'ZAM_Urban-7_1_S-2'
+    scenario_id = "DEU_Gar-1_1_T-1"
 
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
@@ -28,9 +28,11 @@ def main():
     # crime_interface.evaluate([THW])
     # crime_interface.evaluate([HW, THW, TTC, WTTC, TTCStar, TTS, TTK, TTB, TTR, ])
     # crime_interface.evaluate([WTTR, DA])
-    # crime_interface.evaluate([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
+    # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
+    crime_interface.evaluate_scenario([ALatReq, ALongReq], 0, 20)
+    # crime_interface.evaluate_scene([TTC], 12, vehicle_id=202)
     # crime_interface.evaluate([P_MC, PF])
-    crime_interface.evaluate([DeltaV])
+    # crime_interface.evaluate_scenario([DeltaV], 0, 30)
     # ==== select the criticality metric you want to evaluate and then compute the value at a given time step
 
     # # ==== visualize the result

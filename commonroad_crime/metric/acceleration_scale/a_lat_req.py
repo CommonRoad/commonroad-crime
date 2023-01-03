@@ -81,7 +81,8 @@ class ALatReq(CriMeBase):
             self.value = 0.
             return self.value
         a_obj_lat = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
-                              self.other_vehicle.state_at_time(time_step).acceleration) * math.sin(other_orientation)
+                              self.other_vehicle.state_at_time(time_step).acceleration ** 2) * \
+                    math.sin(other_orientation)
 
         # compute the headway distance
         d_rel_lat = utils_sol.compute_clcs_distance(self.clcs,
@@ -92,11 +93,13 @@ class ALatReq(CriMeBase):
             other_orientation) -
                      math.sqrt(self.ego_vehicle.state_at_time(time_step).velocity ** 2 +
                                self.ego_vehicle.state_at_time(time_step).velocity_y ** 2)) * math.sin(ego_orientation)
-
-        self.value = utils_gen.int_round(min(
+        self.value = min(
             abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, 'left')),
             abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, 'right'))
-        ), 2)
+        )
+        if self.value != math.inf:
+            self.value = utils_gen.int_round(self.value, 2)
+
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
