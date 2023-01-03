@@ -32,7 +32,7 @@ class TTS(CriMeBase):
         self.selected_state_list = None
         self.state_list_set = []
 
-    def compute(self, time_step: int = 0,  ttc: float = None, verbose: bool = False):
+    def compute(self, time_step: int = 0, vehicle_id: int = None, ttc: float = None, verbose: bool = False):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
 
         tts_left = self._left_evaluator.compute(time_step, ttc, verbose=False)

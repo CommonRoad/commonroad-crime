@@ -92,7 +92,7 @@ class TTCStar(CriMeBase):
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0):
+    def compute(self, time_step: int = 0, vehicle_id: int = None):
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
