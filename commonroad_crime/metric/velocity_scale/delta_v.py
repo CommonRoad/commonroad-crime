@@ -8,21 +8,13 @@ __status__ = "Pre-alpha"
 
 import numpy as np
 from typing import Union
-import matplotlib.pyplot as plt
 import logging
 
-from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
-
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver,
-                                                 SimulationRandoMonteCarlo)
-from commonroad_crime.metric.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeVelocityScale
-import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.data_structure.type import TypeVelocityScale, TypeMonotone
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
-from commonroad_crime.utility.visualization import TUMcolor
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +27,7 @@ class DeltaV(CriMeBase):
     Safety and Simulati. September. 2011.
     """
     metric_name = TypeVelocityScale.Delta_V
+    monotone = TypeMonotone.POS
 
     def __init__(self,
                  config: CriMeConfiguration):
