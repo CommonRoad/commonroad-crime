@@ -35,6 +35,7 @@ class CriMeConfiguration:
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
         self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
+        self.velocity_scale: VelocityScaleConfiguration = VelocityScaleConfiguration(config)
         self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
         self.potential_scale: PotentialScaleConfiguration = PotentialScaleConfiguration(config)
         self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
@@ -119,6 +120,12 @@ class ReachableSetScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.reachable_set_scale
         self.time_horizon = config_relevant.time_horizon
+
+
+class VelocityScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.velocity_scale
+        self.m_b = config_relevant.m_b
 
 
 class AccelerationScaleConfiguration:
