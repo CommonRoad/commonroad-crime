@@ -20,6 +20,7 @@ class TestPotentialScale(unittest.TestCase):
 
     def test_pf(self):
         pf_object = PF(self.config)
-        pf = pf_object.compute(0)
+        pf = pf_object.compute(20)
+        self.assertEqual(pf, self.config.potential_scale.u_max)
         pf_object.visualize()
 

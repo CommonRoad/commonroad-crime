@@ -152,8 +152,13 @@ class PF(CriMeBase):
                         K = Point(s_veh, d_veh).distance(obs_clcs_poly)
                 else:
                     # behind dynamic obstacle
-                    topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
-                    bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
+                    minx, miny = np.array(obs_clcs_shape[0][0]).min(axis=0)
+                    maxx, maxy = np.array(obs_clcs_shape[0][0]).max(axis=0)
+                    bottommost_then_leftmost_point = np.array([minx, maxy])
+                    topmost_then_leftmost_point = np.array([minx, miny])
+                    # * previous option: the sort of the orders but doesn't work for some scenarios
+                    # topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[0], pt[1]))
+                    # bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
                     wedge_point_l = LineString(
                         [topmost_then_leftmost_point,
                          (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
@@ -161,6 +166,7 @@ class PF(CriMeBase):
                     ).boundary[1]
                     wedge = Polygon([wedge_point_l,
                                      topmost_then_leftmost_point, bottommost_then_leftmost_point])
+
                     obs_with_wedge = obs_clcs_poly.union(wedge)
                     # scaled s-coordinate
                     scale = calc_scale_factor(config_pot.d_0, veh_state.velocity, config_pot.follow_time,
@@ -200,8 +206,13 @@ class PF(CriMeBase):
                 if isinstance(obs, StaticObstacle):
                     plt.plot(*obs_clcs_poly.exterior.xy)
                 else:
-                    topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
-                    bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
+                    minx, miny = np.array(obs_clcs_shape[0][0]).min(axis=0)
+                    maxx, maxy = np.array(obs_clcs_shape[0][0]).max(axis=0)
+                    bottommost_then_leftmost_point = np.array([minx, maxy])
+                    topmost_then_leftmost_point = np.array([minx, miny])
+                    # * previous option: the sort of the orders but doesn't work for some scenarios
+                    # topmost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (pt[0], pt[1]))
+                    # bottommost_then_leftmost_point = min(obs_clcs_shape[0][0], key=lambda pt: (-pt[1], pt[0]))
                     wedge_point_l = LineString(
                         [topmost_then_leftmost_point,
                          (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
@@ -210,7 +221,9 @@ class PF(CriMeBase):
                     wedge = Polygon([wedge_point_l,
                                      topmost_then_leftmost_point, bottommost_then_leftmost_point])
                     obs_with_wedge = obs_clcs_poly.union(wedge)
-                    plt.plot(*obs_with_wedge.exterior.xy)
+                    plt.plot(*obs_clcs_poly.exterior.xy)
+                    plt.plot(*wedge.exterior.xy)
+                    #plt.plot(*obs_with_wedge.exterior.xy)
         plt.contour(S, D, U, 20, cmap='RdBu_r')
         plt.colorbar()
         # lane boundaries
