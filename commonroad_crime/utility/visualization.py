@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Union, List
 from enum import Enum
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -18,7 +19,6 @@ from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
-
 
 
 class TUMcolor(tuple, Enum):
@@ -157,3 +157,61 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                                    "fill_lanelet": False,
                                }
                                })
+
+
+def plot_criticality_curve(crime, flag_latex=True):
+    if flag_latex:
+        # use Latex font
+        FONTSIZE = 28
+        plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+        pgf_with_latex = {  # setup matplotlib to use latex for output
+            "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
+            "text.usetex": True,  # use LaTeX to write all text
+            "font.family": 'lmodern',
+            # blank entries should cause plots
+            "font.sans-serif": [],  # ['Avant Garde'],              # to inherit fonts from the document
+            # 'text.latex.unicode': True,
+            "font.monospace": [],
+            "axes.labelsize": FONTSIZE,  # LaTeX default is 10pt font.
+            "font.size": FONTSIZE - 10,
+            "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
+            "xtick.labelsize": FONTSIZE,  # a little smaller
+            "ytick.labelsize": FONTSIZE,
+            "pgf.preamble": [
+                r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
+                r"\usepackage[T1]{fontenc}",  # plots will be generated
+                r"\usepackage[detect-all,locale=DE]{siunitx}",
+            ]  # using this preamble
+        }
+        matplotlib.rcParams.update(pgf_with_latex)
+    if crime.metrics is not None and crime.time_start is not None and crime.time_end is not None:
+        nr_metrics = len(crime.metrics)
+        if nr_metrics > 4:
+            nr_column = 4
+            nr_row = int(nr_metrics/nr_column) + 1
+        else:
+            nr_column = nr_metrics
+            nr_row = 1
+        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5*nr_column, 5*nr_row))
+        count_row, count_column = 0, 0
+        for metric in crime.metrics:
+            criticality_list = []
+            time_list = []
+            for time_step in range(crime.time_start, crime.time_end+1):
+                if crime.criticality_dict[time_step][metric.metric_name.value] is not None:
+                    criticality_list.append(crime.criticality_dict[time_step][metric.metric_name.value])
+                    time_list.append(time_step)
+            if nr_metrics == 1:
+                ax = axs
+            elif nr_row == 1:
+                ax = axs[count_column]
+            else:
+                ax = axs[count_row, count_column]
+            ax.plot(time_list, criticality_list)
+            ax.title.set_text(metric.metric_name.value)
+
+            count_column += 1
+            if count_column > 3:
+                count_column = 0
+                count_row += 1
+        plt.show()

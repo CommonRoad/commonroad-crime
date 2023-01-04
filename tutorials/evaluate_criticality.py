@@ -1,6 +1,5 @@
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.data_structure.crime_interface import CriMeInterface
 from commonroad_crime.metric.time_scale import TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC
 from commonroad_crime.metric.distance_scale import HW
 from commonroad_crime.metric.time_scale.wttr import WTTR
@@ -11,6 +10,9 @@ from commonroad_crime.metric.index_scale import BTN, STN
 from commonroad_crime.metric.probability_scale import P_MC
 from commonroad_crime.metric.potential_scale import PF
 from commonroad_crime.metric.velocity_scale import DeltaV
+
+import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 
 def main():
@@ -29,7 +31,9 @@ def main():
     # crime_interface.evaluate([HW, THW, TTC, WTTC, TTCStar, TTS, TTK, TTB, TTR, ])
     # crime_interface.evaluate([WTTR, DA])
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
-    crime_interface.evaluate_scenario([ALatReq, ALongReq], 0, 20)
+    crime_interface.evaluate_scenario([ALatReq, ALongReq, LongJ, LatJ, BTN, STN], 0, 20)
+
+    # crime_interface.evaluate_scene([PF], 12)
     # crime_interface.evaluate_scene([TTC], 12, vehicle_id=202)
     # crime_interface.evaluate([P_MC, PF])
     # crime_interface.evaluate_scenario([DeltaV], 0, 30)
@@ -37,7 +41,7 @@ def main():
 
     # # ==== visualize the result
     # config.debug.save_plots = False
-
+    utils_vis.plot_criticality_curve(crime_interface)
 
 if __name__ == "__main__":
     main()
