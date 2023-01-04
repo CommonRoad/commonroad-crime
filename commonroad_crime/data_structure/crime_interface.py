@@ -36,9 +36,10 @@ class CriMeInterface:
             if metric not in self.metrics:
                 self.metrics.append(metric)
             m_evaluator = metric(self.config)
-            self.criticality_dict[time_step][metric.metric_name.value] = m_evaluator.compute_criticality(time_step,
-                                                                                                         vehicle_id,
-                                                                                                         verbose)
+            if metric.metric_name.value not in self.criticality_dict[time_step]:
+                self.criticality_dict[time_step][metric.metric_name.value] = m_evaluator.compute_criticality(time_step,
+                                                                                                             vehicle_id,
+                                                                                                             verbose)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(logger, "*********************************", verbose)
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
