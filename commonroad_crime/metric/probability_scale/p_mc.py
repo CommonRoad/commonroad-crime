@@ -76,7 +76,7 @@ class P_MC(CriMeBase):
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
         p_mc = np.average(np.array(colliding_prob_list))
-        self.value = utils_gen.int_round(p_mc, 2)
+        self.value = utils_gen.int_round(p_mc, 4)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 

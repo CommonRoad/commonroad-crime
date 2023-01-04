@@ -188,7 +188,7 @@ def plot_criticality_curve(crime, flag_latex=True):
         nr_metrics = len(crime.metrics)
         if nr_metrics > 4:
             nr_column = 4
-            nr_row = int(nr_metrics/nr_column) + 1
+            nr_row = round(nr_metrics/nr_column)
         else:
             nr_column = nr_metrics
             nr_row = 1
@@ -208,6 +208,7 @@ def plot_criticality_curve(crime, flag_latex=True):
             else:
                 ax = axs[count_row, count_column]
             ax.plot(time_list, criticality_list)
+            ax.axis(xmin=time_list[0], xmax=time_list[-1])
             ax.title.set_text(metric.metric_name.value)
 
             count_column += 1
