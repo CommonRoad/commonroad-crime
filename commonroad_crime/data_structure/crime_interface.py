@@ -18,7 +18,7 @@ class CriMeInterface:
         self.criticality_dict = dict()
         self.time_start = None
         self.time_end = None
-        self.metrics = None
+        self.metrics = []
 
     def evaluate_scene(self, metrics: List[Type[CriMeBase]],
                        time_step: int = 0,
@@ -57,7 +57,7 @@ class CriMeInterface:
         utils_log.print_and_log_info(logger, f"* Given metrics for the whole scenario: "
                                              f"{', '.join([metric.metric_name.value for metric in metrics])}...",
                                      verbose)
-        self.time_start, self.time_end, self.metrics = time_start, time_end, metrics
+        self.time_start, self.time_end, = time_start, time_end
         for time_step in range(time_start, time_end + 1):
             self.evaluate_scene(metrics, time_step, vehicle_id, verbose=False)
         # printing out the summary of the evaluations
