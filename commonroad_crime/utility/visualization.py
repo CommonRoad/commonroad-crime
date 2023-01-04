@@ -198,7 +198,7 @@ def plot_criticality_curve(crime, flag_latex=True):
             criticality_list = []
             time_list = []
             for time_step in range(crime.time_start, crime.time_end+1):
-                if crime.criticality_dict[time_step][metric.metric_name.value] is not None:
+                if metric.metric_name.value in crime.criticality_dict[time_step]:
                     criticality_list.append(crime.criticality_dict[time_step][metric.metric_name.value])
                     time_list.append(time_step)
             if nr_metrics == 1:

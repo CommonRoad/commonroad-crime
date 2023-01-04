@@ -30,8 +30,11 @@ class CriMeInterface:
         utils_log.print_and_log_info(logger, f"* Given metrics for time step {time_step}: "
                                              f"{', '.join([metric.metric_name.value for metric in metrics])}...",
                                      verbose)
-        self.criticality_dict[time_step] = {}
+        if time_step not in self.criticality_dict:
+            self.criticality_dict[time_step] = {}
         for metric in metrics:
+            if metric not in self.metrics:
+                self.metrics.append(metric)
             m_evaluator = metric(self.config)
             self.criticality_dict[time_step][metric.metric_name.value] = m_evaluator.compute_criticality(time_step,
                                                                                                          vehicle_id,
