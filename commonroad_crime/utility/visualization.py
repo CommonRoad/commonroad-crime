@@ -34,6 +34,7 @@ class TUMcolor(tuple, Enum):
     TUMblack = (0, 0, 0)
     TUMlightgray = (217 / 255, 218 / 255, 219 / 255)
 
+
 zorder = 22
 
 OTHER_VEHICLE_DRAW_PARAMS = {"trajectory": {
@@ -55,6 +56,7 @@ OTHER_VEHICLE_DRAW_PARAMS = {"trajectory": {
              }
          }}}}}
 
+
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
@@ -65,8 +67,8 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
 def plot_limits_from_state_list(time_step: int, state_list: List[State], margin: float = 10.0):
     return [state_list[time_step].position[0] - margin,
             state_list[-1].position[0] + margin,
-            state_list[time_step].position[1] - margin/2,
-            state_list[time_step].position[1] + margin/2]
+            state_list[time_step].position[1] - margin / 2,
+            state_list[time_step].position[1] + margin / 2]
 
 
 def draw_state(rnd: MPRenderer, state: State, color: TUMcolor = TUMcolor.TUMgreen):
@@ -119,7 +121,7 @@ def draw_state_list(rnd: MPRenderer, state_list: List[State],
         opacity = 0.5 * (start_time_step / len(state_list) + 1)
     else:
         opacity = 1
-    rnd.ax.plot(pos[:, 0], pos[:, 1], color=color, markersize=1.5,
+    rnd.ax.plot(pos[:, 0], pos[:, 1], linestyle='-', marker='o', color=color, markersize=5,
                 zorder=zorder, linewidth=linewidth, alpha=opacity)
     zorder += 1
 
@@ -159,7 +161,7 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                                })
 
 
-def plot_criticality_curve(crime, flag_latex=True):
+def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
     if flag_latex:
         # use Latex font
         FONTSIZE = 28
@@ -186,18 +188,18 @@ def plot_criticality_curve(crime, flag_latex=True):
         matplotlib.rcParams.update(pgf_with_latex)
     if crime.metrics is not None and crime.time_start is not None and crime.time_end is not None:
         nr_metrics = len(crime.metrics)
-        if nr_metrics > 4:
-            nr_column = 4
-            nr_row = round(nr_metrics/nr_column)
+        if nr_metrics > nr_per_row:
+            nr_column = nr_per_row
+            nr_row = round(nr_metrics / nr_column)
         else:
             nr_column = nr_metrics
             nr_row = 1
-        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5*nr_column, 5*nr_row))
+        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
         count_row, count_column = 0, 0
         for metric in crime.metrics:
             criticality_list = []
             time_list = []
-            for time_step in range(crime.time_start, crime.time_end+1):
+            for time_step in range(crime.time_start, crime.time_end + 1):
                 if metric.metric_name.value in crime.criticality_dict[time_step]:
                     criticality_list.append(crime.criticality_dict[time_step][metric.metric_name.value])
                     time_list.append(time_step)
@@ -212,7 +214,26 @@ def plot_criticality_curve(crime, flag_latex=True):
             ax.title.set_text(metric.metric_name.value)
 
             count_column += 1
-            if count_column > 3:
+            if count_column > nr_per_row - 1:
                 count_column = 0
                 count_row += 1
         plt.show()
+
+
+def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps: List[int]):
+    rnd = MPRenderer(plot_limits=plot_limit)
+    scenario.draw(
+        rnd, draw_params={'time_begin': time_steps[0],
+                          "trajectory": {
+                              "draw_trajectory": False},
+                          "dynamic_obstacle": {
+                              "draw_icon": True,
+                          }}
+    )
+    rnd.render()
+    for obs in scenario.obstacles:
+        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:],
+                        color=TUMcolor.TUMblue, linewidth=5)
+        for ts in time_steps[1:]:
+            draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
+    plt.show()
