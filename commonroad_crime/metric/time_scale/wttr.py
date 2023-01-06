@@ -102,7 +102,7 @@ class WTTR(CriMeBase):
         return wttr
 
     def visualize(self):
-        wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
+        wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step - 1
         mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(wtstr))
         self._update_initial_state(mid_state)
         self.reach_config.update(planning_problem=self.reach_config.planning_problem)
