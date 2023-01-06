@@ -166,7 +166,7 @@ class TestTimeScale(unittest.TestCase):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)
         wttr_object.visualize()
-        self.assertEqual(wttr, 1.2)
+        self.assertEqual(wttr, 1.3)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"

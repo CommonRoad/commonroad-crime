@@ -98,7 +98,7 @@ class WTTR(CriMeBase):
             else:
                 high = mid
         if low != initial_step:
-            wttr = (low - initial_step - 1) * self.dt
+            wttr = (low - initial_step) * self.dt
         return wttr
 
     def visualize(self):
@@ -110,12 +110,11 @@ class WTTR(CriMeBase):
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
         self.reach_interface.reset(self.reach_config)
         self._end_sim = self.ego_vehicle.prediction.final_time_step
-        print(wtstr, self._end_sim)
 
         self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
         util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                      plot_limits= [65, 105, -4, 7.5],#[30, 80, -3.5, 7],# [65, 105, -4, 7.5],
+                                                      plot_limits=[30, 80, -3.5, 7], #[65, 105, -4, 7.5],#[30, 80, -3.5, 7],# [65, 105, -4, 7.5],
                                                       step_start=0,
                                                       step_end=self._end_sim)
-        # util_visual.plot_collision_checker(self.reach_interface)
+        util_visual.plot_collision_checker(self.reach_interface)
 
