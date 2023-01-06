@@ -42,7 +42,7 @@ class STN(CriMeBase):
         self.time_step = time_step
         a_lat_req = self._a_lat_req_object.compute(vehicle_id, time_step)
         # (1) in "Adaptive forward collision warning algorithm for automotive applications."
-        self.value = utils_gen.int_round(abs(a_lat_req / self.configuration.vehicle.curvilinear.a_lat_max), 2)
+        self.value = utils_gen.int_round(abs(a_lat_req / self.configuration.vehicle.curvilinear.a_lat_max), 4)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 

@@ -42,7 +42,7 @@ class BTN(CriMeBase):
         a_long_req = self._a_long_req_object.compute(vehicle_id, time_step)
         # (9) in "Using extreme value theory for vehicle level safety validation and implications
         # for autonomous vehicles."
-        self.value = utils_gen.int_round(a_long_req / self.configuration.vehicle.curvilinear.a_lon_min, 2)
+        self.value = utils_gen.int_round(a_long_req / self.configuration.vehicle.curvilinear.a_lon_min, 4)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
