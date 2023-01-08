@@ -41,7 +41,7 @@ class LatJ(CriMeBase):
             self.ego_vehicle.state_at_time(time_step).position
         )[1]
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        self.value = utils_gen.int_round(evaluated_state.jerk * math.sin(ego_orientation), 2)
+        self.value = utils_gen.int_round(abs(evaluated_state.jerk * math.sin(ego_orientation)), 2)
         return self.value
 
     def visualize(self):

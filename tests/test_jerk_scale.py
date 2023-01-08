@@ -42,4 +42,4 @@ class TestJerkScale(unittest.TestCase):
         self.assertEqual(long_j_1, 0.0)
 
         long_j_2 = long_j_obj.compute(40)
-        self.assertEqual(long_j_2, -1.71)
+        self.assertEqual(long_j_2, 1.71)

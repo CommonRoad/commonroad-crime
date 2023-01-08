@@ -39,7 +39,7 @@ class LongJ(LatJ):
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position
         )[1]
-        self.value = utils_gen.int_round(evaluated_state.jerk * math.cos(ego_orientation), 2)
+        self.value = utils_gen.int_round(abs(evaluated_state.jerk * math.cos(ego_orientation)), 2)
         utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
         return self.value
 
