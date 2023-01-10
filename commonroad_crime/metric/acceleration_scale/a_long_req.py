@@ -76,7 +76,7 @@ class ALongReq(CriMeBase):
             # implications for autonomous vehicles." is in correct
             v_rel = v_other_long - v_ego_long
             utils_log.print_and_log_info(logger, f"*\t\t relative velocity is {v_rel}")
-            a_req = a_obj - v_rel ** 2 / (2 * x_rel)
+            a_req = min(a_obj - v_rel ** 2 / (2 * x_rel), 0.0)
         else:
             # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
             # Collision Mitigation"
