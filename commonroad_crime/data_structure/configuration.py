@@ -46,7 +46,7 @@ class CriMeConfiguration:
                ego_id: int = None,
                sce: Union[Scene, Scenario] = None,
                CLCS: Optional[CurvilinearCoordinateSystem] = None,
-               ):
+               ) -> object:
         """
         Updates criticality configuration based on the given attributes.
 
