@@ -35,6 +35,7 @@ class CriMeConfiguration:
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
         self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
+        self.velocity_scale: VelocityScaleConfiguration = VelocityScaleConfiguration(config)
         self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
         self.potential_scale: PotentialScaleConfiguration = PotentialScaleConfiguration(config)
         self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
@@ -45,7 +46,7 @@ class CriMeConfiguration:
                ego_id: int = None,
                sce: Union[Scene, Scenario] = None,
                CLCS: Optional[CurvilinearCoordinateSystem] = None,
-               ):
+               ) -> object:
         """
         Updates criticality configuration based on the given attributes.
 
@@ -95,12 +96,17 @@ class GeneralConfiguration:
         self.path_scenarios = config_relevant.path_scenarios
         self.path_scenarios_batch = config_relevant.path_scenarios_batch
         self.path_output = config_relevant.path_output + name_scenario + "/"
+        self.path_output_abs = config_relevant.path_output
         self.path_logs = config_relevant.path_logs
         self.path_icons = config_relevant.path_icons
 
     @property
     def path_scenario(self):
         return self.path_scenarios + self.name_scenario + ".xml"
+
+    @property
+    def path_output(self):
+        return self.path_output_abs + self.name_scenario + "/"
 
 
 class TimeScaleConfiguration:
@@ -116,6 +122,12 @@ class ReachableSetScaleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.reachable_set_scale
         self.time_horizon = config_relevant.time_horizon
+
+
+class VelocityScaleConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.velocity_scale
+        self.m_b = config_relevant.m_b
 
 
 class AccelerationScaleConfiguration:
@@ -142,6 +154,8 @@ class PotentialScaleConfiguration:
         self.follow_time = config_relevant.follow_time
         self.wedge_vertex = config_relevant.wedge_vertex
         self.desired_speed = config_relevant.desired_speed
+
+        self.u_max = config_relevant.u_max
 
 
 class ProbabilityScaleConfiguration:

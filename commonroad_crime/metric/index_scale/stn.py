@@ -37,7 +37,7 @@ class STN(CriMeBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
-        self._set_other_vehicles(vehicle_id)
+        self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         a_lat_req = self._a_lat_req_object.compute(vehicle_id, time_step)
         # (1) in "Adaptive forward collision warning algorithm for automotive applications."

@@ -6,6 +6,8 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
+import time
+from enum import Enum
 from abc import abstractmethod
 import copy
 import logging
@@ -16,6 +18,7 @@ from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstac
 from commonroad.visualization.mp_renderer import MPRenderer
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
+from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -27,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class CriMeBase:
     """Base class for CRIticality MEasures"""
-    metric_name: str = "base"
+    metric_name: Enum = TypeNone.NONE
 
     def __init__(self, config: CriMeConfiguration):
         """
@@ -103,7 +106,7 @@ class CriMeBase:
         self.rnd = MPRenderer(figsize=figsize, plot_limits=plot_limit)
         utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, self.time_step)
 
-    def _set_other_vehicles(self, vehicle_id: int):
+    def set_other_vehicles(self, vehicle_id: int):
         """
         Sets up the id for other metric-related vehicle.
         """
@@ -126,11 +129,38 @@ class CriMeBase:
         return False
 
     @abstractmethod
-    def compute(self,  *args, **kwargs):
+    def compute(self, time_step: int, vehicle_id: Union[int, None]):
         """
-        Computes the criticality, i.e., the value of the metric.
+        Specific computing function for each metric
         """
         pass
+
+    def compute_criticality(self, time_step: int, vehicle_id: Union[int, None] = None, verbose=True):
+        """
+        Wrapper for computing the criticality, i.e., the value of the metric.
+        """
+        utils_log.print_and_log_info(logger, "*********************************", verbose)
+
+        self.time_step = time_step
+        if vehicle_id:
+            other_veh_ids = [vehicle_id]
+        else:
+            other_veh_ids = [veh.obstacle_id for veh in self.sce.obstacles
+                             if veh.obstacle_id is not self.ego_vehicle.obstacle_id]
+
+        time_start = time.time()
+        criti_list = []
+        if self.metric_name in [TypeTimeScale.TTR, TypeTimeScale.TTM, TypeTimeScale.TTB,
+                                TypeTimeScale.TTK, TypeTimeScale.TTS]:
+            criti = self.compute(time_step=time_step, vehicle_id=None)
+        else:
+            for v_id in other_veh_ids:
+                criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
+            criti = min(criti_list)
+        time_computation = time.time() - time_start
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti: .3f}")
+        utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)
+        return criti
 
     @abstractmethod
     def visualize(self):

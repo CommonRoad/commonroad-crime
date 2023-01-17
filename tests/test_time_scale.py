@@ -78,6 +78,15 @@ class TestTimeScale(unittest.TestCase):
         ttc_2 = ttc_object_2.compute()
         assert math.isclose(ttc_2, math.inf, abs_tol=1e-2)
 
+        # test scenario with set-based prediction
+        self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
+            open(lanelet_assignment=True)
+        self.config.update(ego_id=100, sce=sce_set)
+        ttc_object_3 = TTCStar(self.config)
+        ttc_3 = ttc_object_3.compute()
+        assert math.isclose(ttc_3, 7*sce_set.dt, abs_tol=1e-2)
+
     def test_ttm(self):
         self.config.debug.draw_visualization = True
         ttb_object = TTB(self.config)
@@ -118,6 +127,16 @@ class TestTimeScale(unittest.TestCase):
         ttr_3 = ttr_object.compute()
         ttr_object.visualize()
         self.assertEqual(ttr_3, 2.2)
+
+        # test scenario with set-based prediction
+        self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
+            open(lanelet_assignment=True)
+        self.config.update(ego_id=100, sce=sce_set)
+        ttc_object_4 = TTR(self.config)
+        ttc_4 = ttc_object_4.compute()
+        ttc_object_4.visualize()
+        assert math.isclose(ttc_4, 1.25, abs_tol=1e-2)
 
     def test_thw(self):
         thw_object = THW(self.config)

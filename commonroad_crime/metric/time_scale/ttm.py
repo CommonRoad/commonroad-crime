@@ -64,8 +64,13 @@ class TTM(CriMeBase):
             self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)
         self.rnd.render()
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMblue, linewidth=5)
+        if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
+            utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +
+                                      self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
+        else:
+            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=5)
         for sl in self.state_list_set:
             utils_vis.draw_state_list(self.rnd, sl)
         if self.value not in [math.inf, -math.inf] and self.ttc:
@@ -85,7 +90,7 @@ class TTM(CriMeBase):
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0, ttc: float = None, verbose: bool = True):
+    def compute(self, time_step: int = 0, vehicle_id: Union[int, None] = None, ttc: float = None, verbose: bool = True):
         self.state_list_set = []
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}", verbose)
         self.time_step = time_step
