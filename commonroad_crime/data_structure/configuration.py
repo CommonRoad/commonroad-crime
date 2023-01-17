@@ -95,7 +95,6 @@ class GeneralConfiguration:
         self.name_scenario = name_scenario
         self.path_scenarios = config_relevant.path_scenarios
         self.path_scenarios_batch = config_relevant.path_scenarios_batch
-        self.path_output = config_relevant.path_output + name_scenario + "/"
         self.path_output_abs = config_relevant.path_output
         self.path_logs = config_relevant.path_logs
         self.path_icons = config_relevant.path_icons
