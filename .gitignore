@@ -11,3 +11,7 @@
 output/
 
 *.egg-info/
+
+/scenarios/batch
+
+/scenarios/evaluation_result.csv

@@ -33,7 +33,16 @@ class THW(CriMeBase):
     def cal_headway(self):
         other_position = self.other_vehicle.state_at_time(self.time_step).position
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
-        for ts in range(self.time_step, self.ego_vehicle.prediction.final_time_step + 1):
+        ego_position = self.ego_vehicle.state_at_time(self.time_step).position
+        ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
+
+        # bump position
+        ego_s += self.ego_vehicle.obstacle_shape.length/2
+        other_s -= self.other_vehicle.obstacle_shape.length/2
+
+        if ego_s > other_s:
+            return math.inf
+        for ts in range(self.time_step + 1, self.ego_vehicle.prediction.final_time_step + 1):
             ego_position = self.ego_vehicle.state_at_time(ts).position
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
             if ego_s > other_s:
@@ -48,8 +57,10 @@ class THW(CriMeBase):
 
         if self._except_obstacle_in_same_lanelet(expected_value=math.inf):
             return self.value
-        self.value = utils_gen.int_round(self.cal_headway(), 2)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        self.value = self.cal_headway()
+        if self.value is not math.inf:
+            self.value = utils_gen.int_round(self.value, 2)
+        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} with vehicle id {vehicle_id} = {self.value}")
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
