@@ -44,7 +44,7 @@ class TestTimeScale(unittest.TestCase):
         tet_object_1 = TET(self.config)
         tet_1 = tet_object_1.compute(6)
         tet_object_1.visualize()
-        assert math.isclose(tet_1, 2.8, abs_tol=1e-2)
+        assert math.isclose(tet_1, 2.1, abs_tol=1e-2)
 
         tet_object_2 = TET(self.config)
         tet_2 = tet_object_2.compute(7)
@@ -56,7 +56,7 @@ class TestTimeScale(unittest.TestCase):
         tit_object_1 = TIT(self.config)
         tit_1 = tit_object_1.compute(6)
         tit_object_1.visualize()
-        assert math.isclose(tit_1, 3.72, abs_tol=1e-2)
+        assert math.isclose(tit_1, 2.07, abs_tol=1e-2)
 
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)

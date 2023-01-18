@@ -8,9 +8,10 @@ __status__ = "Pre-alpha"
 
 import multiprocessing
 import os
-from typing import List, Type
+from typing import List, Type, Dict
 import logging
 import math
+import csv
 import fnmatch
 from commonroad.scenario.obstacle import StaticObstacle
 
@@ -56,7 +57,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
     """
     scenario_loader, result_dict = initialize_process(batch_path, flag_multi_processing=False)
 
-    for scenario_id in scenario_loader.scenario_ids:
+    for scenario_id in scenario_loader.scenario_ids[0:1]:
         sce_res = dict()
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
         sce_conf.update()
@@ -82,7 +83,12 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
                     sce_res[measure.metric_name][obs.obstacle_id][ts] = measure_value
         result_dict[scenario_id] = sce_res
-    pass
+
+
+def write_result_to_csv(result_dict: Dict, batch_path: str):
+    with open('outputFile.csv', 'a',newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(rowData)
 
 class ScenarioLoader:
     def __init__(self, scenario_folder: str,):
