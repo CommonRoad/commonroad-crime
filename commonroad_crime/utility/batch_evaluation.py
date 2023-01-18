@@ -31,12 +31,12 @@ def initialize_process(batch_path: str, flag_multi_processing: bool = True,):
         result_dict = manager.dict()
     else:
         result_dict = dict()
-    result_dict["Success"] = list()
-    result_dict["Failure"] = list()
-    result_dict["Criticality"] = list()
-    result_dict["scenarios_to_process"] = scenario_loader.scenario_ids
-    result_dict["num_scenarios"] = len(scenario_loader.scenario_ids)
-    result_dict["started_processing"] = 0
+    # result_dict["Success"] = list()
+    # result_dict["Failure"] = list()
+    # result_dict["Criticality"] = list()
+    # result_dict["scenarios_to_process"] = scenario_loader.scenario_ids
+    # result_dict["num_scenarios"] = len(scenario_loader.scenario_ids)
+    # result_dict["started_processing"] = 0
     return scenario_loader, result_dict
 
 
@@ -57,7 +57,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
     """
     scenario_loader, result_dict = initialize_process(batch_path, flag_multi_processing=False)
 
-    for scenario_id in scenario_loader.scenario_ids[0:1]:
+    for scenario_id in scenario_loader.scenario_ids:
         sce_res = dict()
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
         sce_conf.update()
@@ -83,12 +83,23 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
                     sce_res[measure.metric_name][obs.obstacle_id][ts] = measure_value
         result_dict[scenario_id] = sce_res
+    write_result_to_csv(result_dict, batch_path)
 
 
 def write_result_to_csv(result_dict: Dict, batch_path: str):
-    with open('outputFile.csv', 'a',newline='') as csv_file:
+    with open(batch_path + '/evaluation_result.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(rowData)
+        for sce_res in result_dict.values():
+            for measure, evaluation in sce_res.items():
+                for veh_id, eva_detail in evaluation.items():
+                    for ts, result in eva_detail.items():
+                        writer.writerow(
+                            [measure,
+                             veh_id,
+                             ts,
+                             result]
+                        )
+
 
 class ScenarioLoader:
     def __init__(self, scenario_folder: str,):
