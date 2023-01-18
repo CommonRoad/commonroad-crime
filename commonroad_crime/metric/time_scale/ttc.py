@@ -80,7 +80,7 @@ class TTC(CriMeBase):
         delta_a = a_other - a_ego
 
         if delta_d != math.inf:
-            if delta_v < 0 and delta_a == 0:
+            if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
             elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
                 first = - (delta_v / delta_a)

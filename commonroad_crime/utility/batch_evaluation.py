@@ -81,7 +81,8 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                     except Exception as err:
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
                     sce_res[measure.metric_name][obs.obstacle_id][ts] = measure_value
-
+        result_dict[scenario_id] = sce_res
+    pass
 
 class ScenarioLoader:
     def __init__(self, scenario_folder: str,):
