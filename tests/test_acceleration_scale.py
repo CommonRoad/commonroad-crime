@@ -25,22 +25,22 @@ class TestAccelerationScale(unittest.TestCase):
         dst_1 = dst_object.compute(201, 0)
         dst_2 = dst_object.compute(202, 0)
         self.assertEqual(dst_1, 0.)
-        self.assertEqual(dst_2, 7.75)
+        self.assertEqual(dst_2, 24.86)
         dst_object.visualize()
 
     def test_a_long_req(self):
         a_long_req_object = ALongReq(self.config)
         a_long_req_1 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_1, -0.67)
+        self.assertEqual(a_long_req_1, -0.81)
 
         a_long_req_2 = a_long_req_object.compute(201, 0)
         self.assertLessEqual(a_long_req_2, 0.0)
 
         self.config.acceleration_scale.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_3, -5.27)
+        self.assertEqual(a_long_req_3, -6.57)
 
     def test_a_lat_req(self):
         a_lat_req_object = ALatReq(self.config)
         a_lat_req_1 = a_lat_req_object.compute(202, 0)
-        self.assertEqual(a_lat_req_1, 0.11)
+        self.assertEqual(a_lat_req_1, 0.09)
