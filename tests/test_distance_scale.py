@@ -23,5 +23,5 @@ class TestDistanceScale(unittest.TestCase):
         hw_object = HW(self.config)
         hw = hw_object.compute(6, 0)
         self.assertGreater(hw, 0)
-        self.assertEqual(hw, 25.)
+        self.assertEqual(hw, 20.75)
         hw_object.visualize()

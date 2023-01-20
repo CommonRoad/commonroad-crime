@@ -44,11 +44,11 @@ class TestTimeScale(unittest.TestCase):
         tet_object_1 = TET(self.config)
         tet_1 = tet_object_1.compute(6)
         tet_object_1.visualize()
-        assert math.isclose(tet_1, 2.1, abs_tol=1e-2)
+        assert math.isclose(tet_1, 2.0, abs_tol=1e-2)
 
         tet_object_2 = TET(self.config)
         tet_2 = tet_object_2.compute(7)
-        assert math.isclose(tet_2, 1.4, abs_tol=1e-2)
+        assert math.isclose(tet_2, 0.9, abs_tol=1e-2)
 
     def test_tit(self):
         self.config.debug.draw_visualization = True
@@ -56,11 +56,12 @@ class TestTimeScale(unittest.TestCase):
         tit_object_1 = TIT(self.config)
         tit_1 = tit_object_1.compute(vehicle_id=6)
         tit_object_1.visualize()
-        assert math.isclose(tit_1, 2.07, abs_tol=1e-2)
+        assert math.isclose(tit_1, 2.05, abs_tol=1e-2)
 
         tit_object_2 = TIT(self.config)
-        tit_2 = tit_object_2.compute(vehicle_id=7)
-        assert math.isclose(tit_2, 1.84, abs_tol=1e-2)
+        tit_2 = tit_object_2.compute(7)
+        print(tit_2)
+        assert math.isclose(tit_2, 1.40, abs_tol=1e-2)
 
     def test_ttc(self):
         self.config.debug.draw_visualization = True
@@ -141,11 +142,11 @@ class TestTimeScale(unittest.TestCase):
         thw_object = THW(self.config)
         thw = thw_object.compute(6, 0)
         thw_object.visualize()
-        self.assertEqual(thw, 2.9)
+        self.assertEqual(thw, 2.7)
 
         thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
-        self.assertEqual(thw2, thw - 10 * thw_object.dt)
+        self.assertAlmostEqual(thw2, thw - 10 * thw_object.dt)
 
         thw3 = thw_object.compute(7, 0)
         self.assertEqual(thw3, math.inf)
@@ -175,7 +176,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
-        self.assertEqual(ttz, 1.28)
+        self.assertEqual(ttz, 1.05)
         ttz_object.visualize()
 
 

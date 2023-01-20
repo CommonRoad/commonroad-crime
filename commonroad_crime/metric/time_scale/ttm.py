@@ -121,7 +121,7 @@ class TTM(CriMeBase):
         """
         ttm = - math.inf
         low = initial_step
-        high = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.'))) + initial_step
+        high = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.')))
         while low < high:
             mid = int((low + high) / 2)
             state_list = self.simulator.simulate_state_list(mid)

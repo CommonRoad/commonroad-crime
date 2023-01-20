@@ -35,6 +35,11 @@ class THW(CriMeBase):
         other_s, _ = self.clcs.convert_to_curvilinear_coords(other_position[0], other_position[1])
         ego_position = self.ego_vehicle.state_at_time(self.time_step).position
         ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
+
+        # bump position
+        ego_s += self.ego_vehicle.obstacle_shape.length/2
+        other_s -= self.other_vehicle.obstacle_shape.length/2
+
         if ego_s > other_s:
             return math.inf
         for ts in range(self.time_step + 1, self.ego_vehicle.prediction.final_time_step + 1):
