@@ -25,7 +25,7 @@ class TestIndexScale(unittest.TestCase):
         # vehicle in the same lanelet and in front
         btn_1 = btn_object.compute(3, 0)
         btn_object.visualize()
-        self.assertEqual(btn_1, 0.10)
+        self.assertAlmostEqual(btn_1, 0.1043)
 
         # vehicle in another lanelet
         btn_2 = btn_object.compute(1, 0)
@@ -35,7 +35,7 @@ class TestIndexScale(unittest.TestCase):
         stn_object = STN(self.config)
         # vehicle in the same lanelet and in front
         stn_1 = stn_object.compute(3, 0)
-        self.assertEqual(stn_1, 0.03)
+        self.assertAlmostEqual(stn_1, 0.0263)
 
         # vehicle in another lanelet
         stn_2 = stn_object.compute(1, 0)

@@ -27,6 +27,6 @@ class TestReachableSetScale(unittest.TestCase):
 
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_drivable_area(self):
-        da_solver = DrivableArea(self.config)
+        da_solver = DA(self.config)
         self.assertAlmostEqual(da_solver.compute(), 59.61)
         da_solver.visualize()

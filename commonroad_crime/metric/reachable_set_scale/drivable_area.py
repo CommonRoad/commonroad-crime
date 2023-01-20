@@ -72,8 +72,8 @@ class DA(CriMeBase):
         return self.value
 
     def visualize(self):
-        #util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
-        util_visual.plot_collision_checker(self.reach_interface)
+        util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
+        #util_visual.plot_collision_checker(self.reach_interface)
 
 
 def compute_drivable_area_profile(reachable_set: Dict[int, List[ReachNode]]) -> np.ndarray:
