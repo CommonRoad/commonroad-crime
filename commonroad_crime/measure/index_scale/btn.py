@@ -36,14 +36,14 @@ class BTN(CriMeBase):
         self._a_long_req_object = ALongReq(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} at time step {time_step}")
+        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         a_long_req = self._a_long_req_object.compute(vehicle_id, time_step)
         # (9) in "Using extreme value theory for vehicle level safety validation and implications
         # for autonomous vehicles."
         self.value = utils_gen.int_round(a_long_req / self.configuration.vehicle.curvilinear.a_lon_min, 4)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
         return self.value
 
     def visualize(self):
