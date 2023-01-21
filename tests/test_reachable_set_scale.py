@@ -1,5 +1,5 @@
 """
-Unit tests of the module reachable set scale metrics
+Unit tests of the module reachable set scale measures
 """
 
 import unittest
@@ -10,13 +10,13 @@ try:
 except ImportError:
     module_failed = True
 else:
-    from commonroad_crime.metric.reachable_set_scale.drivable_area import DA
+    from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestReachableSetScale(unittest.TestCase):
+class TestReachableSetDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'

@@ -186,8 +186,8 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             ]  # using this preamble
         }
         matplotlib.rcParams.update(pgf_with_latex)
-    if crime.metrics is not None and crime.time_start is not None and crime.time_end is not None:
-        nr_metrics = len(crime.metrics)
+    if crime.measures is not None and crime.time_start is not None and crime.time_end is not None:
+        nr_metrics = len(crime.measures)
         if nr_metrics > nr_per_row:
             nr_column = nr_per_row
             nr_row = round(nr_metrics / nr_column)
@@ -196,12 +196,12 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             nr_row = 1
         fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
         count_row, count_column = 0, 0
-        for metric in crime.metrics:
+        for metric in crime.measures:
             criticality_list = []
             time_list = []
             for time_step in range(crime.time_start, crime.time_end + 1):
-                if metric.metric_name.value in crime.criticality_dict[time_step]:
-                    criticality_list.append(crime.criticality_dict[time_step][metric.metric_name.value])
+                if metric.measure_name.value in crime.criticality_dict[time_step]:
+                    criticality_list.append(crime.criticality_dict[time_step][metric.measure_name.value])
                     time_list.append(time_step)
             if nr_metrics == 1:
                 ax = axs
@@ -211,7 +211,7 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
                 ax = axs[count_row, count_column]
             ax.plot(time_list, criticality_list)
             ax.axis(xmin=time_list[0], xmax=time_list[-1])
-            ax.title.set_text(metric.metric_name.value)
+            ax.title.set_text(metric.measure_name.value)
 
             count_column += 1
             if count_column > nr_per_row - 1:

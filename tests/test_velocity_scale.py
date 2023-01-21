@@ -1,15 +1,15 @@
 """
-Unit tests of the module velocity-scale metrics
+Unit tests of the module velocity-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.velocity_scale.delta_v import DeltaV
+from commonroad_crime.measure.velocity_scale.delta_v import DeltaV
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestVelocityScale(unittest.TestCase):
+class TestVelocityDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'DEU_Gar-1_1_T-1'

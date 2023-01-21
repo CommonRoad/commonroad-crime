@@ -1,17 +1,15 @@
 """
-Unit tests of the module index-scale metrics
+Unit tests of the module index-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.index_scale.btn import BTN
-from commonroad_crime.metric.index_scale.stn import STN
-from commonroad_crime.metric.index_scale.tci import TCI
+from commonroad_crime.measure import BTN, STN, TCI
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestIndexScale(unittest.TestCase):
+class TestIndexDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Zip-1_56_T-1'

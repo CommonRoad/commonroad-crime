@@ -1,17 +1,15 @@
 """
-Unit tests of the module acceleration-scale metrics
+Unit tests of the module acceleration-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.acceleration_scale.dst import DST
-from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
-from commonroad_crime.metric.acceleration_scale.a_lat_req import ALatReq
+from commonroad_crime.measure import DST, ALongReq, ALatReq
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestAccelerationScale(unittest.TestCase):
+class TestAccelerationDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'DEU_Gar-1_1_T-1'
@@ -36,7 +34,7 @@ class TestAccelerationScale(unittest.TestCase):
         a_long_req_2 = a_long_req_object.compute(201, 0)
         self.assertLessEqual(a_long_req_2, 0.0)
 
-        self.config.acceleration_scale.acceleration_mode = 2
+        self.config.acceleration.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
         self.assertEqual(a_long_req_3, -6.57)
 

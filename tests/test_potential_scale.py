@@ -1,15 +1,15 @@
 """
-Unit tests of the module potential-scale metrics
+Unit tests of the module potential-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.potential_scale.pf import PF
+from commonroad_crime.measure.potential_scale.pf import PF
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestPotentialScale(unittest.TestCase):
+class TestPotentialDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'DEU_Gar-1_1_T-1'
@@ -21,6 +21,6 @@ class TestPotentialScale(unittest.TestCase):
     def test_pf(self):
         pf_object = PF(self.config)
         pf = pf_object.compute(20)
-        self.assertEqual(pf, self.config.potential_scale.u_max)
+        self.assertEqual(pf, self.config.potential.u_max)
         pf_object.visualize()
 

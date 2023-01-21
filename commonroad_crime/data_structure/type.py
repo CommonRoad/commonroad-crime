@@ -7,7 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 """
-Types of different criticality metrics categorized by the output, see https://criticality-metrics.readthedocs.io/
+Types of different criticality measures categorized by the output, see https://criticality-metrics.readthedocs.io/
 """
 
 from enum import Enum

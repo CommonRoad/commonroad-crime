@@ -42,7 +42,7 @@ def initialize_process(batch_path: str, flag_multi_processing: bool = True,):
 
 def run_parallel(config: CriMeConfiguration):
     """
-    Parallel batch evaluation of metrics, where the computation of criticality is carried out on multiple threads
+    Parallel batch evaluation of measures, where the computation of criticality is carried out on multiple threads
     simultaneously. This reduces the runtime required to test your metric on more scenarios. One drawback is that it is
     not very easy to debug your code with parallel batch evaluation.
     """
@@ -51,7 +51,7 @@ def run_parallel(config: CriMeConfiguration):
 
 def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
     """
-    Sequential batch evaluation of metrics, where the computation of criticality is carried out on a single thread.
+    Sequential batch evaluation of measures, where the computation of criticality is carried out on a single thread.
     This is more user-friendly choice for test your metric on more scenarios since you can easily debug your code in
     your IDEs by creating breakpoints.
     """
@@ -62,15 +62,15 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
         sce_conf.update()
         for measure in measures:
-            sce_res[measure.metric_name] = dict()
+            sce_res[measure.measure_name] = dict()
             for obs in sce_conf.scenario.obstacles:
                 if isinstance(obs, StaticObstacle):
                     continue
                 sce_conf.vehicle.ego_id = obs.obstacle_id
-                # construct the measure evaluator
+                # construct the measures evaluator
                 measure_object = measure(sce_conf)
 
-                sce_res[measure.metric_name][obs.obstacle_id] = dict()
+                sce_res[measure.measure_name][obs.obstacle_id] = dict()
                 for ts in range(obs.prediction.initial_time_step, obs.prediction.final_time_step):
                     measure_value = math.inf
                     try:
@@ -81,7 +81,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                                                                            vehicle_id=other_obs.obstacle_id))
                     except Exception as err:
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
-                    sce_res[measure.metric_name][obs.obstacle_id][ts] = measure_value
+                    sce_res[measure.measure_name][obs.obstacle_id][ts] = measure_value
         result_dict[scenario_id] = sce_res
     write_result_to_csv(result_dict, batch_path)
 

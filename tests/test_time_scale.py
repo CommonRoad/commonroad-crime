@@ -1,5 +1,5 @@
 """
-Unit tests of the module time-scale metrics
+Unit tests of the module time-scale measures
 """
 
 import unittest
@@ -7,18 +7,9 @@ import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_crime.metric.time_scale.tet import TET
-from commonroad_crime.metric.time_scale.tit import TIT
+from commonroad_crime.measure import TET, TIT, TTCStar, TTB, TTK, TTS, TTR, THW, TTZ, WTTC
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
-from commonroad_crime.metric.time_scale.ttc_star import TTCStar
-from commonroad_crime.metric.time_scale.ttb import TTB
-from commonroad_crime.metric.time_scale.ttk import TTK
-from commonroad_crime.metric.time_scale.tts import TTS
-from commonroad_crime.metric.time_scale.ttr import TTR
-from commonroad_crime.metric.time_scale.thw import THW
-from commonroad_crime.metric.time_scale.ttz import TTZ
-from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.utility.simulation import Maneuver
 
 try:
@@ -29,7 +20,7 @@ except ImportError:
     module_failed = True
 
 
-class TestTimeScale(unittest.TestCase):
+class TestTimeDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
@@ -110,7 +101,7 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(tts, tts2)
 
     def test_ttr(self):
-        self.config.time_scale.steer_width = 2
+        self.config.time.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
@@ -123,7 +114,7 @@ class TestTimeScale(unittest.TestCase):
         # ttr_2 != ttr - 10 * ttr_object.dt due to the binary search, which might missed some possible solutions
         self.assertGreater(ttr, ttr_2)
 
-        ttr_object.configuration.time_scale.steer_width = 1
+        ttr_object.configuration.time.steer_width = 1
         ttr_3 = ttr_object.compute()
         ttr_object.visualize()
         self.assertEqual(ttr_3, 2.2)

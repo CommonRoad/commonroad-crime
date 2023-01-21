@@ -44,7 +44,7 @@ class OptimizerBase:
 class TCIOptimizer(OptimizerBase):
     def __init__(self, config: CriMeConfiguration, sce: Union[Scenario, Scene]):
         super(TCIOptimizer, self).__init__(config)
-        self.tci_config = self.config.index_scale.tci
+        self.tci_config = self.config.index.tci
         self.veh_config = self.config.vehicle
 
         self.opti = ca.Opti()
