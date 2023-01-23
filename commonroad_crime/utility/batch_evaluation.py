@@ -58,6 +58,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
     scenario_loader, result_dict = initialize_process(batch_path, flag_multi_processing=False)
 
     for scenario_id in scenario_loader.scenario_ids:
+        utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
         sce_conf.update()
@@ -74,11 +75,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                 for ts in range(obs.prediction.initial_time_step, obs.prediction.final_time_step):
                     measure_value = math.inf
                     try:
-                        for other_obs in sce_conf.scenario.obstacles:
-                            if other_obs is not obs:
-                                measure_value = min(measure_value,
-                                                    measure_object.compute(time_step=ts,
-                                                                           vehicle_id=other_obs.obstacle_id))
+                        measure_value = measure_object.compute_criticality(ts)
                     except Exception as err:
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
                     sce_res[measure.measure_name][obs.obstacle_id][ts] = measure_value
@@ -89,12 +86,13 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
 def write_result_to_csv(result_dict: Dict, batch_path: str):
     with open(batch_path + '/evaluation_result.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        for sce_res in result_dict.values():
+        for sce_id, sce_res in result_dict.items():
             for measure, evaluation in sce_res.items():
                 for veh_id, eva_detail in evaluation.items():
                     for ts, result in eva_detail.items():
                         writer.writerow(
-                            [measure,
+                            [sce_id,
+                             measure,
                              veh_id,
                              ts,
                              result]

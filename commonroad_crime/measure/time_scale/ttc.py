@@ -64,11 +64,12 @@ class TTC(CriMeBase):
         delta_d = self._hw_object.compute(vehicle_id, time_step)
 
         # actual velocity and acceleration of both vehicles along the lanelet
-        v_ego = math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(ego_orientation)
-        a_ego = math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(ego_orientation)
+        v_ego = np.sign(state.velocity) * math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(ego_orientation)
+        # include the directions
+        a_ego = np.sign(state.acceleration) * math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(ego_orientation)
         if isinstance(self.other_vehicle, DynamicObstacle):
-            v_other = math.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
-            a_other = math.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
+            v_other = np.sign(state_other.velocity) * math.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
+            a_other = np.sign(state_other.acceleration) * math.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
         else:
             v_other = 0
             a_other = 0
@@ -78,6 +79,8 @@ class TTC(CriMeBase):
         if delta_d != math.inf:
             if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
+            elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a < 0:
+                self.value = math.inf
             elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
                 first = - (delta_v / delta_a)
                 second = np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a

@@ -1,4 +1,3 @@
-
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF,
                                       ALongReq, ALatReq, STN, P_MC)
@@ -8,10 +7,9 @@ from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 
 def main():
-
     scenario_id = 'ZAM_Urban-7_1_S-2'
     scenario_id = "DEU_Gar-1_1_T-1"
-    # scenario_id = "OSC_CutIn-1_2_T-1"
+    scenario_id = "OSC_CutIn-1_2_T-1"
 
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
@@ -28,8 +26,10 @@ def main():
     # WTTR_obj.visualize()
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
     # ==== Experiment B: evaluation on scenarios
-    crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,
-                                       ALatReq, STN, P_MC, PF], 0, 20)
+    # crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,
+    #                                    ALatReq, STN, P_MC, PF], 0, 20)
+    crime_interface.config.vehicle.ego_id = 4
+    crime_interface.evaluate_scenario([TTC], time_start=38, time_end=50)
     # crime_interface.evaluate_scenario([ALatReq], 0, 20)
     #
     # crime_interface.evaluate_scenario([PF], 0, 20)
@@ -46,9 +46,8 @@ def main():
     #                                            time_steps=[20, 34, 99])
     # # ==== visualize the result
     # config.debug.save_plots = False
-    utils_vis.plot_criticality_curve(crime_interface)
+    #utils_vis.plot_criticality_curve(crime_interface)
 
 
 if __name__ == "__main__":
     main()
-
