@@ -56,8 +56,7 @@ class TTM(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         if self.selected_state_list:
-            self._initialize_vis(figsize=figsize,
-                                 plot_limit=[30, 80, -3.5, 7]) #[65, 105, -4, 7.5])
+            self._initialize_vis(figsize=figsize)
         else:
             self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)

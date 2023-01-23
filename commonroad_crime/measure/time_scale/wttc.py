@@ -48,10 +48,10 @@ class WTTC(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit= [30, 80, -3.5, 7])#utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                             # self.ego_vehicle.prediction.
-                                                                             # trajectory.state_list,
-                                                                             # margin=10))
+                             plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                              self.ego_vehicle.prediction.
+                                                                              trajectory.state_list,
+                                                                              margin=10))
         self.rnd.render()
         if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
             utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +

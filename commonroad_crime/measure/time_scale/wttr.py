@@ -113,8 +113,7 @@ class WTTR(CriMeBase):
 
         self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
         util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                      plot_limits=[30, 80, -3.5, 7], #[65, 105, -4, 7.5],#[30, 80, -3.5, 7],# [65, 105, -4, 7.5],
                                                       step_start=0,
                                                       step_end=self._end_sim)
-        util_visual.plot_collision_checker(self.reach_interface)
+        # util_visual.plot_collision_checker(self.reach_interface)
 

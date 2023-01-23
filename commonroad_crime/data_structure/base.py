@@ -109,6 +109,8 @@ class CriMeBase:
         :param figsize: size of the figure
         :param plot_limit: [xmin, xmax, ymin, ymax]
         """
+        if plot_limit is None:
+            plot_limit = self.configuration.debug.plot_limits
         self.rnd = MPRenderer(figsize=figsize, plot_limits=plot_limit)
         utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, self.time_step)
 

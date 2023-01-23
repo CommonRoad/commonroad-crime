@@ -268,5 +268,9 @@ class DebugConfiguration:
         config_relevant = config.debug
 
         self.save_plots = config_relevant.save_plots
+        if config_relevant.plot_limits:
+            self.plot_limits = list(config_relevant.plot_limits)
+        else:
+            self.plot_limits = None
         self.draw_visualization = config_relevant.draw_visualization
         self.draw_icons = config_relevant.draw_icons

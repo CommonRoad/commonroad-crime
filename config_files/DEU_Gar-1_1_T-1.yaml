@@ -4,3 +4,5 @@ reachable_set_scale:
   coordinate_system: 1
 potential_scale:
   u_max: 500
+debug:
+  plot_limits: # [65, 105, -4, 7.5]
