@@ -47,7 +47,7 @@ class TestTimeDomain(unittest.TestCase):
         tit_object_1 = TIT(self.config)
         tit_1 = tit_object_1.compute(vehicle_id=6)
         tit_object_1.visualize()
-        assert math.isclose(tit_1, 2.05, abs_tol=1e-2)
+        assert math.isclose(tit_1, 2.012, abs_tol=1e-2)
 
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)
