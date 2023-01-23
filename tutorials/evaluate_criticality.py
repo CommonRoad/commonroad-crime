@@ -1,6 +1,7 @@
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF,
-                                      ALongReq, ALatReq, STN, P_MC)
+from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF, HW,
+                                      ALongReq, ALatReq, STN, P_MC, LongJ, LatJ, DeltaV)
+from commonroad_crime.measure.time_scale.wttr import WTTR
 from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
@@ -8,8 +9,8 @@ from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 def main():
     scenario_id = 'ZAM_Urban-7_1_S-2'
-    scenario_id = "DEU_Gar-1_1_T-1"
-    scenario_id = "OSC_CutIn-1_2_T-1"
+    #scenario_id = "DEU_Gar-1_1_T-1"
+    # scenario_id = "OSC_CutIn-1_2_T-1"
 
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
@@ -25,11 +26,16 @@ def main():
     # WTTR_obj.compute(0)
     # WTTR_obj.visualize()
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
+    # ==== Exepriment A: evaluation on scenes
+    crime_interface.evaluate_scene([HW, THW, TTC, WTTC, TTCStar, TTS,
+                                    TTK, TTB, TTR, WTTR, ALongReq, ALatReq,
+                                    LongJ, LatJ, DeltaV, BTN, STN, DA,
+                                    P_MC, PF],)
     # ==== Experiment B: evaluation on scenarios
     # crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,
     #                                    ALatReq, STN, P_MC, PF], 0, 20)
-    crime_interface.config.vehicle.ego_id = 4
-    crime_interface.evaluate_scenario([TTC], time_start=38, time_end=50)
+    # crime_interface.config.vehicle.ego_id = 4
+    # crime_interface.evaluate_scenario([TTC], time_start=38, time_end=50)
     # crime_interface.evaluate_scenario([ALatReq], 0, 20)
     #
     # crime_interface.evaluate_scenario([PF], 0, 20)

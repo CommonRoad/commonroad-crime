@@ -11,6 +11,7 @@ import os
 from typing import List, Type, Dict
 import logging
 import math
+import time
 import csv
 import fnmatch
 from commonroad.scenario.obstacle import StaticObstacle
@@ -75,10 +76,13 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                 for ts in range(obs.prediction.initial_time_step, obs.prediction.final_time_step):
                     measure_value = math.inf
                     try:
+                        time_start = time.time()
                         measure_value = measure_object.compute_criticality(ts)
+                        calc_time = time.time() - time_start
                     except Exception as err:
                         utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
-                    sce_res[measure.measure_name][obs.obstacle_id][ts] = measure_value
+                        calc_time = math.nan
+                    sce_res[measure.measure_name][obs.obstacle_id][ts] = [measure_value, calc_time]
         result_dict[scenario_id] = sce_res
     write_result_to_csv(result_dict, batch_path)
 
@@ -95,7 +99,8 @@ def write_result_to_csv(result_dict: Dict, batch_path: str):
                              measure,
                              veh_id,
                              ts,
-                             result]
+                             result[0],
+                             result[1]]
                         )
 
 
