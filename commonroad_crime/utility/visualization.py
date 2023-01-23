@@ -19,6 +19,8 @@ from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
+from commonroad_crime.data_structure.type import TypeMonotone
+
 
 
 class TUMcolor(tuple, Enum):
@@ -196,12 +198,12 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             nr_row = 1
         fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
         count_row, count_column = 0, 0
-        for metric in crime.measures:
+        for measure in crime.measures:
             criticality_list = []
             time_list = []
             for time_step in range(crime.time_start, crime.time_end + 1):
-                if metric.measure_name.value in crime.criticality_dict[time_step]:
-                    criticality_list.append(crime.criticality_dict[time_step][metric.measure_name.value])
+                if measure.measure_name.value in crime.criticality_dict[time_step]:
+                    criticality_list.append(crime.criticality_dict[time_step][measure.measure_name.value])
                     time_list.append(time_step)
             if nr_metrics == 1:
                 ax = axs
@@ -211,8 +213,10 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
                 ax = axs[count_row, count_column]
             ax.plot(time_list, criticality_list)
             ax.axis(xmin=time_list[0], xmax=time_list[-1])
-            ax.title.set_text(metric.measure_name.value)
+            ax.title.set_text(measure.measure_name.value)
 
+            if measure.monotone == TypeMonotone.NEG:
+                ax.invert_yaxis()
             count_column += 1
             if count_column > nr_per_row - 1:
                 count_column = 0

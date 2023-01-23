@@ -1,7 +1,8 @@
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF
-
+from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF,
+                                      ALongReq, ALatReq, STN, P_MC)
+from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
@@ -26,10 +27,12 @@ def main():
     # WTTR_obj.compute(0)
     # WTTR_obj.visualize()
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
-    # crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN, ALatReq, STN, P_MC, PF], 0, 20)
+    # ==== Experiment B: evaluation on scenarios
+    crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,
+                                       ALatReq, STN, P_MC, PF], 0, 20)
     # crime_interface.evaluate_scenario([ALatReq], 0, 20)
     #
-    crime_interface.evaluate_scenario([PF], 0, 20)
+    # crime_interface.evaluate_scenario([PF], 0, 20)
     # crime_interface.evaluate_scene([PF], 12)
     # crime_interface.evaluate_scene([TTC], 12, vehicle_id=202)
     # crime_interface.evaluate_scene([BTN], 0)
