@@ -62,6 +62,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
+        sce_conf.general.path_scenarios = scenario_loader.scenario_folder
         sce_conf.update()
         for measure in measures:
             sce_res[measure.measure_name] = dict()
@@ -70,9 +71,15 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                     continue
                 sce_conf.vehicle.ego_id = obs.obstacle_id
                 # construct the measures evaluator
-                measure_object = measure(sce_conf)
-
+                try:
+                    measure_object = measure(sce_conf)
+                except Exception as err:
+                    utils_log.print_and_log_error(logger, f"Initialization failed {scenario_id}, see {err}")
+                    continue
                 sce_res[measure.measure_name][obs.obstacle_id] = dict()
+                if not isinstance(obs.prediction.initial_time_step, int) or \
+                    not isinstance(obs.prediction.final_time_step, int):
+                    continue
                 for ts in range(obs.prediction.initial_time_step, obs.prediction.final_time_step):
                     measure_value = math.inf
                     try:
@@ -80,7 +87,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                         measure_value = measure_object.compute_criticality(ts)
                         calc_time = time.time() - time_start
                     except Exception as err:
-                        utils_log.print_and_log_error(logger, f"Evaluation failed, see {err}")
+                        utils_log.print_and_log_error(logger, f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}")
                         calc_time = math.nan
                     sce_res[measure.measure_name][obs.obstacle_id][ts] = [measure_value, calc_time]
         result_dict[scenario_id] = sce_res
@@ -88,7 +95,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
 
 
 def write_result_to_csv(result_dict: Dict, batch_path: str):
-    with open(batch_path + '/evaluation_result.csv', 'a', newline='') as csv_file:
+    with open(batch_path + 'evaluation_result.csv', 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
         for sce_id, sce_res in result_dict.items():
             for measure, evaluation in sce_res.items():
