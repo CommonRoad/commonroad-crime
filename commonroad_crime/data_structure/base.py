@@ -15,11 +15,13 @@ from typing import Union
 
 # CommonRoad packages
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstacle
+from commonroad.prediction.prediction import TrajectoryPrediction
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.prediction.prediction import SetBasedPrediction
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale, TypeNone
+from commonroad_crime.data_structure.type import (TypeTimeScale, TypeNone, TypeReachableSetScale, TypeMonotone,
+                                                  TypePotentialScale, TypeProbabilityScale)
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -31,7 +33,8 @@ logger = logging.getLogger(__name__)
 
 class CriMeBase:
     """Base class for CRIticality MEasures"""
-    metric_name: Enum = TypeNone.NONE
+    measure_name: Enum = TypeNone.NONE
+    monotone: Enum = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         """
@@ -72,16 +75,16 @@ class CriMeBase:
         self.rnd: Union[MPRenderer, None] = None
 
     def __repr__(self):
-        return f"{self.metric_name}"
+        return f"{self.measure_name}"
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, CriMeBase):
-            return self.metric_name == other.metric_name
+            return self.measure_name == other.measure_name
         else:
             return False
 
     def __key(self):
-        return self.metric_name
+        return self.measure_name
 
     def __hash__(self):
         return hash(self.__key())
@@ -106,19 +109,26 @@ class CriMeBase:
         :param figsize: size of the figure
         :param plot_limit: [xmin, xmax, ymin, ymax]
         """
+        if plot_limit is None:
+            plot_limit = self.configuration.debug.plot_limits
         self.rnd = MPRenderer(figsize=figsize, plot_limits=plot_limit)
         utils_vis.draw_sce_at_time_step(self.rnd, self.configuration, self.sce, self.time_step)
 
     def set_other_vehicles(self, vehicle_id: int):
         """
-        Sets up the id for other metric-related vehicle.
+        Sets up the id for other measure-related vehicle.
         """
         if not self.sce.obstacle_by_id(vehicle_id):
             raise ValueError(f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!")
         self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         if isinstance(self.other_vehicle, DynamicObstacle):
-            utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
-                                                self.other_vehicle.prediction.trajectory.state_list, self.dt)
+            if isinstance(self.other_vehicle.prediction, TrajectoryPrediction):
+                utils_gen.check_elements_state_list([self.other_vehicle.initial_state] +
+                                                    self.other_vehicle.prediction.trajectory.state_list, self.dt)
+            else:
+                utils_gen.check_elements_state(self.other_vehicle.initial_state, dt=self.dt)
+        else:
+            utils_gen.check_elements_state(self.other_vehicle.initial_state, dt=self.dt)
 
     def _except_obstacle_in_same_lanelet(self, expected_value: float):
         if not utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
@@ -127,20 +137,20 @@ class CriMeBase:
                                                  f"in the same lanelet as the "
                                                  f"ego vehicle {self.ego_vehicle.obstacle_id}")
             self.value = expected_value
-            utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} = {self.value}")
+            utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
             return True
         return False
 
     @abstractmethod
     def compute(self, time_step: int, vehicle_id: Union[int, None]):
         """
-        Specific computing function for each metric
+        Specific computing function for each measure
         """
         pass
 
     def compute_criticality(self, time_step: int, vehicle_id: Union[int, None] = None, verbose=True):
         """
-        Wrapper for computing the criticality, i.e., the value of the metric.
+        Wrapper for computing the criticality, i.e., the value of the measure.
         """
         utils_log.print_and_log_info(logger, "*********************************", verbose)
 
@@ -153,21 +163,25 @@ class CriMeBase:
 
         time_start = time.time()
         criti_list = []
-        if self.metric_name in [TypeTimeScale.TTR, TypeTimeScale.TTM, TypeTimeScale.TTB,
-                                TypeTimeScale.TTK, TypeTimeScale.TTS]:
+        if self.measure_name in [TypeTimeScale.TTR, TypeTimeScale.TTM, TypeTimeScale.TTB,
+                                 TypeTimeScale.TTK, TypeTimeScale.TTS, TypeReachableSetScale.DA,
+                                 TypePotentialScale.PF, TypeProbabilityScale.P_MC]:
             criti = self.compute(time_step=time_step, vehicle_id=None)
         else:
             for v_id in other_veh_ids:
                 criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
-            criti = min(criti_list)
+            if self.monotone == TypeMonotone.POS:
+                criti = max(criti_list)
+            else:
+                criti = min(criti_list)
         time_computation = time.time() - time_start
-        utils_log.print_and_log_info(logger, f"*\t\t {self.metric_name} of the scenario: {criti: .3f}")
+        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} of the scenario: {criti}")
         utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)
         return criti
 
     @abstractmethod
     def visualize(self):
         """
-        Visualize the result, which will be metric-dependent.
+        Visualize the result, which will be measure-dependent.
         """
         pass

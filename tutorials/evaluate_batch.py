@@ -2,7 +2,7 @@
 import os
 import sys
 import commonroad_crime.utility.batch_evaluation as utils_batch
-from commonroad_crime.metric import TTC
+from commonroad_crime.measure import TTC
 
 
 def main():

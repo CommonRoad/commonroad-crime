@@ -39,13 +39,21 @@ def generate_reference_path(lanelet_id: int, lanelet_network: LaneletNetwork, fl
     ref_path = ini_lanelet.center_vertices
     # extend the reference path
     pre_lanelet = ini_lanelet  # todo: more predecessors?
+    i = 0
     while pre_lanelet.predecessor:
         pre_lanelet = lanelet_network.find_lanelet_by_id(pre_lanelet.predecessor[0])
         ref_path = np.concatenate((pre_lanelet.center_vertices, ref_path))
+        i += 1
+        if i >= 2:
+            break
     suc_lanelet = ini_lanelet  # todo: more successors?
+    i = 0
     while suc_lanelet.successor:
         suc_lanelet = lanelet_network.find_lanelet_by_id(suc_lanelet.successor[0])
         ref_path = np.concatenate((ref_path, suc_lanelet.center_vertices))
+        i += 1
+        if i >= 2:
+            break
     if flag_resampling:
         ref_path = np.array(chaikins_corner_cutting(ref_path))
         ref_path = resample_polyline(ref_path)
@@ -95,7 +103,8 @@ def check_elements_state(state: State, veh_input: State = None, next_state: Stat
         state.slip_angle = 0
     if not hasattr(state, "yaw_rate"):
         state.yaw_rate = 0
-    if not hasattr(state, "velocity_y"):
+
+    if not hasattr(state, "velocity_y") and hasattr(state, "velocity"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
 

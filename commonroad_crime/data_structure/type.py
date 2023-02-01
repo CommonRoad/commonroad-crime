@@ -7,10 +7,18 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 """
-Types of different criticality metrics categorized by the output, see https://criticality-metrics.readthedocs.io/
+Types of different criticality measures categorized by the output, see https://criticality-metrics.readthedocs.io/
 """
 
 from enum import Enum
+
+
+class TypeMonotone(str, Enum):
+    """
+    Monotonic relationship between the metric value and the criticality
+    """
+    POS = "positive monotonic"
+    NEG = "negative monotonic"
 
 
 class TypeNone(str, Enum):

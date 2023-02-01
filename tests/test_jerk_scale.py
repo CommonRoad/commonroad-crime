@@ -1,16 +1,15 @@
 """
-Unit tests of the module jerk-scale metrics
+Unit tests of the module jerk-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.jerk_scale.lat_j import LatJ
-from commonroad_crime.metric.jerk_scale.long_j import LongJ
+from commonroad_crime.measure import LatJ, LongJ
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestJerkScale(unittest.TestCase):
+class TestJerkDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Zip-1_56_T-1'
@@ -42,4 +41,4 @@ class TestJerkScale(unittest.TestCase):
         self.assertEqual(long_j_1, 0.0)
 
         long_j_2 = long_j_obj.compute(40)
-        self.assertEqual(long_j_2, -1.71)
+        self.assertEqual(long_j_2, 1.71)

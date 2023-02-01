@@ -74,7 +74,7 @@ class TestSimulation(unittest.TestCase):
         simulated_state1 = sim_lat_left.simulate_state_list(0)
         sim_lat_right = SimulationLat(Maneuver.STEERRIGHT, self.ego_vehicle, self.config)
         simulated_state2 = sim_lat_right.simulate_state_list(10)
-        self.config.time_scale.steer_width = 2
+        self.config.time.steer_width = 2
         sim_lat_left_2 = SimulationLat(Maneuver.STEERLEFT, self.ego_vehicle, self.config)
         simulated_state3 = sim_lat_left_2.simulate_state_list(0)
 
@@ -111,7 +111,7 @@ class TestSimulation(unittest.TestCase):
 
     def test_simulation_lat_mc(self):
         sim_stat_list_total = []
-        self.config.time_scale.steer_width = 2
+        self.config.time.steer_width = 2
         sim_lat_left = SimulationLatMonteCarlo(Maneuver.LANECHANGEMC, self.ego_vehicle, self.config)
         for i in range(10):
             sim_stat_list_total.append(sim_lat_left.simulate_state_list(0))

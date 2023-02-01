@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Union, List
 from enum import Enum
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -18,6 +19,7 @@ from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
+from commonroad_crime.data_structure.type import TypeMonotone
 
 
 
@@ -33,6 +35,7 @@ class TUMcolor(tuple, Enum):
     TUMwhite = (1, 1, 1)
     TUMblack = (0, 0, 0)
     TUMlightgray = (217 / 255, 218 / 255, 219 / 255)
+
 
 zorder = 22
 
@@ -55,6 +58,7 @@ OTHER_VEHICLE_DRAW_PARAMS = {"trajectory": {
              }
          }}}}}
 
+
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
@@ -65,8 +69,8 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
 def plot_limits_from_state_list(time_step: int, state_list: List[State], margin: float = 10.0):
     return [state_list[time_step].position[0] - margin,
             state_list[-1].position[0] + margin,
-            state_list[time_step].position[1] - margin/2,
-            state_list[time_step].position[1] + margin/2]
+            state_list[time_step].position[1] - margin / 2,
+            state_list[time_step].position[1] + margin / 2]
 
 
 def draw_state(rnd: MPRenderer, state: State, color: TUMcolor = TUMcolor.TUMgreen):
@@ -119,7 +123,7 @@ def draw_state_list(rnd: MPRenderer, state_list: List[State],
         opacity = 0.5 * (start_time_step / len(state_list) + 1)
     else:
         opacity = 1
-    rnd.ax.plot(pos[:, 0], pos[:, 1], color=color, markersize=1.5,
+    rnd.ax.plot(pos[:, 0], pos[:, 1], linestyle='-', marker='o', color=color, markersize=5,
                 zorder=zorder, linewidth=linewidth, alpha=opacity)
     zorder += 1
 
@@ -157,3 +161,83 @@ def draw_sce_at_time_step(rnd: MPRenderer,
                                    "fill_lanelet": False,
                                }
                                })
+
+
+def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
+    if flag_latex:
+        # use Latex font
+        FONTSIZE = 28
+        plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+        pgf_with_latex = {  # setup matplotlib to use latex for output
+            "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
+            "text.usetex": True,  # use LaTeX to write all text
+            "font.family": 'lmodern',
+            # blank entries should cause plots
+            "font.sans-serif": [],  # ['Avant Garde'],              # to inherit fonts from the document
+            # 'text.latex.unicode': True,
+            "font.monospace": [],
+            "axes.labelsize": FONTSIZE,  # LaTeX default is 10pt font.
+            "font.size": FONTSIZE - 10,
+            "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
+            "xtick.labelsize": FONTSIZE,  # a little smaller
+            "ytick.labelsize": FONTSIZE,
+            "pgf.preamble": [
+                r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
+                r"\usepackage[T1]{fontenc}",  # plots will be generated
+                r"\usepackage[detect-all,locale=DE]{siunitx}",
+            ]  # using this preamble
+        }
+        matplotlib.rcParams.update(pgf_with_latex)
+    if crime.measures is not None and crime.time_start is not None and crime.time_end is not None:
+        nr_metrics = len(crime.measures)
+        if nr_metrics > nr_per_row:
+            nr_column = nr_per_row
+            nr_row = round(nr_metrics / nr_column)
+        else:
+            nr_column = nr_metrics
+            nr_row = 1
+        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
+        count_row, count_column = 0, 0
+        for measure in crime.measures:
+            criticality_list = []
+            time_list = []
+            for time_step in range(crime.time_start, crime.time_end + 1):
+                if measure.measure_name.value in crime.criticality_dict[time_step]:
+                    criticality_list.append(crime.criticality_dict[time_step][measure.measure_name.value])
+                    time_list.append(time_step)
+            if nr_metrics == 1:
+                ax = axs
+            elif nr_row == 1:
+                ax = axs[count_column]
+            else:
+                ax = axs[count_row, count_column]
+            ax.plot(time_list, criticality_list)
+            ax.axis(xmin=time_list[0], xmax=time_list[-1])
+            ax.title.set_text(measure.measure_name.value)
+
+            if measure.monotone == TypeMonotone.NEG:
+                ax.invert_yaxis()
+            count_column += 1
+            if count_column > nr_per_row - 1:
+                count_column = 0
+                count_row += 1
+        plt.show()
+
+
+def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps: List[int]):
+    rnd = MPRenderer(plot_limits=plot_limit)
+    scenario.draw(
+        rnd, draw_params={'time_begin': time_steps[0],
+                          "trajectory": {
+                              "draw_trajectory": False},
+                          "dynamic_obstacle": {
+                              "draw_icon": True,
+                          }}
+    )
+    rnd.render()
+    for obs in scenario.obstacles:
+        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:],
+                        color=TUMcolor.TUMblue, linewidth=5)
+        for ts in time_steps[1:]:
+            draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
+    plt.show()
