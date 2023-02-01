@@ -96,5 +96,5 @@ class TypeProbability(str, Enum):
 
 class TypePotential(str, Enum):
     PF = "potential functions as superposition of scoring functions"
-    SF = "safety potential"
+    SP = "safety potential"
 
