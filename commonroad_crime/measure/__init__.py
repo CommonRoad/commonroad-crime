@@ -11,6 +11,9 @@ from .time.ttk import *
 from .time.ttz import *
 from .time.wttc import *
 from .distance.hw import *
+from .distance.dce import *
+from .distance.psd import *
+from .distance.msd import *
 from .acceleration.a_lat_req import *
 from .acceleration.a_long_req import *
 from .acceleration.dst import *

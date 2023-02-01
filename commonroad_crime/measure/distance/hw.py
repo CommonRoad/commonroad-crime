@@ -13,7 +13,7 @@ import math
 import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeDistance
+from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
 from commonroad_crime.measure.time.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.solver as utils_sol
@@ -30,6 +30,7 @@ class HW(THW):
     This is taken as a inherited class from time headway
     """
     measure_name = TypeDistance.HW
+    monotone = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         super(HW, self).__init__(config)
