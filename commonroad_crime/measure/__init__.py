@@ -30,7 +30,10 @@ from .index.soi import *
 from .jerk.lat_j import *
 from .jerk.long_j import *
 from .potential.pf import *
+from .potential.sp import *
 from .probability.p_mc import *
+from .probability.p_smh import *
+from .probability.p_srs import *
 from .velocity_scale.delta_v import *
 
 
