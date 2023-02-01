@@ -21,6 +21,12 @@ from .acceleration.a_req import *
 from .index.btn import *
 from .index.stn import *
 from .index.tci import *
+from .index.aci import *
+from .index.ci import *
+from .index.cpi import *
+from .index.pri import *
+from .index.rss import *
+from .index.soi import *
 from .jerk.lat_j import *
 from .jerk.long_j import *
 from .potential.pf import *

@@ -17,15 +17,15 @@ import commonroad_crime.utility.logger as utils_log
 logger = logging.getLogger(__name__)
 
 
-class CI(CriMeBase):
+class ACI(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
-    measure_name = TypeIndex.CI
+    measure_name = TypeIndex.ACI
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):
-        super(CI, self).__init__(config)
+        super(ACI, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, "*\t\t coming soon")
