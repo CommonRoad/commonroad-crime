@@ -10,7 +10,7 @@ try:
 except ImportError:
     module_failed = True
 else:
-    from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
+    from commonroad_crime.measure.reachable_set.drivable_area import DA
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger

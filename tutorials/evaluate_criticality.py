@@ -1,8 +1,8 @@
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, BTN, PF, HW,
                                       ALongReq, ALatReq, STN, P_MC, LongJ, LatJ, DeltaV)
-from commonroad_crime.measure.time_scale.wttr import WTTR
-from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
+from commonroad_crime.measure.time.wttr import WTTR
+from commonroad_crime.measure.reachable_set.drivable_area import DA
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 

@@ -21,7 +21,7 @@ import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
 
-from commonroad_crime.measure.distance_scale.hw import HW
+from commonroad_crime.measure.distance.hw import HW
 
 logger = logging.getLogger(__name__)
 

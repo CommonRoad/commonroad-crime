@@ -6,7 +6,7 @@ from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.visualization as utils_vis
 import matplotlib.pyplot as plt
 
-from commonroad_crime.measure.time_scale.ttc import TTC
+from commonroad_crime.measure.time.ttc import TTC
 
 
 class TIT(CriMeBase):

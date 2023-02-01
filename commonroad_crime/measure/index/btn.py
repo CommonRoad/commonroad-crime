@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndex, TypeMonotone
-from commonroad_crime.measure.acceleration_scale.a_long_req import ALongReq
+from commonroad_crime.measure.acceleration.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis

@@ -14,7 +14,7 @@ import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeDistance
-from commonroad_crime.measure.time_scale.thw import THW
+from commonroad_crime.measure.time.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.solver as utils_sol
 from commonroad_crime.utility.visualization import TUMcolor

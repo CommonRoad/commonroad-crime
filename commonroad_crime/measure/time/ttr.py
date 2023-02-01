@@ -9,10 +9,10 @@ __status__ = "Pre-alpha"
 import logging
 from typing import Union
 
-from commonroad_crime.measure.time_scale.ttb import TTB
-from commonroad_crime.measure.time_scale.ttk import TTK
-from commonroad_crime.measure.time_scale.tts import TTS
-from commonroad_crime.measure.time_scale.ttm import TTM
+from commonroad_crime.measure.time.ttb import TTB
+from commonroad_crime.measure.time.ttk import TTK
+from commonroad_crime.measure.time.tts import TTS
+from commonroad_crime.measure.time.ttm import TTM
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime
 from commonroad_crime.utility.simulation import Maneuver

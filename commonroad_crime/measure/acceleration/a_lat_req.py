@@ -12,7 +12,7 @@ import logging
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeAcceleration, TypeMonotone
-from commonroad_crime.measure.time_scale.ttc import TTC
+from commonroad_crime.measure.time.ttc import TTC
 
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol

@@ -15,7 +15,7 @@ from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, SimulationLatMonteCarlo, Maneuver,
                                                  SimulationRandoMonteCarlo)
-from commonroad_crime.measure.time_scale.ttc_star import TTCStar
+from commonroad_crime.measure.time.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeProbability, TypeMonotone
 import commonroad_crime.utility.visualization as utils_vis

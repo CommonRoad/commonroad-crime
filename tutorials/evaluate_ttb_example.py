@@ -2,9 +2,9 @@
 Exemplary evaluation of TTB using set-based prediction
 """
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure.time_scale.wttr import WTTR
+from commonroad_crime.measure.time.wttr import WTTR
 from commonroad_crime.measure import TTB, TTR, WTTC, TTCStar
-from commonroad_crime.measure.reachable_set_scale.drivable_area import DA
+from commonroad_crime.measure.reachable_set.drivable_area import DA
 
 
 def main():

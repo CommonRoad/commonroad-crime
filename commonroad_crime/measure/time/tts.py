@@ -11,7 +11,7 @@ import logging
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeTime
-from commonroad_crime.measure.time_scale.ttm import TTM
+from commonroad_crime.measure.time.ttm import TTM
 from commonroad_crime.utility.simulation import Maneuver
 import commonroad_crime.utility.logger as utils_log
 

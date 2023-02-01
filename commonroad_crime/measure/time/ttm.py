@@ -13,7 +13,7 @@ import logging
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
-from commonroad_crime.measure.time_scale.ttc_star import TTCStar
+from commonroad_crime.measure.time.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.visualization as utils_vis

@@ -9,7 +9,7 @@ __status__ = "Pre-alpha"
 import math
 import logging
 
-from commonroad_crime.measure.jerk_scale.lat_j import LatJ
+from commonroad_crime.measure.jerk.lat_j import LatJ
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeJerk
 import commonroad_crime.utility.general as utils_gen
