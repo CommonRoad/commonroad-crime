@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeIndexScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeIndex, TypeMonotone
 from commonroad_crime.measure.acceleration_scale.a_long_req import ALongReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -28,7 +28,7 @@ class BTN(CriMeBase):
     -- from Åsljung, Daniel, Jonas Nilsson, and Jonas Fredriksson. "Using extreme value theory for vehicle level safety
     validation and implications for autonomous vehicles." IEEE Transactions on Intelligent Vehicles 2.4 (2017): 288-297.
     """
-    measure_name = TypeIndexScale.BTN
+    measure_name = TypeIndex.BTN
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):

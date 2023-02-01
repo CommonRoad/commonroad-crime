@@ -11,7 +11,7 @@ import logging
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.type import TypeAccelerationScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeAcceleration, TypeMonotone
 from commonroad_crime.measure.distance_scale.hw import HW
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol
@@ -28,7 +28,7 @@ class ALongReq(CriMeBase):
     - from Sec.5.3.5 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
-    measure_name = TypeAccelerationScale.ALongReq
+    measure_name = TypeAcceleration.ALongReq
     monotone = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):

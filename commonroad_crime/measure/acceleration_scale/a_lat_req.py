@@ -11,7 +11,7 @@ import logging
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.type import TypeAccelerationScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeAcceleration, TypeMonotone
 from commonroad_crime.measure.time_scale.ttc import TTC
 
 import commonroad_crime.utility.general as utils_gen
@@ -28,7 +28,7 @@ class ALatReq(CriMeBase):
     - from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
-    measure_name = TypeAccelerationScale.ALatReq
+    measure_name = TypeAcceleration.ALatReq
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):

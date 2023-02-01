@@ -7,13 +7,13 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 from commonroad_crime.measure.time_scale.ttm import TTM
 from commonroad_crime.utility.simulation import Maneuver
 
 
 class TTB(TTM):
-    measure_name = TypeTimeScale.TTB
+    measure_name = TypeTime.TTB
     
     def __init__(self, config: CriMeConfiguration):
         super(TTB, self).__init__(config, Maneuver.BRAKE)

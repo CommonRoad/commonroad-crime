@@ -13,7 +13,7 @@ import math
 import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeDistanceScale
+from commonroad_crime.data_structure.type import TypeDistance
 from commonroad_crime.measure.time_scale.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.solver as utils_sol
@@ -29,7 +29,7 @@ class HW(THW):
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
     This is taken as a inherited class from time headway
     """
-    measure_name = TypeDistanceScale.HW
+    measure_name = TypeDistance.HW
 
     def __init__(self, config: CriMeConfiguration):
         super(HW, self).__init__(config)

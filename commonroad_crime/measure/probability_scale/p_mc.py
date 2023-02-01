@@ -17,7 +17,7 @@ from commonroad_crime.utility.simulation import (SimulationLongMonteCarlo, Simul
                                                  SimulationRandoMonteCarlo)
 from commonroad_crime.measure.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeProbabilityScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeProbability, TypeMonotone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -34,7 +34,7 @@ class P_MC(CriMeBase):
     See Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE Proceedings of
     Intelligent Vehicles Symposium IEEE, 2005.
     """
-    measure_name = TypeProbabilityScale.P_MC
+    measure_name = TypeProbability.P_MC
     monotone = TypeMonotone.POS
 
     def __init__(self,

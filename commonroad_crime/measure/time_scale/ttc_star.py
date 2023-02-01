@@ -24,7 +24,7 @@ from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch impor
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class TTCStar(CriMeBase):
-    measure_name = TypeTimeScale.TTCStar
+    measure_name = TypeTime.TTCStar
 
     def __init__(self, config: CriMeConfiguration):
         super(TTCStar, self).__init__(config)

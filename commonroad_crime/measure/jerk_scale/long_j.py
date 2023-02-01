@@ -11,7 +11,7 @@ import logging
 
 from commonroad_crime.measure.jerk_scale.lat_j import LatJ
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeJerkScale
+from commonroad_crime.data_structure.type import TypeJerk
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
@@ -23,7 +23,7 @@ class LongJ(LatJ):
     """
     Jerk is the rate of change in acceleration, and thus quantifies over the abruptness of a maneuver.
     """
-    measure_name = TypeJerkScale.LongJ
+    measure_name = TypeJerk.LongJ
 
     def __init__(self, config: CriMeConfiguration):
         super(LongJ, self).__init__(config)

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeIndexScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeIndex, TypeMonotone
 from commonroad_crime.measure.acceleration_scale.a_lat_req import ALatReq
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -29,7 +29,7 @@ class STN(CriMeBase):
     -- from Hosseini, SeyedMehrdad, et al. "Adaptive forward collision warning algorithm for automotive applications."
     2016 American Control Conference (ACC). IEEE, 2016.
     """
-    measure_name = TypeIndexScale.STN
+    measure_name = TypeIndex.STN
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):

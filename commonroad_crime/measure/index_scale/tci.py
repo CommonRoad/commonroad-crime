@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeIndexScale
+from commonroad_crime.data_structure.type import TypeIndex
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.optimization as utils_opt
@@ -31,7 +31,7 @@ class TCI(CriMeBase):
     automated driving using model predictive trajectory optimization,” in 21st International Conference on Intelligent
     Transportation Systems (ITSC), pp. 60–65, IEEE, 2018.
     """
-    measure_name = TypeIndexScale.TCI
+    measure_name = TypeIndex.TCI
 
     def __init__(self, config: CriMeConfiguration):
         super(TCI, self).__init__(config)

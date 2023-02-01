@@ -15,7 +15,7 @@ import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.type import TypeAccelerationScale
+from commonroad_crime.data_structure.type import TypeAcceleration
 from commonroad_crime.measure.distance_scale.hw import HW
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
@@ -29,7 +29,7 @@ class DST(CriMeBase):
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
     the deceleration that has to be applied to a vehicle to maintain a certain safety time
     """
-    measure_name = TypeAccelerationScale.DST
+    measure_name = TypeAcceleration.DST
 
     def __init__(self, config: CriMeConfiguration):
         super(DST, self).__init__(config)

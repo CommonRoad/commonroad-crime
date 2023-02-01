@@ -22,7 +22,7 @@ except ImportWarning:
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.measure.time_scale.ttc_star import TTCStar
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class WTTR(CriMeBase):
-    measure_name = TypeTimeScale.WTTR
+    measure_name = TypeTime.WTTR
 
     def __init__(self,
                  config: CriMeConfiguration):

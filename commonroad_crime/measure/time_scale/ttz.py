@@ -18,7 +18,7 @@ from commonroad.scenario.lanelet import LaneletType
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
@@ -32,7 +32,7 @@ class TTZ(CriMeBase):
     """
     The distance to the zebra/crosswalk divided by the speed at any given moment in time.
     """
-    measure_name = TypeTimeScale.TTZ
+    measure_name = TypeTime.TTZ
 
     def __init__(self, config: CriMeConfiguration):
         super(TTZ, self).__init__(config)

@@ -12,7 +12,7 @@ import logging
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeVelocityScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypeVelocity, TypeMonotone
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 
@@ -26,7 +26,7 @@ class DeltaV(CriMeBase):
     Shelby, Steven G. "Delta-V as a measures of traffic conflict severity." 3rd International Conference on Road
     Safety and Simulati. September. 2011.
     """
-    measure_name = TypeVelocityScale.Delta_V
+    measure_name = TypeVelocity.Delta_V
     monotone = TypeMonotone.POS
 
     def __init__(self,

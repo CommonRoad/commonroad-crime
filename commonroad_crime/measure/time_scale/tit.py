@@ -2,7 +2,7 @@ import numpy as np
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.visualization as utils_vis
 import matplotlib.pyplot as plt
 
@@ -11,7 +11,7 @@ from commonroad_crime.measure.time_scale.ttc import TTC
 
 class TIT(CriMeBase):
 
-    measure_name = TypeTimeScale.TET
+    measure_name = TypeTime.TET
 
     def __init__(self, config: CriMeConfiguration):
         super(TIT, self).__init__(config)

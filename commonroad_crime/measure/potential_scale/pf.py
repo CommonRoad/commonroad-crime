@@ -16,7 +16,7 @@ from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypePotentialScale, TypeMonotone
+from commonroad_crime.data_structure.type import TypePotential, TypeMonotone
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
@@ -29,7 +29,7 @@ class PF(CriMeBase):
     """
     Jerk is the rate of change in acceleration, and thus quantifies over the abruptness of a maneuver.
     """
-    measure_name = TypePotentialScale.PF
+    measure_name = TypePotential.PF
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):

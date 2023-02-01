@@ -15,7 +15,7 @@ from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTimeScale
+from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
@@ -32,7 +32,7 @@ class TTC(CriMeBase):
 
     -- using (5.24) in "Collision Avoidance Theory with Application to Automotive Collision Mitigation"
     """
-    measure_name = TypeTimeScale.TTC
+    measure_name = TypeTime.TTC
 
     def __init__(self, config: CriMeConfiguration):
         super(TTC, self).__init__(config)
