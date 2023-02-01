@@ -5,7 +5,7 @@ Unit tests of the module acceleration-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import DST, ALongReq, ALatReq
+from commonroad_crime.measure import DST, ALongReq, ALatReq, AReq
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -42,3 +42,8 @@ class TestAccelerationDomain(unittest.TestCase):
         a_lat_req_object = ALatReq(self.config)
         a_lat_req_1 = a_lat_req_object.compute(202, 0)
         self.assertEqual(a_lat_req_1, 0.09)
+
+    def test_a_req(self):
+        a_req_object = AReq(self.config)
+        a_req_1 = a_req_object.compute(202, 0)
+        self.assertEqual(a_req_1, 0.81)

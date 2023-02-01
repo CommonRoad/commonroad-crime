@@ -14,6 +14,7 @@ from .distance.hw import *
 from .acceleration.a_lat_req import *
 from .acceleration.a_long_req import *
 from .acceleration.dst import *
+from .acceleration.a_req import *
 from .index.btn import *
 from .index.stn import *
 from .index.tci import *
