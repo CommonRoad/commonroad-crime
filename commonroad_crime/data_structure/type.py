@@ -52,7 +52,7 @@ class TypeDistance(str, Enum):
     HW = "headway"
     DCE = "distance of closest encounter"
     MSD = "Acceptable minimum stopping distance"
-    PSE = "proportion of stopping distance"
+    PSD = "proportion of stopping distance"
 
 
 class TypeVelocity(str, Enum):
