@@ -11,9 +11,9 @@ from .time.ttk import *
 from .time.ttz import *
 from .time.wttc import *
 from .distance.hw import *
-from .acceleration_scale.a_lat_req import *
-from .acceleration_scale.a_long_req import *
-from .acceleration_scale.dst import *
+from .acceleration.a_lat_req import *
+from .acceleration.a_long_req import *
+from .acceleration.dst import *
 from .index.btn import *
 from .index.stn import *
 from .index.tci import *
