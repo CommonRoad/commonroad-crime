@@ -75,16 +75,21 @@ class TTCStar(CriMeBase):
                                                  'edgecolor': TUMcolor.TUMdarkgray ,'draw_mesh': False})
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize,
-                             plot_limit=None,)
-        # self.draw_collision_checker(self.rnd)
+        self._initialize_vis(figsize=figsize)
+        self.draw_collision_checker(self.rnd)
+        self.rnd.render()
         if self.value not in [math.inf, -math.inf]:
             tstc = int(utils_gen.int_round(self.value / self.dt, 0))
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
+            if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
+                sl = [self.ego_vehicle.initial_state] + self.ego_vehicle.prediction.trajectory.state_list
+            else:
+                sl = self.ego_vehicle.prediction.trajectory.state_list
+            utils_vis.draw_state_list(self.rnd, sl, self.time_step, TUMcolor.TUMblue)
         else:
             tstc = self.value
-        plt.title(f"time step: {tstc}")
+        plt.title(f"{self.measure_name} at time step {self.time_step} is {self.value}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, tstc)
         else:

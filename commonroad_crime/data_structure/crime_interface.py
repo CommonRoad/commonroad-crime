@@ -73,9 +73,13 @@ class CriMeInterface:
                                              self.criticality_dict[time_step].items()),
                                          verbose)
 
-    def visualize(self):
+    def visualize(self, time_step: int = None):
         for m_evaluator in self.measure_evaluators:
-            m_evaluator.visualize()
+            if time_step is None:
+                m_evaluator.visualize()
+            else:
+                if m_evaluator.time_step == time_step:
+                    m_evaluator.visualize()
 
 
 

@@ -50,7 +50,7 @@ def main():
     #                                            time_steps=[20, 34, 99])
     # # ==== visualize the result
     # config.debug.save_plots = False
-    #utils_vis.plot_criticality_curve(crime_interface)
+    utils_vis.plot_criticality_curve(crime_interface)
 
 
 if __name__ == "__main__":

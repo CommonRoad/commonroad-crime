@@ -20,13 +20,13 @@ def main():
 
     # ********** TTC **********
     # ==== select the criticality metric
-    # ttc_interface = TTCStar(config)
-    # # ==== evaluate at time step 0
-    # ttc_interface.compute(0)
-    #
-    # # ==== visualize the result
-    # #config.debug.save_plots = False
-    # ttc_interface.visualize()
+    ttc_interface = TTR(config)
+    # ==== evaluate at time step 0
+    ttc_interface.compute(0)
+
+    # ==== visualize the result
+    config.debug.save_plots = False
+    ttc_interface.visualize()
 
     # ********** WTTC **********
     # ==== select the criticality metric
@@ -40,10 +40,10 @@ def main():
 
     # ********** TTR **********
     # # ==== select the criticality metric
-    ttr_interface = WTTR(config)
-    # ==== evaluate at time step 0
-    ttr_interface.compute(time_step=0, vehicle_id=202, verbose=True)
-    ttr_interface.visualize()
+    # ttr_interface = WTTR(config)
+    # # ==== evaluate at time step 0
+    # ttr_interface.compute(time_step=0, vehicle_id=202, verbose=True)
+    # ttr_interface.visualize()
     #
     # # ==== visualize the result
     # #config.debug.save_plots = False
