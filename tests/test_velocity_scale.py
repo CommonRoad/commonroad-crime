@@ -5,7 +5,7 @@ Unit tests of the module velocity-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure.velocity_scale.delta_v import DeltaV
+from commonroad_crime.measure.velocity.delta_v import DeltaV
 import commonroad_crime.utility.logger as util_logger
 
 

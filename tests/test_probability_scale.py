@@ -5,7 +5,7 @@ Unit tests of the module probability-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure.probability_scale.p_mc import P_MC
+from commonroad_crime.measure.probability.p_mc import P_MC
 import commonroad_crime.utility.logger as util_logger
 
 

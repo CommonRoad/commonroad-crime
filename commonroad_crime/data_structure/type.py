@@ -25,75 +25,76 @@ class TypeNone(str, Enum):
     NONE = "not defined"
 
 
-class TypeTimeScale(str, Enum):
-    TTC = "time-to-collision"
-    TTCStar = "time-to-collision with predicted trajectories"
-    TTR = "time-to-react"
-    TTB = "time-to-brake"
-    TTM = "time-to-maneuver"
-    TTK = "time-to-kickdown"
-    TTS = "time-to-steer"
+class TypeTime(str, Enum):
     THW = "time headway"
-    WTTC = "worst-time-to-collision"
-    WTTR = "worst-time-to-react"
-    # not implemented yet
     ET = "encroachment time"
     PET = "post encroachment time"
+    AGS = "accepted gap size"
+    TTC = "time-to-collision"
+    TTCStar = "time-to-collision with given prediction"
     PTTC = "potential time to collision"
-    PrET = "predictive encroachment time"
-    TET = "time exposed time-to-collision"
-    TIT = "time integrated time-to-collision"
+    WTTC = "worst-time-to-collision"
+    TET = "time-exposed time-to-collision"
+    TIT = "time-integrated time-to-collision"
     TTCE = "time to closest encounter"
     TTZ = "time-to-zabra"
+    TTB = "time-to-brake"
+    TTK = "time-to-kickdown"
+    TTS = "time-to-steer"
+    TTM = "time-to-maneuver"
+    TTR = "time-to-react"
+    WTTR = "worst-time-to-react"
+    TV = "time-to-violation"
+    TC = "time-to-Compliance"
 
 
-class TypeDistanceScale(str, Enum):
+class TypeDistance(str, Enum):
     HW = "headway"
-    AGS = "accepted gap size"
     DCE = "distance of closest encounter"
-    PSE = "proportion of stopping distance"
+    MSD = "Acceptable minimum stopping distance"
+    PSD = "proportion of stopping distance"
 
 
-class TypeVelocityScale(str, Enum):
-    CS = "conflict severity"
+class TypeVelocity(str, Enum):
     Delta_V = "Delta-v"
+    CS = "conflict severity"
 
 
-class TypeAccelerationScale(str, Enum):
+class TypeAcceleration(str, Enum):
     DST = "deceleration to safety time"
     ALongReq = "required longitudinal acceleration"
     ALatReq = "required lateral acceleration"
+    AReq = "required acceleration"
 
 
-class TypeJerkScale(str, Enum):
+class TypeJerk(str, Enum):
     LatJ = "lateral jerk"
     LongJ = "longitudinal jerk"
 
 
-class TypeIndexScale(str, Enum):
-    ACI = "aggregated crash index"
-    AM = "accident metric"
-    BTN = "brake threat number"
+class TypeIndex(str, Enum):
     CI = "conflict index"
     CPI = "crash potential index"
-    PRI = "pedestrian risk index"
-    RSS_DS = "responsibility sensitive safety dangerous situation"
-    SOI = "space occupancy index"
-    STN = "steer threat number"
+    ACI = "aggregated crash index"
     TCI = "trajectory criticality index"
+    PRI = "pedestrian risk index"
+    SOI = "space occupancy index"
+    BTN = "brake threat number"
+    STN = "steer threat number"
+    RSS = "responsibility sensitive safety dangerous situation"
 
 
-class TypeProbabilityScale(str, Enum):
+class TypeReachableSet(str, Enum):
+    DA = "drivable area"
+
+
+class TypeProbability(str, Enum):
     P_MC = "collision probability via Monte Carlo"
     P_SMH = "collision probability via scoring multiple hypotheses"
     P_SRS = "collision probability via stochastic reachable sets"
 
 
-class TypePotentialScale(str, Enum):
+class TypePotential(str, Enum):
     PF = "potential functions as superposition of scoring functions"
-    SF = "safety potential"
+    SP = "safety potential"
 
-
-class TypeReachableSetScale(str, Enum):
-    DA = "drivable area"
-    ISS = "invariable safe set"

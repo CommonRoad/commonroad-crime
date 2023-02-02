@@ -5,7 +5,7 @@ Unit tests of the module potential-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure.potential_scale.pf import PF
+from commonroad_crime.measure.potential.pf import PF
 import commonroad_crime.utility.logger as util_logger
 
 
