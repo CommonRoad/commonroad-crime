@@ -16,9 +16,10 @@ class CriMeInterface:
     def __init__(self, config: CriMeConfiguration):
         self.config = config
         self.criticality_dict = dict()
-        self.time_start = None
-        self.time_end = None
+        self.time_start = 0
+        self.time_end = 0
         self.measures = []
+        self.measure_evaluators = []
 
     def evaluate_scene(self, measures: List[Type[CriMeBase]],
                        time_step: int = 0,
@@ -37,9 +38,11 @@ class CriMeInterface:
                 self.measures.append(measure)
             m_evaluator = measure(self.config)
             if measure.measure_name.value not in self.criticality_dict[time_step]:
-                self.criticality_dict[time_step][measure.measure_name.value] = m_evaluator.compute_criticality(time_step,
-                                                                                                              vehicle_id,
-                                                                                                              verbose)
+                self.criticality_dict[time_step][measure.measure_name.value] = \
+                    m_evaluator.compute_criticality(time_step,
+                                                    vehicle_id,
+                                                    verbose)
+                self.measure_evaluators.append(m_evaluator)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(logger, "*********************************", verbose)
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
@@ -69,4 +72,10 @@ class CriMeInterface:
                                              '{} = {}'.format(m, value) for m, value in
                                              self.criticality_dict[time_step].items()),
                                          verbose)
+
+    def visualize(self):
+        for m_evaluator in self.measure_evaluators:
+            m_evaluator.visualize()
+
+
 

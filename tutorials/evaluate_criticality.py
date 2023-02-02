@@ -27,10 +27,8 @@ def main():
     # WTTR_obj.visualize()
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
     # ==== Exepriment A: evaluation on scenes
-    crime_interface.evaluate_scene([HW, THW, TTC, WTTC, TTCStar, TTS,
-                                    TTK, TTB, TTR, WTTR, ALongReq, ALatReq,
-                                    LongJ, LatJ, DeltaV, BTN, STN, DA,
-                                    P_MC, PF],)
+    crime_interface.evaluate_scene([HW],)
+    crime_interface.visualize()
     # ==== Experiment B: evaluation on scenarios
     # crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,
     #                                    ALatReq, STN, P_MC, PF], 0, 20)
