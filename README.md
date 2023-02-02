@@ -9,7 +9,12 @@ trajectory.
 ![stl-robustness](https://img.shields.io/badge/CommonRoad-CriMe-blue?style=plastic&logo=Coding-Ninjas)
 ![test-passed](https://img.shields.io/badge/tests-passed-red?style=plastic&logo=Python)
 ## Installation Guide
-We recommend using [Anaconda](https://www.anaconda.com/) to manage your environment so that even if you mess something up, you can always have a safe and clean restart. A guide for managing python environments with Anaconda can be found [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+
+`commonroad-crime` can be installed with:
+
+	pip install commonroad-crime
+
+For adding new measures, we recommend using [Anaconda](https://www.anaconda.com/) to manage your environment so that even if you mess something up, you can always have a safe and clean restart. A guide for managing python environments with Anaconda can be found [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 After installing Anaconda, create a new environment with:
 ``` sh
