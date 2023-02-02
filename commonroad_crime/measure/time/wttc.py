@@ -12,7 +12,7 @@ import logging
 
 from commonroad.scenario.obstacle import StaticObstacle
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.type import TypeTime
+from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
@@ -30,6 +30,7 @@ class WTTC(CriMeBase):
     for situation identification." 2016 IEEE Intelligent Vehicles Symposium (IV). IEEE, 2016.
     """
     measure_name = TypeTime.WTTC
+    monotone = TypeMonotone.NEG
     
     def __init__(self, config: CriMeConfiguration):
         super(WTTC, self).__init__(config)

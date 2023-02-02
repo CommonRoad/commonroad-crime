@@ -10,6 +10,13 @@ from .time.thw import *
 from .time.ttk import *
 from .time.ttz import *
 from .time.wttc import *
+from .time.ags import *
+from .time.et import *
+from .time.pttc import *
+from .time.pet import *
+from .time.tc import *
+from .time.tv import *
+from .time.ttce import *
 from .distance.hw import *
 from .distance.dce import *
 from .distance.psd import *

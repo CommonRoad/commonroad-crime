@@ -12,7 +12,7 @@ import math
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTime
+from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -26,6 +26,7 @@ class THW(CriMeBase):
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
     """
     measure_name = TypeTime.THW
+    monotone = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)

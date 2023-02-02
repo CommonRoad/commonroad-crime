@@ -13,9 +13,8 @@ from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction, Scenario
+from commonroad.scenario.scenario import State, TrajectoryPrediction
 from commonroad.scenario.trajectory import Trajectory
-from commonroad.geometry.shape import ShapeGroup
 
 import commonroad_dc.boundary.boundary as boundary
 import commonroad_dc.pycrcc as pycrcc
@@ -24,7 +23,7 @@ from commonroad_dc.collision.collision_detection.pycrcc_collision_dispatch impor
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeTime
+from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
@@ -35,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 class TTCStar(CriMeBase):
     measure_name = TypeTime.TTCStar
+    monotone = TypeMonotone.NEG
 
     def __init__(self, config: CriMeConfiguration):
         super(TTCStar, self).__init__(config)
