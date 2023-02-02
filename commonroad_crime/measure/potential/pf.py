@@ -176,7 +176,7 @@ class PF(CriMeBase):
                         K = 0.
                     else:
                         K = Point(s_veh_scaled, d_veh).distance(obs_with_wedge)
-                u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / K
+                u_car += config_pot.A_car * np.exp(- config_pot.alpha * K) / (K + 10e-6)
         return u_car
 
     def _calc_velocity_potential(self, veh_state: State, s_veh: float):

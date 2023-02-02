@@ -9,7 +9,7 @@ from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 def main():
     scenario_id = 'ZAM_Urban-7_1_S-2'
-    #scenario_id = "DEU_Gar-1_1_T-1"
+    scenario_id = "DEU_Gar-1_1_T-1"
     # scenario_id = "OSC_CutIn-1_2_T-1"
 
     # ==== build configuration
@@ -27,7 +27,7 @@ def main():
     # WTTR_obj.visualize()
     # crime_interface.evaluate_scene([ALatReq, ALongReq, LongJ, LatJ, BTN, STN])
     # ==== Exepriment A: evaluation on scenes
-    crime_interface.evaluate_scene([HW],)
+    crime_interface.evaluate_scene([HW, THW,],)
     crime_interface.visualize()
     # ==== Experiment B: evaluation on scenarios
     # crime_interface.evaluate_scenario([TTC, DA, ALongReq, BTN,

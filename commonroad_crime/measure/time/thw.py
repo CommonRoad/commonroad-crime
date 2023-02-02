@@ -72,7 +72,9 @@ class THW(CriMeBase):
         self.rnd.render()
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
                                   color=TUMcolor.TUMblue, linewidth=5)
-        if self.value > 0:
+        if self.value > 0 and self.value is not math.inf:
+            print(self.value)
+
             tshw = int(utils_gen.int_round(self.value / self.dt, 0))
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tshw + self.time_step))
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tshw + self.time_step)

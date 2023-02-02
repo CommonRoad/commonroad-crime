@@ -76,7 +76,7 @@ class TTCStar(CriMeBase):
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize,
-                             plot_limit=[30, 80, -3.5, 7],)# [65, 105, -4, 7.5],
+                             plot_limit=None,)
         # self.draw_collision_checker(self.rnd)
         if self.value not in [math.inf, -math.inf]:
             tstc = int(utils_gen.int_round(self.value / self.dt, 0))

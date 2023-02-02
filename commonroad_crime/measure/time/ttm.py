@@ -55,10 +55,7 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        if self.selected_state_list:
-            self._initialize_vis(figsize=figsize)
-        else:
-            self._initialize_vis(figsize=figsize, plot_limit=None)
+        self._initialize_vis(figsize=figsize, plot_limit=None)
         self.ttc_object.draw_collision_checker(self.rnd)
         for veh in self.sce.obstacles:
             if veh is not self.ego_vehicle:
@@ -85,7 +82,7 @@ class TTM(CriMeBase):
                                       color=TUMcolor.TUMgreen, linewidth=5)
         else:
             tstm = self.value
-
+        
         plt.title(f"{self.measure_name} at time step {tstm - self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.measure_name, self.configuration.general.path_output,

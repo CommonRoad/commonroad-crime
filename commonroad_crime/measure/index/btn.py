@@ -47,15 +47,5 @@ class BTN(CriMeBase):
         return self.value
 
     def visualize(self):
-        self._initialize_vis(plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                              self.ego_vehicle.prediction.
-                                                                              trajectory.state_list,
-                                                                              margin=10))
-        self.other_vehicle.draw(self.rnd, {'time_begin': self.time_step, **utils_vis.OTHER_VEHICLE_DRAW_PARAMS})
-        self.rnd.render()
-        plt.title(f"{self.measure_name} at time step {self.time_step}")
-        if self.configuration.debug.save_plots:
-            utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
-        else:
-            plt.show()
+        pass
 
