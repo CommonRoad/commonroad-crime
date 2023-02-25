@@ -148,7 +148,8 @@ class PF(CriMeBase):
                 )[0]
                 if len(obs_clcs_shape[0]) == 0:
                     utils_log.print_and_log_warning(
-                        logger, "the conversion of the polygon to the curvilinear coordinates failed"
+                        logger, f"At Time step {self.time_step}: the conversion of the polygon to the "
+                                f"curvilinear coordinates failed, u_car is set to 0"
                     )
                     u_car += 0
                     continue
@@ -214,6 +215,12 @@ class PF(CriMeBase):
                 obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
                     [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
                 )[0]
+                if len(obs_clcs_shape[0]) == 0:
+                    utils_log.print_and_log_warning(
+                        logger, f"At Time step {self.time_step}: the conversion of the polygon to the "
+                                f"curvilinear coordinates failed, u_car is set to 0"
+                    )
+                    continue
                 obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
                 if isinstance(obs, StaticObstacle):
                     plt.plot(*obs_clcs_poly.exterior.xy)
