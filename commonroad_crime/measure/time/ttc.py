@@ -51,33 +51,39 @@ class TTC(CriMeBase):
         Using https://www.diva-portal.org/smash/get/diva2:617438/FULLTEXT01.pdf 
         "Collision Avoidance Theory with Application to Automotive Collision Mitigation" formula 5.26
         """
-        # orientation of the ego vehicle and the other vehicle
-        ego_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.ego_vehicle.state_at_time(time_step).position
-        )[1]
-        other_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.other_vehicle.state_at_time(time_step).position
-        )[1]
 
         # distance along the lanelet
         delta_d = self._hw_object.compute(vehicle_id, time_step)
 
-        # actual velocity and acceleration of both vehicles along the lanelet
-        v_ego = np.sign(state.velocity) * math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(ego_orientation)
-        # include the directions
-        a_ego = np.sign(state.acceleration) * math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(ego_orientation)
-        if isinstance(self.other_vehicle, DynamicObstacle):
-            v_other = np.sign(state_other.velocity) * math.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
-            a_other = np.sign(state_other.acceleration) * math.sqrt(state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
+        if delta_d == math.inf:
+            self.value = math.inf
         else:
-            v_other = 0
-            a_other = 0
-        delta_v = v_other - v_ego
-        delta_a = a_other - a_ego
+            # orientation of the ego vehicle and the other vehicle
+            ego_orientation = utils_sol.compute_lanelet_width_orientation(
+                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                self.ego_vehicle.state_at_time(time_step).position
+            )[1]
+            other_orientation = utils_sol.compute_lanelet_width_orientation(
+                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                self.other_vehicle.state_at_time(time_step).position
+            )[1]
+            # actual velocity and acceleration of both vehicles along the lanelet
+            v_ego = np.sign(state.velocity) * math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(
+                ego_orientation)
+            # include the directions
+            a_ego = np.sign(state.acceleration) * math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
+                ego_orientation)
+            if isinstance(self.other_vehicle, DynamicObstacle):
+                v_other = np.sign(state_other.velocity) * math.sqrt(
+                    state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
+                a_other = np.sign(state_other.acceleration) * math.sqrt(
+                    state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
+            else:
+                v_other = 0
+                a_other = 0
+            delta_v = v_other - v_ego
+            delta_a = a_other - a_ego
 
-        if delta_d != math.inf:
             if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
             elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a < 0:
@@ -91,8 +97,6 @@ class TTC(CriMeBase):
                     self.value = utils_gen.int_round(first + second, 2)
             else:  # (delta_v >= 0 and delta_a >= 0) or (delta_v ** 2 - 2 * delta_d * delta_a < 0)
                 self.value = math.inf
-        else:
-            self.value = math.inf
 
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
         return self.value
