@@ -7,6 +7,8 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import logging
+
+import shapely.geometry
 from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,8 +43,12 @@ class PF(CriMeBase):
         self.time_step = time_step
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        self._s_ego, self._d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
-                                                                           evaluated_state.position[1])
+        try:
+            self._s_ego, self._d_ego = self.clcs.convert_to_curvilinear_coords(evaluated_state.position[0],
+                                                                               evaluated_state.position[1])
+        except ValueError as err:
+            utils_log.print_and_log_error(logger, err)
+            return None
         self.value = self.calc_total_potential(evaluated_state, self._s_ego, self._d_ego)
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
         return self.value
@@ -140,6 +146,12 @@ class PF(CriMeBase):
                 obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
                     [obs.occupancy_at_time(self.time_step).shape.shapely_object.exterior.coords], [0], 1, 4
                 )[0]
+                if len(obs_clcs_shape[0]) == 0:
+                    utils_log.print_and_log_warning(
+                        logger, "the conversion of the polygon to the curvilinear coordinates failed"
+                    )
+                    u_car += 0
+                    continue
                 obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
                 obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
                 if isinstance(obs, StaticObstacle) or (isinstance(obs, DynamicObstacle)
