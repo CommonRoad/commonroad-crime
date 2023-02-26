@@ -1,6 +1,9 @@
 .idea/
-
 .git/
+
+build/*
+dist/*
+
 
 **/__pycache__
 
