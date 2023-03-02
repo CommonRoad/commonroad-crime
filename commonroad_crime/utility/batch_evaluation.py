@@ -60,11 +60,11 @@ def run_sequential(scenario_path: str,
     """
     scenario_loader, result_dict = initialize_process(scenario_path, flag_multi_processing=False)
 
-    for scenario_id in scenario_loader.scenario_ids:
+    for scenario_id, file_path in scenario_loader.scenario_ids:
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
         sce_conf = ConfigurationBuilder.build_configuration(scenario_id, path_root=config_root)
-        sce_conf.general.path_scenarios = scenario_loader.scenario_folder
+        sce_conf.general.path_scenarios = file_path
         sce_conf.update()
         for measure in measures:
             sce_res[measure.measure_name] = dict()
@@ -121,10 +121,11 @@ class ScenarioLoader:
     def _obtain_scenarios_with_path(self) -> List:
         utils_log.print_and_log_info(logger, "Loading scenarios...")
         scenario_ids = list()
-        extension_length = len('.xml')
-        for path, directories, files in os.walk(self.scenario_folder):
-            for scenario in fnmatch.filter(files, "*.xml"):
-                scenario_ids.append(scenario[:-extension_length])
+        for root, dirs, files in os.walk(self.scenario_folder):
+            for file in files:
+                if file.endswith('.xml'):
+                    scenario_id = os.path.splitext(file)[0]
+                    scenario_ids.append((scenario_id, root + '/'))
         if len(scenario_ids) == 0:
             utils_log.print_and_log_warning(logger, f"No Scenario found in directory: {self.scenario_folder}")
         utils_log.print_and_log_info(logger, f"Number of scenarios: {len(scenario_ids)}")
