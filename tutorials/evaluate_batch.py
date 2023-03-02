@@ -6,8 +6,11 @@ from commonroad_crime.measure import TTC
 
 
 def main():
-    batch_path = "/home/yuanfei/commonroad/commonroad-criticality-measures/scenarios"
-    utils_batch.run_sequential(batch_path, [TTC])
+    scenario_path = "/home/yuanfei/commonroad/commonroad-criticality-measures/scenarios/"
+    config_root = "/home/yuanfei/commonroad/commonroad-criticality-measures/"
+    utils_batch.run_sequential(scenario_path=scenario_path,
+                               config_root=config_root,
+                               measures=[TTC])
 
 
 if __name__ == "__main__":
