@@ -50,18 +50,20 @@ def run_parallel(config: CriMeConfiguration):
     pass
 
 
-def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
+def run_sequential(scenario_path: str,
+                   measures: List[Type[CriMeBase]],
+                   config_root: str = None):
     """
     Sequential batch evaluation of measures, where the computation of criticality is carried out on a single thread.
     This is more user-friendly choice for test your metric on more scenarios since you can easily debug your code in
     your IDEs by creating breakpoints.
     """
-    scenario_loader, result_dict = initialize_process(batch_path, flag_multi_processing=False)
+    scenario_loader, result_dict = initialize_process(scenario_path, flag_multi_processing=False)
 
     for scenario_id in scenario_loader.scenario_ids:
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
-        sce_conf = ConfigurationBuilder.build_configuration(scenario_id)
+        sce_conf = ConfigurationBuilder.build_configuration(scenario_id, path_root=config_root)
         sce_conf.general.path_scenarios = scenario_loader.scenario_folder
         sce_conf.update()
         for measure in measures:
@@ -91,7 +93,7 @@ def run_sequential(batch_path: str, measures: List[Type[CriMeBase]]):
                         calc_time = math.nan
                     sce_res[measure.measure_name][obs.obstacle_id][ts] = [measure_value, calc_time]
         result_dict[scenario_id] = sce_res
-    write_result_to_csv(result_dict, batch_path)
+    write_result_to_csv(result_dict, scenario_path)
 
 
 def write_result_to_csv(result_dict: Dict, batch_path: str):
