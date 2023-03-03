@@ -93,8 +93,7 @@ def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState]
     for i in range(len(state_list)):
         state_list[i].acceleration = a_list[i]
         state_list[i].jerk = j_list[i]
-        if not isinstance(state_list[i], KSState):
-            check_elements_state(state_list[i], dt=dt)
+        check_elements_state(state_list[i], dt=dt)
 
 
 def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
@@ -107,7 +106,8 @@ def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
         state.slip_angle = 0
     if not hasattr(state, "yaw_rate"):
         state.yaw_rate = 0
-
+    if not hasattr(state, "orientation"):
+        state.orientation = math.atan2(state.velocity_y, state.velocity)
     if not hasattr(state, "velocity_y") and hasattr(state, "velocity"):
         state.velocity_y = state.velocity * math.sin(state.orientation)
         state.velocity = state.velocity * math.cos(state.orientation)
@@ -132,8 +132,9 @@ def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
         ref_orientation = math.atan2(state.velocity_y, state.velocity)
     else:
         ref_orientation = state.orientation
-    if not hasattr(state, "acceleration_y"):
-        state.acceleration_y = state.acceleration * math.sin(ref_orientation)
-        state.acceleration = state.acceleration * math.cos(ref_orientation)
+    if not hasattr(state, "acceleration_y") and hasattr(state, "acceleration"):
+        if state.acceleration is not None:
+            state.acceleration_y = state.acceleration * math.sin(ref_orientation)
+            state.acceleration = state.acceleration * math.cos(ref_orientation)
 
 

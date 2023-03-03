@@ -83,7 +83,7 @@ class TestTimeDomain(unittest.TestCase):
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
         ttb_object.visualize()
-        self.assertEqual(ttb, 2.)
+        self.assertEqual(ttb, 1.6)
         ttb2 = ttb_object.compute()
         self.assertEqual(ttb, ttb2)
 
@@ -106,7 +106,7 @@ class TestTimeDomain(unittest.TestCase):
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
         ttr_object.visualize()
-        self.assertEqual(ttr, 2.0)
+        self.assertEqual(ttr, 1.6)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
         ttr_2 = ttr_object.compute(10)

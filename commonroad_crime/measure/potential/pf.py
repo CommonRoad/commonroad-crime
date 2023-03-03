@@ -13,7 +13,7 @@ from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt
 
-from commonroad.scenario.scenario import State
+from commonroad.scenario.state import State
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 
 from commonroad_crime.data_structure.base import CriMeBase

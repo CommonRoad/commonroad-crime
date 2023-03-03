@@ -13,7 +13,8 @@ from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction
+from commonroad.scenario.state import CustomState
+from commonroad.scenario.scenario import TrajectoryPrediction
 from commonroad.scenario.trajectory import Trajectory
 
 import commonroad_dc.boundary.boundary as boundary
@@ -50,7 +51,7 @@ class TTCStar(CriMeBase):
         self.sce.remove_obstacle(road_boundary_obstacle)
         self.sce.add_objects(self.ego_vehicle)
 
-    def detect_collision(self, state_list: List[State]) -> bool:
+    def detect_collision(self, state_list: List[CustomState]) -> bool:
         """
         Returns whether the state list of the ego vehicle is collision-free.
 
@@ -70,9 +71,10 @@ class TTCStar(CriMeBase):
         """
         Plots the collision checker.
         """
-        self.collision_checker.draw(rnd,
-                                    draw_params={'facecolor': TUMcolor.TUMgray,
-                                                 'edgecolor': TUMcolor.TUMdarkgray ,'draw_mesh': False})
+        rnd.draw_params.shape.facecolor = TUMcolor.TUMgray
+        rnd.draw_params.shape.edgecolor = TUMcolor.TUMdarkgray
+        rnd.draw_params.shape.draw_mesh = False
+        self.collision_checker.draw(rnd)
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize)
