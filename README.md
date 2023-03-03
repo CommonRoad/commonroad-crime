@@ -1,18 +1,18 @@
 # CommonRoad-CriMe
+
+![commonroad-crime](https://img.shields.io/badge/CommonRoad-CriMe-blue?style=plastic&logo=Coding-Ninjas)
+![test-passed](https://img.shields.io/badge/tests-passed-red?style=plastic&logo=Python)<br>
+[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
+[![PyPI download month](https://img.shields.io/pypi/dm/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/) 
+[![PyPI download week](https://img.shields.io/pypi/dw/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/)<br>
+[![Linux](https://svgshare.com/i/Zhy.svg?style=plastic)](https://svgshare.com/i/Zhy.svg)
+[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
 ![image info](./docs/figures/CriMe-banner.png)
 Toolbox to compute **Cri**ticality **Me**asures 
 (e.g. time-to-collision, time-to-react,...). Such measures
 can be used to trigger warnings and emergency maneuvers 
 in driver assistance systems or repair an infeasible 
 trajectory. 
-
-![commonroad-crime](https://img.shields.io/badge/CommonRoad-CriMe-blue?style=plastic&logo=Coding-Ninjas)
-![test-passed](https://img.shields.io/badge/tests-passed-red?style=plastic&logo=Python)
-[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
-[![PyPI download month](https://img.shields.io/pypi/dm/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/) 
-[![PyPI download week](https://img.shields.io/pypi/dw/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/)   
-[![Linux](https://svgshare.com/i/Zhy.svg?style=plastic)](https://svgshare.com/i/Zhy.svg)
-[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
 
 ## Installation Guide
 
