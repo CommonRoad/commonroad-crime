@@ -204,9 +204,12 @@ class PF(CriMeBase):
         s = np.linspace(self._s_ego - 15, self._s_ego + 55, 50)
         d = np.linspace(d_bounds[0]-0.5, d_bounds[1]+0.5, 50)
         S, D = np.meshgrid(s, d)
-        u_func = np.vectorize(self.calc_total_potential, excluded=['veh_state'])
+        U = np.zeros((len(s), len(d)))
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
-        U = u_func(evaluated_state, S, D)
+
+        for i in range(len(s)):
+            for j in range(len(d)):
+                U[i, j] = self.calc_total_potential(evaluated_state, S[i, j], D[i, j])
 
         # polygons
         for obs in self.sce.obstacles:
