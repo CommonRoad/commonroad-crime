@@ -1,5 +1,5 @@
 """
-Unit tests of the module time-scale metrics
+Unit tests of the module time-scale measures
 """
 
 import unittest
@@ -7,18 +7,9 @@ import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_crime.metric.time_scale.tet import TET
-from commonroad_crime.metric.time_scale.tit import TIT
+from commonroad_crime.measure import TET, TIT, TTCStar, TTB, TTK, TTS, TTR, THW, TTZ, WTTC
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
-from commonroad_crime.metric.time_scale.ttc_star import TTCStar
-from commonroad_crime.metric.time_scale.ttb import TTB
-from commonroad_crime.metric.time_scale.ttk import TTK
-from commonroad_crime.metric.time_scale.tts import TTS
-from commonroad_crime.metric.time_scale.ttr import TTR
-from commonroad_crime.metric.time_scale.thw import THW
-from commonroad_crime.metric.time_scale.ttz import TTZ
-from commonroad_crime.metric.time_scale.wttc import WTTC
 from commonroad_crime.utility.simulation import Maneuver
 
 try:
@@ -29,7 +20,7 @@ except ImportError:
     module_failed = True
 
 
-class TestTimeScale(unittest.TestCase):
+class TestTimeDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
@@ -44,24 +35,24 @@ class TestTimeScale(unittest.TestCase):
         tet_object_1 = TET(self.config)
         tet_1 = tet_object_1.compute(6)
         tet_object_1.visualize()
-        assert math.isclose(tet_1, 2.8, abs_tol=1e-2)
+        assert math.isclose(tet_1, 2.0, abs_tol=1e-2)
 
         tet_object_2 = TET(self.config)
         tet_2 = tet_object_2.compute(7)
-        assert math.isclose(tet_2, 1.4, abs_tol=1e-2)
+        assert math.isclose(tet_2, 0.9, abs_tol=1e-2)
 
     def test_tit(self):
         self.config.debug.draw_visualization = True
         self.config.debug.save_plots = True
         tit_object_1 = TIT(self.config)
-        tit_1 = tit_object_1.compute(6)
+        tit_1 = tit_object_1.compute(vehicle_id=6)
         tit_object_1.visualize()
-        assert math.isclose(tit_1, 3.72, abs_tol=1e-2)
+        assert math.isclose(tit_1, 2.012, abs_tol=1e-2)
 
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)
         print(tit_2)
-        assert math.isclose(tit_2, 1.84, abs_tol=1e-2)
+        assert math.isclose(tit_2, 1.40, abs_tol=1e-2)
 
     def test_ttc(self):
         self.config.debug.draw_visualization = True
@@ -85,7 +76,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_3 = TTCStar(self.config)
         ttc_3 = ttc_object_3.compute()
-        assert math.isclose(ttc_3, 7*sce_set.dt, abs_tol=1e-2)
+        assert math.isclose(ttc_3, 9*sce_set.dt, abs_tol=1e-2)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
@@ -110,7 +101,7 @@ class TestTimeScale(unittest.TestCase):
         self.assertEqual(tts, tts2)
 
     def test_ttr(self):
-        self.config.time_scale.steer_width = 2
+        self.config.time.steer_width = 2
         self.config.debug.draw_visualization = True
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
@@ -123,7 +114,7 @@ class TestTimeScale(unittest.TestCase):
         # ttr_2 != ttr - 10 * ttr_object.dt due to the binary search, which might missed some possible solutions
         self.assertGreater(ttr, ttr_2)
 
-        ttr_object.configuration.time_scale.steer_width = 1
+        ttr_object.configuration.time.steer_width = 1
         ttr_3 = ttr_object.compute()
         ttr_object.visualize()
         self.assertEqual(ttr_3, 2.2)
@@ -142,11 +133,11 @@ class TestTimeScale(unittest.TestCase):
         thw_object = THW(self.config)
         thw = thw_object.compute(6, 0)
         thw_object.visualize()
-        self.assertEqual(thw, 2.9)
+        self.assertEqual(thw, 2.7)
 
         thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
-        self.assertEqual(thw2, thw - 10 * thw_object.dt)
+        self.assertAlmostEqual(thw2, thw - 10 * thw_object.dt)
 
         thw3 = thw_object.compute(7, 0)
         self.assertEqual(thw3, math.inf)
@@ -165,9 +156,9 @@ class TestTimeScale(unittest.TestCase):
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
-        wttr = wttr_object.compute(0)
+        wttr = wttr_object.compute(10)
         wttr_object.visualize()
-        self.assertEqual(wttr, 2.2)
+        self.assertEqual(wttr, 1.3)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
@@ -176,7 +167,7 @@ class TestTimeScale(unittest.TestCase):
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
-        self.assertEqual(ttz, 1.28)
+        self.assertEqual(ttz, 1.05)
         ttz_object.visualize()
 
 

@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class CriMeConfiguration:
-    """Class to hold criticality-measure-related configurations"""
+    """Class to hold criticality-measures-related configurations"""
 
     def __init__(self, config: Union[ListConfig, DictConfig]):
         self.scenario: Optional[Scenario] = None
@@ -34,12 +34,13 @@ class CriMeConfiguration:
         self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
         self.debug: DebugConfiguration = DebugConfiguration(config)
 
-        self.time_scale: TimeScaleConfiguration = TimeScaleConfiguration(config)
-        self.acceleration_scale: AccelerationScaleConfiguration = AccelerationScaleConfiguration(config)
-        self.potential_scale: PotentialScaleConfiguration = PotentialScaleConfiguration(config)
-        self.probability_scale: ProbabilityScaleConfiguration = ProbabilityScaleConfiguration(config)
-        self.reachable_set_scale: ReachableSetScaleConfiguration = ReachableSetScaleConfiguration(config)
-        self.index_scale: IndexScaleConfiguration = IndexScaleConfiguration(config)
+        self.time: TimeDomainConfiguration = TimeDomainConfiguration(config)
+        self.velocity: VelocityDomainConfiguration = VelocityDomainConfiguration(config)
+        self.acceleration: AccelerationDomainConfiguration = AccelerationDomainConfiguration(config)
+        self.potential: PotentialDomainConfiguration = PotentialDomainConfiguration(config)
+        self.probability: ProbabilityDomainConfiguration = ProbabilityDomainConfiguration(config)
+        self.reachable_set: ReachableSetDomainConfiguration = ReachableSetDomainConfiguration(config)
+        self.index: IndexDomainConfiguration = IndexDomainConfiguration(config)
 
     def update(self,
                ego_id: int = None,
@@ -93,6 +94,7 @@ class GeneralConfiguration:
 
         self.name_scenario = name_scenario
         self.path_scenarios = config_relevant.path_scenarios
+        self.path_scenarios_batch = config_relevant.path_scenarios_batch
         self.path_output_abs = config_relevant.path_output
         self.path_logs = config_relevant.path_logs
         self.path_icons = config_relevant.path_icons
@@ -106,7 +108,7 @@ class GeneralConfiguration:
         return self.path_output_abs + self.name_scenario + "/"
 
 
-class TimeScaleConfiguration:
+class TimeDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.time_scale
         self.activated = config_relevant.activated
@@ -115,20 +117,27 @@ class TimeScaleConfiguration:
         self.tau = config_relevant.tau
 
 
-class ReachableSetScaleConfiguration:
+class ReachableSetDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.reachable_set_scale
         self.time_horizon = config_relevant.time_horizon
+        self.cosy = config_relevant.coordinate_system
 
 
-class AccelerationScaleConfiguration:
+class VelocityDomainConfiguration:
+    def __init__(self, config: Union[ListConfig, DictConfig]):
+        config_relevant = config.velocity_scale
+        self.m_b = config_relevant.m_b
+
+
+class AccelerationDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.acceleration_scale
         self.safety_time = config_relevant.safety_time
         self.acceleration_mode = config_relevant.acceleration_mode
 
 
-class PotentialScaleConfiguration:
+class PotentialDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.potential_scale
         self.A_lane = config_relevant.A_lane
@@ -146,11 +155,13 @@ class PotentialScaleConfiguration:
         self.wedge_vertex = config_relevant.wedge_vertex
         self.desired_speed = config_relevant.desired_speed
 
+        self.u_max = config_relevant.u_max
 
-class ProbabilityScaleConfiguration:
+
+class ProbabilityDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.probability_scale
-        self.monte_carlo = ProbabilityScaleConfiguration.MonteCarlo(config_relevant)
+        self.monte_carlo = ProbabilityDomainConfiguration.MonteCarlo(config_relevant)
         
     class MonteCarlo:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
@@ -160,10 +171,10 @@ class ProbabilityScaleConfiguration:
             self.mvr_weights = dict_mc.weights
 
 
-class IndexScaleConfiguration:
+class IndexDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.index_scale
-        self.tci = IndexScaleConfiguration.TCI(config_relevant)
+        self.tci = IndexDomainConfiguration.TCI(config_relevant)
 
     class TCI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
@@ -257,5 +268,9 @@ class DebugConfiguration:
         config_relevant = config.debug
 
         self.save_plots = config_relevant.save_plots
+        if config_relevant.plot_limits:
+            self.plot_limits = list(config_relevant.plot_limits)
+        else:
+            self.plot_limits = None
         self.draw_visualization = config_relevant.draw_visualization
         self.draw_icons = config_relevant.draw_icons

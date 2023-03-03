@@ -1,6 +1,9 @@
 .idea/
-
 .git/
+
+build/*
+dist/*
+
 
 **/__pycache__
 
@@ -11,3 +14,7 @@
 output/
 
 *.egg-info/
+
+/scenarios/batch
+
+/scenarios/evaluation_result.csv

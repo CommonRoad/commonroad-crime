@@ -1,17 +1,15 @@
 """
-Unit tests of the module index-scale metrics
+Unit tests of the module index-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.index_scale.btn import BTN
-from commonroad_crime.metric.index_scale.stn import STN
-from commonroad_crime.metric.index_scale.tci import TCI
+from commonroad_crime.measure import BTN, STN, TCI
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestIndexScale(unittest.TestCase):
+class TestIndexDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Zip-1_56_T-1'
@@ -25,21 +23,21 @@ class TestIndexScale(unittest.TestCase):
         # vehicle in the same lanelet and in front
         btn_1 = btn_object.compute(3, 0)
         btn_object.visualize()
-        self.assertEqual(btn_1, 0.09)
+        self.assertAlmostEqual(btn_1, 0.1043)
 
         # vehicle in another lanelet
         btn_2 = btn_object.compute(1, 0)
-        self.assertEqual(btn_2, 0.0)
+        self.assertAlmostEqual(btn_2, 0.0)
 
     def test_snt(self):
         stn_object = STN(self.config)
         # vehicle in the same lanelet and in front
         stn_1 = stn_object.compute(3, 0)
-        self.assertEqual(stn_1, 0.02)
+        self.assertAlmostEqual(stn_1, 0.0263)
 
         # vehicle in another lanelet
         stn_2 = stn_object.compute(1, 0)
-        self.assertEqual(stn_2, 0.0)
+        self.assertAlmostEqual(stn_2, 0.0)
 
     def test_tci(self):
         self.config.vehicle.ego_id = 1

@@ -1,15 +1,15 @@
 """
-Unit tests of the module probability-scale metrics
+Unit tests of the module probability-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.probability_scale.p_mc import P_MC
+from commonroad_crime.measure.probability.p_mc import P_MC
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestProbabilityScale(unittest.TestCase):
+class TestProbabilityDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'DEU_Gar-1_1_T-1'

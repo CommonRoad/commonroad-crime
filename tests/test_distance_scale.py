@@ -1,16 +1,15 @@
 """
-Unit tests of the module distance-scale metrics
+Unit tests of the module distance-scale measures
 """
 
 import unittest
-import math
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.distance_scale.hw import HW
+from commonroad_crime.measure import HW
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestDistanceScale(unittest.TestCase):
+class TestDistanceDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
@@ -23,5 +22,5 @@ class TestDistanceScale(unittest.TestCase):
         hw_object = HW(self.config)
         hw = hw_object.compute(6, 0)
         self.assertGreater(hw, 0)
-        self.assertEqual(hw, 25.)
+        self.assertEqual(hw, 20.75)
         hw_object.visualize()

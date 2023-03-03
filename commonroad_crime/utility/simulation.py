@@ -187,7 +187,7 @@ class SimulationRandoMonteCarlo(SimulationBase):
                 state_list.append(suc_state)
                 pre_state = suc_state
                 # update the input
-                # self.set_inputs(pre_state)
+                self.set_inputs(pre_state)
             else:
                 # re-simulate for infeasible cases
                 self.set_inputs(pre_state)
@@ -311,7 +311,7 @@ class SimulationLat(SimulationBase):
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         self._nr_stage = 0
         self._scenario = config.scenario
-        self._lateral_distance_mode = config.time_scale.steer_width
+        self._lateral_distance_mode = config.time.steer_width
         self._direction = 'left'  # 'right'
         super(SimulationLat, self).__init__(maneuver, simulated_vehicle, config)
 

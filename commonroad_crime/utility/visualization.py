@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Union, List
 from enum import Enum
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -19,6 +20,7 @@ from commonroad.scenario.obstacle import DynamicObstacle
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
+from commonroad_crime.data_structure.type import TypeMonotone
 
 
 class TUMcolor(tuple, Enum):
@@ -34,7 +36,9 @@ class TUMcolor(tuple, Enum):
     TUMblack = (0, 0, 0)
     TUMlightgray = (217 / 255, 218 / 255, 219 / 255)
 
+
 zorder = 22
+
 
 
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
@@ -47,8 +51,8 @@ def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
 def plot_limits_from_state_list(time_step: int, state_list: List[PMState], margin: float = 10.0):
     return [state_list[time_step].position[0] - margin,
             state_list[-1].position[0] + margin,
-            state_list[time_step].position[1] - margin/2,
-            state_list[time_step].position[1] + margin/2]
+            state_list[time_step].position[1] - margin / 2,
+            state_list[time_step].position[1] + margin / 2]
 
 
 def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgreen):
@@ -101,7 +105,7 @@ def draw_state_list(rnd: MPRenderer, state_list: List[PMState],
         opacity = 0.5 * (start_time_step / len(state_list) + 1)
     else:
         opacity = 1
-    rnd.ax.plot(pos[:, 0], pos[:, 1], color=color, markersize=1.5,
+    rnd.ax.plot(pos[:, 0], pos[:, 1], linestyle='-', marker='o', color=color, markersize=5,
                 zorder=zorder, linewidth=linewidth, alpha=opacity)
     zorder += 1
 

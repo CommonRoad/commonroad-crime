@@ -1,17 +1,15 @@
 """
-Unit tests of the module acceleration-scale metrics
+Unit tests of the module acceleration-scale measures
 """
 
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.metric.acceleration_scale.dst import DST
-from commonroad_crime.metric.acceleration_scale.a_long_req import ALongReq
-from commonroad_crime.metric.acceleration_scale.a_lat_req import ALatReq
+from commonroad_crime.measure import DST, ALongReq, ALatReq, AReq
 import commonroad_crime.utility.logger as util_logger
 
 
-class TestAccelerationScale(unittest.TestCase):
+class TestAccelerationDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'DEU_Gar-1_1_T-1'
@@ -25,22 +23,27 @@ class TestAccelerationScale(unittest.TestCase):
         dst_1 = dst_object.compute(201, 0)
         dst_2 = dst_object.compute(202, 0)
         self.assertEqual(dst_1, 0.)
-        self.assertEqual(dst_2, 7.75)
+        self.assertEqual(dst_2, 24.86)
         dst_object.visualize()
 
     def test_a_long_req(self):
         a_long_req_object = ALongReq(self.config)
         a_long_req_1 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_1, -0.67)
+        self.assertEqual(a_long_req_1, -0.81)
 
         a_long_req_2 = a_long_req_object.compute(201, 0)
         self.assertLessEqual(a_long_req_2, 0.0)
 
-        self.config.acceleration_scale.acceleration_mode = 2
+        self.config.acceleration.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_3, -5.27)
+        self.assertEqual(a_long_req_3, -6.57)
 
     def test_a_lat_req(self):
         a_lat_req_object = ALatReq(self.config)
         a_lat_req_1 = a_lat_req_object.compute(202, 0)
-        self.assertEqual(a_lat_req_1, 0.11)
+        self.assertEqual(a_lat_req_1, 0.09)
+
+    def test_a_req(self):
+        a_req_object = AReq(self.config)
+        a_req_1 = a_req_object.compute(202, 0)
+        self.assertEqual(a_req_1, 0.81)

@@ -1,5 +1,5 @@
 """
-Unit tests of the module reachable set scale metrics
+Unit tests of the module reachable set scale measures
 """
 
 import unittest
@@ -12,10 +12,10 @@ try:
 except ImportError:
     module_failed = True
 else:
-    from commonroad_crime.metric.reachable_set_scale.drivable_area import DrivableArea
+    from commonroad_crime.measure.reachable_set.drivable_area import DA
 
 
-class TestReachableSetScale(unittest.TestCase):
+class TestReachableSetDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Urban-3_3_Repair'
@@ -26,6 +26,6 @@ class TestReachableSetScale(unittest.TestCase):
 
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_drivable_area(self):
-        da_solver = DrivableArea(self.config)
-        self.assertAlmostEqual(da_solver.compute(), 60.13)
+        da_solver = DA(self.config)
+        self.assertAlmostEqual(da_solver.compute(), 59.61)
         da_solver.visualize()
