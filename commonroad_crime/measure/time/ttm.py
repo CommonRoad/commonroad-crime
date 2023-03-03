@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 from typing import Union
 import logging
 
-from commonroad.scenario.state import CustomState
-
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_crime.measure.time.ttc_star import TTCStar
@@ -131,10 +129,7 @@ class TTM(CriMeBase):
             # flag for successful simulation, 0: False, 1: True
             flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
             # flag for collision, 0: False, 1: True
-            flag_coll = self.ttc_object.detect_collision([CustomState(
-                time_step=state.time_step, position=state.position,
-                orientation=state.orientation, velocity=state.velocity
-            ) for state in state_list])
+            flag_coll = self.ttc_object.detect_collision(state_list)
             if not flag_coll and flag_succ:
                 low = mid + 1
                 self.selected_state_list = state_list

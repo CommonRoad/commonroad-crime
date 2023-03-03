@@ -59,7 +59,11 @@ class TTCStar(CriMeBase):
         """
         # update the trajectory prediction
         updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
-        dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step, state_list)
+        dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step,
+                                                 [CustomState(
+                                                     time_step=state.time_step, position=state.position,
+                                                     orientation=state.orientation, velocity=state.velocity
+                                                 ) for state in state_list])
         dynamic_obstacle_prediction = TrajectoryPrediction(dynamic_obstacle_trajectory,
                                                            updated_ego_vehicle.obstacle_shape)
         updated_ego_vehicle.prediction = dynamic_obstacle_prediction
