@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='commonroad-crime',
-      version='0.0.3',
+      version='0.1.0',
       description='criticality measures of automated vehicles',
       keywords="criticality, autonomous driving",
       author='yuanfei Lin',

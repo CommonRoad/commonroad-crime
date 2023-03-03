@@ -12,12 +12,13 @@ trajectory.
 
 `commonroad-crime` can be installed with:
 
-	pip install commonroad-crime
-
+``` bash
+$ pip install commonroad-crime
+```
 For adding new measures, we recommend using [Anaconda](https://www.anaconda.com/) to manage your environment so that even if you mess something up, you can always have a safe and clean restart. A guide for managing python environments with Anaconda can be found [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 After installing Anaconda, create a new environment with:
-``` sh
+``` bash
 $ conda create -n commonroad-py37 python=3.7 -y
 ```
 
