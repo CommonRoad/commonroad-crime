@@ -8,7 +8,6 @@ __status__ = "Pre-alpha"
 
 import logging
 
-import shapely.geometry
 from shapely.geometry import Polygon, Point, LineString
 import numpy as np
 import matplotlib.pyplot as plt

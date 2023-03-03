@@ -7,7 +7,7 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import LaneletNetwork
-from commonroad.scenario.state import KSState, LongitudinalState, PMInputState, PMState
+from commonroad.scenario.state import KSState, LongitudinalState, PMInputState, PMState, CustomState
 from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
@@ -85,9 +85,9 @@ def check_in_same_lanelet(lanelet_network: LaneletNetwork,
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 
-def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState]], dt: float):
+def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState, CustomState, PMState]], dt: float):
     v_list = [state.velocity for state in state_list]
-    t_list = [state.time_step*dt for state in state_list]
+    t_list = [state.time_step * dt for state in state_list]
     a_list = np.gradient(np.array(v_list), t_list)
     j_list = np.gradient(np.array(a_list), t_list)
     for i in range(len(state_list)):
@@ -96,7 +96,7 @@ def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState]
         check_elements_state(state_list[i], dt=dt)
 
 
-def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
+def check_elements_state(state: Union[KSState, LongitudinalState, PMState, CustomState],
                          veh_input: PMInputState = None,
                          next_state: Union[KSState, LongitudinalState] = None, dt: float = 0.1):
     """
@@ -136,5 +136,3 @@ def check_elements_state(state: Union[KSState, LongitudinalState, PMState],
         if state.acceleration is not None:
             state.acceleration_y = state.acceleration * math.sin(ref_orientation)
             state.acceleration = state.acceleration * math.cos(ref_orientation)
-
-

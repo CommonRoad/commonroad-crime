@@ -9,9 +9,9 @@ __status__ = "Pre-alpha"
 import copy
 import numpy as np
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 
-from commonroad.scenario.state import InitialState
+from commonroad.scenario.state import InitialState, CustomState
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeReachableSet
@@ -51,13 +51,13 @@ class DA(CriMeBase):
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
 
-    def _update_initial_state(self, target_state: InitialState):
+    def _update_initial_state(self, target_state: Union[InitialState, CustomState]):
         self.reach_config.planning_problem.initial_state.position = target_state.position
         self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
         self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
 
-    def compute(self, time_step: int = 0, vehicle_id:int = None, verbose: bool = True):
+    def compute(self, time_step: int = 0, vehicle_id: int = None, verbose: bool = True):
         self.value = 0.
         evaluated_state = copy.deepcopy(self.ego_vehicle.state_at_time(time_step))
         self._update_initial_state(target_state=evaluated_state)

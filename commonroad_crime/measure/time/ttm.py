@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from typing import Union
 import logging
 
+from commonroad.scenario.state import CustomState
+
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_crime.measure.time.ttc_star import TTCStar
