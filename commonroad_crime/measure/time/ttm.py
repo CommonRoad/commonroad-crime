@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from typing import Union
 import logging
 
+from commonroad.scenario.state import CustomState
+
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.utility.simulation import SimulationLong, SimulationLat, Maneuver
 from commonroad_crime.measure.time.ttc_star import TTCStar
@@ -55,7 +57,10 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize, plot_limit=None)
+        self._initialize_vis(figsize=figsize, plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                                               self.ego_vehicle.prediction.
+                                                                                               trajectory.state_list,
+                                                                                               margin=10))
         self.ttc_object.draw_collision_checker(self.rnd)
         for veh in self.sce.obstacles:
             if veh is not self.ego_vehicle:

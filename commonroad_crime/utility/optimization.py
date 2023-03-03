@@ -13,7 +13,8 @@ from typing import List, Union, Tuple
 from abc import abstractmethod
 
 import numpy as np
-from commonroad.scenario.scenario import State, Scenario, DynamicObstacle
+from commonroad.scenario.state import PMState, CustomState, InitialState
+from commonroad.scenario.scenario import Scenario, DynamicObstacle
 from commonroad.scenario.trajectory import Trajectory
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.scene import Scene
@@ -58,7 +59,7 @@ class TCIOptimizer(OptimizerBase):
         self.dt = sce.dt
         self.sce = sce
 
-    def vehicle_model(self, ref_state: State):
+    def vehicle_model(self, ref_state: PMState):
         # initializing the model using the velocity in the reference path
         v_old = math.sqrt(ref_state.velocity ** 2 + ref_state.velocity_y ** 2)
         return lambda x_, u_: ca.vertcat(*[x_[2],
@@ -107,7 +108,7 @@ class TCIOptimizer(OptimizerBase):
                                      obs_state.position[1] - (j - 1) * dis_obs / 2 * ca.sin(
                                                 obs_state.orientation)) ** 2) >= rad_obs + rad_ego)
 
-    def cost_function(self, x_initial: State, ref_state_list: List[State],
+    def cost_function(self, x_initial: InitialState, ref_state_list: List[PMState],
                       d_y: float, r_y: float, d_x: float):
         obj = 0.
         for k in range(x_initial.time_step,
@@ -177,5 +178,5 @@ class TCIOptimizer(OptimizerBase):
                 'orientation': opt_x[k, 3],
                 'time_step': k
             }
-            state_list.append(State(**kwarg))
+            state_list.append(CustomState(**kwarg))
         return Trajectory(0, state_list)

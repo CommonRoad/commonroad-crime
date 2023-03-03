@@ -14,7 +14,8 @@ import copy
 from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
-from commonroad.scenario.obstacle import DynamicObstacle, State
+from commonroad.scenario.obstacle import DynamicObstacle
+from commonroad.scenario.state import PMInputState, PMState, KSState
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.utility.general import check_elements_state
@@ -46,8 +47,8 @@ class SimulationBase(ABC):
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
         # currently: point mass model since KS model has some infeasibility issues
-        self._input: State = State(acceleration=0,
-                                   acceleration_y=0)
+        self._input: PMInputState = PMInputState(acceleration=0,
+                                                 acceleration_y=0)
 
         self.maneuver = maneuver
         self.initialize_simulator()
@@ -62,16 +63,20 @@ class SimulationBase(ABC):
         self.a_long = 0
         self.a_lat = 0
 
-    def update_inputs_x_y(self, ref_state: State):
+    def update_inputs_x_y(self, ref_state: Union[PMInputState, PMState, KSState]):
         # includes the jerk limits
-        self.input.acceleration = np.clip(self.a_long * math.cos(ref_state.orientation) -
-                                          self.a_lat * math.sin(ref_state.orientation),
+        if isinstance(ref_state, PMState):
+            ref_orientation = math.atan2(ref_state.velocity_y, ref_state.velocity)
+        else:
+            ref_orientation = ref_state.orientation
+        self.input.acceleration = np.clip(self.a_long * math.cos(ref_orientation) -
+                                          self.a_lat * math.sin(ref_orientation),
                                           max(ref_state.acceleration + self.parameters.j_x_min * self.dt,
                                               self.parameters.a_x_min),
                                           min(ref_state.acceleration + self.parameters.j_x_max * self.dt,
                                               self.parameters.a_x_max))
-        self.input.acceleration_y = np.clip(self.a_long * math.sin(ref_state.orientation) +
-                                            self.a_lat * math.cos(ref_state.orientation),
+        self.input.acceleration_y = np.clip(self.a_long * math.sin(ref_orientation) +
+                                            self.a_lat * math.cos(ref_orientation),
                                             max(ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
                                                 self.parameters.a_y_min),
                                             min(ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
@@ -80,7 +85,7 @@ class SimulationBase(ABC):
         ref_state.acceleration = self.input.acceleration
         ref_state.acceleration_y = self.input.acceleration_y
 
-    def initialize_state_list(self, time_step: int) -> List[State]:
+    def initialize_state_list(self, time_step: int) -> List[KSState]:
         """
         Initializing the state list based on the given time step. All the states before the time step would be returned.
         """
@@ -104,27 +109,28 @@ class SimulationBase(ABC):
         return self._input
 
     @abstractmethod
-    def set_a_long_and_a_lat(self, ref_state: State) -> Tuple[float, float]:
+    def set_a_long_and_a_lat(self, ref_state: Union[PMState, KSState]) -> Tuple[float, float]:
         """
         sets the longitudinal and lateral acceleration
         """
         pass
 
     @abstractmethod
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: Union[PMState, KSState]) -> None:
         """
         sets the input pairs
         """
         pass
 
     @abstractmethod
-    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[State]:
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None)\
+            -> List[Union[PMState, KSState]]:
         """
         forward simulation of the state list
         """
         pass
 
-    def check_velocity_feasibility(self, state: State) -> bool:
+    def check_velocity_feasibility(self, state: Union[PMState, KSState]) -> bool:
         # the vehicle model in highD doesn't comply with commonroad vehicle models, thus the velocity limit
         # doesn't work for highD scenarios
         if state.velocity < 0 or \
@@ -148,10 +154,10 @@ class SimulationRandoMonteCarlo(SimulationBase):
         super(SimulationRandoMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
         self.pdf = None  # probability density function
 
-    def set_a_long_and_a_lat(self, ref_state: State):
+    def set_a_long_and_a_lat(self, ref_state: PMState):
         self.a_long = self.a_lat = self.parameters.longitudinal.a_max / 4
 
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: PMState) -> None:
         self.set_a_long_and_a_lat(ref_state)
         a_long_norm = norm(0, abs(self.a_long))
         a_lat_norm = norm(0, abs(self.a_lat))
@@ -159,19 +165,23 @@ class SimulationRandoMonteCarlo(SimulationBase):
         self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]
         self.pdf = a_lat_norm.pdf(self.a_lat) * a_long_norm.pdf(self.a_long)
 
-    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[State]:
+    def simulate_state_list(self, start_time_step: int, given_time_limit: int = None) -> List[PMState]:
         # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
-        self.set_inputs(pre_state)
         check_elements_state(pre_state, self.input)
+        self.set_inputs(pre_state)
         state_list.append(pre_state)
         if given_time_limit:
             self.time_horizon = given_time_limit
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.update_inputs_x_y(pre_state)
-            suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
+            suc_state = self.vehicle_dynamics.simulate_next_state(PMState(position=pre_state.position,
+                                                                          velocity=pre_state.velocity,
+                                                                          velocity_y=pre_state.velocity_y,
+                                                                          time_step=pre_state.time_step),
+                                                                  self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
                 check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
@@ -198,7 +208,7 @@ class SimulationLong(SimulationBase):
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLong, self).__init__(maneuver, simulated_vehicle, config)
 
-    def set_a_long_and_a_lat(self, ref_state: State):
+    def set_a_long_and_a_lat(self, ref_state: PMState):
         # set the lateral acceleration to 0
         self.a_lat = 0
         # set the longitudinal acceleration based on the vehicle's capability and the maneuver
@@ -216,7 +226,7 @@ class SimulationLong(SimulationBase):
         else:
             self.a_long = 0
 
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: PMState) -> None:
         """
         Sets inputs for the longitudinal simulation
         """
@@ -232,13 +242,17 @@ class SimulationLong(SimulationBase):
         # update the input
         check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
-
         state_list.append(pre_state)
+
         if given_time_limit:
             self.time_horizon = given_time_limit
         while pre_state.time_step < self.time_horizon:  # not <= since the simulation stops at the final step
             self.update_inputs_x_y(pre_state)
-            suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
+            suc_state = self.vehicle_dynamics.simulate_next_state(PMState(position=pre_state.position,
+                                                                          velocity=pre_state.velocity,
+                                                                          velocity_y=pre_state.velocity_y,
+                                                                          time_step=pre_state.time_step),
+                                                                  self.input, self.dt, throw=False)
             if suc_state and self.check_velocity_feasibility(suc_state):
                 check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
@@ -270,7 +284,7 @@ class SimulationLongMonteCarlo(SimulationLong):
         super(SimulationLongMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
         self.pdf = 1  # probability density function
 
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: PMState) -> None:
         self.set_a_long_and_a_lat(ref_state)
         a_long_norm = norm(0, abs(self.a_long))
         self.a_long = np.random.normal(0, abs(self.a_long), 1)[0]
@@ -312,7 +326,7 @@ class SimulationLat(SimulationBase):
             # Overtake: a_y, -a_y, -a_y, -a_y
             self._nr_stage = 4
 
-    def set_a_long_and_a_lat(self, ref_state: State):
+    def set_a_long_and_a_lat(self, ref_state: PMState):
         # set the longitudinal acceleration to 0
         self.a_long = 0
         # set the lateral acceleration based on the vehicle's capability and the maneuver
@@ -327,7 +341,7 @@ class SimulationLat(SimulationBase):
     def sign_change(self):
         self.a_lat = - self.a_lat
 
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: PMState) -> None:
         """
         Sets inputs for the lateral simulation
         """
@@ -375,7 +389,10 @@ class SimulationLat(SimulationBase):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(pre_state.position)
             if not bang_bang_ts:
                 bang_bang_ts = math.inf
-                max_orient = pre_state.orientation
+                if hasattr(pre_state, 'orientation'):
+                    max_orient = pre_state.orientation
+                else:
+                    max_orient = math.atan2(pre_state.velocity_y, pre_state.velocity)
             else:
                 lane_orient = lane_orient_updated
                 max_orient = self.set_maximal_orientation(lane_orient, i)
@@ -399,13 +416,17 @@ class SimulationLat(SimulationBase):
             check_elements_state(pre_state, self.input)
             self.update_inputs_x_y(pre_state)
             self.adjust_velocity(pre_state, max_orient, lane_orient)
-            suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
+            suc_state = self.vehicle_dynamics.simulate_next_state(PMState(position=pre_state.position,
+                                                                          velocity=pre_state.velocity,
+                                                                          velocity_y=pre_state.velocity_y,
+                                                                          time_step=pre_state.time_step),
+                                                                  self.input, self.dt, throw=False)
             state_list.append(suc_state)
             pre_state = suc_state
         check_elements_state(state_list[-1])
         return state_list
 
-    def adjust_velocity(self, ref_state: State, max_orient: float, lane_orient: float):
+    def adjust_velocity(self, ref_state: PMState, max_orient: float, lane_orient: float):
         # using P-controller
         pre_velocity_sum = math.sqrt(ref_state.velocity ** 2 + ref_state.velocity_y ** 2)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
@@ -455,18 +476,23 @@ class SimulationLat(SimulationBase):
         else:
             return lane_orientation
 
-    def bang_bang_simulation(self, init_state: State, simulation_length: int, max_orientation: float):
+    def bang_bang_simulation(self, init_state: PMState, simulation_length: int, max_orientation: float):
         pre_state = init_state
         state_list = []
         while pre_state.time_step < init_state.time_step + simulation_length \
                 and pre_state.time_step < self.time_horizon:
             self.update_inputs_x_y(pre_state)
-            suc_state = self.vehicle_dynamics.simulate_next_state(pre_state, self.input, self.dt, throw=False)
+            suc_state = self.vehicle_dynamics.simulate_next_state(PMState(position=pre_state.position,
+                                                                          velocity=pre_state.velocity,
+                                                                          velocity_y=pre_state.velocity_y,
+                                                                          time_step=pre_state.time_step),
+                                                                  self.input, self.dt, throw=False)
             if suc_state:
                 check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
-                if abs(suc_state.orientation) > abs(max_orientation):
+                suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
+                if abs(suc_orientation) > abs(max_orientation):
                     break
             else:
                 self.input.acceleration_y = 0
@@ -488,7 +514,7 @@ class SimulationLatMonteCarlo(SimulationLat):
         super(SimulationLatMonteCarlo, self).__init__(maneuver, simulated_vehicle, config)
         self.pdf = 1  # probability density function
 
-    def set_inputs(self, ref_state: State) -> None:
+    def set_inputs(self, ref_state: PMState) -> None:
         self.set_a_long_and_a_lat(ref_state)
         a_lat_norm = norm(0, self.a_lat)
         self.a_lat = np.random.normal(0, abs(self.a_lat), 1)[0]

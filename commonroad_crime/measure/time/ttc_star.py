@@ -13,7 +13,8 @@ from typing import List
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
-from commonroad.scenario.scenario import State, TrajectoryPrediction
+from commonroad.scenario.state import CustomState, State
+from commonroad.scenario.scenario import TrajectoryPrediction
 from commonroad.scenario.trajectory import Trajectory
 
 import commonroad_dc.boundary.boundary as boundary
@@ -58,7 +59,11 @@ class TTCStar(CriMeBase):
         """
         # update the trajectory prediction
         updated_ego_vehicle = copy.deepcopy(self.ego_vehicle)
-        dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step, state_list)
+        dynamic_obstacle_trajectory = Trajectory(state_list[0].time_step,
+                                                 [CustomState(
+                                                     time_step=state.time_step, position=state.position,
+                                                     orientation=state.orientation, velocity=state.velocity
+                                                 ) for state in state_list])
         dynamic_obstacle_prediction = TrajectoryPrediction(dynamic_obstacle_trajectory,
                                                            updated_ego_vehicle.obstacle_shape)
         updated_ego_vehicle.prediction = dynamic_obstacle_prediction
@@ -70,9 +75,10 @@ class TTCStar(CriMeBase):
         """
         Plots the collision checker.
         """
-        self.collision_checker.draw(rnd,
-                                    draw_params={'facecolor': TUMcolor.TUMgray,
-                                                 'edgecolor': TUMcolor.TUMdarkgray ,'draw_mesh': False})
+        rnd.draw_params.shape.facecolor = TUMcolor.TUMgray
+        rnd.draw_params.shape.edgecolor = TUMcolor.TUMdarkgray
+        rnd.draw_params.shape.draw_mesh = False
+        self.collision_checker.draw(rnd)
 
     def visualize(self, figsize: tuple = (25, 15)):
         self._initialize_vis(figsize=figsize)
