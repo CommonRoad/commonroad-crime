@@ -175,7 +175,7 @@ class PF(CriMeBase):
                         [topmost_then_leftmost_point,
                          (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
                         abs(self.configuration.potential.wedge_vertex), 'left'
-                    ).boundary[1]
+                    ).coords[1]
                     wedge = Polygon([wedge_point_l,
                                      topmost_then_leftmost_point, bottommost_then_leftmost_point])
 
@@ -238,7 +238,7 @@ class PF(CriMeBase):
                         [topmost_then_leftmost_point,
                          (topmost_then_leftmost_point + bottommost_then_leftmost_point) / 2]).parallel_offset(
                         abs(self.configuration.potential.wedge_vertex), 'left'
-                    ).boundary[1]
+                    ).coords[1]
                     wedge = Polygon([wedge_point_l,
                                      topmost_then_leftmost_point, bottommost_then_leftmost_point])
                     obs_with_wedge = obs_clcs_poly.union(wedge)
