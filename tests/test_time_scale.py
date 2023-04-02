@@ -51,7 +51,6 @@ class TestTimeDomain(unittest.TestCase):
 
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)
-        print(tit_2)
         assert math.isclose(tit_2, 1.40, abs_tol=1e-2)
 
     def test_ttc(self):
