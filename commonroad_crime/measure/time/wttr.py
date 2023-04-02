@@ -10,7 +10,7 @@ import math
 import copy
 import logging
 
-from commonroad.scenario.scenario import State
+from commonroad.scenario.state import State
 
 try:
     from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
