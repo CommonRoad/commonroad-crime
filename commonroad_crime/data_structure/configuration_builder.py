@@ -9,11 +9,10 @@ __status__ = "Pre-alpha"
 import glob
 import os
 from typing import Union
-
+import pkg_resources
 from omegaconf import OmegaConf, ListConfig, DictConfig
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-
 
 class ConfigurationBuilder:
     path_root: str = None
@@ -23,14 +22,13 @@ class ConfigurationBuilder:
     @classmethod
     def build_configuration(cls, name_scenario: str, path_root: str = None,
                             dir_config: str = "config_files",
-                            dir_config_default: str = "default") -> CriMeConfiguration:
+                            dir_config_default: str = None) -> CriMeConfiguration:
         """Builds configuration from default, scenario-specific, and commandline config files.
 
         Args:
             name_scenario (str): considered scenario
             path_root(str): root path of the package
             dir_config (str): directory storing configurations
-            dir_config_default (str): directory storing default configurations
         """
         if path_root is None:
             path_root = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
@@ -58,7 +56,10 @@ class ConfigurationBuilder:
         """
         cls.path_root = path_root
         cls.path_config = os.path.join(path_root, dir_config)
-        cls.path_config_default = os.path.join(cls.path_config, dir_config_default)
+        if dir_config_default is None:
+            cls.path_config_default = ""
+        else:
+            cls.path_config_default = os.path.join(cls.path_config, dir_config_default)
 
     @classmethod
     def construct_default_configuration(cls) -> Union[ListConfig, DictConfig]:
@@ -67,7 +68,14 @@ class ConfigurationBuilder:
         Collects all configuration files ending with '.yaml'.
         """
         config_default = OmegaConf.create()
-        for path_file in glob.glob(cls.path_config_default + "/*.yaml"):
+        if cls.path_config_default == "":
+            resource_dir = 'commonroad_crime.data_structure.config_defaults'
+            path_file_all = pkg_resources.resource_listdir(resource_dir, '')
+            path_file_all = [pkg_resources.resource_filename(resource_dir, filename) for filename in path_file_all if
+                             filename.endswith('.yaml')]
+        else:
+            path_file_all = glob.glob(cls.path_config_default + "/*.yaml")
+        for path_file in path_file_all:
             with open(path_file, "r") as file_config:
                 try:
                     config_partial = OmegaConf.load(file_config)
