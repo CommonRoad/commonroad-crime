@@ -121,3 +121,64 @@ def draw_sce_at_time_step(rnd: MPRenderer,
     rnd.draw_params.static_obstacle.occupancy.shape.facecolor = TUMcolor.TUMgray
     rnd.draw_params.lanelet_network.lanelet.fill_lanelet = False
     sce.draw(rnd)
+
+
+def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
+    if flag_latex:
+        # use Latex font
+        FONTSIZE = 28
+        plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+        pgf_with_latex = {  # setup matplotlib to use latex for output
+            "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
+            "text.usetex": True,  # use LaTeX to write all text
+            "font.family": 'lmodern',
+            # blank entries should cause plots
+            "font.sans-serif": [],  # ['Avant Garde'],              # to inherit fonts from the document
+            # 'text.latex.unicode': True,
+            "font.monospace": [],
+            "axes.labelsize": FONTSIZE,  # LaTeX default is 10pt font.
+            "font.size": FONTSIZE - 10,
+            "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
+            "xtick.labelsize": FONTSIZE,  # a little smaller
+            "ytick.labelsize": FONTSIZE,
+            "pgf.preamble": [
+                r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
+                r"\usepackage[T1]{fontenc}",  # plots will be generated
+                r"\usepackage[detect-all,locale=DE]{siunitx}",
+            ]  # using this preamble
+        }
+        matplotlib.rcParams.update(pgf_with_latex)
+    if crime.measures is not None and crime.time_start is not None and crime.time_end is not None:
+        nr_metrics = len(crime.measures)
+        if nr_metrics > nr_per_row:
+            nr_column = nr_per_row
+            nr_row = round(nr_metrics / nr_column)
+        else:
+            nr_column = nr_metrics
+            nr_row = 1
+        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
+        count_row, count_column = 0, 0
+        for measure in crime.measures:
+            criticality_list = []
+            time_list = []
+            for time_step in range(crime.time_start, crime.time_end + 1):
+                if measure.measure_name.value in crime.criticality_dict[time_step]:
+                    criticality_list.append(crime.criticality_dict[time_step][measure.measure_name.value])
+                    time_list.append(time_step)
+            if nr_metrics == 1:
+                ax = axs
+            elif nr_row == 1:
+                ax = axs[count_column]
+            else:
+                ax = axs[count_row, count_column]
+            ax.plot(time_list, criticality_list)
+            ax.axis(xmin=time_list[0], xmax=time_list[-1])
+            ax.title.set_text(measure.measure_name.value)
+
+            if measure.monotone == TypeMonotone.NEG:
+                ax.invert_yaxis()
+            count_column += 1
+            if count_column > nr_per_row - 1:
+                count_column = 0
+                count_row += 1
+        plt.show()
