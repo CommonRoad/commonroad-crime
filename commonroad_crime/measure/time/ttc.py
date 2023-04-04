@@ -112,7 +112,6 @@ class TTC(CriMeBase):
         self.rnd.draw_params.dynamic_obstacle.occupancy.shape.facecolor = TUMcolor.TUMred
         self.other_vehicle.draw(self.rnd)
         self.rnd.render()
-        plt.show()
         plt.title(f"{self.measure_name} at time step {self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)

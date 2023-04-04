@@ -197,6 +197,7 @@ class PF(CriMeBase):
         ) * s_veh
 
     def visualize(self, figsize: tuple = (25, 15)):
+        plt.clf()
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(self.ego_vehicle.state_at_time(self.time_step),
                                                                     self.sce.lanelet_network)
         d_bounds = [self._d_ego - dis_right, self._d_ego + dis_left]
