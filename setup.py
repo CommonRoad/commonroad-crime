@@ -13,6 +13,7 @@ setup(name='commonroad-crime',
       install_requires=[
           'commonroad-io>=2022.3',
           'commonroad-vehicle-models>=3.0.0',
+          'commonroad-route-planner>=2022.1',
           'commonroad-drivability-checker>=2022.2',
           'matplotlib>=3.5.2'
           'numpy>=1.23.0',
