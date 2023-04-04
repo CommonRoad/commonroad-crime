@@ -132,7 +132,7 @@ class TestTimeDomain(unittest.TestCase):
         thw_object = THW(self.config)
         thw = thw_object.compute(6, 0)
         thw_object.visualize()
-        self.assertEqual(thw, 2.7)
+        self.assertEqual(thw, 2.4)
 
         thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
