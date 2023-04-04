@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 import math
 import logging
+import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
@@ -75,8 +76,9 @@ class ALatReq(CriMeBase):
             # no lateral acceleration is needed for avoiding a collision
             self.value = 0.
             return self.value
-        a_obj_lat = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
-                              self.other_vehicle.state_at_time(time_step).acceleration ** 2) * \
+        a_obj_lat = np.sign(self.other_vehicle.state_at_time(time_step).acceleration) * math.sqrt(
+            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
+            self.other_vehicle.state_at_time(time_step).acceleration ** 2) * \
                     math.sin(other_orientation)
 
         # compute the headway distance
