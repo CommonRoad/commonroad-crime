@@ -43,6 +43,8 @@ class THW(CriMeBase):
 
         if ego_s > other_s:
             return math.inf
+        # another option is (other_s-ego_s)/self.ego_vehicle.state_at_time(self.time_step).velocity
+        # here since the predicted trajectory is given, we use it to make the result more accurate
         for ts in range(self.time_step + 1, self.ego_vehicle.prediction.final_time_step + 1):
             ego_position = self.ego_vehicle.state_at_time(ts).position
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
