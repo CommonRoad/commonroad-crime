@@ -46,6 +46,7 @@ class THW(CriMeBase):
         for ts in range(self.time_step + 1, self.ego_vehicle.prediction.final_time_step + 1):
             ego_position = self.ego_vehicle.state_at_time(ts).position
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
+            ego_s += self.ego_vehicle.obstacle_shape.length / 2
             if ego_s > other_s:
                 return utils_gen.int_round((ts - self.time_step) * self.dt,
                                            str(self.dt)[::-1].find('.'))
