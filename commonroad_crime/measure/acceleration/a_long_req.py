@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 import math
 import logging
+import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
@@ -54,8 +55,9 @@ class ALongReq(CriMeBase):
             self.other_vehicle.state_at_time(time_step).position
         )[1]
         # acceleration of the other vehicle along the lanelet
-        a_obj = math.sqrt(self.other_vehicle.state_at_time(time_step).acceleration ** 2 +
-                          self.other_vehicle.state_at_time(time_step).acceleration_y ** 2) * math.cos(
+        a_obj = np.sign(self.other_vehicle.state_at_time(time_step).acceleration) * math.sqrt(
+            self.other_vehicle.state_at_time(time_step).acceleration ** 2 +
+            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2) * math.cos(
             other_orientation)
         # compute the headway (relative distance) along the lanelet
         x_rel = self._hw_object.compute(vehicle_id, time_step)
