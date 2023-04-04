@@ -20,6 +20,7 @@ import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.visualization import TUMcolor
 
 from commonroad_crime.measure.distance.hw import HW
 
@@ -106,8 +107,11 @@ class TTC(CriMeBase):
                                                                               self.ego_vehicle.prediction.
                                                                               trajectory.state_list,
                                                                               margin=10))
-        self.other_vehicle.draw(self.rnd, {'time_begin': self.time_step, **utils_vis.OTHER_VEHICLE_DRAW_PARAMS})
+        self.rnd.draw_params.time_begin = self.time_step
+        self.rnd.draw_params.dynamic_obstacle.occupancy.shape.facecolor = TUMcolor.TUMred
+        self.other_vehicle.draw(self.rnd)
         self.rnd.render()
+        plt.show()
         plt.title(f"{self.measure_name} at time step {self.time_step}")
         if self.configuration.debug.save_plots:
             utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
