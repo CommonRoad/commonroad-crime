@@ -64,9 +64,26 @@ enumeration entry `<abbreviation>: <explanation>`
 4. similar to other measures, you need to implement the `compute()` and `visualize()` functions
 
 ### How to define configuration parameters of the measure
-1. navigate to `config_files/default` to find the correct category of the measure
+1. navigate to `commonroad_crime/data_structure/config_defaults` to find the correct category of the measure
 2. add your parameter to the `yaml` file in the format as `<parameter>: <default value>`. Please do add the source
 and some explanations there
 3. navigate to `commonroad_crime/data_structure/configuation.py` to find the above-mentioned category and add a new 
 instance to the class as `self.<parameter> = config_relevant.<parameter>`
 4. you can then directly call the values using `self.configuration.<category>.<parameter>` in your measure class
+
+### Contributors (in alphabetical order by last name)
+- Yuanfei Lin
+- Ivana Peneva
+- Oliver Specht
+
+### Citation
+If you use `commonroad-crime` for academic work, we highly encourage you to cite our paper:
+```text
+@InProceedings{lin2023crime,
+      title     = {{CommonRoad-CriMe}: {A} Toolbox for Criticality Measures of Autonomous Vehicles},
+      author    = {Yuanfei Lin and Matthias Althoff},
+ 	  booktitle = {Proc. of the IEEE Intell. Veh. Symp.},     
+ 	  pages     = { }, 
+ 	  year      = {2023},
+   }
+```
