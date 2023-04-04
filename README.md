@@ -87,3 +87,5 @@ If you use `commonroad-crime` for academic work, we highly encourage you to cite
  	  year      = {2023},
    }
 ```
+If you use this project's code in industry, we'd love to hear from you as well; 
+feel free to reach out to [Yuanfei Lin](mailto:yuanfei.lin@tum.de) directly.
