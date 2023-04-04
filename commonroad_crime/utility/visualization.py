@@ -6,6 +6,7 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
+import math
 from pathlib import Path
 from typing import Union, List
 from enum import Enum
@@ -152,7 +153,7 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
         nr_metrics = len(crime.measures)
         if nr_metrics > nr_per_row:
             nr_column = nr_per_row
-            nr_row = round(nr_metrics / nr_column)
+            nr_row = math.ceil(nr_metrics / nr_column)
         else:
             nr_column = nr_metrics
             nr_row = 1
