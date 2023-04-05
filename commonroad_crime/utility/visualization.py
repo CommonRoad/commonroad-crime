@@ -6,6 +6,7 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
+import math
 from pathlib import Path
 from typing import Union, List
 from enum import Enum
@@ -152,7 +153,7 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
         nr_metrics = len(crime.measures)
         if nr_metrics > nr_per_row:
             nr_column = nr_per_row
-            nr_row = round(nr_metrics / nr_column)
+            nr_row = math.ceil(nr_metrics / nr_column)
         else:
             nr_column = nr_metrics
             nr_row = 1
@@ -182,3 +183,18 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
                 count_column = 0
                 count_row += 1
         plt.show()
+
+
+def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps: List[int]):
+    rnd = MPRenderer(plot_limits=plot_limit)
+    rnd.draw_params.time_begin = time_steps[0]
+    rnd.draw_params.trajectory.draw_trajectory = False
+    rnd.draw_params.dynamic_obstacle.draw_icon = True
+    scenario.draw(rnd)
+    rnd.render()
+    for obs in scenario.obstacles:
+        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:],
+                        color=TUMcolor.TUMblue, linewidth=5)
+        for ts in time_steps[1:]:
+            draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
+    plt.show()

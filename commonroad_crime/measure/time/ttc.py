@@ -1,4 +1,4 @@
-__author__ = "Yuanfei Lin"
+__author__ = "Yuanfei Lin, Oliver Specht"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
 __version__ = "0.0.1"
@@ -20,6 +20,7 @@ import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.visualization import TUMcolor
 
 from commonroad_crime.measure.distance.hw import HW
 
@@ -71,7 +72,8 @@ class TTC(CriMeBase):
             v_ego = np.sign(state.velocity) * math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(
                 ego_orientation)
             # include the directions
-            a_ego = np.sign(state.acceleration) * math.sqrt(state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
+            a_ego = np.sign(state.acceleration) * math.sqrt(
+                state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
                 ego_orientation)
             if isinstance(self.other_vehicle, DynamicObstacle):
                 v_other = np.sign(state_other.velocity) * math.sqrt(
@@ -79,14 +81,14 @@ class TTC(CriMeBase):
                 a_other = np.sign(state_other.acceleration) * math.sqrt(
                     state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
             else:
-                v_other = 0
-                a_other = 0
+                v_other = 0.
+                a_other = 0.
             delta_v = v_other - v_ego
             delta_a = a_other - a_ego
 
             if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
-            elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a < 0:
+            elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) < 0:
                 self.value = math.inf
             elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
                 first = - (delta_v / delta_a)
@@ -106,7 +108,9 @@ class TTC(CriMeBase):
                                                                               self.ego_vehicle.prediction.
                                                                               trajectory.state_list,
                                                                               margin=10))
-        self.other_vehicle.draw(self.rnd, {'time_begin': self.time_step, **utils_vis.OTHER_VEHICLE_DRAW_PARAMS})
+        self.rnd.draw_params.time_begin = self.time_step
+        self.rnd.draw_params.dynamic_obstacle.occupancy.shape.facecolor = TUMcolor.TUMred
+        self.other_vehicle.draw(self.rnd)
         self.rnd.render()
         plt.title(f"{self.measure_name} at time step {self.time_step}")
         if self.configuration.debug.save_plots:

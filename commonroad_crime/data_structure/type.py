@@ -28,15 +28,15 @@ class TypeNone(str, Enum):
 class TypeTime(str, Enum):
     THW = "time headway"
     ET = "encroachment time"
-    PET = "post encroachment time"
+    PET = "post-encroachment time"
     AGS = "accepted gap size"
     TTC = "time-to-collision"
     TTCStar = "time-to-collision with given prediction"
-    PTTC = "potential time to collision"
+    PTTC = "potential time-to-collision"
     WTTC = "worst-time-to-collision"
     TET = "time-exposed time-to-collision"
     TIT = "time-integrated time-to-collision"
-    TTCE = "time to closest encounter"
+    TTCE = "time-to-closest-encounter"
     TTZ = "time-to-zabra"
     TTB = "time-to-brake"
     TTK = "time-to-kickdown"
@@ -50,7 +50,7 @@ class TypeTime(str, Enum):
 
 class TypeDistance(str, Enum):
     HW = "headway"
-    DCE = "distance of closest encounter"
+    DCE = "distance-of-closest-encounter"
     MSD = "Acceptable minimum stopping distance"
     PSD = "proportion of stopping distance"
 
@@ -61,8 +61,8 @@ class TypeVelocity(str, Enum):
 
 
 class TypeAcceleration(str, Enum):
-    DST = "deceleration to safety time"
-    ALongReq = "required longitudinal acceleration"
+    DST = "deceleration-to-safety-time"
+    ALongReq = "required longitudinal acceleration (aka deceleration-rate-to-avoid-crash)"
     ALatReq = "required lateral acceleration"
     AReq = "required acceleration"
 
@@ -81,7 +81,7 @@ class TypeIndex(str, Enum):
     SOI = "space occupancy index"
     BTN = "brake threat number"
     STN = "steer threat number"
-    RSS = "responsibility sensitive safety dangerous situation"
+    RSS = "responsibility sensitive safety-dangerous situation"
 
 
 class TypeReachableSet(str, Enum):

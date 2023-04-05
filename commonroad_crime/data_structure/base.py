@@ -170,10 +170,13 @@ class CriMeBase:
         else:
             for v_id in other_veh_ids:
                 criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
-            if self.monotone == TypeMonotone.POS:
-                criti = max(criti_list)
+            if len([c for c in criti_list if c is not None]) > 0:
+                if self.monotone == TypeMonotone.POS:
+                    criti = max(criti_list)
+                else:
+                    criti = min(criti_list)
             else:
-                criti = min(criti_list)
+                criti = None
         time_computation = time.time() - time_start
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} of the scenario: {criti}")
         utils_log.print_and_log_info(logger, f"\tTook: \t{time_computation:.3f}s", verbose)

@@ -41,6 +41,7 @@ class DeltaV(CriMeBase):
         if self.configuration.velocity.m_b:
             m_b = self.configuration.velocity.m_b
         else:
+            # assume that the vehicle b has the same mass as the ego vehicle
             m_b = m_ego
         if self.ego_vehicle.state_at_time(self.time_step) and self.other_vehicle.state_at_time(self.time_step):
             v_ego = np.sqrt(self.ego_vehicle.state_at_time(self.time_step).velocity ** 2 +

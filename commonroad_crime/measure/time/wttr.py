@@ -98,6 +98,7 @@ class WTTR(CriMeBase):
             else:
                 high = mid
         if low != initial_step:
+            # no -1 (differs from the binary search for TTM)
             wttr = (low - initial_step) * self.dt
         return wttr
 

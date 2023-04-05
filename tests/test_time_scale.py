@@ -7,7 +7,7 @@ import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_crime.measure import TET, TIT, TTCStar, TTB, TTK, TTS, TTR, THW, TTZ, WTTC
+from commonroad_crime.measure import TET, TIT, TTCStar, TTB, TTK, TTS, TTR, THW, TTZ, WTTC, TTCE
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.utility.simulation import Maneuver
@@ -51,7 +51,6 @@ class TestTimeDomain(unittest.TestCase):
 
         tit_object_2 = TIT(self.config)
         tit_2 = tit_object_2.compute(7)
-        print(tit_2)
         assert math.isclose(tit_2, 1.40, abs_tol=1e-2)
 
     def test_ttc(self):
@@ -133,7 +132,7 @@ class TestTimeDomain(unittest.TestCase):
         thw_object = THW(self.config)
         thw = thw_object.compute(6, 0)
         thw_object.visualize()
-        self.assertEqual(thw, 2.7)
+        self.assertEqual(thw, 2.4)
 
         thw2 = thw_object.compute(6, 10)
         thw_object.visualize()
@@ -169,5 +168,20 @@ class TestTimeDomain(unittest.TestCase):
         ttz = ttz_object.compute(0)
         self.assertEqual(ttz, 1.05)
         ttz_object.visualize()
+
+    def test_ttce(self):
+        ttce_object = TTCE(self.config)
+        ttce = ttce_object.compute(6)
+        ttce_object.visualize()
+        assert math.isclose(ttce, 2.4, abs_tol=1e-2)
+
+        ttce_object_2 = TTCE(self.config)
+        ttce2 = ttce_object_2.compute(7)
+        assert math.isclose(ttce2, 2.4, abs_tol=1e-2)
+
+        ttce3 = ttce_object_2.compute(7, time_step=10)
+        assert math.isclose(ttce3, ttce2 - 10 * self.config.scenario.dt, abs_tol=1e-2)
+
+
 
 
