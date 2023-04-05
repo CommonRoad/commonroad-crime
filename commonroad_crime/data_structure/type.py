@@ -36,7 +36,7 @@ class TypeTime(str, Enum):
     WTTC = "worst-time-to-collision"
     TET = "time-exposed time-to-collision"
     TIT = "time-integrated time-to-collision"
-    TTCE = "time to closest encounter"
+    TTCE = "time-to-closest-encounter"
     TTZ = "time-to-zabra"
     TTB = "time-to-brake"
     TTK = "time-to-kickdown"
