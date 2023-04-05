@@ -6,26 +6,19 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import logging
-
-from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
-import commonroad_crime.utility.logger as utils_log
-
 import math
-
 import matplotlib.pyplot as plt
 import logging
 
 import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-import commonroad_crime.utility.visualization as utils_vis
-import commonroad_crime.utility.general as utils_gen
-from commonroad_crime.utility.visualization import TUMcolor
+from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
 from commonroad_crime.data_structure.base import CriMeBase
-
+import commonroad_crime.utility.visualization as utils_vis
+from commonroad_crime.utility.visualization import TUMcolor
+import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)
 
