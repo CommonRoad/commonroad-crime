@@ -18,10 +18,9 @@ setup(name='commonroad-crime',
           'matplotlib>=3.5.2'
           'numpy>=1.23.0',
           'scipy>=1.7.3',
-          'libgfortran5',
           'shapely<3.0.0,>=2.0.1',
           'omegaconf>=2.1.1',
-          'casadi>=3.5.5',
+          'casadi>=3.5.5, <3.6.0',
       ],
       extras_require={
           'tests': [
