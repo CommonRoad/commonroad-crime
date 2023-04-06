@@ -82,10 +82,10 @@ If you use `commonroad-crime` for academic work, we highly encourage you to cite
 @InProceedings{lin2023crime,
       title     = {{CommonRoad-CriMe}: {A} Toolbox for Criticality Measures of Autonomous Vehicles},
       author    = {Yuanfei Lin and Matthias Althoff},
- 	  booktitle = {Proc. of the IEEE Intell. Veh. Symp.},     
- 	  pages     = { }, 
- 	  year      = {2023},
-   }
+      booktitle = {Proc. of the IEEE Intell. Veh. Symp.},     
+      pages     = {}, 
+      year      = {2023},
+}
 ```
 If you use this project's code in industry, we'd love to hear from you as well; 
 feel free to reach out to [Yuanfei Lin](mailto:yuanfei.lin@tum.de) directly.

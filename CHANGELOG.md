@@ -1,9 +1,10 @@
 # Changelog
 
-## [0.2.0] - 2023.xx.xx
+## [0.2.0] - 2023.04.05
 ### Changed
 - Putting the deault configs within the package
 - Upgraded to commonroad-io==2023.1
+- Updated the ReadMe
 ### Added
 - Plotting functions for TIT and TET
 - Scripts for rerunning the evaluation for paper IV2023
