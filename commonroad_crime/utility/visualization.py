@@ -15,6 +15,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
+from commonroad.geometry.shape import ShapeGroup
 from commonroad.scenario.state import PMState
 from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
@@ -70,8 +71,14 @@ def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgr
 def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
                            color: TUMcolor = TUMcolor.TUMblue):
     global zorder
-    x, y = obstacle.occupancy_at_time(time_step).shape.shapely_object.exterior.xy
-    rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+    obs_shape = obstacle.occupancy_at_time(time_step).shape
+    if isinstance(obs_shape, ShapeGroup):
+        for shape_element in obs_shape.shapes:
+            x, y = shape_element.shapely_object.exterior.xy
+            rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+    else:
+        x, y = obs_shape.shapely_object.exterior.xy
+        rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
     zorder += 1
 
 
