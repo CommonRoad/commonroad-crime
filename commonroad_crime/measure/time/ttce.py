@@ -38,7 +38,7 @@ class TTCE(CriMeBase):
         """
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
         self._dce_object.compute(vehicle_id, time_step)
-        self.value = utils_gen.int_round((self._dce_object.time_dce - time_step) * self.dt)
+        self.value = utils_gen.int_round((self._dce_object.time_dce - time_step) * self.dt, 3)
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}")
         return self.value
 
