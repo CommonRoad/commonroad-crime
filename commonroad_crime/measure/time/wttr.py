@@ -79,7 +79,7 @@ class WTTR(CriMeBase):
         """
         wttr = - math.inf
         low = initial_step
-        tstc = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.')))
+        tstc = int(utils_gen.int_round(self.ttc / self.dt + self.time_step,  str(self.dt)[::-1].find('.')))
         high = tstc + initial_step
         time_end = self.ego_vehicle.prediction.final_time_step
         while low < high:
