@@ -14,7 +14,7 @@ from commonroad_crime.utility.simulation import Maneuver
 
 try:
     import commonroad_reach.pycrreach
-    from commonroad_crime.metric.time_scale.wttr import WTTR
+    from commonroad_crime.measure.time.wttr import WTTR
     module_failed = False
 except ImportError:
     module_failed = True
@@ -158,6 +158,8 @@ class TestTimeDomain(unittest.TestCase):
         wttr = wttr_object.compute(10)
         wttr_object.visualize()
         self.assertEqual(wttr, 1.3)
+        wttr2 = wttr_object.compute()
+        self.assertAlmostEqual(wttr, wttr2 - 1.)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
