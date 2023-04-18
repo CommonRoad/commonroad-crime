@@ -85,13 +85,13 @@ class TTCStar(CriMeBase):
         self.draw_collision_checker(self.rnd)
         self.rnd.render()
         if self.value not in [math.inf, -math.inf]:
-            tstc = int(utils_gen.int_round(self.value / self.dt, 0))
+            tstc = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
             if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
                 sl = [self.ego_vehicle.initial_state] + self.ego_vehicle.prediction.trajectory.state_list
             else:
-                sl = self.ego_vehicle.prediction.trajectory.state_list
+                sl = self.ego_vehicle.prediction.trajectory.state_list[self.time_step:]
             utils_vis.draw_state_list(self.rnd, sl, self.time_step, TUMcolor.TUMblue)
         else:
             tstc = self.value
