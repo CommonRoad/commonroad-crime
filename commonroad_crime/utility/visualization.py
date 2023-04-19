@@ -202,7 +202,7 @@ def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps:
     scenario.draw(rnd)
     rnd.render()
     for obs in scenario.obstacles:
-        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:time_steps[-1]],
+        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:time_steps[-1] + 1],
                         color=TUMcolor.TUMblue, linewidth=5)
         for ts in time_steps[1:]:
             draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)

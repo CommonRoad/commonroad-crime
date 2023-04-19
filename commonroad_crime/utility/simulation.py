@@ -265,6 +265,13 @@ class SimulationLong(SimulationBase):
                     if suc_state.velocity ** 2 + suc_state.velocity_y ** 2 < 0.1:
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
+                        for time_step in range(pre_state.time_step + 1, self.time_horizon + 1):
+                            pre_state.time_step += 1
+                            state_list.append(pre_state)
+                    else:
+                        # for kickdown
+                        self.a_long = 0
+                        self.a_lat = 0
                 break
         return state_list
 
