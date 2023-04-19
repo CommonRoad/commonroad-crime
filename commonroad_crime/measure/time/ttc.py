@@ -104,10 +104,14 @@ class TTC(CriMeBase):
         return self.value
 
     def visualize(self):
-        self._initialize_vis(plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                              self.ego_vehicle.prediction.
-                                                                              trajectory.state_list,
-                                                                              margin=10))
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                self.ego_vehicle.prediction.
+                                                                trajectory.state_list,
+                                                                margin=10)
+        self._initialize_vis(plot_limit=plot_limits)
         self.rnd.draw_params.time_begin = self.time_step
         self.rnd.draw_params.dynamic_obstacle.occupancy.shape.facecolor = TUMcolor.TUMred
         self.other_vehicle.draw(self.rnd)
