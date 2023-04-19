@@ -19,7 +19,7 @@ import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.solver as utils_sol
 from commonroad_crime.utility.visualization import TUMcolor
 
-from commonroad.geometry.shape import Polygon
+from commonroad.geometry.shape import Polygon, Circle
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +40,12 @@ class HW(THW):
             # todo: fix for ttz
             other_position = self.other_vehicle.state_at_time(self.time_step).position
         else:
-            other_position = self.other_vehicle.state_at_time(self.time_step).position - \
-                             self.other_vehicle.obstacle_shape.length / 2
+            if isinstance(self.other_vehicle.obstacle_shape, Circle):
+                other_position = self.other_vehicle.state_at_time(self.time_step).position - \
+                                 self.other_vehicle.obstacle_shape.radius
+            else:
+                other_position = self.other_vehicle.state_at_time(self.time_step).position - \
+                                 self.other_vehicle.obstacle_shape.length / 2
         ego_position = self.ego_vehicle.state_at_time(self.time_step).position + \
                        self.ego_vehicle.obstacle_shape.length / 2
         headway = utils_sol.compute_clcs_distance(self.clcs, ego_position, other_position)[0]
