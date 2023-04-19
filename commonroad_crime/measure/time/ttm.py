@@ -57,10 +57,14 @@ class TTM(CriMeBase):
         self._maneuver = maneuver
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize, plot_limit=utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                                               self.ego_vehicle.prediction.
-                                                                                               trajectory.state_list,
-                                                                                               margin=10))
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                self.ego_vehicle.prediction.
+                                                                trajectory.state_list,
+                                                                margin=10)
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.ttc_object.draw_collision_checker(self.rnd)
         for veh in self.sce.obstacles:
             if veh is not self.ego_vehicle:
@@ -128,11 +132,9 @@ class TTM(CriMeBase):
             state_list = self.simulator.simulate_state_list(mid)
             utils_gen.check_elements_state_list(state_list, self.dt)
             self.state_list_set.append(state_list[mid:])
-            # flag for successful simulation, 0: False, 1: True
-            flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
             # flag for collision, 0: False, 1: True
             flag_coll = self.ttc_object.detect_collision(state_list)
-            if not flag_coll and flag_succ:
+            if not flag_coll:
                 low = mid + 1
                 self.selected_state_list = state_list
             else:

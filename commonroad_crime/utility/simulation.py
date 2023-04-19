@@ -133,7 +133,8 @@ class SimulationBase(ABC):
     def check_velocity_feasibility(self, state: Union[PMState, KSState]) -> bool:
         # the vehicle model in highD doesn't comply with commonroad vehicle models, thus the velocity limit
         # doesn't work for highD scenarios
-        if state.velocity < 0 or \
+        abs_velocity = np.sqrt(state.velocity ** 2 + state.velocity_y ** 2)
+        if abs_velocity < 0.1 or \
                 state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
             return False
         return True
@@ -261,11 +262,10 @@ class SimulationLong(SimulationBase):
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 if suc_state is not None:
-                    if suc_state.velocity < 0:
+                    if suc_state.velocity ** 2 + suc_state.velocity_y ** 2 < 0.1:
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
-                self.a_long = 0
-                self.update_inputs_x_y(pre_state)
+                break
         return state_list
 
 
