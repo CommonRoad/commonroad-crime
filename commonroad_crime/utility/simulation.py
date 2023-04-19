@@ -266,8 +266,9 @@ class SimulationLong(SimulationBase):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                         for time_step in range(pre_state.time_step + 1, self.time_horizon + 1):
-                            pre_state.time_step += 1
-                            state_list.append(pre_state)
+                            stat_state = copy.deepcopy(pre_state)
+                            stat_state.time_step = time_step
+                            state_list.append(stat_state)
                     else:
                         # for kickdown
                         self.a_long = 0
