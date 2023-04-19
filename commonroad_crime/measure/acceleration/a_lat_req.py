@@ -10,6 +10,8 @@ import math
 import logging
 import numpy as np
 
+from commonroad.geometry.shape import Circle
+
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.type import TypeAcceleration, TypeMonotone
@@ -49,8 +51,12 @@ class ALatReq(CriMeBase):
         :return a_lat: required lateral acceleration of the ego vehicle
         """
         sign = 1 if flag_dir == 'left' else -1
-        return a_obj_lat - 2 * (-d_rel_lat + sign * (self.other_vehicle.obstacle_shape.width/2 +
-                                                     self.ego_vehicle.obstacle_shape.width/2) - v_rel_lat * ttc)/ttc**2
+        if isinstance(self.other_vehicle.obstacle_shape, Circle):
+            other_width = self.other_vehicle.obstacle_shape.radius
+        else:
+            other_width = self.other_vehicle.obstacle_shape.width/2
+        return a_obj_lat - 2 * (-d_rel_lat + sign * (other_width + self.ego_vehicle.obstacle_shape.width / 2)
+                                - v_rel_lat * ttc) / ttc ** 2
 
     def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
