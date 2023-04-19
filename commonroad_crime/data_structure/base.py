@@ -66,7 +66,7 @@ class CriMeBase:
         if not isinstance(self.ego_vehicle, StaticObstacle) and \
                 not isinstance(self.ego_vehicle.prediction, SetBasedPrediction):
             utils_gen.check_elements_state_list([self.ego_vehicle.initial_state] + self.ego_vehicle.
-                                                prediction.trajectory.states_in_time_interval(time_begin=0,
+                                                prediction.trajectory.states_in_time_interval(time_begin=1,
                                                                                               time_end=self.ego_vehicle.
                                                                                               prediction.final_time_step),
                                                 self.dt)
