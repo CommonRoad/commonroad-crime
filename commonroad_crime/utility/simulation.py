@@ -95,6 +95,10 @@ class SimulationBase(ABC):
                 state = copy.deepcopy(self.simulated_vehicle.state_at_time(ts))
                 check_elements_state(state)
                 state_list.append(state)
+        # additionally check the elements
+        check_elements_state(self.simulated_vehicle.state_at_time(time_step))
+        self.input.acceleration_y = self.simulated_vehicle.state_at_time(time_step).acceleration_y
+        self.input.acceleration = self.simulated_vehicle.state_at_time(time_step).acceleration
         return state_list
 
     def update_maneuver(self, maneuver: Maneuver):
@@ -237,13 +241,10 @@ class SimulationLong(SimulationBase):
         """
         Simulates the longitudinal state list from the given start time step.
         """
+        state_list = self.initialize_state_list(start_time_step)
         # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
-        # reinitisualize the input
-        state_list = self.initialize_state_list(start_time_step)
         # update the input
-        self.input.acceleration_y = pre_state.acceleration_y
-        self.input.acceleration = pre_state.acceleration
         check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
         state_list.append(pre_state)
@@ -388,8 +389,6 @@ class SimulationLat(SimulationBase):
         """
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
-        self.input.acceleration_y = pre_state.acceleration_y
-        self.input.acceleration = pre_state.acceleration
         # update the input
         check_elements_state(pre_state)
         self.set_inputs(pre_state)
