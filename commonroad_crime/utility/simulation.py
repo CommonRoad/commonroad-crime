@@ -92,7 +92,7 @@ class SimulationBase(ABC):
         state_list = []
         if time_step is not 0:
             for ts in range(0, time_step):
-                state = self.simulated_vehicle.state_at_time(ts)
+                state = copy.deepcopy(self.simulated_vehicle.state_at_time(ts))
                 check_elements_state(state)
                 state_list.append(state)
         return state_list
@@ -239,8 +239,11 @@ class SimulationLong(SimulationBase):
         """
         # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
+        # reinitisualize the input
         state_list = self.initialize_state_list(start_time_step)
         # update the input
+        self.input.acceleration_y = pre_state.acceleration_y
+        self.input.acceleration = pre_state.acceleration
         check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
         state_list.append(pre_state)
@@ -385,6 +388,8 @@ class SimulationLat(SimulationBase):
         """
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
+        self.input.acceleration_y = pre_state.acceleration_y
+        self.input.acceleration = pre_state.acceleration
         # update the input
         check_elements_state(pre_state)
         self.set_inputs(pre_state)

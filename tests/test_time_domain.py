@@ -3,6 +3,7 @@ Unit tests of the module time-scale measures
 """
 
 import unittest
+
 import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
@@ -88,7 +89,8 @@ class TestTimeDomain(unittest.TestCase):
 
         ttk_object = TTK(self.config)
         ttk = ttk_object.compute()
-        self.assertEqual(ttk, 0.6)
+        ttk_object.visualize()
+        self.assertEqual(ttk, -math.inf)
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
