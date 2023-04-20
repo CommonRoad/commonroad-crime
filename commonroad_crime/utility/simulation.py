@@ -139,7 +139,7 @@ class SimulationBase(ABC):
         # doesn't work for highD scenarios
         abs_velocity = np.sqrt(state.velocity ** 2 + state.velocity_y ** 2)
         if abs_velocity < 0.1 or \
-                state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
+                abs_velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
             return False
         return True
 
@@ -269,14 +269,10 @@ class SimulationLong(SimulationBase):
                     if suc_state.velocity ** 2 + suc_state.velocity_y ** 2 < 0.1:
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
-                        for time_step in range(pre_state.time_step + 1, self.time_horizon + 1):
-                            stat_state = copy.deepcopy(pre_state)
-                            stat_state.time_step = time_step
-                            state_list.append(stat_state)
-                    else:
-                        # for kickdown
-                        self.a_long = 0
-                        self.a_lat = 0
+                    for time_step in range(pre_state.time_step + 1, self.time_horizon + 1):
+                        stat_state = copy.deepcopy(pre_state)
+                        stat_state.time_step = time_step
+                        state_list.append(stat_state)
                 break
         return state_list
 
