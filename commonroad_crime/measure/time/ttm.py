@@ -135,7 +135,6 @@ class TTM(CriMeBase):
             if not flag_succ:
                 high = mid
                 continue
-            utils_gen.check_elements_state_list(state_list, self.dt)
             self.state_list_set.append(state_list[mid:])
             # flag for collision, 0: False, 1: True
             flag_coll = self.ttc_object.detect_collision(state_list)
