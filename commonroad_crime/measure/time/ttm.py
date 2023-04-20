@@ -130,13 +130,16 @@ class TTM(CriMeBase):
         while low < high:
             mid = int((low + high) / 2)
             state_list = self.simulator.simulate_state_list(mid)
-            utils_gen.check_elements_state_list(state_list, self.dt)
-            self.state_list_set.append(state_list[mid:])
             # flag for successful simulation, 0: False, 1: True
             flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
+            if not flag_succ:
+                high = mid
+                continue
+            utils_gen.check_elements_state_list(state_list, self.dt)
+            self.state_list_set.append(state_list[mid:])
             # flag for collision, 0: False, 1: True
             flag_coll = self.ttc_object.detect_collision(state_list)
-            if not flag_coll and flag_succ:
+            if not flag_coll:
                 low = mid + 1
                 self.selected_state_list = state_list
             else:
