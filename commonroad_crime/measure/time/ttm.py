@@ -82,7 +82,7 @@ class TTM(CriMeBase):
         if self.value not in [math.inf, -math.inf] and self.ttc:
             tstm = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
-            tstc = int(utils_gen.int_round(self.ttc_object.value / self.dt, 0))
+            tstc = int(utils_gen.int_round(self.ttc_object.value / self.dt, 0)) + self.time_step
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
 
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
