@@ -1,5 +1,8 @@
 # Changelog
-## [0.2.1] - 2023.05.03
+## [0.2.2] - 2023.05.03
+### Fixed
+- fixing the version of numpy
+## ~~[0.2.1] - 2023.05.03~~
 ### Changed
 - making changes for the final submission of IV2023
 ### Fixed
