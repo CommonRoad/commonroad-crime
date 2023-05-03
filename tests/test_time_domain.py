@@ -3,6 +3,7 @@ Unit tests of the module time-scale measures
 """
 
 import unittest
+
 import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
@@ -14,7 +15,7 @@ from commonroad_crime.utility.simulation import Maneuver
 
 try:
     import commonroad_reach.pycrreach
-    from commonroad_crime.metric.time_scale.wttr import WTTR
+    from commonroad_crime.measure.time.wttr import WTTR
     module_failed = False
 except ImportError:
     module_failed = True
@@ -82,13 +83,14 @@ class TestTimeDomain(unittest.TestCase):
         ttb_object = TTB(self.config)
         ttb = ttb_object.compute()
         ttb_object.visualize()
-        self.assertEqual(ttb, 1.6)
+        self.assertEqual(ttb, 2.0)
         ttb2 = ttb_object.compute()
         self.assertEqual(ttb, ttb2)
 
         ttk_object = TTK(self.config)
         ttk = ttk_object.compute()
-        self.assertEqual(ttk, 0.6)
+        ttk_object.visualize()
+        self.assertEqual(ttk, -math.inf)
 
         tts_object = TTS(self.config)
         tts = tts_object.compute()
@@ -105,7 +107,7 @@ class TestTimeDomain(unittest.TestCase):
         ttr_object = TTR(self.config)
         ttr = ttr_object.compute()
         ttr_object.visualize()
-        self.assertEqual(ttr, 1.6)
+        self.assertEqual(ttr, 2.0)
         self.assertEqual(ttr_object.maneuver, Maneuver.BRAKE)
 
         ttr_2 = ttr_object.compute(10)
@@ -158,6 +160,8 @@ class TestTimeDomain(unittest.TestCase):
         wttr = wttr_object.compute(10)
         wttr_object.visualize()
         self.assertEqual(wttr, 1.3)
+        wttr2 = wttr_object.compute()
+        self.assertAlmostEqual(wttr, wttr2 - 1.)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"

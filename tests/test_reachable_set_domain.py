@@ -5,14 +5,12 @@ Unit tests of the module reachable set scale measures
 import unittest
 
 try:
-    import commonroad_reach.pycrreach
+    from commonroad_crime.measure.reachable_set.drivable_area import DA
     from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
     import commonroad_crime.utility.logger as util_logger
     module_failed = False
 except ImportError:
     module_failed = True
-else:
-    from commonroad_crime.measure.reachable_set.drivable_area import DA
 
 
 class TestReachableSetDomain(unittest.TestCase):
@@ -27,5 +25,5 @@ class TestReachableSetDomain(unittest.TestCase):
     @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_drivable_area(self):
         da_solver = DA(self.config)
-        self.assertAlmostEqual(da_solver.compute(), 59.61)
+        self.assertAlmostEqual(da_solver.compute(), 60.13)
         da_solver.visualize()

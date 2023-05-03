@@ -11,7 +11,7 @@ import numpy as np
 import logging
 from scipy.spatial.distance import cdist
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State
+from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State, ObstacleType
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
@@ -27,9 +27,15 @@ def solver_wttc(veh_1: Obstacle,
     """
     Analytical solution of the worst-time-to-collision.
     """
-    r_v1, _ = compute_disc_radius_and_distance(veh_1.obstacle_shape.length,
-                                               veh_1.obstacle_shape.width)
-    r_v2, _ = compute_disc_radius_and_distance(veh_2.obstacle_shape.length,
+    if veh_1.obstacle_type == ObstacleType.PEDESTRIAN:
+        r_v1 = veh_1.obstacle_shape.radius
+    else:
+        r_v1, _ = compute_disc_radius_and_distance(veh_1.obstacle_shape.length,
+                                                   veh_1.obstacle_shape.width)
+    if veh_2.obstacle_type == ObstacleType.PEDESTRIAN:
+        r_v2 = veh_2.obstacle_shape.radius
+    else:
+        r_v2, _ = compute_disc_radius_and_distance(veh_2.obstacle_shape.length,
                                                veh_2.obstacle_shape.width)
     x_10, y_10 = veh_1.state_at_time(time_step).position
     x_20, y_20 = veh_2.state_at_time(time_step).position

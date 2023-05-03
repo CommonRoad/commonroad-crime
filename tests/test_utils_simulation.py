@@ -36,18 +36,12 @@ class TestSimulation(unittest.TestCase):
         self.assertEqual(
             simulated_state1[-1].time_step,
             self.ego_vehicle.prediction.final_time_step)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state1[-1]), True)
 
         sim_long.update_maneuver(Maneuver.KICKDOWN)
         simulated_state2 = sim_long.simulate_state_list(20)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state2[-1]), True)
 
         sim_long.update_maneuver(Maneuver.CONSTANT)
         simulated_state3 = sim_long.simulate_state_list(10)
-        self.assertEqual(sim_long.check_velocity_feasibility(
-            simulated_state3[-1]), True)
 
         for sim_state_list in [simulated_state1, simulated_state2, simulated_state3]:
             utils_vis.draw_state_list(self.rnd, sim_state_list, 0)

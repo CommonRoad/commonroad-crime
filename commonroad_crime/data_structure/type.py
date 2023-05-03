@@ -62,7 +62,7 @@ class TypeVelocity(str, Enum):
 
 class TypeAcceleration(str, Enum):
     DST = "deceleration-to-safety-time"
-    ALongReq = "required longitudinal acceleration (aka deceleration-rate-to-avoid-crash)"
+    ALongReq = "required longitudinal acceleration (aka deceleration rate to avoid crash)"
     ALatReq = "required lateral acceleration"
     AReq = "required acceleration"
 

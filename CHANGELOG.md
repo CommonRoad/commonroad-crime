@@ -1,5 +1,11 @@
 # Changelog
-
+## [0.2.1] - 2023.04.x
+### Changed
+- making changes for the final submission of IV2023
+### Fixed
+- the set prediction used for computing the DCE
+- the wrong update of vehicle state (acceleration values) during simulation for TTM 
+- the time step issue of some measures
 ## [0.2.0] - 2023.04.05
 ### Changed
 - Putting the deault configs within the package

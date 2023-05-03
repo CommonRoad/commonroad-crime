@@ -9,8 +9,9 @@ __status__ = "Pre-alpha"
 import math
 import matplotlib.pyplot as plt
 import logging
-
 import numpy as np
+
+from commonroad.geometry.shape import ShapeGroup
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
@@ -50,8 +51,13 @@ class DCE(CriMeBase):
         for i in range(time_step, len(state_list)):
             if self.other_vehicle.occupancy_at_time(i) is not None:
                 ego_poly = self.ego_vehicle.occupancy_at_time(i).shape.shapely_object
-                other_poly = self.other_vehicle.occupancy_at_time(i).shape.shapely_object
-                distance = ego_poly.distance(other_poly)
+                other_shape = self.other_vehicle.occupancy_at_time(i).shape
+                if isinstance(other_shape, ShapeGroup):
+                    distance = min(
+                        [ego_poly.distance(shape_element.shapely_object) for shape_element in other_shape.shapes])
+                else:
+                    other_poly = self.other_vehicle.occupancy_at_time(i).shape.shapely_object
+                    distance = ego_poly.distance(other_poly)
                 if distance < dce:
                     self.time_dce = i
                     dce = distance
@@ -92,4 +98,3 @@ class DCE(CriMeBase):
                 utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
-

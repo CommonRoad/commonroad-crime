@@ -15,6 +15,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
+from commonroad.geometry.shape import ShapeGroup
 from commonroad.scenario.state import PMState
 from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
@@ -70,8 +71,14 @@ def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgr
 def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
                            color: TUMcolor = TUMcolor.TUMblue):
     global zorder
-    x, y = obstacle.occupancy_at_time(time_step).shape.shapely_object.exterior.xy
-    rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+    obs_shape = obstacle.occupancy_at_time(time_step).shape
+    if isinstance(obs_shape, ShapeGroup):
+        for shape_element in obs_shape.shapes:
+            x, y = shape_element.shapely_object.exterior.xy
+            rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+    else:
+        x, y = obs_shape.shapely_object.exterior.xy
+        rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
     zorder += 1
 
 
@@ -188,12 +195,14 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
 def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps: List[int]):
     rnd = MPRenderer(plot_limits=plot_limit)
     rnd.draw_params.time_begin = time_steps[0]
+    if time_steps:
+        rnd.draw_params.time_end = time_steps[-1]
     rnd.draw_params.trajectory.draw_trajectory = False
     rnd.draw_params.dynamic_obstacle.draw_icon = True
     scenario.draw(rnd)
     rnd.render()
     for obs in scenario.obstacles:
-        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:],
+        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:time_steps[-1] + 1],
                         color=TUMcolor.TUMblue, linewidth=5)
         for ts in time_steps[1:]:
             draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)

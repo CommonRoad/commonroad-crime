@@ -92,9 +92,13 @@ class SimulationBase(ABC):
         state_list = []
         if time_step is not 0:
             for ts in range(0, time_step):
-                state = self.simulated_vehicle.state_at_time(ts)
+                state = copy.deepcopy(self.simulated_vehicle.state_at_time(ts))
                 check_elements_state(state)
                 state_list.append(state)
+        # additionally check the elements
+        check_elements_state(self.simulated_vehicle.state_at_time(time_step))
+        self.input.acceleration_y = self.simulated_vehicle.state_at_time(time_step).acceleration_y
+        self.input.acceleration = self.simulated_vehicle.state_at_time(time_step).acceleration
         return state_list
 
     def update_maneuver(self, maneuver: Maneuver):
@@ -133,8 +137,9 @@ class SimulationBase(ABC):
     def check_velocity_feasibility(self, state: Union[PMState, KSState]) -> bool:
         # the vehicle model in highD doesn't comply with commonroad vehicle models, thus the velocity limit
         # doesn't work for highD scenarios
-        if state.velocity < 0 or \
-                state.velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
+        abs_velocity = np.sqrt(state.velocity ** 2 + state.velocity_y ** 2)
+        if abs_velocity < 0.1 or \
+                abs_velocity > self.parameters.longitudinal.v_max:  # parameters.longitudinal.v_max:
             return False
         return True
 
@@ -236,9 +241,9 @@ class SimulationLong(SimulationBase):
         """
         Simulates the longitudinal state list from the given start time step.
         """
+        state_list = self.initialize_state_list(start_time_step)
         # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
-        state_list = self.initialize_state_list(start_time_step)
         # update the input
         check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
@@ -261,11 +266,14 @@ class SimulationLong(SimulationBase):
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 if suc_state is not None:
-                    if suc_state.velocity < 0:
+                    if suc_state.velocity ** 2 + suc_state.velocity_y ** 2 < 0.1:
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
-                self.a_long = 0
-                self.update_inputs_x_y(pre_state)
+                    for time_step in range(pre_state.time_step + 1, self.time_horizon + 1):
+                        stat_state = copy.deepcopy(pre_state)
+                        stat_state.time_step = time_step
+                        state_list.append(stat_state)
+                break
         return state_list
 
 

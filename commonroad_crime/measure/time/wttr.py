@@ -79,7 +79,7 @@ class WTTR(CriMeBase):
         """
         wttr = - math.inf
         low = initial_step
-        tstc = int(utils_gen.int_round(self.ttc / self.dt,  str(self.dt)[::-1].find('.')))
+        tstc = int(utils_gen.int_round(self.ttc / self.dt + self.time_step,  str(self.dt)[::-1].find('.')))
         high = tstc + initial_step
         time_end = self.ego_vehicle.prediction.final_time_step
         while low < high:
@@ -103,18 +103,19 @@ class WTTR(CriMeBase):
         return wttr
 
     def visualize(self):
-        wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step - 1
-        mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(wtstr))
-        self._update_initial_state(mid_state)
-        self.reach_config.update(planning_problem=self.reach_config.planning_problem)
-        self.reach_config.scenario.remove_obstacle(
-            self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
-        self.reach_interface.reset(self.reach_config)
-        self._end_sim = self.ego_vehicle.prediction.final_time_step
+        if self.value not in [math.inf, -math.inf]:
+            wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step - 1
+            mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(wtstr))
+            self._update_initial_state(mid_state)
+            self.reach_config.update(planning_problem=self.reach_config.planning_problem)
+            self.reach_config.scenario.remove_obstacle(
+                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
+            self.reach_interface.reset(self.reach_config)
+            self._end_sim = self.ego_vehicle.prediction.final_time_step
 
-        self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
-        util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                      step_start=0,
-                                                      step_end=self._end_sim)
-        # util_visual.plot_collision_checker(self.reach_interface)
+            self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
+            util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
+                                                          step_start=0,
+                                                          step_end=self._end_sim)
+            # util_visual.plot_collision_checker(self.reach_interface)
 

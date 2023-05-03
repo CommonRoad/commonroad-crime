@@ -1,3 +1,10 @@
+"""
+See paper: CommonRoad-CriMe: A Toolbox for Criticality Measures of Autonomous Vehicles
+
+Experiment: Sec. IV.B Evaluation on Scenarios
+"""
+
+
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
@@ -18,7 +25,8 @@ def main():
 
     # ==== compute the criticality using CriMe interface
     crime_interface = CriMeInterface(config)
-    crime_interface.evaluate_scenario([TTC, ALongReq, BTN, ALatReq, STN, P_MC, PF], time_start=0, time_end=20)
+    crime_interface.evaluate_scenario([TTC, ALongReq, BTN, ALatReq, DA, STN, P_MC, PF],
+                                      time_start=0, time_end=20)
 
     # # ==== visualize the result
     utils_vis.plot_criticality_curve(crime_interface)

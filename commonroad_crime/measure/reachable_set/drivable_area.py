@@ -53,7 +53,11 @@ class DA(CriMeBase):
 
     def _update_initial_state(self, target_state: Union[InitialState, CustomState]):
         self.reach_config.planning_problem.initial_state.position = target_state.position
-        self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
+        if hasattr(target_state, "velocity_y"):
+            self.reach_config.planning_problem.initial_state.velocity = np.sqrt(target_state.velocity**2 +
+                                                                                target_state.velocity_y**2)
+        else:
+            self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
         self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
         self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
 
