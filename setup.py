@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='commonroad-crime',
-      version='0.2.0',
+      version='0.2.1',
       description='criticality measures of automated vehicles',
       keywords="criticality, autonomous driving",
       author='Yuanfei Lin, Oliver Specht, Ivana Peneva',
@@ -15,7 +15,7 @@ setup(name='commonroad-crime',
           'commonroad-vehicle-models>=3.0.0',
           'commonroad-route-planner>=2022.3',
           'commonroad-drivability-checker>=2022.2',
-          'matplotlib>=3.5.2'
+          'matplotlib>=3.5.2',
           'numpy>=1.23.0',
           'scipy>=1.7.3',
           'shapely<3.0.0,>=2.0.1',
