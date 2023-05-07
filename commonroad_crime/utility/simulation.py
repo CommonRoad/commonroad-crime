@@ -208,7 +208,7 @@ class SimulationLong(SimulationBase):
                  maneuver: Union[Maneuver],
                  simulated_vehicle: DynamicObstacle,
                  config: CriMeConfiguration):
-        if maneuver not in [Maneuver.BRAKE, Maneuver.KICKDOWN, Maneuver.CONSTANT, Maneuver.STOPMC]:
+        if maneuver not in [Maneuver.BRAKE, Maneuver.KICKDOWN, Maneuver.CONSTANT, Maneuver.STOPMC, Maneuver.NONE]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         super(SimulationLong, self).__init__(maneuver, simulated_vehicle, config)
@@ -314,7 +314,7 @@ class SimulationLat(SimulationBase):
                             Maneuver.OVERTAKELEFT, Maneuver.OVERTAKERIGHT,
                             Maneuver.TURNLEFT, Maneuver.TURNRIGHT,
                             Maneuver.LANECHANGEMC, Maneuver.TURNMC,
-                            Maneuver.OVERTAKEMC]:
+                            Maneuver.OVERTAKEMC, Maneuver.NONE]:
             raise ValueError(
                 f"<Criticality/Simulation>: provided maneuver {maneuver} is not supported or goes to the wrong category")
         self._nr_stage = 0
