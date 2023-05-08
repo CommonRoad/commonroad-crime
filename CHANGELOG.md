@@ -1,4 +1,8 @@
 # Changelog
+## [0.2.3] - 2023.05.08
+### Fixed
+- fix the way of obtaining the default configurations, which didn't work for using the crime with the pip package
+- fix the initialization of simulators with NONE maneuver
 ## [0.2.2] - 2023.05.03
 ### Fixed
 - fixing the version of numpy
