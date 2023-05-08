@@ -1,5 +1,5 @@
 # Changelog
-## [0.2.3] - 2023.05.08
+## [0.2.3 & 0.2.4] - 2023.05.08
 ### Fixed
 - fix the way of obtaining the default configurations, which didn't work for using the crime with the pip package
 - fix the initialization of simulators with NONE maneuver
