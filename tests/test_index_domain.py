@@ -10,6 +10,7 @@ import commonroad_crime.utility.logger as util_logger
 
 
 class TestIndexDomain(unittest.TestCase):
+
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'ZAM_Zip-1_56_T-1'
@@ -45,3 +46,8 @@ class TestIndexDomain(unittest.TestCase):
         tci_1 = tci_object.compute(0)
         tci_object.visualize()
         self.assertEqual(tci_1, 0.0)
+
+    def test_cpi(self):
+        cpi_object = CPI(self.config)
+        cpi = cpi_object.compute()
+        self.assertAlmostEqual(cpi, 7.853e-06)
