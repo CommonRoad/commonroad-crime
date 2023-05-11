@@ -5,7 +5,7 @@ Unit tests of the module index-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import BTN, STN, TCI
+from commonroad_crime.measure import BTN, STN, TCI, CPI
 import commonroad_crime.utility.logger as util_logger
 
 
