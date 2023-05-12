@@ -34,6 +34,15 @@ class CPI(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(CPI, self).__init__(config)
         self._a_lon_req_object = ALongReq(config)
+        # TODO Add interface for different a_lon_min.
+        # self._a_lon_min_mean = self.configuration.vehicle.curvilinear.a_lon_min
+        # We assume the MADR(aka. Maximum Avaliable Deceleration Rate) is normally distributed. 
+        self.cpi_config = self.configuration.index.cpi
+        self._madr_dist = norm(self.cpi_config.madr_mean,self.cpi_config.madr_devi)
+        self.tr_ub_prob = self._madr_dist.sf(self.cpi_config.madr_uppb)
+        self.tr_lb_prob = self._madr_dist.cdf(self.cpi_config.madr_lowb)
+        self.value = 0
+
 
     def compute(self, vehicle_id: int = None, time_step: int = None):
         utils_log.print_and_log_info(
@@ -42,22 +51,8 @@ class CPI(CriMeBase):
         )
 
         self.time_step = time_step
-        self.value = 0
         timespan = 0
         a_lon_req = 0
-
-        # TODO Add interface for different a_lon_min.
-        # self._a_lon_min_mean = self.configuration.vehicle.curvilinear.a_lon_min
-
-        # We assume the madr is normally distributed (Parameters based on paper of Cunto)
-        self.deviation = 1.40
-        self.mean = -8.45
-        self.upperbound_a = -4.23
-        self.lowerbound_a = -12.68
-        self._madr_dist = norm(self.mean, self.deviation)
-
-        tr_ub_prob = self._madr_dist.sf(self.upperbound_a)
-        tr_lb_prob = self._madr_dist.cdf(self.lowerbound_a)
 
         if self.time_step is None:
             # The CPI of ego vehicle in the time span of whole scenario.
@@ -69,13 +64,15 @@ class CPI(CriMeBase):
                 except:
                     break
 
-                if a_lon_req >= self.upperbound_a:
+                if a_lon_req >= self.cpi_config.madr_uppb:
                     continue
-                elif a_lon_req <= self.lowerbound_a:
+                elif a_lon_req <= self.cpi_config.madr_lowb:
                     self.value += 1
                 else:
+                    # P(ALonReq>MADR) is equal to intergral of PDF from AlonReq to upperbound.
+                    # -inf___lowerbound___ALonReq___upperbound___0___+inf
                     self.value += (self._madr_dist.sf(a_lon_req) -
-                                   tr_ub_prob) / (1 - tr_lb_prob - tr_ub_prob)
+                                   self.tr_ub_prob) / (1 - self.tr_lb_prob - self.tr_ub_prob)
         else:
             # The CPI of ego vehicle in a given time span.
             while timespan < self.time_step:
@@ -86,13 +83,13 @@ class CPI(CriMeBase):
                 except:
                     break
 
-                if a_lon_req >= self.upperbound_a:
+                if a_lon_req >= self.cpi_config.madr_uppb:
                     continue
-                elif a_lon_req <= self.lowerbound_a:
+                elif a_lon_req <= self.cpi_config.madr_lowb:
                     self.value += 1
                 else:
                     self.value += (self._madr_dist.sf(a_lon_req) -
-                                   tr_ub_prob) / (1 - tr_lb_prob - tr_ub_prob)
+                                   self.tr_ub_prob) / (1 - self.tr_lb_prob - self.tr_ub_prob)
 
         # Nomalize the result with timespan.
         self.value /= timespan
