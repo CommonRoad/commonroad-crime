@@ -36,67 +36,44 @@ class CPI(CriMeBase):
         self._a_lon_req_object = ALongReq(config)
         # TODO Add interface for different a_lon_min.
         # self._a_lon_min_mean = self.configuration.vehicle.curvilinear.a_lon_min
-        # We assume the MADR(aka. Maximum Avaliable Deceleration Rate) is normally distributed. 
+        # We assume the MADR(aka. Maximum Avaliable Deceleration Rate) is normally distributed.
         self.cpi_config = self.configuration.index.cpi
-        self._madr_dist = norm(self.cpi_config.madr_mean,self.cpi_config.madr_devi)
+        self._madr_dist = norm(self.cpi_config.madr_mean,
+                               self.cpi_config.madr_devi)
         self.tr_ub_prob = self._madr_dist.sf(self.cpi_config.madr_uppb)
         self.tr_lb_prob = self._madr_dist.cdf(self.cpi_config.madr_lowb)
         self.value = 0
 
-
-    def compute(self, vehicle_id: int = None, time_step: int = None):
+    def compute(self, vehicle_id: int, time_step: int = 0):
         utils_log.print_and_log_info(
             logger,
             f"* Computing the {self.measure_name} of ego vehicle in given scenario."
         )
 
-        self.time_step = time_step
-        timespan = 0
+        self.start_time_step = time_step
         a_lon_req = 0
+        self.final_time_step = self.ego_vehicle.prediction.final_time_step
 
-        if self.time_step is None:
-            # The CPI of ego vehicle in the time span of whole scenario.
-            while True:
-                try:
-                    a_lon_req = self._a_lon_req_object.compute_criticality(
-                        timespan, verbose=True)
-                    timespan += 1
-                except:
-                    break
+        for ts in range(self.start_time_step, self.final_time_step):
+            try:
+                a_lon_req = self._a_lon_req_object.compute(vehicle_id, ts)
+            except ValueError:
+                print("Vehicle %d is no longer in the lanelets." % vehicle_id)
+                continue
+            if a_lon_req >= self.cpi_config.madr_uppb:
+                continue
+            elif a_lon_req <= self.cpi_config.madr_lowb:
+                self.value += 1
+            else:
+                # P(ALonReq>MADR) is equal to intergral of PDF from AlonReq to upperbound.
+                # -inf___lowerbound___ALonReq___upperbound___0___+inf
+                self.value += (self._madr_dist.sf(a_lon_req) - self.tr_ub_prob
+                              ) / (1 - self.tr_lb_prob - self.tr_ub_prob)
 
-                if a_lon_req >= self.cpi_config.madr_uppb:
-                    continue
-                elif a_lon_req <= self.cpi_config.madr_lowb:
-                    self.value += 1
-                else:
-                    # P(ALonReq>MADR) is equal to intergral of PDF from AlonReq to upperbound.
-                    # -inf___lowerbound___ALonReq___upperbound___0___+inf
-                    self.value += (self._madr_dist.sf(a_lon_req) -
-                                   self.tr_ub_prob) / (1 - self.tr_lb_prob - self.tr_ub_prob)
-        else:
-            # The CPI of ego vehicle in a given time span.
-            while timespan < self.time_step:
-                try:
-                    a_lon_req = self._a_lon_req_object.compute_criticality(
-                        timespan, verbose=True)
-                    timespan += 1
-                except:
-                    break
-
-                if a_lon_req >= self.cpi_config.madr_uppb:
-                    continue
-                elif a_lon_req <= self.cpi_config.madr_lowb:
-                    self.value += 1
-                else:
-                    self.value += (self._madr_dist.sf(a_lon_req) -
-                                   self.tr_ub_prob) / (1 - self.tr_lb_prob - self.tr_ub_prob)
-
-        # Nomalize the result with timespan.
-        self.value /= timespan
+                # Nomalize the result with timespan.
+        self.value /= (self.final_time_step - self.start_time_step)
         utils_log.print_and_log_info(
-            logger,
-            f"*\t\t {self.measure_name} = {self.value} (T: 0~{timespan-1}).")
-
+            logger, f"*\t\t {self.measure_name} = {self.value}.")
         return self.value
 
     def visualize(self):

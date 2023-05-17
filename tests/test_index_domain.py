@@ -49,5 +49,5 @@ class TestIndexDomain(unittest.TestCase):
 
     def test_cpi(self):
         cpi_object = CPI(self.config)
-        cpi = cpi_object.compute()
-        self.assertAlmostEqual(cpi, 7.853e-06)
+        cpi = cpi_object.compute_criticality(0)
+        self.assertAlmostEqual(cpi, 4.43456e-06)
