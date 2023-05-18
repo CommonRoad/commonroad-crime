@@ -50,11 +50,12 @@ class CPI(CriMeBase):
             f"* Computing the {self.measure_name} of ego vehicle in given scenario."
         )
 
-        self.start_time_step = time_step
-        a_lon_req = 0
-        self.final_time_step = self.ego_vehicle.prediction.final_time_step
+        self.time_step = time_step
+        end_time_step = self.ego_vehicle.prediction.final_time_step
 
-        for ts in range(self.start_time_step, self.final_time_step):
+        a_lon_req = 0
+
+        for ts in range(self.time_step, end_time_step):
             try:
                 a_lon_req = self._a_lon_req_object.compute(vehicle_id, ts)
             except ValueError:
@@ -70,8 +71,8 @@ class CPI(CriMeBase):
                 self.value += (self._madr_dist.sf(a_lon_req) - self.tr_ub_prob
                               ) / (1 - self.tr_lb_prob - self.tr_ub_prob)
 
-                # Nomalize the result with timespan.
-        self.value /= (self.final_time_step - self.start_time_step)
+        # Nomalize the result with timespan.
+        self.value /= (end_time_step - self.time_step)
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}.")
         return self.value
