@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.2.3"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -9,7 +9,6 @@ __status__ = "Pre-alpha"
 import glob
 import os
 from typing import Union
-import pkg_resources
 from omegaconf import OmegaConf, ListConfig, DictConfig
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -69,10 +68,11 @@ class ConfigurationBuilder:
         """
         config_default = OmegaConf.create()
         if cls.path_config_default == "":
-            resource_dir = 'commonroad_crime.data_structure.config_defaults'
-            path_file_all = pkg_resources.resource_listdir(resource_dir, '')
-            path_file_all = [pkg_resources.resource_filename(resource_dir, filename) for filename in path_file_all if
-                             filename.endswith('.yaml')]
+
+            resource_dir = os.path.dirname(os.path.realpath(__file__)) + '/config_defaults/'
+            path_file_all = os.listdir(resource_dir)
+            path_file_all = [os.path.join(resource_dir, filename)
+                             for filename in path_file_all if filename.endswith('.yaml')]
         else:
             path_file_all = glob.glob(cls.path_config_default + "/*.yaml")
         for path_file in path_file_all:

@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='commonroad-crime',
-      version='0.2.2',
+      version='0.2.4',
       description='criticality measures of automated vehicles',
       keywords="criticality, autonomous driving",
       author='Yuanfei Lin, Oliver Specht, Ivana Peneva',
@@ -26,5 +26,8 @@ setup(name='commonroad-crime',
           'tests': [
               'pytest>=7.1'
           ]
-      })
+      },
+      include_package_data=True,
+      package_data={'': ['*.yaml']}
+      )
 
