@@ -33,44 +33,48 @@ class ET(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
-    measure_name = TypeTime.ET
-    monotone = TypeMonotone.NEG
-
+    #measure_name = TypeTime.ET
+    #monotone = TypeMonotone.NEG
+    metric_name = TypeTime.ET
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
 
     def compute(self, obstacle_id, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
-        obstacle = self.sce.lanelet_network.find_lanelet_by_id(obstacle_id)
+        if obstacle_id >= len(self.sce.obstacles):
+            utils_log.print_and_log_info(logger, f"*\t\t obstacle id {obstacle_id} is invalid ")
+            return None, None
+        obstacle = self.sce.obstacles[obstacle_id]
         ca = None
-        if utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
-                                           obstacle, self.time_step):
-            utils_log.print_and_log_info(logger, f"*\t\t vehicle {obstacle} is  "
-                                                 f"in the same lanelet as the "
-                                                 f"ego vehicle {self.ego_vehicle.obstacle_id}")
-        else:
-            # ca stands for conflict area
-            self.time_step = time_step
-            self.set_other_vehicles(obstacle.obstacle_id)
-            if isinstance(self.other_vehicle, DynamicObstacle):
-                ref_path_lanelets_ego = self.get_ref_path_lanelets_ID(time_step, self.ego_vehicle)
-                for i in range(time_step, len(obstacle.prediction.trajectory.state_list)):
-                    obstacle_state = obstacle.state_at_time(i)
-                    obstacle_lanelet_id: int = \
-                        self.sce.lanelet_network.find_lanelet_by_position([obstacle_state.position])[0][0]
-                    obstacle_lanelet = self.sce.lanelet_network.find_lanelet_by_id(obstacle_lanelet_id)
-                    intersected = set(ref_path_lanelets_ego).intersection(obstacle_lanelet_id)
-                    for intersected_lanelet in intersected:
-                        if ('intersection' in obstacle_lanelet.lanelet_type):
-                            obstacle_dir_lanelet_id = \
-                            self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
-                            if (obstacle_dir_lanelet_id != intersected_lanelet and self.same_income(
-                                    obstacle_dir_lanelet_id, intersected_lanelet)):
-                                ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet)
-                if ca is not None:
-                    time_in_ca = self.time_in_CA(ca, self.time_step, ca)
-                return ca, time_in_ca
+        time_in_ca = None
+        # ca stands for conflict area
+        self.time_step = time_step
+        self.set_other_vehicles(obstacle.obstacle_id)
+        if isinstance(self.other_vehicle, DynamicObstacle):
+            ref_path_lanelets_ego = self.get_ref_path_lanelets_ID(time_step, self.ego_vehicle)
+            for i in range(time_step, len(obstacle.prediction.trajectory.state_list)):
+                obstacle_state = obstacle.state_at_time(i)
+                obstacle_lanelet_id = \
+                    self.sce.lanelet_network.find_lanelet_by_position([obstacle_state.position])[0]
+                intersected_ids = set(ref_path_lanelets_ego).intersection(set(obstacle_lanelet_id))
+                print(ref_path_lanelets_ego)
+                print(obstacle_lanelet_id)
+                for intersected_lanelet_id in intersected_ids:
+                    print("I'm here")
+                    intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
+                    if ('intersection' in intersected_lanelet.lanelet_type):
+                        print("I'm finally here")
+                        obstacle_dir_lanelet_id = \
+                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
+                        if (obstacle_dir_lanelet_id != intersected_lanelet and self.same_income(
+                                obstacle_dir_lanelet_id, intersected_lanelet)):
+                            ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet)
+            if ca is not None:
+                time_in_ca = self.time_in_CA(ca, self.time_step, ca)
+            return ca, time_in_ca
+        else :
+            utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle ca does not exist")
         return ca, None
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
