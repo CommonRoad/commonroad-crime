@@ -39,19 +39,10 @@ class ET(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
 
-    def compute(self, time_step: int = 0):
+    def compute(self, obstacle_id, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
-        obstacle_list: list[Union[StaticObstacle, DynamicObstacle]] = self.sce.obstacles
-        ET_sce = np.NINF
-        for obstacle in obstacle_list:
-            _, ET_two_vehicles = self.calculate_ca_and_ET_two_vehicles(obstacle, time_step)
-            ET_sce = np.max(ET_two_vehicles, ET_sce)
-        if ET_sce == np.NINF:
-            utils_log.print_and_log_info(logger, "* The ET of this scene/scenario doesn't exist")
-        return ET_sce
-
-    def calculate_ca_and_ET_two_vehicles(self, obstacle, time_step: int = 0):
+        obstacle = self.sce.lanelet_network.find_lanelet_by_id(obstacle_id)
         ca = None
         if utils_gen.check_in_same_lanelet(self.sce.lanelet_network, self.ego_vehicle,
                                            obstacle, self.time_step):
@@ -72,16 +63,15 @@ class ET(CriMeBase):
                     intersected = set(ref_path_lanelets_ego).intersection(obstacle_lanelet_id)
                     for intersected_lanelet in intersected:
                         if ('intersection' in obstacle_lanelet.lanelet_type):
-                            obstacle_dir_lanelet_id = self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
-                            if (obstacle_dir_lanelet_id != intersected_lanelet and self.same_income(obstacle_dir_lanelet_id, intersected_lanelet)):
+                            obstacle_dir_lanelet_id = \
+                            self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
+                            if (obstacle_dir_lanelet_id != intersected_lanelet and self.same_income(
+                                    obstacle_dir_lanelet_id, intersected_lanelet)):
                                 ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet)
-                            #test if lanelet in intersection
-                            #test if in same income
-                            #get ca polygon
                 if ca is not None:
                     time_in_ca = self.time_in_CA(ca, self.time_step, ca)
                 return ca, time_in_ca
-        return None, np.NINF
+        return ca, None
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
@@ -98,7 +88,10 @@ class ET(CriMeBase):
             first_incoming_lanelet_a = first_incoming_lanelet_a.predecessor[0]
         while ("intersection" in first_incoming_lanelet_b.lanelet_type):
             first_incoming_lanelet_b = first_incoming_lanelet_b.predecessor[0]
-        intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections(lanelet_id_a)
+        intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections[lanelet_id_a]
+        incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a]
+        incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_a]
+        return incoming_a == incoming_b
 
 
     def get_ref_path_lanelets_ID(self, time_step, vehicle):
