@@ -34,6 +34,7 @@ class ET(CriMeBase):
     See https://criticality-metrics.readthedocs.io/
     """
     metric_name = TypeTime.ET
+    measure_name = TypeTime.ET
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
         self.ca = None
@@ -59,7 +60,7 @@ class ET(CriMeBase):
                     intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
                     if (self.is_at_intersection(intersected_lanelet)):
                         obstacle_dir_lanelet_id = \
-                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
+                            self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
                         if (obstacle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
                                 obstacle_dir_lanelet_id, intersected_lanelet_id)):
                             ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet_id)
@@ -67,18 +68,19 @@ class ET(CriMeBase):
                 time_in_ca = self.time_in_CA(self.time_step, ca)
                 self.ca = ca
                 self.value = time_in_ca
-                return ca, time_in_ca
+                return time_in_ca
             else :
                 utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
-                return None, None
+                return math.inf
         else :
             utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle, ca does not exist")
-            return None, None
+            return math.inf
     def visualize(self, figsize: tuple = (25, 15)):
         if self.ca is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
         if self.exit is None and self.enter is None:
+            utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
         self._initialize_vis(figsize=figsize)
         self.rnd.render()
@@ -103,6 +105,8 @@ class ET(CriMeBase):
             else:
                 plt.show()
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
+        if ((lanelet_id_a is None) or (lanelet_id_b is None)):
+            return None
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
         lanelet_a_polygon: Polygon = lanelet_a.polygon.shapely_object
