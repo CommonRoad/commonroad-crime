@@ -33,24 +33,19 @@ class ET(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
-    #measure_name = TypeTime.ET
-    #monotone = TypeMonotone.NEG
     metric_name = TypeTime.ET
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
 
-    def compute(self, obstacle_id, time_step: int = 0):
+    def compute(self, vehicle_id, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
-        if obstacle_id >= len(self.sce.obstacles):
-            utils_log.print_and_log_info(logger, f"*\t\t obstacle id {obstacle_id} is invalid ")
-            return None, None
-        obstacle = self.sce.obstacles[obstacle_id]
-        ca = None
-        time_in_ca = None
-        # ca stands for conflict area
+        self.set_other_vehicles(vehicle_id)
+        obstacle = self.sce.obstacle_by_id(vehicle_id)
         self.time_step = time_step
-        self.set_other_vehicles(obstacle.obstacle_id)
+
+        ca = None
+        # ca stands for conflict area
         if isinstance(self.other_vehicle, DynamicObstacle):
             ref_path_lanelets_ego = self.get_ref_path_lanelets_ID(time_step, self.ego_vehicle)
             for i in range(time_step, len(obstacle.prediction.trajectory.state_list)):
@@ -58,24 +53,23 @@ class ET(CriMeBase):
                 obstacle_lanelet_id = \
                     self.sce.lanelet_network.find_lanelet_by_position([obstacle_state.position])[0]
                 intersected_ids = set(ref_path_lanelets_ego).intersection(set(obstacle_lanelet_id))
-                print(ref_path_lanelets_ego)
-                print(obstacle_lanelet_id)
                 for intersected_lanelet_id in intersected_ids:
-                    print("I'm here")
                     intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
-                    if ('intersection' in intersected_lanelet.lanelet_type):
-                        print("I'm finally here")
+                    if (self.is_at_intersection(intersected_lanelet)):
                         obstacle_dir_lanelet_id = \
                         self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
-                        if (obstacle_dir_lanelet_id != intersected_lanelet and self.same_income(
-                                obstacle_dir_lanelet_id, intersected_lanelet)):
-                            ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet)
+                        if (obstacle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
+                                obstacle_dir_lanelet_id, intersected_lanelet_id)):
+                            ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet_id)
             if ca is not None:
-                time_in_ca = self.time_in_CA(ca, self.time_step, ca)
-            return ca, time_in_ca
+                time_in_ca = self.time_in_CA(self.time_step, ca)
+                return ca, time_in_ca
+            else :
+                utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
+                return None, None
         else :
-            utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle ca does not exist")
-        return ca, None
+            utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle, ca does not exist")
+            return None, None
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
@@ -88,33 +82,49 @@ class ET(CriMeBase):
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
         first_incoming_lanelet_a = lanelet_a
         first_incoming_lanelet_b = lanelet_b
-        while("intersection" in first_incoming_lanelet_a.lanelet_type):
-            first_incoming_lanelet_a = first_incoming_lanelet_a.predecessor[0]
-        while ("intersection" in first_incoming_lanelet_b.lanelet_type):
-            first_incoming_lanelet_b = first_incoming_lanelet_b.predecessor[0]
-        intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections[lanelet_id_a]
-        incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a]
-        incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_a]
-        return incoming_a == incoming_b
+        while(self.is_at_intersection(first_incoming_lanelet_a)):
+            predecessor = first_incoming_lanelet_a.predecessor
+            if (len(predecessor) >= 1):
+                first_incoming_lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
+            else :
+                return False
 
-
+        while (self.is_at_intersection(first_incoming_lanelet_b)):
+            predecessor = first_incoming_lanelet_b.predecessor
+            if (len(predecessor) >= 1):
+                first_incoming_lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
+            else:
+                return False
+        intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections[first_incoming_lanelet_a.lanelet_id]
+        incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a.lanelet_id]
+        incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_b.lanelet_id]
+        return incoming_a.incoming_id == incoming_b.incoming_id
+    def is_at_intersection(self, lanelet_x):
+        if ('intersection' in lanelet_x.lanelet_type):
+            return True
+        intersections = self.sce.lanelet_network.intersections
+        at_intersection = False
+        for intersection in intersections:
+            for incoming in intersection.incomings:
+                successors_left = [successor for successor in incoming.successors_left]
+                successors_right = [successor for successor in incoming.successors_right]
+                successors_straight = [successor for successor in incoming.successors_straight]
+                if lanelet_x.lanelet_id in set(successors_straight + successors_left + successors_right):
+                    at_intersection = True
+        return at_intersection
     def get_ref_path_lanelets_ID(self, time_step, vehicle):
         state_list = vehicle.prediction.trajectory.state_list
-        last_lanelet_id = None
-        ref_path_lanelets_ID = []
+        ref_path_lanelets_ID = set()
         for i in range(time_step, len(state_list)):
-            lanelet_id: int = \
-                self.sce.lanelet_network.find_lanelet_by_position([vehicle.state_at_time(i).position])[0][0]
-            if last_lanelet_id != lanelet_id:
-                last_lanelet_id = lanelet_id
-                ref_path_lanelets_ID.append(last_lanelet_id)
-        return ref_path_lanelets_ID
+            lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([vehicle.state_at_time(i).position])[0]
+            ref_path_lanelets_ID.update(lanelet_id)
+        return list(ref_path_lanelets_ID)
     def time_in_CA(self, time_step, CA):
         already_in = None
         enter_time = None
         exit_time = None
         for i in range(time_step, len(self.ego_vehicle.prediction.trajectory.state_list)):
-            ego_v_poly = utils_sol.create_polygon(self.ego_vehicle, i)
+            ego_v_poly = self.create_polygon(self.ego_vehicle, i)
             if ego_v_poly.intersects(CA) and already_in is None:
                 enter_time = i
                 already_in = True
@@ -125,10 +135,42 @@ class ET(CriMeBase):
                 time = time * self.dt
                 return time
 
-        if enter_time == None:
+        if enter_time is None:
             utils_log.print_and_log_info(logger, "* The ego vehicle never encroaches the CA")
             return np.NINF
         elif exit_time is None:
             utils_log.print_and_log_info(logger,
                                          "* The ego vehicle encroaches the CA, but never leaves it")
             return np.NINF
+
+    def create_polygon(self, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
+                       l_back: float = 0) -> Polygon:
+        """
+        Computes the shapely-polygon of an obstacle/vehicle. Will keep minimum shape of the object, but can be extended by
+        providing different values, if they are bigger than the original values.
+
+        :param obstacle: obstacle of which the polygon should be calculated
+        :param time_step: point in time in scenario
+        :param w: new width
+        :param l_front: extended length to the front, measured from the center
+        :param l_back: extended length to the back, measured from the center
+        :return: shapely-polygon of the obstacle
+        """
+        pos = obstacle.state_at_time(time_step).position
+        angle = obstacle.state_at_time(time_step).orientation
+        angle_cos = math.cos(angle)
+        angle_sin = math.sin(angle)
+        width = max(obstacle.obstacle_shape.width * 0.5, w)
+        length_front = max(obstacle.obstacle_shape.length * 0.5, l_front)
+        length_back = max(obstacle.obstacle_shape.length * 0.5, l_back)
+        coords = [(pos[0] + length_front * angle_cos - width * angle_sin,
+                   pos[1] + length_front * angle_sin + width * angle_cos),
+                  (pos[0] - length_back * angle_cos - width * angle_sin,
+                   pos[1] - length_back * angle_sin + width * angle_cos),
+                  (pos[0] - length_back * angle_cos + width * angle_sin,
+                   pos[1] - length_back * angle_sin - width * angle_cos),
+                  (pos[0] + length_front * angle_cos + width * angle_sin,
+                   pos[1] + length_front * angle_sin - width * angle_cos),
+                  (pos[0] + length_front * angle_cos - width * angle_sin,
+                   pos[1] + length_front * angle_sin + width * angle_cos)]
+        return Polygon(coords)
