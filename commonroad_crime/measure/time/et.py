@@ -36,6 +36,7 @@ class ET(CriMeBase):
     metric_name = TypeTime.ET
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
+        self.ca = None
 
     def compute(self, vehicle_id, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
@@ -43,7 +44,8 @@ class ET(CriMeBase):
         self.set_other_vehicles(vehicle_id)
         obstacle = self.sce.obstacle_by_id(vehicle_id)
         self.time_step = time_step
-
+        self.enter = None
+        self.exit = None
         ca = None
         # ca stands for conflict area
         if isinstance(self.other_vehicle, DynamicObstacle):
@@ -63,6 +65,8 @@ class ET(CriMeBase):
                             ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet_id)
             if ca is not None:
                 time_in_ca = self.time_in_CA(self.time_step, ca)
+                self.ca = ca
+                self.value = time_in_ca
                 return ca, time_in_ca
             else :
                 utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
@@ -70,6 +74,34 @@ class ET(CriMeBase):
         else :
             utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle, ca does not exist")
             return None, None
+    def visualize(self, figsize: tuple = (25, 15)):
+        if self.ca is None:
+            utils_log.print_and_log_info(logger, "* No conflict area")
+            return 0
+        if self.exit is None and self.enter is None:
+            return 0
+        self._initialize_vis(figsize=figsize)
+        self.rnd.render()
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=5)
+        if self.exit is not None:
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self.exit),
+                                 color=TUMcolor.TUMorange)
+        if self.enter is not None:
+            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self.enter),
+                                 color=TUMcolor.TUMblack)
+
+        plt.title(f"{self.metric_name} of {self.value} time steps")
+        if self.ca is not None:
+            x_i, y_i = self.ca.exterior.xy
+            plt.plot(x_i, y_i, color='red')
+            plt.fill(x_i, y_i)
+
+        if self.configuration.debug.draw_visualization:
+            if self.configuration.debug.save_plots:
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+            else:
+                plt.show()
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
@@ -127,14 +159,16 @@ class ET(CriMeBase):
             ego_v_poly = self.create_polygon(self.ego_vehicle, i)
             if ego_v_poly.intersects(CA) and already_in is None:
                 enter_time = i
+                self.enter = enter_time - 1
                 already_in = True
             if not ego_v_poly.intersects(CA) and already_in is True:
                 exit_time = i
+                self.exit = exit_time
                 time = exit_time - enter_time
                 # time steps to seconds
                 time = time * self.dt
                 return time
-
+        return math.inf
         if enter_time is None:
             utils_log.print_and_log_info(logger, "* The ego vehicle never encroaches the CA")
             return np.NINF
