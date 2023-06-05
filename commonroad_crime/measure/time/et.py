@@ -35,6 +35,7 @@ class ET(CriMeBase):
     """
     metric_name = TypeTime.ET
     measure_name = TypeTime.ET
+    monotone = TypeMonotone.NEG
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
         self.ca = None
