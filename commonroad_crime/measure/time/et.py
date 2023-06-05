@@ -43,38 +43,49 @@ class ET(CriMeBase):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
-        obstacle = self.sce.obstacle_by_id(vehicle_id)
+        other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         self.time_step = time_step
         self.enter = None
         self.exit = None
-        ca = None
-        # ca stands for conflict area
         if isinstance(self.other_vehicle, DynamicObstacle):
-            ref_path_lanelets_ego = self.get_ref_path_lanelets_ID(time_step, self.ego_vehicle)
-            for i in range(time_step, len(obstacle.prediction.trajectory.state_list)):
-                obstacle_state = obstacle.state_at_time(i)
-                obstacle_lanelet_id = \
-                    self.sce.lanelet_network.find_lanelet_by_position([obstacle_state.position])[0]
-                intersected_ids = set(ref_path_lanelets_ego).intersection(set(obstacle_lanelet_id))
-                for intersected_lanelet_id in intersected_ids:
-                    intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
-                    if (self.is_at_intersection(intersected_lanelet)):
-                        obstacle_dir_lanelet_id = \
-                            self.sce.lanelet_network.find_most_likely_lanelet_by_state([obstacle_state])[0]
-                        if (obstacle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
-                                obstacle_dir_lanelet_id, intersected_lanelet_id)):
-                            ca = self.get_ca_from_lanelets(obstacle_dir_lanelet_id, intersected_lanelet_id)
+            ca = self.get_ca()
             if ca is not None:
-                time_in_ca = self.time_in_CA(self.time_step, ca)
+                et = self.get_et(self.time_step, ca)
                 self.ca = ca
-                self.value = time_in_ca
-                return time_in_ca
+                self.value = et
+                return et
             else :
                 utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
                 return math.inf
         else :
-            utils_log.print_and_log_info(logger, f"*\t\t {obstacle} Not a dynamic obstacle, ca does not exist")
+            utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, ca does not exist")
             return math.inf
+    def get_ca(self):
+        """
+        Determine the existence of a conflict area based on the definition, and return it if it exists.
+        1.Determine if there is any intersection between the lanelets traversed by the ego vehicle and other vehicles.
+        2.Determine if the intersected lanelets located at an intersection.
+        3.Determine if the intersecting lanelets are not in the direction of trajectory of the other vehicle.
+        4.Determine if the ego vehicle and the other vehicle originate from different incomings.
+        """
+        time_step = self.time_step
+        other_vehicle = self.other_vehicle
+        ref_path_lanelets_ego = self.get_ref_path_lanelets_ID(time_step, self.ego_vehicle)
+        ca = None
+        for i in range(time_step, len(other_vehicle.prediction.trajectory.state_list)):
+            other_vehicle_state = other_vehicle.state_at_time(i)
+            other_vehicle_lanelet_id = \
+                self.sce.lanelet_network.find_lanelet_by_position([other_vehicle_state.position])[0]
+            intersected_ids = set(ref_path_lanelets_ego).intersection(set(other_vehicle_lanelet_id))
+            for intersected_lanelet_id in intersected_ids: #1.
+                intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
+                if (self.is_at_intersection(intersected_lanelet)): #2.
+                    other_vehicle_dir_lanelet_id = \
+                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([other_vehicle_state])[0] #3.
+                    if (other_vehicle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
+                            other_vehicle_dir_lanelet_id, intersected_lanelet_id)): #4.
+                        ca = self.get_ca_from_lanelets(other_vehicle_dir_lanelet_id, intersected_lanelet_id)
+        return ca
     def visualize(self, figsize: tuple = (25, 15)):
         if self.ca is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
@@ -85,7 +96,10 @@ class ET(CriMeBase):
         self._initialize_vis(figsize=figsize)
         self.rnd.render()
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMblue, linewidth=5)
+                                  color=TUMcolor.TUMlightgray, linewidth=3)
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
+                                         color=TUMcolor.TUMdarkred)
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step, color=TUMcolor.TUMgreen)
         if self.exit is not None:
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self.exit),
                                  color=TUMcolor.TUMorange)
@@ -96,8 +110,8 @@ class ET(CriMeBase):
         plt.title(f"{self.metric_name} of {self.value} time steps")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
-            plt.plot(x_i, y_i, color='red')
-            plt.fill(x_i, y_i)
+            plt.plot(x_i, y_i, color=TUMcolor.TUMred)
+            plt.fill(x_i, y_i, color=TUMcolor.TUMred)
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
@@ -114,6 +128,9 @@ class ET(CriMeBase):
         ca = lanelet_a_polygon.intersection(lanelet_b_polygon)
         return ca
     def same_income(self, lanelet_id_a, lanelet_id_b):
+        """
+        "Determine if the two lanelets originate from the same incoming at an intersection."
+        """
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
         first_incoming_lanelet_a = lanelet_a
@@ -149,13 +166,16 @@ class ET(CriMeBase):
                     at_intersection = True
         return at_intersection
     def get_ref_path_lanelets_ID(self, time_step, vehicle):
+        """
+        Obtain all the lanes passed by the predicted trajectory of the vehicle.
+        """
         state_list = vehicle.prediction.trajectory.state_list
         ref_path_lanelets_ID = set()
         for i in range(time_step, len(state_list)):
             lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([vehicle.state_at_time(i).position])[0]
             ref_path_lanelets_ID.update(lanelet_id)
         return list(ref_path_lanelets_ID)
-    def time_in_CA(self, time_step, CA):
+    def get_et(self, time_step, CA):
         already_in = None
         enter_time = None
         exit_time = None
