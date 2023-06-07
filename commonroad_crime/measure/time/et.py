@@ -52,7 +52,8 @@ class ET(CriMeBase):
             ca = self.get_ca()
             if ca is not None:
                 et = self.get_et(self.time_step, ca)
-                self.ca = ca
+                if (et != math.inf):
+                    self.ca = ca
                 self.value = et
                 return et
             else :
@@ -196,11 +197,11 @@ class ET(CriMeBase):
         return math.inf
         if enter_time is None:
             utils_log.print_and_log_info(logger, "* The ego vehicle never encroaches the CA")
-            return np.NINF
+            return math.NINF
         elif exit_time is None:
             utils_log.print_and_log_info(logger,
                                          "* The ego vehicle encroaches the CA, but never leaves it")
-            return np.NINF
+            return math.NINF
 
     def create_polygon(self, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
                        l_back: float = 0) -> Polygon:
