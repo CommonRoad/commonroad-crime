@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview: module code &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../subpackages/index.html">CommonRoad_CriMe Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../subpackages/index.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html">commonroad_crime.data_structure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">commonroad_crime.data_structure.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">commonroad_crime.data_structure.configuration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">commonroad_crime.data_structure.configuration_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">commonroad_crime.data_structure.crime_interface module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">commonroad_crime.data_structure.scene module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">commonroad_crime.data_structure.type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.measure.html">commonroad_crime.measure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.html#module-commonroad_crime.measure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html">commonroad_crime.utility package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.batch_evaluation">commonroad_crime.utility.batch_evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.general">commonroad_crime.utility.general module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.logger">commonroad_crime.utility.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.optimization">commonroad_crime.utility.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.simulation">commonroad_crime.utility.simulation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.solver">commonroad_crime.utility.solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.visualization">commonroad_crime.utility.visualization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../subpackages/index.html#module-commonroad_crime">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="commonroad_crime/data_structure/base.html">commonroad_crime.data_structure.base</a></li>
+<li><a href="commonroad_crime/data_structure/configuration.html">commonroad_crime.data_structure.configuration</a></li>
+<li><a href="commonroad_crime/data_structure/configuration_builder.html">commonroad_crime.data_structure.configuration_builder</a></li>
+<li><a href="commonroad_crime/data_structure/crime_interface.html">commonroad_crime.data_structure.crime_interface</a></li>
+<li><a href="commonroad_crime/data_structure/scene.html">commonroad_crime.data_structure.scene</a></li>
+<li><a href="commonroad_crime/data_structure/type.html">commonroad_crime.data_structure.type</a></li>
+<li><a href="commonroad_crime/measure/acceleration/a_lat_req.html">commonroad_crime.measure.acceleration.a_lat_req</a></li>
+<li><a href="commonroad_crime/measure/acceleration/a_long_req.html">commonroad_crime.measure.acceleration.a_long_req</a></li>
+<li><a href="commonroad_crime/measure/acceleration/a_req.html">commonroad_crime.measure.acceleration.a_req</a></li>
+<li><a href="commonroad_crime/measure/acceleration/dst.html">commonroad_crime.measure.acceleration.dst</a></li>
+<li><a href="commonroad_crime/measure/distance/dce.html">commonroad_crime.measure.distance.dce</a></li>
+<li><a href="commonroad_crime/measure/distance/hw.html">commonroad_crime.measure.distance.hw</a></li>
+<li><a href="commonroad_crime/measure/distance/msd.html">commonroad_crime.measure.distance.msd</a></li>
+<li><a href="commonroad_crime/measure/distance/psd.html">commonroad_crime.measure.distance.psd</a></li>
+<li><a href="commonroad_crime/measure/index/aci.html">commonroad_crime.measure.index.aci</a></li>
+<li><a href="commonroad_crime/measure/index/btn.html">commonroad_crime.measure.index.btn</a></li>
+<li><a href="commonroad_crime/measure/index/ci.html">commonroad_crime.measure.index.ci</a></li>
+<li><a href="commonroad_crime/measure/index/cpi.html">commonroad_crime.measure.index.cpi</a></li>
+<li><a href="commonroad_crime/measure/index/pri.html">commonroad_crime.measure.index.pri</a></li>
+<li><a href="commonroad_crime/measure/index/rss.html">commonroad_crime.measure.index.rss</a></li>
+<li><a href="commonroad_crime/measure/index/soi.html">commonroad_crime.measure.index.soi</a></li>
+<li><a href="commonroad_crime/measure/index/stn.html">commonroad_crime.measure.index.stn</a></li>
+<li><a href="commonroad_crime/measure/index/tci.html">commonroad_crime.measure.index.tci</a></li>
+<li><a href="commonroad_crime/measure/jerk/lat_j.html">commonroad_crime.measure.jerk.lat_j</a></li>
+<li><a href="commonroad_crime/measure/jerk/long_j.html">commonroad_crime.measure.jerk.long_j</a></li>
+<li><a href="commonroad_crime/measure/potential/pf.html">commonroad_crime.measure.potential.pf</a></li>
+<li><a href="commonroad_crime/measure/potential/sp.html">commonroad_crime.measure.potential.sp</a></li>
+<li><a href="commonroad_crime/measure/probability/p_mc.html">commonroad_crime.measure.probability.p_mc</a></li>
+<li><a href="commonroad_crime/measure/probability/p_smh.html">commonroad_crime.measure.probability.p_smh</a></li>
+<li><a href="commonroad_crime/measure/probability/p_srs.html">commonroad_crime.measure.probability.p_srs</a></li>
+<li><a href="commonroad_crime/measure/time/ags.html">commonroad_crime.measure.time.ags</a></li>
+<li><a href="commonroad_crime/measure/time/et.html">commonroad_crime.measure.time.et</a></li>
+<li><a href="commonroad_crime/measure/time/pet.html">commonroad_crime.measure.time.pet</a></li>
+<li><a href="commonroad_crime/measure/time/pttc.html">commonroad_crime.measure.time.pttc</a></li>
+<li><a href="commonroad_crime/measure/time/tc.html">commonroad_crime.measure.time.tc</a></li>
+<li><a href="commonroad_crime/measure/time/tet.html">commonroad_crime.measure.time.tet</a></li>
+<li><a href="commonroad_crime/measure/time/thw.html">commonroad_crime.measure.time.thw</a></li>
+<li><a href="commonroad_crime/measure/time/tit.html">commonroad_crime.measure.time.tit</a></li>
+<li><a href="commonroad_crime/measure/time/ttb.html">commonroad_crime.measure.time.ttb</a></li>
+<li><a href="commonroad_crime/measure/time/ttc.html">commonroad_crime.measure.time.ttc</a></li>
+<li><a href="commonroad_crime/measure/time/ttc_star.html">commonroad_crime.measure.time.ttc_star</a></li>
+<li><a href="commonroad_crime/measure/time/ttce.html">commonroad_crime.measure.time.ttce</a></li>
+<li><a href="commonroad_crime/measure/time/ttk.html">commonroad_crime.measure.time.ttk</a></li>
+<li><a href="commonroad_crime/measure/time/ttm.html">commonroad_crime.measure.time.ttm</a></li>
+<li><a href="commonroad_crime/measure/time/ttr.html">commonroad_crime.measure.time.ttr</a></li>
+<li><a href="commonroad_crime/measure/time/tts.html">commonroad_crime.measure.time.tts</a></li>
+<li><a href="commonroad_crime/measure/time/ttz.html">commonroad_crime.measure.time.ttz</a></li>
+<li><a href="commonroad_crime/measure/time/tv.html">commonroad_crime.measure.time.tv</a></li>
+<li><a href="commonroad_crime/measure/time/wttc.html">commonroad_crime.measure.time.wttc</a></li>
+<li><a href="commonroad_crime/measure/velocity/cs.html">commonroad_crime.measure.velocity.cs</a></li>
+<li><a href="commonroad_crime/measure/velocity/delta_v.html">commonroad_crime.measure.velocity.delta_v</a></li>
+<li><a href="commonroad_crime/utility/batch_evaluation.html">commonroad_crime.utility.batch_evaluation</a></li>
+<li><a href="commonroad_crime/utility/general.html">commonroad_crime.utility.general</a></li>
+<li><a href="commonroad_crime/utility/logger.html">commonroad_crime.utility.logger</a></li>
+<li><a href="commonroad_crime/utility/optimization.html">commonroad_crime.utility.optimization</a></li>
+<li><a href="commonroad_crime/utility/simulation.html">commonroad_crime.utility.simulation</a></li>
+<li><a href="commonroad_crime/utility/solver.html">commonroad_crime.utility.solver</a></li>
+<li><a href="commonroad_crime/utility/visualization.html">commonroad_crime.utility.visualization</a></li>
+</ul>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Max Mustermann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

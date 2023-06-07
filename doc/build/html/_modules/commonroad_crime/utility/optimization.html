@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>commonroad_crime.utility.optimization &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../../../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user/getting_started.html">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../subpackages/index.html">commonroad_crime package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html">commonroad_crime.data_structure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">commonroad_crime.data_structure.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">commonroad_crime.data_structure.configuration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">commonroad_crime.data_structure.configuration_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">commonroad_crime.data_structure.crime_interface module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">commonroad_crime.data_structure.scene module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">commonroad_crime.data_structure.type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html">commonroad_crime.measure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#module-commonroad_crime.measure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html">commonroad_crime.utility package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.batch_evaluation">commonroad_crime.utility.batch_evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.general">commonroad_crime.utility.general module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.logger">commonroad_crime.utility.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.optimization">commonroad_crime.utility.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.simulation">commonroad_crime.utility.simulation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.solver">commonroad_crime.utility.solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.visualization">commonroad_crime.utility.visualization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#module-commonroad_crime">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">commonroad_crime.utility.optimization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for commonroad_crime.utility.optimization</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;TUM Cyber-Physical Systems Group&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;KoSi&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;commonroad@lists.lrz.de&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Pre-alpha&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">casadi</span> <span class="k">as</span> <span class="nn">ca</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">commonroad.scenario.state</span> <span class="kn">import</span> <span class="n">PMState</span><span class="p">,</span> <span class="n">CustomState</span><span class="p">,</span> <span class="n">InitialState</span>
+<span class="kn">from</span> <span class="nn">commonroad.scenario.scenario</span> <span class="kn">import</span> <span class="n">Scenario</span><span class="p">,</span> <span class="n">DynamicObstacle</span>
+<span class="kn">from</span> <span class="nn">commonroad.scenario.trajectory</span> <span class="kn">import</span> <span class="n">Trajectory</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration</span> <span class="kn">import</span> <span class="n">CriMeConfiguration</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.scene</span> <span class="kn">import</span> <span class="n">Scene</span>
+<span class="kn">import</span> <span class="nn">commonroad_crime.utility.solver</span> <span class="k">as</span> <span class="nn">utils_sol</span>
+
+
+<div class="viewcode-block" id="OptimizerBase"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase">[docs]</a><span class="k">class</span> <span class="nc">OptimizerBase</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">CriMeConfiguration</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+<div class="viewcode-block" id="OptimizerBase.vehicle_model"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase.vehicle_model">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">vehicle_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="OptimizerBase.cost_function"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase.cost_function">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cost_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="OptimizerBase.constraints"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase.constraints">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="OptimizerBase.optimize"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase.optimize">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="TCIOptimizer"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer">[docs]</a><span class="k">class</span> <span class="nc">TCIOptimizer</span><span class="p">(</span><span class="n">OptimizerBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">CriMeConfiguration</span><span class="p">,</span> <span class="n">sce</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Scenario</span><span class="p">,</span> <span class="n">Scene</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TCIOptimizer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tci</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">veh_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vehicle</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opti</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">Opti</span><span class="p">()</span>
+        <span class="c1"># define state and input variables</span>
+        <span class="c1"># x_w, y_w, v_v, psi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># a_x, a_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">sce</span><span class="o">.</span><span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sce</span> <span class="o">=</span> <span class="n">sce</span>
+
+<div class="viewcode-block" id="TCIOptimizer.vehicle_model"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.vehicle_model">[docs]</a>    <span class="k">def</span> <span class="nf">vehicle_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_state</span><span class="p">:</span> <span class="n">PMState</span><span class="p">):</span>
+        <span class="c1"># initializing the model using the velocity in the reference path</span>
+        <span class="n">v_old</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ref_state</span><span class="o">.</span><span class="n">velocity</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ref_state</span><span class="o">.</span><span class="n">velocity_y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">u_</span><span class="p">:</span> <span class="n">ca</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">x_</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                           <span class="n">x_</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">v_old</span><span class="p">,</span>
+                                           <span class="n">u_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="n">u_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v_old</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TCIOptimizer.constraints"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.constraints">[docs]</a>    <span class="k">def</span> <span class="nf">constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ego_veh</span><span class="p">:</span> <span class="n">DynamicObstacle</span><span class="p">,</span>
+                    <span class="n">boundary_limit_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]):</span>
+        <span class="n">x_initial</span> <span class="o">=</span> <span class="n">ego_veh</span><span class="o">.</span><span class="n">initial_state</span>
+        <span class="n">ref_state_list</span> <span class="o">=</span> <span class="n">ego_veh</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">state_list</span>
+        <span class="c1"># initial condition</span>
+        <span class="n">ini_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x_initial</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                          <span class="p">[</span><span class="n">x_initial</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                          <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_initial</span><span class="o">.</span><span class="n">velocity</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x_initial</span><span class="o">.</span><span class="n">velocity_y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)],</span>
+                          <span class="p">[</span><span class="n">x_initial</span><span class="o">.</span><span class="n">orientation</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">ini_x</span><span class="p">)</span>
+        <span class="c1"># three circle approximation</span>
+        <span class="n">rad_ego</span><span class="p">,</span> <span class="n">dis_ego</span> <span class="o">=</span> <span class="n">utils_sol</span><span class="o">.</span><span class="n">compute_disc_radius_and_distance</span><span class="p">(</span><span class="n">ego_veh</span><span class="o">.</span><span class="n">obstacle_shape</span><span class="o">.</span><span class="n">length</span><span class="p">,</span>
+                                                                      <span class="n">ego_veh</span><span class="o">.</span><span class="n">obstacle_shape</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">x_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vehicle_model</span><span class="p">(</span><span class="n">ref_state_list</span><span class="p">[</span><span class="n">k</span><span class="p">])(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:],</span>
+                                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span><span class="p">[</span><span class="n">k</span><span class="p">,</span>
+                                                                                    <span class="p">:])</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">x_next</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;=</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">veh_config</span><span class="o">.</span><span class="n">cartesian</span><span class="o">.</span><span class="n">longitudinal</span><span class="o">.</span><span class="n">a_max</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># road boundary + ego&#39;s shape</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">bounded</span><span class="p">(</span><span class="n">boundary_limit_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">rad_ego</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                                                   <span class="n">boundary_limit_list</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rad_ego</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sce</span><span class="o">.</span><span class="n">obstacles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ego_veh</span><span class="p">:</span>
+                    <span class="n">rad_obs</span><span class="p">,</span> <span class="n">dis_obs</span> <span class="o">=</span> <span class="n">utils_sol</span><span class="o">.</span><span class="n">compute_disc_radius_and_distance</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">obstacle_shape</span><span class="o">.</span><span class="n">length</span><span class="p">,</span>
+                                                                                  <span class="n">obs</span><span class="o">.</span><span class="n">obstacle_shape</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+                    <span class="c1"># distance between vehicles</span>
+                    <span class="k">if</span> <span class="n">obs</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                        <span class="n">obs_state</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dis_ego</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ca</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">-</span>
+                                     <span class="n">obs_state</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dis_obs</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ca</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span>
+                                                <span class="n">obs_state</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+                                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dis_ego</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ca</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">-</span>
+                                     <span class="n">obs_state</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dis_obs</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ca</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span>
+                                                <span class="n">obs_state</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">rad_obs</span> <span class="o">+</span> <span class="n">rad_ego</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TCIOptimizer.cost_function"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.cost_function">[docs]</a>    <span class="k">def</span> <span class="nf">cost_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_initial</span><span class="p">:</span> <span class="n">InitialState</span><span class="p">,</span> <span class="n">ref_state_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PMState</span><span class="p">],</span>
+                      <span class="n">d_y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">r_y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">d_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_initial</span><span class="o">.</span><span class="n">time_step</span><span class="p">,</span>
+                       <span class="nb">min</span><span class="p">(</span><span class="n">x_initial</span><span class="o">.</span><span class="n">time_step</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_state_list</span><span class="p">))):</span>
+            <span class="n">v_old</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ref_state_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">velocity</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ref_state_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">velocity_y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">d_x</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">w_x</span> <span class="o">*</span> <span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="n">d_x</span>
+            <span class="k">if</span> <span class="n">d_y</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">w_y</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">v_old</span> <span class="o">/</span> \
+                       <span class="p">(</span><span class="n">d_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">veh_config</span><span class="o">.</span><span class="n">cartesian</span><span class="o">.</span><span class="n">longitudinal</span><span class="o">.</span><span class="n">v_max</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">x_initial</span><span class="o">.</span><span class="n">time_step</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">w_ax</span> <span class="o">*</span> \
+                       <span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">veh_config</span><span class="o">.</span><span class="n">cartesian</span><span class="o">.</span><span class="n">longitudinal</span><span class="o">.</span><span class="n">a_max</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> \
+                       <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">w_ay</span> <span class="o">*</span> \
+                       <span class="bp">self</span><span class="o">.</span><span class="n">_opt_controls</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">veh_config</span><span class="o">.</span><span class="n">cartesian</span><span class="o">.</span><span class="n">longitudinal</span><span class="o">.</span><span class="n">a_max</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="TCIOptimizer.compute_params"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.compute_params">[docs]</a>    <span class="k">def</span> <span class="nf">compute_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vehicle</span><span class="p">:</span> <span class="n">DynamicObstacle</span><span class="p">,</span> <span class="n">time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the state with the maximum lateral distance to all obstacles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">boundary_limit_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">r_y</span> <span class="o">=</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">d_x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">d_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">time_step</span><span class="p">,</span> <span class="n">time_step</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="n">dis_bound</span> <span class="o">=</span> <span class="n">utils_sol</span><span class="o">.</span><span class="n">compute_veh_dis_to_boundary</span><span class="p">(</span><span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">),</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">sce</span><span class="o">.</span><span class="n">lanelet_network</span><span class="p">)</span>
+                <span class="n">d_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dis_bound</span><span class="p">)</span>
+                <span class="n">boundary_limit_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dis_bound</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                            <span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dis_bound</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sce</span><span class="o">.</span><span class="n">obstacles</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">vehicle</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">obs</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                            <span class="n">dis_other</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">obs</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">dis_other</span> <span class="o">&gt;</span> <span class="n">d_y</span><span class="p">:</span>
+                                <span class="n">d_y</span> <span class="o">=</span> <span class="n">dis_other</span>
+                                <span class="n">d_x</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">obs</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                                <span class="n">r_y</span> <span class="o">=</span> <span class="n">vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">d_y</span><span class="p">,</span> <span class="n">d_x</span><span class="p">,</span> <span class="n">boundary_limit_list</span></div>
+
+<div class="viewcode-block" id="TCIOptimizer.optimize"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">ego_vehicle</span><span class="p">:</span> <span class="n">DynamicObstacle</span><span class="p">,</span>
+                 <span class="n">time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ca</span><span class="o">.</span><span class="n">OptiSol</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="n">r_y</span><span class="p">,</span> <span class="n">d_y</span><span class="p">,</span> <span class="n">d_x</span><span class="p">,</span> <span class="n">boundary_limit_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_params</span><span class="p">(</span><span class="n">ego_vehicle</span><span class="p">,</span> <span class="n">time_step</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_function</span><span class="p">(</span><span class="n">ego_vehicle</span><span class="o">.</span><span class="n">state_at_time</span><span class="p">(</span><span class="n">time_step</span><span class="p">),</span>
+                                 <span class="n">ego_vehicle</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">state_list</span><span class="p">,</span> <span class="n">d_y</span><span class="p">,</span> <span class="n">r_y</span><span class="p">,</span> <span class="n">d_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">(</span><span class="n">ego_vehicle</span><span class="p">,</span> <span class="n">boundary_limit_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">opts_setting</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ipopt.max_iter&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;ipopt.print_level&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;print_time&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                        <span class="s1">&#39;ipopt.acceptable_tol&#39;</span><span class="p">:</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="s1">&#39;ipopt.acceptable_obj_change_tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">solver</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">,</span> <span class="n">opts_setting</span><span class="p">)</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TCIOptimizer.convert_result_to_cr_trajectory"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer.convert_result_to_cr_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">convert_result_to_cr_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sol</span><span class="p">:</span> <span class="n">ca</span><span class="o">.</span><span class="n">OptiSol</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the current result to the CommonRoad trajectory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">opt_x</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_opt_states</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tci_config</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">kwarg</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">opt_x</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">opt_x</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>
+                <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">opt_x</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">opt_x</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                <span class="s1">&#39;time_step&#39;</span><span class="p">:</span> <span class="n">k</span>
+            <span class="p">}</span>
+            <span class="n">state_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CustomState</span><span class="p">(</span><span class="o">**</span><span class="n">kwarg</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Trajectory</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">state_list</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Max Mustermann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>commonroad_crime.utility.batch_evaluation &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../../../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user/getting_started.html">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../subpackages/index.html">commonroad_crime package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html">commonroad_crime.data_structure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">commonroad_crime.data_structure.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">commonroad_crime.data_structure.configuration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">commonroad_crime.data_structure.configuration_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">commonroad_crime.data_structure.crime_interface module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">commonroad_crime.data_structure.scene module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">commonroad_crime.data_structure.type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html">commonroad_crime.measure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#module-commonroad_crime.measure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html">commonroad_crime.utility package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.batch_evaluation">commonroad_crime.utility.batch_evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.general">commonroad_crime.utility.general module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.logger">commonroad_crime.utility.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.optimization">commonroad_crime.utility.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.simulation">commonroad_crime.utility.simulation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.solver">commonroad_crime.utility.solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.visualization">commonroad_crime.utility.visualization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#module-commonroad_crime">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">commonroad_crime.utility.batch_evaluation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for commonroad_crime.utility.batch_evaluation</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;TUM Cyber-Physical Systems Group&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;KoSi&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;commonroad@lists.lrz.de&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Pre-alpha&quot;</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">from</span> <span class="nn">commonroad.scenario.obstacle</span> <span class="kn">import</span> <span class="n">StaticObstacle</span>
+
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration_builder</span> <span class="kn">import</span> <span class="n">ConfigurationBuilder</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.base</span> <span class="kn">import</span> <span class="n">CriMeBase</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration</span> <span class="kn">import</span> <span class="n">CriMeConfiguration</span>
+<span class="kn">import</span> <span class="nn">commonroad_crime.utility.logger</span> <span class="k">as</span> <span class="nn">utils_log</span>
+<span class="kn">from</span> <span class="nn">commonroad.common.file_reader</span> <span class="kn">import</span> <span class="n">CommonRoadFileReader</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="initialize_process"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.initialize_process">[docs]</a><span class="k">def</span> <span class="nf">initialize_process</span><span class="p">(</span><span class="n">batch_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_multi_processing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,):</span>
+    <span class="n">scenario_loader</span> <span class="o">=</span> <span class="n">ScenarioLoader</span><span class="p">(</span><span class="n">batch_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flag_multi_processing</span><span class="p">:</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="c1"># result_dict[&quot;Success&quot;] = list()</span>
+    <span class="c1"># result_dict[&quot;Failure&quot;] = list()</span>
+    <span class="c1"># result_dict[&quot;Criticality&quot;] = list()</span>
+    <span class="c1"># result_dict[&quot;scenarios_to_process&quot;] = scenario_loader.scenario_ids</span>
+    <span class="c1"># result_dict[&quot;num_scenarios&quot;] = len(scenario_loader.scenario_ids)</span>
+    <span class="c1"># result_dict[&quot;started_processing&quot;] = 0</span>
+    <span class="k">return</span> <span class="n">scenario_loader</span><span class="p">,</span> <span class="n">result_dict</span></div>
+
+
+<div class="viewcode-block" id="run_parallel"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.run_parallel">[docs]</a><span class="k">def</span> <span class="nf">run_parallel</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">CriMeConfiguration</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel batch evaluation of measures, where the computation of criticality is carried out on multiple threads</span>
+<span class="sd">    simultaneously. This reduces the runtime required to test your metric on more scenarios. One drawback is that it is</span>
+<span class="sd">    not very easy to debug your code with parallel batch evaluation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="run_sequential"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.run_sequential">[docs]</a><span class="k">def</span> <span class="nf">run_sequential</span><span class="p">(</span><span class="n">scenario_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                   <span class="n">measures</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">CriMeBase</span><span class="p">]],</span>
+                   <span class="n">config_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sequential batch evaluation of measures, where the computation of criticality is carried out on a single thread.</span>
+<span class="sd">    This is more user-friendly choice for test your metric on more scenarios since you can easily debug your code in</span>
+<span class="sd">    your IDEs by creating breakpoints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scenario_loader</span><span class="p">,</span> <span class="n">result_dict</span> <span class="o">=</span> <span class="n">initialize_process</span><span class="p">(</span><span class="n">scenario_path</span><span class="p">,</span> <span class="n">flag_multi_processing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">scenario_id</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">scenario_loader</span><span class="o">.</span><span class="n">scenario_ids</span><span class="p">:</span>
+        <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_error</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Evaluation of scenario </span><span class="si">{</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sce_res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">sce_conf</span> <span class="o">=</span> <span class="n">ConfigurationBuilder</span><span class="o">.</span><span class="n">build_configuration</span><span class="p">(</span><span class="n">scenario_id</span><span class="p">,</span> <span class="n">path_root</span><span class="o">=</span><span class="n">config_root</span><span class="p">)</span>
+        <span class="n">sce_conf</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">path_scenarios</span> <span class="o">=</span> <span class="n">file_path</span>
+        <span class="n">sce_conf</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">measure</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">:</span>
+            <span class="n">sce_res</span><span class="p">[</span><span class="n">measure</span><span class="o">.</span><span class="n">measure_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">sce_conf</span><span class="o">.</span><span class="n">scenario</span><span class="o">.</span><span class="n">obstacles</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">StaticObstacle</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">sce_conf</span><span class="o">.</span><span class="n">vehicle</span><span class="o">.</span><span class="n">ego_id</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">obstacle_id</span>
+                <span class="c1"># construct the measures evaluator</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">measure_object</span> <span class="o">=</span> <span class="n">measure</span><span class="p">(</span><span class="n">sce_conf</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_error</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Initialization failed </span><span class="si">{</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">, see </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">sce_res</span><span class="p">[</span><span class="n">measure</span><span class="o">.</span><span class="n">measure_name</span><span class="p">][</span><span class="n">obs</span><span class="o">.</span><span class="n">obstacle_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">initial_time_step</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> \
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">final_time_step</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">initial_time_step</span><span class="p">,</span> <span class="n">obs</span><span class="o">.</span><span class="n">prediction</span><span class="o">.</span><span class="n">final_time_step</span><span class="p">):</span>
+                    <span class="n">measure_value</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                        <span class="n">measure_value</span> <span class="o">=</span> <span class="n">measure_object</span><span class="o">.</span><span class="n">compute_criticality</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                        <span class="n">calc_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time_start</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                        <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_error</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Evaluation failed </span><span class="si">{</span><span class="n">scenario_id</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">obs</span><span class="o">.</span><span class="n">obstacle_id</span><span class="si">}</span><span class="s2">, see </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">calc_time</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">sce_res</span><span class="p">[</span><span class="n">measure</span><span class="o">.</span><span class="n">measure_name</span><span class="p">][</span><span class="n">obs</span><span class="o">.</span><span class="n">obstacle_id</span><span class="p">][</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">measure_value</span><span class="p">,</span> <span class="n">calc_time</span><span class="p">]</span>
+        <span class="n">result_dict</span><span class="p">[</span><span class="n">scenario_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sce_res</span>
+    <span class="n">write_result_to_csv</span><span class="p">(</span><span class="n">result_dict</span><span class="p">,</span> <span class="n">scenario_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_result_to_csv"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.write_result_to_csv">[docs]</a><span class="k">def</span> <span class="nf">write_result_to_csv</span><span class="p">(</span><span class="n">result_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">batch_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">batch_path</span> <span class="o">+</span> <span class="s1">&#39;evaluation_result.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sce_id</span><span class="p">,</span> <span class="n">sce_res</span> <span class="ow">in</span> <span class="n">result_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">measure</span><span class="p">,</span> <span class="n">evaluation</span> <span class="ow">in</span> <span class="n">sce_res</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">veh_id</span><span class="p">,</span> <span class="n">eva_detail</span> <span class="ow">in</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">ts</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">eva_detail</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">sce_id</span><span class="p">,</span>
+                             <span class="n">measure</span><span class="p">,</span>
+                             <span class="n">veh_id</span><span class="p">,</span>
+                             <span class="n">ts</span><span class="p">,</span>
+                             <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ScenarioLoader"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.ScenarioLoader">[docs]</a><span class="k">class</span> <span class="nc">ScenarioLoader</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scenario_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenario_folder</span> <span class="o">=</span> <span class="n">scenario_folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scenario_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obtain_scenarios_with_path</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_obtain_scenarios_with_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_info</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s2">&quot;Loading scenarios...&quot;</span><span class="p">)</span>
+        <span class="n">scenario_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario_folder</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">):</span>
+                    <span class="n">scenario_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">scenario_ids</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scenario_id</span><span class="p">,</span> <span class="n">root</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scenario_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_warning</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;No Scenario found in directory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scenario_folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">utils_log</span><span class="o">.</span><span class="n">print_and_log_info</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Number of scenarios: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scenario_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scenario_ids</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Max Mustermann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

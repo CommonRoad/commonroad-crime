@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>commonroad_crime.data_structure.configuration_builder &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../../../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user/getting_started.html">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../subpackages/index.html">commonroad_crime package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html">commonroad_crime.data_structure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">commonroad_crime.data_structure.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">commonroad_crime.data_structure.configuration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">commonroad_crime.data_structure.configuration_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">commonroad_crime.data_structure.crime_interface module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">commonroad_crime.data_structure.scene module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">commonroad_crime.data_structure.type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.data_structure.html#module-commonroad_crime.data_structure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html">commonroad_crime.measure package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.measure.html#module-commonroad_crime.measure">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html">commonroad_crime.utility package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.batch_evaluation">commonroad_crime.utility.batch_evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.general">commonroad_crime.utility.general module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.logger">commonroad_crime.utility.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.optimization">commonroad_crime.utility.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.simulation">commonroad_crime.utility.simulation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.solver">commonroad_crime.utility.solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility.visualization">commonroad_crime.utility.visualization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../subpackages/commonroad_crime.utility.html#module-commonroad_crime.utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../subpackages/index.html#module-commonroad_crime">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">commonroad_crime.data_structure.configuration_builder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for commonroad_crime.data_structure.configuration_builder</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;TUM Cyber-Physical Systems Group&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;KoSi&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.2.3&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Yuanfei Lin&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;commonroad@lists.lrz.de&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Pre-alpha&quot;</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span><span class="p">,</span> <span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span>
+
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration</span> <span class="kn">import</span> <span class="n">CriMeConfiguration</span>
+
+<div class="viewcode-block" id="ConfigurationBuilder"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder">[docs]</a><span class="k">class</span> <span class="nc">ConfigurationBuilder</span><span class="p">:</span>
+    <span class="n">path_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">path_config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">path_config_default</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ConfigurationBuilder.build_configuration"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder.build_configuration">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">build_configuration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name_scenario</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">dir_config</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;config_files&quot;</span><span class="p">,</span>
+                            <span class="n">dir_config_default</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CriMeConfiguration</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds configuration from default, scenario-specific, and commandline config files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name_scenario (str): considered scenario</span>
+<span class="sd">            path_root(str): root path of the package</span>
+<span class="sd">            dir_config (str): directory storing configurations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">path_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../..&quot;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">path_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">set_paths</span><span class="p">(</span><span class="n">path_root</span><span class="o">=</span><span class="n">path_root</span><span class="p">,</span> <span class="n">dir_config</span><span class="o">=</span><span class="n">dir_config</span><span class="p">,</span> <span class="n">dir_config_default</span><span class="o">=</span><span class="n">dir_config_default</span><span class="p">)</span>
+
+        <span class="n">config_default</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">construct_default_configuration</span><span class="p">()</span>
+        <span class="n">config_scenario</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">construct_scenario_configuration</span><span class="p">(</span><span class="n">name_scenario</span><span class="p">)</span>
+        <span class="n">config_cli</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">from_cli</span><span class="p">()</span>
+        <span class="c1"># configurations coming after overrides the ones coming before</span>
+        <span class="n">config_combined</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">config_default</span><span class="p">,</span> <span class="n">config_scenario</span><span class="p">,</span> <span class="n">config_cli</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">CriMeConfiguration</span><span class="p">(</span><span class="n">config_combined</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="ConfigurationBuilder.set_paths"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder.set_paths">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">set_paths</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dir_config</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dir_config_default</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets necessary paths of the configuration builder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path_root (str): root directory</span>
+<span class="sd">            dir_config (str): directory storing configurations</span>
+<span class="sd">            dir_config_default (str): directory storing default configurations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">path_root</span> <span class="o">=</span> <span class="n">path_root</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">path_config</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_root</span><span class="p">,</span> <span class="n">dir_config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dir_config_default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">path_config_default</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">path_config_default</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">path_config</span><span class="p">,</span> <span class="n">dir_config_default</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConfigurationBuilder.construct_default_configuration"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder.construct_default_configuration">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">construct_default_configuration</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructs default configuration by accumulating yaml files.</span>
+
+<span class="sd">        Collects all configuration files ending with &#39;.yaml&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_default</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">path_config_default</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+
+            <span class="n">resource_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;/config_defaults/&#39;</span>
+            <span class="n">path_file_all</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">resource_dir</span><span class="p">)</span>
+            <span class="n">path_file_all</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">resource_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">path_file_all</span> <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.yaml&#39;</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path_file_all</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">path_config_default</span> <span class="o">+</span> <span class="s2">&quot;/*.yaml&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">path_file</span> <span class="ow">in</span> <span class="n">path_file_all</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_config</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">config_partial</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_config</span><span class="p">)</span>
+                    <span class="n">name_file</span> <span class="o">=</span> <span class="n">path_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">config_default</span><span class="p">[</span><span class="n">name_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_partial</span>
+
+        <span class="n">config_default</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">convert_to_absolute_paths</span><span class="p">(</span><span class="n">config_default</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config_default</span></div>
+
+<div class="viewcode-block" id="ConfigurationBuilder.convert_to_absolute_paths"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder.convert_to_absolute_paths">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">convert_to_absolute_paths</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config_default</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ListConfig</span><span class="p">,</span> <span class="n">DictConfig</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts relative paths to absolute paths.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">config_default</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">path_relative</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">path_root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_relative</span><span class="p">):</span>
+                <span class="n">config_default</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">path_relative</span>
+
+        <span class="k">return</span> <span class="n">config_default</span></div>
+
+<div class="viewcode-block" id="ConfigurationBuilder.construct_scenario_configuration"><a class="viewcode-back" href="../../../subpackages/commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder.construct_scenario_configuration">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">construct_scenario_configuration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name_scenario</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DictConfig</span><span class="p">,</span> <span class="n">ListConfig</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructs scenario-specific configuration.&quot;&quot;&quot;</span>
+        <span class="n">config_scenario</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+        <span class="n">path_config_scenario</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">path_config</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">name_scenario</span><span class="si">}</span><span class="s2">.yaml&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_config_scenario</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_config_scenario</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_config</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">config_scenario</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_config</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="c1"># add scenario name to the config file</span>
+        <span class="n">config_scenario</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name_scenario&quot;</span><span class="p">:</span> <span class="n">name_scenario</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">config_scenario</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Max Mustermann.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
