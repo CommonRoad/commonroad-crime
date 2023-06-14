@@ -27,15 +27,15 @@ class MSD(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+    metric_name = TypeDistance.MSD
     measure_name = TypeDistance.MSD
     monotone = TypeMonotone.POS
 
     def __init__(self, config: CriMeConfiguration):
         super(MSD, self).__init__(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+    def compute(self, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
-        self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         state = self.ego_vehicle.state_at_time(time_step)
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
