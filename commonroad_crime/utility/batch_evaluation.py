@@ -6,10 +6,11 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-import multiprocessing
+from multiprocessing import Semaphore, Process
 import os
 from typing import List, Type, Dict
 import logging
+import warinings
 import math
 import time
 import csv
@@ -39,7 +40,39 @@ def initialize_process(batch_path: str, flag_multi_processing: bool = True,):
     # result_dict["num_scenarios"] = len(scenario_loader.scenario_ids)
     # result_dict["started_processing"] = 0
     return scenario_loader, result_dict
-
+def process_scenario(scenario_id:str,file_path:str,result_dict,semaphore:Semaphore=None):
+    utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
+    sce_res = dict()
+    sce_conf = ConfigurationBuilder.build_configuration(scenario_id, path_root=config_root)
+    sce_conf.general.path_scenarios = file_path
+    sce_conf.update()
+    for measure in measures:
+        sce_res[measure.measure_name] = dict()
+        for obs in sce_conf.scenario.obstacles:
+            if isinstance(obs, StaticObstacle):
+                continue
+            sce_conf.vehicle.ego_id = obs.obstacle_id
+            # construct the measures evaluator
+            try:
+                measure_object = measure(sce_conf)
+            except Exception as err:
+                utils_log.print_and_log_error(logger, f"Initialization failed {scenario_id}, see {err}")
+                continue
+            sce_res[measure.measure_name][obs.obstacle_id] = dict()
+            if not isinstance(obs.prediction.initial_time_step, int) or \
+                not isinstance(obs.prediction.final_time_step, int):
+                continue
+            for ts in range(obs.prediction.initial_time_step, obs.prediction.final_time_step):
+                measure_value = math.inf
+                try:
+                    time_start = time.time()
+                    measure_value = measure_object.compute_criticality(ts)
+                    calc_time = time.time() - time_start
+                except Exception as err:
+                    utils_log.print_and_log_error(logger, f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}")
+                    calc_time = math.nan
+                sce_res[measure.measure_name][obs.obstacle_id][ts] = [measure_value, calc_time]
+    result_dict[scenario_id] = sce_res
 
 def run_parallel(config: CriMeConfiguration):
     """
@@ -47,8 +80,30 @@ def run_parallel(config: CriMeConfiguration):
     simultaneously. This reduces the runtime required to test your metric on more scenarios. One drawback is that it is
     not very easy to debug your code with parallel batch evaluation.
     """
-    pass
+    warinings.filterwarnings("ignore")
+    scenario_loader, result_dict = initialize_process(scenario_path, flag_multi_processing=False)
 
+    #TODO Read params from config file
+    num_worker = 4
+    semaphore = Semaphore(num_worker)
+
+    utils_log.print_and_log_info(logger, f"Number of parallel processes: {num_worker}")
+    
+    list_processes = []
+
+    for idx, scenario_id in enumerate(result_dict["scenarios_to_process"]):
+        semaphore.acquire()
+        p = Process(target=process_scenario,
+                args=(scenario_id,file_path,result_dict,semaphore))
+        list_processes.append(p)
+        p.start()
+        result_dict["started_processing"] += 1
+
+    for p in list_processes:
+        p.join()
+
+    utils_log.print_and_log_info(logger, f"All Processes Done.")
+    write_result_to_csv(result_dict, scenario_path)
 
 def run_sequential(scenario_path: str,
                    measures: List[Type[CriMeBase]],
