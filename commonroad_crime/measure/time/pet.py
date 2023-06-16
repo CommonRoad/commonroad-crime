@@ -6,11 +6,11 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
-from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 from shapely.geometry import Polygon
-import numpy as np
+import matplotlib.pyplot as plt
 import logging
-import  math
+import math
+
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
@@ -18,8 +18,10 @@ from commonroad_crime.measure.time.et import ET
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.utility.visualization import TUMcolor
-import matplotlib.pyplot as plt
+
 from commonroad.scenario.scenario import Tag
+from commonroad.scenario.obstacle import DynamicObstacle
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,6 +38,7 @@ class PET(CriMeBase):
         self.ca = None
         self.exit = None
         self.enter = None
+
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
