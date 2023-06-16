@@ -1,0 +1,6 @@
+# paths are relative to the root directory
+path_scenarios: scenarios/
+path_scenarios_batch: scenarios/batch/
+path_output: output/
+path_logs: output/logs/
+path_icons: docs/icons/

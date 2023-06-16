@@ -1,0 +1,38 @@
+ego_id: 8
+id_type_vehicle: 2 # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
+cartesian:
+    # acceleration in m/s^2
+    a_x_max: 8.0
+    a_x_min: -8.0
+    a_y_max: 8.0
+    a_y_min: -8.0
+
+    # jerk in m/s^3
+    j_x_min: -25.0
+    j_x_max: 25.0
+    j_y_min: -25.0
+    j_y_max: 25.0
+
+curvilinear:
+    # velocity in m/s
+    v_lon_min: 0.0
+    v_lon_max: 50.0
+    v_lat_min: -3.0
+    v_lat_max: 3.0
+
+    # acceleration in m/s^2
+    a_lon_max: 11.5
+    a_lon_min: -11.5 # braking acceleration
+    a_lat_max: 8.0
+    a_lat_min: -8.0
+    # engine power
+    a_max: 8.0
+
+    # jerk in m/s^3
+    j_lon_min: -25.0
+    j_lon_max: 25.0
+    j_lat_min: -25.0
+    j_lat_max: 25.0
+
+    reference_point: rear
+

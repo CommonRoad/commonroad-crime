@@ -19,6 +19,7 @@ import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.utility.visualization import TUMcolor
 import matplotlib.pyplot as plt
+from commonroad.scenario.scenario import Tag
 logger = logging.getLogger(__name__)
 
 
@@ -33,20 +34,26 @@ class PET(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(PET, self).__init__(config)
         self.ca = None
+        self.exit = None
+        self.enter = None
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
+        if Tag.INTERSECTION not in self.sce.tags:
+            utils_log.print_and_log_info(logger, f"* Measure only for intersection. PET is set to inf.")
+            self.value = math.inf
+            return self.value
         proxy_et = ET(self.configuration)
         proxy_et.compute(vehicle_id)
         ca = proxy_et.ca
-        if ca is not None:
-            pet = self.get_pet(self.time_step, ca)
+        pet = self.get_pet(self.time_step, ca)
+        if ca is not None and not math.isinf(pet):
             self.ca = ca
             self.value = pet
             return pet
         else:
-            utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
+            utils_log.print_and_log_info(logger, f"*\t\t pet does not exist in this scenario")
             return math.inf
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -56,10 +63,22 @@ class PET(CriMeBase):
         if self.exit is None and self.enter is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
-        self._initialize_vis(figsize=figsize)
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                self.ego_vehicle.prediction.
+                                                                trajectory.state_list,
+                                                                margin=150)
+        save_sce = self.sce
+        self.sce_without_ego_and_other()
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
+        self.sce = save_sce
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMlightgray, linewidth=3)
+                                  color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMdarkred)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
@@ -74,18 +93,20 @@ class PET(CriMeBase):
         plt.title(f"{self.metric_name} of {self.value} time steps")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
-            plt.plot(x_i, y_i, color=TUMcolor.TUMred)
-            plt.fill(x_i, y_i, color=TUMcolor.TUMred)
+            plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)
+            plt.fill(x_i, y_i, color=TUMcolor.TUMred, zorder=1001)
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
                 utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
+
     def get_pet(self, time_step, CA):
+        if CA is None:
+            return math.inf
         already_in = None
         enter_time = None
-        exit_time = None
         for i in range(time_step, len(self.other_vehicle.prediction.trajectory.state_list)):
             other_v_poly = self.create_polygon(self.other_vehicle, i)
             if other_v_poly.intersects(CA) and already_in is None:
@@ -100,13 +121,7 @@ class PET(CriMeBase):
                 time = time * self.dt
                 return time
         return math.inf
-        if enter_time is None:
-            utils_log.print_and_log_info(logger, "* The other vehicle never encroaches the CA")
-            return np.NINF
-        elif exit_time is None:
-            utils_log.print_and_log_info(logger,
-                                         "* The other vehicle encroaches the CA, but never leaves it")
-            return np.NINF
+
     def create_polygon(self, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
                        l_back: float = 0) -> Polygon:
         """
@@ -138,3 +153,7 @@ class PET(CriMeBase):
                   (pos[0] + length_front * angle_cos - width * angle_sin,
                    pos[1] + length_front * angle_sin + width * angle_cos)]
         return Polygon(coords)
+
+    def sce_without_ego_and_other(self):
+        self.sce.remove_obstacle(self.ego_vehicle)
+        self.sce.remove_obstacle(self.other_vehicle)

@@ -11,6 +11,7 @@ from typing import Union
 import shapely.ops
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 from commonroad.scenario.lanelet import Lanelet
+from commonroad.visualization.mp_renderer import MPRenderer
 from shapely.geometry import Polygon
 from commonroad_crime.data_structure.base import CriMeBase, TypeMonotone
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -23,7 +24,7 @@ import logging
 import numpy as np
 import commonroad_crime.utility.general as utils_gen
 from commonroad_crime.utility.visualization import TUMcolor
-
+from commonroad.scenario.scenario import Tag
 
 
 logger = logging.getLogger(__name__)
@@ -39,29 +40,34 @@ class ET(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
         self.ca = None
+        self.enter = None
+        self.exit = None
 
     def compute(self, vehicle_id, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
+        if Tag.INTERSECTION not in self.sce.tags:
+            utils_log.print_and_log_info(logger, f"* Measure only for intersection. ET is set to inf.")
+            self.value = math.inf
+            return self.value
+
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
         other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         self.time_step = time_step
-        self.enter = None
-        self.exit = None
         if isinstance(self.other_vehicle, DynamicObstacle):
             ca = self.get_ca()
-            if ca is not None:
-                et = self.get_et(self.time_step, ca)
-                if (et != math.inf):
-                    self.ca = ca
+            et = self.get_et(self.time_step, ca)
+            if ca is not None and not math.isinf(et):
+                self.ca = ca
                 self.value = et
                 return et
             else :
-                utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
+                utils_log.print_and_log_info(logger, f"*\t\t et does not exist")
                 return math.inf
         else :
-            utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, ca does not exist")
+            utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, et does not exist")
             return math.inf
+
     def get_ca(self):
         """
         Determine the existence of a conflict area based on the definition, and return it if it exists.
@@ -88,6 +94,7 @@ class ET(CriMeBase):
                             other_vehicle_dir_lanelet_id, intersected_lanelet_id)): #4.
                         ca = self.get_ca_from_lanelets(other_vehicle_dir_lanelet_id, intersected_lanelet_id)
         return ca
+
     def visualize(self, figsize: tuple = (25, 15)):
         if self.ca is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
@@ -95,13 +102,27 @@ class ET(CriMeBase):
         if self.exit is None and self.enter is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
-        self._initialize_vis(figsize=figsize)
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                self.ego_vehicle.prediction.
+                                                                trajectory.state_list,
+                                                                margin=150)
+
+        save_sce = self.sce
+        self.sce_without_ego_and_other()
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                  color=TUMcolor.TUMlightgray, linewidth=3)
+        self.sce = save_sce
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::3],
+                                  color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
+        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::3],
+                                  color=TUMcolor.TUMgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMdarkred)
-        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step, color=TUMcolor.TUMgreen)
+                                        color=TUMcolor.TUMblack)
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
+                                         color=TUMcolor.TUMblue)
         if self.exit is not None:
             utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(self.exit),
                                  color=TUMcolor.TUMorange)
@@ -112,14 +133,15 @@ class ET(CriMeBase):
         plt.title(f"{self.metric_name} of {self.value} time steps")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
-            plt.plot(x_i, y_i, color=TUMcolor.TUMred)
-            plt.fill(x_i, y_i, color=TUMcolor.TUMred)
+            plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)
+            plt.fill(x_i, y_i, color=TUMcolor.TUMred, zorder=1001)
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
                 utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
+
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         if ((lanelet_id_a is None) or (lanelet_id_b is None)):
             return None
@@ -129,6 +151,7 @@ class ET(CriMeBase):
         lanelet_b_polygon: Polygon = lanelet_b.polygon.shapely_object
         ca = lanelet_a_polygon.intersection(lanelet_b_polygon)
         return ca
+
     def same_income(self, lanelet_id_a, lanelet_id_b):
         """
         "Determine if the two lanelets originate from the same incoming at an intersection."
@@ -154,6 +177,7 @@ class ET(CriMeBase):
         incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a.lanelet_id]
         incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_b.lanelet_id]
         return incoming_a.incoming_id == incoming_b.incoming_id
+
     def is_at_intersection(self, lanelet_x):
         if ('intersection' in lanelet_x.lanelet_type):
             return True
@@ -167,6 +191,7 @@ class ET(CriMeBase):
                 if lanelet_x.lanelet_id in set(successors_straight + successors_left + successors_right):
                     at_intersection = True
         return at_intersection
+
     def get_ref_path_lanelets_ID(self, time_step, vehicle):
         """
         Obtain all the lanes passed by the predicted trajectory of the vehicle.
@@ -177,10 +202,10 @@ class ET(CriMeBase):
             lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([vehicle.state_at_time(i).position])[0]
             ref_path_lanelets_ID.update(lanelet_id)
         return list(ref_path_lanelets_ID)
+
     def get_et(self, time_step, CA):
         already_in = None
         enter_time = None
-        exit_time = None
         for i in range(time_step, len(self.ego_vehicle.prediction.trajectory.state_list)):
             ego_v_poly = self.create_polygon(self.ego_vehicle, i)
             if ego_v_poly.intersects(CA) and already_in is None:
@@ -195,15 +220,9 @@ class ET(CriMeBase):
                 time = time * self.dt
                 return time
         return math.inf
-        if enter_time is None:
-            utils_log.print_and_log_info(logger, "* The ego vehicle never encroaches the CA")
-            return math.NINF
-        elif exit_time is None:
-            utils_log.print_and_log_info(logger,
-                                         "* The ego vehicle encroaches the CA, but never leaves it")
-            return math.NINF
 
-    def create_polygon(self, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
+
+    def create_polygon(ego_vehicle: DynamicObstacle, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
                        l_back: float = 0) -> Polygon:
         """
         Computes the shapely-polygon of an obstacle/vehicle. Will keep minimum shape of the object, but can be extended by
@@ -234,3 +253,7 @@ class ET(CriMeBase):
                   (pos[0] + length_front * angle_cos - width * angle_sin,
                    pos[1] + length_front * angle_sin + width * angle_cos)]
         return Polygon(coords)
+
+    def sce_without_ego_and_other(self):
+        self.sce.remove_obstacle(self.ego_vehicle)
+        self.sce.remove_obstacle(self.other_vehicle)

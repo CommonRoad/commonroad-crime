@@ -1,0 +1,18 @@
+# whether the computation is activated
+# 0: no; 1: yes
+activated: 1
+# mode for time metrics computation
+# 1: time-to-collision
+# 2. time-to-react
+# 3. time-to-violation
+# 4. time-to-comply
+metric: 1, 2
+# mode for computing the steering width
+# 1. default value from the paper "A flexible method for criticality assessment in driver assistance systems"
+# 2. based on the lane width
+steer_width: 1
+# threshold for TET and TIT
+# default value as recommended by Yuanfei
+tau: 2
+
+
