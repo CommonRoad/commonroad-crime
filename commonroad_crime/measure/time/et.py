@@ -7,25 +7,19 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
-from typing import Union
-import shapely.ops
-from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
-from commonroad.scenario.lanelet import Lanelet
-from commonroad.visualization.mp_renderer import MPRenderer
+import matplotlib.pyplot as plt
+import logging
 from shapely.geometry import Polygon
+
+from commonroad.scenario.scenario import Tag
+from commonroad.scenario.obstacle import DynamicObstacle
+
 from commonroad_crime.data_structure.base import CriMeBase, TypeMonotone
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
-import commonroad_crime.utility.solver as utils_sol
-import matplotlib.pyplot as plt
-import logging
-import numpy as np
-import commonroad_crime.utility.general as utils_gen
 from commonroad_crime.utility.visualization import TUMcolor
-from commonroad.scenario.scenario import Tag
-
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +31,7 @@ class ET(CriMeBase):
     metric_name = TypeTime.ET
     measure_name = TypeTime.ET
     monotone = TypeMonotone.NEG
+
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
         self.ca = None
@@ -61,10 +56,10 @@ class ET(CriMeBase):
                 self.ca = ca
                 self.value = et
                 return et
-            else :
+            else:
                 utils_log.print_and_log_info(logger, f"*\t\t et does not exist")
                 return math.inf
-        else :
+        else:
             utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, et does not exist")
             return math.inf
 
@@ -85,13 +80,13 @@ class ET(CriMeBase):
             other_vehicle_lanelet_id = \
                 self.sce.lanelet_network.find_lanelet_by_position([other_vehicle_state.position])[0]
             intersected_ids = set(ref_path_lanelets_ego).intersection(set(other_vehicle_lanelet_id))
-            for intersected_lanelet_id in intersected_ids: #1.
+            for intersected_lanelet_id in intersected_ids:  # 1.
                 intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
-                if (self.is_at_intersection(intersected_lanelet)): #2.
+                if self.is_at_intersection(intersected_lanelet):  # 2.
                     other_vehicle_dir_lanelet_id = \
-                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([other_vehicle_state])[0] #3.
+                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([other_vehicle_state])[0]  # 3.
                     if (other_vehicle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
-                            other_vehicle_dir_lanelet_id, intersected_lanelet_id)): #4.
+                            other_vehicle_dir_lanelet_id, intersected_lanelet_id)):  # 4.
                         ca = self.get_ca_from_lanelets(other_vehicle_dir_lanelet_id, intersected_lanelet_id)
         return ca
 
@@ -120,7 +115,7 @@ class ET(CriMeBase):
         utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::3],
                                   color=TUMcolor.TUMgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                        color=TUMcolor.TUMblack)
+                                         color=TUMcolor.TUMblack)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMblue)
         if self.exit is not None:
@@ -143,7 +138,7 @@ class ET(CriMeBase):
                 plt.show()
 
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
-        if ((lanelet_id_a is None) or (lanelet_id_b is None)):
+        if (lanelet_id_a is None) or (lanelet_id_b is None):
             return None
         lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_a)
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
@@ -160,16 +155,16 @@ class ET(CriMeBase):
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
         first_incoming_lanelet_a = lanelet_a
         first_incoming_lanelet_b = lanelet_b
-        while(self.is_at_intersection(first_incoming_lanelet_a)):
+        while self.is_at_intersection(first_incoming_lanelet_a):
             predecessor = first_incoming_lanelet_a.predecessor
-            if (len(predecessor) >= 1):
+            if len(predecessor) >= 1:
                 first_incoming_lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
-            else :
+            else:
                 return False
 
-        while (self.is_at_intersection(first_incoming_lanelet_b)):
+        while self.is_at_intersection(first_incoming_lanelet_b):
             predecessor = first_incoming_lanelet_b.predecessor
-            if (len(predecessor) >= 1):
+            if len(predecessor) >= 1:
                 first_incoming_lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
             else:
                 return False
@@ -179,7 +174,7 @@ class ET(CriMeBase):
         return incoming_a.incoming_id == incoming_b.incoming_id
 
     def is_at_intersection(self, lanelet_x):
-        if ('intersection' in lanelet_x.lanelet_type):
+        if 'intersection' in lanelet_x.lanelet_type:
             return True
         intersections = self.sce.lanelet_network.intersections
         at_intersection = False
@@ -221,8 +216,8 @@ class ET(CriMeBase):
                 return time
         return math.inf
 
-
-    def create_polygon(ego_vehicle: DynamicObstacle, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
+    def create_polygon(ego_vehicle: DynamicObstacle, obstacle: DynamicObstacle, time_step: int, w: float = 0,
+                       l_front: float = 0,
                        l_back: float = 0) -> Polygon:
         """
         Computes the shapely-polygon of an obstacle/vehicle. Will keep minimum shape of the object, but can be extended by

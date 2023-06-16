@@ -185,6 +185,7 @@ class TestTimeDomain(unittest.TestCase):
 
         ttce3 = ttce_object_2.compute(7, time_step=10)
         assert math.isclose(ttce3, ttce2 - 10 * self.config.scenario.dt, abs_tol=1e-2)
+
     def test_et(self):
         self.config.general.name_scenario = "ZAM_Tjunction-1_97_T-1"
         sce_intersection1, _ = CommonRoadFileReader(self.config.general.path_scenario). \
@@ -230,7 +231,6 @@ class TestTimeDomain(unittest.TestCase):
         pet_object = PET(self.config)
         pet = pet_object.compute(1)
         pet_object.visualize()
-        print(pet)
         assert math.isclose(pet, 2.0, abs_tol=1e-2)
 
         self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
