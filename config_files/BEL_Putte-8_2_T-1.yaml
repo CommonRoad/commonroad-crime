@@ -1,0 +1,4 @@
+vehicle:
+  ego_id: 349
+debug:
+  plot_limits: [-400, -300, 230, 280]
