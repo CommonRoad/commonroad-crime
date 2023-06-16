@@ -19,15 +19,15 @@ class TestDistanceDomain(unittest.TestCase):
         self.config.update()
 
     def test_MSD(self):
-        MSD_object = MSD(self.config)
+        msd_object = MSD(self.config)
         msd = msd_object.compute(0)
         self.assertGreater(msd, 0)
         self.assertEqual(msd, 7.6)
         
 
-    def test_dce(self):
-        PSD_object = PSD(self.config)
-        PSD = psd_object.compute(328, 0)
-        PSD_object.visualize()
-        self.assertEqual(PSD, 1.54)
+    def test_PSD(self):
+        psd_object = PSD(self.config)
+        psd = psd_object.compute(328, 0)
+        psd_object.visualize()
+        self.assertEqual(psd, 1.54)
 

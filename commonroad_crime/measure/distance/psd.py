@@ -66,7 +66,7 @@ class PSD(CriMeBase):
                     self.ca = ca
                     ego_poly = self.ego_vehicle.occupancy_at_time(self.time_step).shape.shapely_object
                     distance = ego_poly.distance(ca)
-                    psd = distance / msd
+                    psd = utils_gen.int_round(distance / msd, 2)
                     self.value = psd
                     utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {psd}")
                     return psd
@@ -251,6 +251,8 @@ class PSD(CriMeBase):
         plt.plot(x_i, y_i, color=TUMcolor.TUMred)
         plt.fill(x_i, y_i, color=TUMcolor.TUMred)
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                  color=TUMcolor.TUMblue, linewidth=1)
+        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step:],
                                   color=TUMcolor.TUMlightgray, linewidth=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMgreen)
