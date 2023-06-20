@@ -1,4 +1,4 @@
-__author__ = "Yuanfei Lin"
+__author__ = "Yuanfei Lin, Ziqian Xu"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
 __version__ = "0.0.1"
@@ -34,7 +34,7 @@ class MSD(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(MSD, self).__init__(config)
 
-    def compute(self, time_step: int = 0):
+    def compute(self, vehicle_id: int = None, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
         self.time_step = time_step
         state = self.ego_vehicle.state_at_time(time_step)

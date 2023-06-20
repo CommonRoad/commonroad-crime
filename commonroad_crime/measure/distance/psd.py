@@ -1,4 +1,4 @@
-__author__ = "Yuanfei Lin"
+__author__ = "Yuanfei Lin, Ziqian Xu"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
 __version__ = "0.0.1"
@@ -43,7 +43,7 @@ class PSD(CriMeBase):
         self._msd_object = MSD(config)
         self.ca = None
 
-    def compute(self, vehicle_id, time_step: int = 0):
+    def compute(self, vehicle_id: int = None, time_step: int = 0):
         utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
@@ -51,7 +51,7 @@ class PSD(CriMeBase):
         self.time_step = time_step
         self.value = None
         #compute MSD
-        msd = self._msd_object.compute(time_step)
+        msd = self._msd_object.compute(vehicle_id, time_step)
         if msd == 0:
             utils_log.print_and_log_info(logger, f"*\t\t msd is zero")
             return math.inf
