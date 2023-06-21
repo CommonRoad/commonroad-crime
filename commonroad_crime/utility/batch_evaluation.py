@@ -48,7 +48,7 @@ def initialize_process(
 
 def process_scenario(sce_conf: CriMeConfiguration,
                      measures: List[Type[CriMeBase]],
-                     result_dict,
+                     result_dict: Dict,
                      semaphore: Semaphore = None):
     scenario_id = sce_conf.general.name_scenario
     for measure in measures:
@@ -86,6 +86,8 @@ def process_scenario(sce_conf: CriMeConfiguration,
                     measure_value, calc_time
                 ]
     result_dict[scenario_id] = sce_res
+    if semaphore is not None:
+        semaphore.release()
 
 
 def run_parallel(scenario_path: str,
@@ -101,7 +103,7 @@ def run_parallel(scenario_path: str,
     scenario_loader, result_dict = initialize_process(
         scenario_path, flag_multi_processing=True)
 
-    #TODO Read params from config file
+    # TODO Read params from config file
     semaphore = Semaphore(num_worker)
 
     utils_log.print_and_log_info(logger,
