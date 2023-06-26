@@ -26,7 +26,6 @@ from commonroad_crime.utility.visualization import TUMcolor
 from commonroad_crime.measure.distance.msd import MSD
 from commonroad.geometry.shape import ShapeGroup
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +33,6 @@ class PSD(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
-    metric_name = TypeDistance.PSD
     measure_name = TypeDistance.PSD
     monotone = TypeMonotone.NEG
 
@@ -44,13 +42,13 @@ class PSD(CriMeBase):
         self.ca = None
 
     def compute(self, vehicle_id: int = None, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
+        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} beginning at time step {time_step}")
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
         other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         self.time_step = time_step
         self.value = None
-        #compute MSD
+        # compute MSD
         msd = self._msd_object.compute(vehicle_id, time_step)
         if msd == 0:
             utils_log.print_and_log_info(logger, f"*\t\t msd is zero")
@@ -73,14 +71,13 @@ class PSD(CriMeBase):
                 else:
                     utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
                     return math.inf
-            else :
+            else:
                 utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
                 return math.inf
-        else :
+        else:
             utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, ca does not exist")
             return math.inf
-    
-    
+
     def get_ca(self):
         """
         Determine the existence of a conflict area based on the definition, and return it if it exists.
@@ -98,16 +95,16 @@ class PSD(CriMeBase):
             other_vehicle_lanelet_id = \
                 self.sce.lanelet_network.find_lanelet_by_position([other_vehicle_state.position])[0]
             intersected_ids = set(ref_path_lanelets_ego).intersection(set(other_vehicle_lanelet_id))
-            for intersected_lanelet_id in intersected_ids: #1.
+            for intersected_lanelet_id in intersected_ids:  # 1.
                 intersected_lanelet = self.sce.lanelet_network.find_lanelet_by_id(intersected_lanelet_id)
-                if (self.is_at_intersection(intersected_lanelet)): #2.
+                if (self.is_at_intersection(intersected_lanelet)):  # 2.
                     other_vehicle_dir_lanelet_id = \
-                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([other_vehicle_state])[0] #3.
+                        self.sce.lanelet_network.find_most_likely_lanelet_by_state([other_vehicle_state])[0]  # 3.
                     if (other_vehicle_dir_lanelet_id != intersected_lanelet.lanelet_id and not self.same_income(
-                            other_vehicle_dir_lanelet_id, intersected_lanelet_id)): #4.
+                            other_vehicle_dir_lanelet_id, intersected_lanelet_id)):  # 4.
                         ca = self.get_ca_from_lanelets(other_vehicle_dir_lanelet_id, intersected_lanelet_id)
         return ca
-    
+
     def get_ca_from_lanelets(self, lanelet_id_a, lanelet_id_b):
         if ((lanelet_id_a is None) or (lanelet_id_b is None)):
             return None
@@ -117,7 +114,7 @@ class PSD(CriMeBase):
         lanelet_b_polygon: Polygon = lanelet_b.polygon.shapely_object
         ca = lanelet_a_polygon.intersection(lanelet_b_polygon)
         return ca
-    
+
     def same_income(self, lanelet_id_a, lanelet_id_b):
         """
         "Determine if the two lanelets originate from the same incoming at an intersection."
@@ -126,11 +123,11 @@ class PSD(CriMeBase):
         lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(lanelet_id_b)
         first_incoming_lanelet_a = lanelet_a
         first_incoming_lanelet_b = lanelet_b
-        while(self.is_at_intersection(first_incoming_lanelet_a)):
+        while (self.is_at_intersection(first_incoming_lanelet_a)):
             predecessor = first_incoming_lanelet_a.predecessor
             if (len(predecessor) >= 1):
                 first_incoming_lanelet_a = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
-            else :
+            else:
                 return False
 
         while (self.is_at_intersection(first_incoming_lanelet_b)):
@@ -143,7 +140,7 @@ class PSD(CriMeBase):
         incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a.lanelet_id]
         incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_b.lanelet_id]
         return incoming_a.incoming_id == incoming_b.incoming_id
-    
+
     def is_at_intersection(self, lanelet_x):
         if ('intersection' in lanelet_x.lanelet_type):
             return True
@@ -157,7 +154,7 @@ class PSD(CriMeBase):
                 if lanelet_x.lanelet_id in set(successors_straight + successors_left + successors_right):
                     at_intersection = True
         return at_intersection
-    
+
     def get_ref_path_lanelets_ID(self, time_step, vehicle):
         """
         Obtain all the lanes passed by the predicted trajectory of the vehicle.
@@ -168,7 +165,7 @@ class PSD(CriMeBase):
             lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([vehicle.state_at_time(i).position])[0]
             ref_path_lanelets_ID.update(lanelet_id)
         return list(ref_path_lanelets_ID)
-    
+
     def get_et(self, time_step, CA):
         already_in = None
         enter_time = None
@@ -194,7 +191,7 @@ class PSD(CriMeBase):
             utils_log.print_and_log_info(logger,
                                          "* The ego vehicle encroaches the CA, but never leaves it")
             return math.NINF
-  
+
     def create_polygon(self, obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0,
                        l_back: float = 0) -> Polygon:
         """
@@ -227,9 +224,8 @@ class PSD(CriMeBase):
                    pos[1] + length_front * angle_sin + width * angle_cos)]
         return Polygon(coords)
 
-                
-    def visualize(self, figsize: tuple = (25,15)):
-        
+    def visualize(self, figsize: tuple = (25, 15)):
+
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits
         else:
@@ -237,14 +233,14 @@ class PSD(CriMeBase):
                                                                 self.ego_vehicle.prediction.
                                                                 trajectory.state_list,
                                                                 margin=10)
-        
+
         if self.value is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
         if self.ca is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
             return 0
-        
+
         self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         x_i, y_i = self.ca.exterior.xy
@@ -256,15 +252,12 @@ class PSD(CriMeBase):
                                   color=TUMcolor.TUMlightgray, linewidth=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMgreen)
-        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step, color=TUMcolor.TUMdarkred)
+        utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
+                                         color=TUMcolor.TUMdarkred)
         plt.title(f"{self.metric_name} of {self.time_step} time steps")
-        
-            
+
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
                 utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
-            
-        
-

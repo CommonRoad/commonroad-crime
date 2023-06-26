@@ -27,7 +27,7 @@ class ET(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+    def compute(self, get_cavehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, "*\t\t coming soon")
 
     def visualize(self):
