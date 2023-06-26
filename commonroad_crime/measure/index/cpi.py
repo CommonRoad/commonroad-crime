@@ -66,7 +66,10 @@ class CPI(CriMeBase):
                 a_lon_req = self._a_lon_req_object.compute(vehicle_id, ts)
                 self.a_lon_req_list.append(a_lon_req)
             except ValueError:
-                utils_log.print_and_log_info(logger,f"*\t\t vehicle {vehicle_id} is no longer in the lanelets.",verbose)
+                utils_log.print_and_log_info(
+                    logger,
+                    f"*\t\t vehicle {vehicle_id} is no longer in the lanelets.",
+                    verbose)
                 self.a_lon_req_list.append(self.cpi_config.madr_uppb)
                 continue
             if a_lon_req >= self.cpi_config.madr_uppb:
@@ -81,16 +84,25 @@ class CPI(CriMeBase):
                               ) / (1 - self.tr_lb_prob - self.tr_ub_prob)
 
         # Normalize the result with timespan.
-        self.value /= (self.end_time_step - self.time_step)
+        try:
+            self.value /= (self.end_time_step - self.time_step)
+        except ZeroDivisionError:
+            utils_log.print_and_log_error(logger, f"Timespan is zero.")
+
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}.")
         return self.value
 
     def visualize(self):
+        if len(self.a_lon_req_list) == 0:
+            utils_log.print_and_log_error(logger, f"No valid Data to plot.")
+            return
+
         fig, ax = plt.subplots()
-        x = np.linspace(self.cpi_config.madr_lowb, self.cpi_config.madr_uppb,100)
+        x = np.linspace(self.cpi_config.madr_lowb, self.cpi_config.madr_uppb,
+                        100)
         # Plot the MADR distribution first.
-        ax.plot(x, self._madr_dist.pdf(x),label='MADR')
+        ax.plot(x, self._madr_dist.pdf(x), label='MADR')
         ax.legend()
         # Build colormap
         cmap = cm.get_cmap("viridis", len(self.a_lon_req_list))
