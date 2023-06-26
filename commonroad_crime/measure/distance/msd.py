@@ -54,8 +54,8 @@ class MSD(CriMeBase):
                 state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
                 ego_orientation)
         
-        #compute MSD
-        if a_ego == 0 :
+        # compute MSD
+        if a_ego == 0:
             self.value = math.inf
         else:
             self.value = utils_gen.int_round(v_ego ** 2 / (2 * np.abs(a_ego)), 2)
