@@ -254,10 +254,10 @@ class PSD(CriMeBase):
                                          color=TUMcolor.TUMgreen)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMdarkred)
-        plt.title(f"{self.metric_name} of {self.time_step} time steps")
+        plt.title(f"{self.measure_name} of {self.time_step} time steps")
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+                utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
