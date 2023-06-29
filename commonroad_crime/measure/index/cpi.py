@@ -7,8 +7,10 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import logging
+import math
+
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, truncnorm
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -16,6 +18,7 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndex, TypeMonotone
 from commonroad_crime.measure.acceleration.a_long_req import ALongReq
+import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.logger as utils_log
 
 logger = logging.getLogger(__name__)
@@ -41,18 +44,13 @@ class CPI(CriMeBase):
         # We assume the MADR (aka. Maximum Available Deceleration Rate)
         # is normally distributed.
         self.cpi_config = self.configuration.index.cpi
-        self._madr_dist = norm(self.cpi_config.madr_mean,
-                               self.cpi_config.madr_devi)
-        #  Survival function: gives the probability of obtaining a value larger than the given value
-        self.tr_ub_prob = self._madr_dist.sf(self.cpi_config.madr_uppb)
-        self.tr_lb_prob = self._madr_dist.cdf(self.cpi_config.madr_lowb)
+        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
+        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
+        self._madr_dist = truncnorm(a, b)
         self.a_lon_req_list = []
         self.value = 0
 
-    def compute(self,
-                vehicle_id: int,
-                time_step: int = 0,
-                verbose: bool = True):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
             logger, f"* Computing the {self.measure_name} between ego vehicle"
             f" and vehicle {vehicle_id} at timestep {time_step}.")
@@ -72,16 +70,13 @@ class CPI(CriMeBase):
                     verbose)
                 self.a_lon_req_list.append(self.cpi_config.madr_uppb)
                 continue
-            if a_lon_req >= self.cpi_config.madr_uppb:
+            if a_lon_req == 0.:
                 continue
-            elif a_lon_req <= self.cpi_config.madr_lowb:
-                self.value += 1
             else:
-                # P(ALonReq>MADR) is equal to integral of PDF
-                # from AlonReq to upperbound.
-                # -inf___lowerbound___ALonReq___upperbound___0___+inf
-                self.value += (self._madr_dist.sf(a_lon_req) - self.tr_ub_prob
-                              ) / (1 - self.tr_lb_prob - self.tr_ub_prob)
+                # P(ALonReq>MADR)
+                a_long_req_norm = (abs(a_lon_req) - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+                if not math.isnan(self._madr_dist.cdf(a_long_req_norm)):
+                    self.value += self._madr_dist.cdf(a_long_req_norm)
 
         # Normalize the result with timespan.
         try:
@@ -108,14 +103,21 @@ class CPI(CriMeBase):
         cmap = cm.get_cmap("viridis", len(self.a_lon_req_list))
         colors = cmap(np.linspace(0, 1, len(self.a_lon_req_list)))
         # Plot datapoint at different time with different color
+
+        scatter = None
         for dr, c in zip(self.a_lon_req_list, colors):
             scatter = ax.scatter(dr, self._madr_dist.pdf(dr), color=c)
-        scatter.set_clim(self.time_step, self.end_time_step)
-        # Draw colorbar
-        cbar = plt.colorbar(scatter, ax=ax, orientation='horizontal')
-        cbar.set_label('Time Step')
+        if scatter is not None:
+            scatter.set_clim(self.time_step, self.end_time_step)
+            # Draw color bar
+            cbar = plt.colorbar(scatter, ax=ax, orientation='horizontal')
+            cbar.set_label('Time Step')
 
-        plt.title("Deceleration Rate avoiding collision")
+        plt.title(f"{self.measure_name} of {self.value}")
         plt.xlabel('Deceleration')
 
-        plt.show()
+        if self.configuration.debug.draw_visualization:
+            if self.configuration.debug.save_plots:
+                utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
+            else:
+                plt.show()
