@@ -33,11 +33,13 @@ class ET(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
-        self.ca = None  # ca stands for conflict area
-        self.enter_time = None  # The time points when the ego vehicle enters and leaves the conflict area
+        # Conflict area
+        self.ca = None
+        # The time points when the ego vehicle enters and leaves the conflict area
+        self.enter_time = None
         self.exit_time = None
 
-    def compute(self, vehicle_id, time_step: int = 0, call_from_pet: bool = False):
+    def compute(self, vehicle_id: int, time_step: int = 0, call_from_pet: bool = False):
         # If is called by PET to calculate the conflict area, log information of ET will not be output.
         if not call_from_pet:
             utils_log.print_and_log_info(logger,
@@ -257,6 +259,8 @@ class ET(CriMeBase):
     def sce_without_ego_and_other(self):
         self.sce.remove_obstacle(self.ego_vehicle)
         self.sce.remove_obstacle(self.other_vehicle)
+
+
 def create_polygon(obstacle: DynamicObstacle, time_step: int, w: float = 0,
                    l_front: float = 0,
                    l_back: float = 0) -> Polygon:
