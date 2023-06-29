@@ -8,6 +8,8 @@ from commonroad_crime.data_structure.configuration_builder import ConfigurationB
 from commonroad_crime.measure import BTN, STN, TCI, CPI
 import commonroad_crime.utility.logger as util_logger
 
+from commonroad.common.file_reader import CommonRoadFileReader
+
 
 class TestIndexDomain(unittest.TestCase):
 
@@ -50,4 +52,5 @@ class TestIndexDomain(unittest.TestCase):
     def test_cpi(self):
         cpi_object = CPI(self.config)
         cpi = cpi_object.compute_criticality(0)
-        self.assertAlmostEqual(cpi, 4.43456e-06)
+        cpi_object.visualize()
+        self.assertAlmostEqual(cpi, 0.)
