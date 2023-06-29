@@ -175,6 +175,7 @@ class IndexDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.index_scale
         self.tci = IndexDomainConfiguration.TCI(config_relevant)
+        self.cpi = IndexDomainConfiguration.CPI(config_relevant)
 
     class TCI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
@@ -184,6 +185,14 @@ class IndexDomainConfiguration:
             self.w_ax = dict_tci.w_ax
             self.w_ay = dict_tci.w_ay
             self.N = dict_tci.prediction_horizon
+
+    class CPI:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_cpi = dict_config.CPI
+            self.madr_mean = dict_cpi.madr_mean
+            self.madr_devi = dict_cpi.madr_devi
+            self.madr_uppb = dict_cpi.madr_uppb
+            self.madr_lowb = dict_cpi.madr_lowb
 
 
 class VehicleConfiguration:
