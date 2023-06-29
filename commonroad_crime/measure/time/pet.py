@@ -92,14 +92,14 @@ class PET(CriMeBase):
         self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         self.sce = save_sce
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
-        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step:],
+        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMdarkred)
+                                         color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMgreen)
+                                         color=TUMcolor.TUMgreen, alpha=1)
         if self.other_vehicle_exit_time is not None:
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_exit_time,
                                              color=TUMcolor.TUMgreen)

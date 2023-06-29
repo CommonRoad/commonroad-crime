@@ -121,14 +121,14 @@ class ET(CriMeBase):
         self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         self.sce = save_sce
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::3],
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
-        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::3],
+        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMblack)
+                                         color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMblue)
+                                         color=TUMcolor.TUMgreen, alpha=1)
         if self.exit_time is not None:
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.exit_time,
                                              color=TUMcolor.TUMblack)

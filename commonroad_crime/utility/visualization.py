@@ -69,16 +69,16 @@ def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgr
 
 
 def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
-                           color: TUMcolor = TUMcolor.TUMblue):
+                           color: TUMcolor = TUMcolor.TUMblue, alpha: float = 0.5):
     global zorder
     obs_shape = obstacle.occupancy_at_time(time_step).shape
     if isinstance(obs_shape, ShapeGroup):
         for shape_element in obs_shape.shapes:
             x, y = shape_element.shapely_object.exterior.xy
-            rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+            rnd.ax.fill(x, y, alpha=alpha, fc=color, ec=None, zorder=zorder)
     else:
         x, y = obs_shape.shapely_object.exterior.xy
-        rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+        rnd.ax.fill(x, y, alpha=alpha, fc=color, ec=None, zorder=zorder)
     zorder += 1
 
 

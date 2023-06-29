@@ -1,2 +1,4 @@
 vehicle:
   ego_id: 33
+debug:
+  plot_limits: [-450, -300, 220, 300]
