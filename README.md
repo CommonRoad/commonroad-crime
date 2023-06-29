@@ -72,9 +72,13 @@ instance to the class as `self.<parameter> = config_relevant.<parameter>`
 4. you can then directly call the values using `self.configuration.<category>.<parameter>` in your measure class
 
 ### Contributors (in alphabetical order by last name)
+- Liguo Chen
 - Yuanfei Lin
 - Ivana Peneva
+- Kun Qian
 - Oliver Specht
+- Sicheng Wang
+- Ziqian Xu
 
 ### Citation
 If you use `commonroad-crime` for academic work, we highly encourage you to cite our paper:
