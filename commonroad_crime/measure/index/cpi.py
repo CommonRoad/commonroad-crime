@@ -45,7 +45,7 @@ class CPI(CriMeBase):
         # is normally distributed.
         self.cpi_config = self.configuration.index.cpi
         a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
-        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)
+        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
         self._madr_dist = truncnorm(a, b)
         self.a_lon_req_list = []
         self.value = 0
@@ -74,8 +74,9 @@ class CPI(CriMeBase):
                 continue
             else:
                 # P(ALonReq>MADR)
-                if not math.isnan(self._madr_dist.sf(abs(a_lon_req))):
-                    self.value += self._madr_dist.sf(abs(a_lon_req))
+                a_long_req_norm = (abs(a_lon_req) - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+                if not math.isnan(self._madr_dist.cdf(a_long_req_norm)):
+                    self.value += self._madr_dist.cdf(a_long_req_norm)
 
         # Normalize the result with timespan.
         try:
