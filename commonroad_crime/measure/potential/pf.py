@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.2.5"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -36,7 +36,7 @@ class PF(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(PF, self).__init__(config)
         self._s_ego = None
-        self._d_egp = None
+        self._d_ego = None
 
     def compute(self, time_step: int, vehicle_id: int=None):
         self.time_step = time_step
