@@ -6,7 +6,7 @@ Experiment: Sec. IV.A Evaluation on Scenes
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
-
+import commonroad_crime.utility.logger as utils_log
 from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, ET, PET,
                                       BTN, PF, HW, DCE, TTCE, ALongReq, ALatReq, STN, P_MC,
                                       LongJ, LatJ, DeltaV)
@@ -23,6 +23,7 @@ def main():
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
     config.update()
+    utils_log.initialize_logger(config)
     config.print_configuration_summary()
 
     # ==== compute the criticality using CriMe interface

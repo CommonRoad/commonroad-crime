@@ -12,6 +12,7 @@ from commonroad_crime.measure import (TTC, BTN, PF, ALongReq, ALatReq, STN, P_MC
 from commonroad_crime.measure.reachable_set.drivable_area import DA
 
 import commonroad_crime.utility.visualization as utils_vis
+import commonroad_crime.utility.logger as utils_log
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
     config.update()
+    utils_log.initialize_logger(config)
     config.print_configuration_summary()
 
     # ==== compute the criticality using CriMe interface
