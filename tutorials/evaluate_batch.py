@@ -6,7 +6,11 @@ def main():
     scenario_path_4p = "./batches/par/"
     scenario_path_4s = "./batches/seq/"
     start = time.time()
+    print("Testing run_parallel()...")
+    end_par=time.time()
     utils_batch.run_parallel(scenario_path_4p, measures=[TTC])
+    end_par=time.time()
+    print("Testing run_sequential()...")
     end_par=time.time()
     utils_batch.run_sequential(scenario_path_4s, measures=[TTC])
     end_seq=time.time()
