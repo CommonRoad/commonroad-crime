@@ -1,18 +1,13 @@
-commonroad\_crime.data\_structure package
+Data Structure
 =========================================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4
 
    commonroad_crime.data_structure.config_defaults
 
-Submodules
-----------
 
-commonroad\_crime.data\_structure.base module
+Base
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.base
@@ -20,7 +15,7 @@ commonroad\_crime.data\_structure.base module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.data\_structure.configuration module
+Configuration
 ------------------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.configuration
@@ -28,7 +23,7 @@ commonroad\_crime.data\_structure.configuration module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.data\_structure.configuration\_builder module
+ConfigurationBuilder
 ---------------------------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.configuration_builder
@@ -36,7 +31,7 @@ commonroad\_crime.data\_structure.configuration\_builder module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.data\_structure.crime\_interface module
+CrimeInterface
 ---------------------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.crime_interface
@@ -44,7 +39,7 @@ commonroad\_crime.data\_structure.crime\_interface module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.data\_structure.scene module
+Scene
 ----------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.scene
@@ -52,7 +47,7 @@ commonroad\_crime.data\_structure.scene module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.data\_structure.type module
+Type
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.type
@@ -60,10 +55,3 @@ commonroad\_crime.data\_structure.type module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.data_structure
-   :members:
-   :undoc-members:
-   :show-inheritance:

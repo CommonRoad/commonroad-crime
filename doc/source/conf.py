@@ -9,15 +9,16 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'CommonRoad-CriMe'
-copyright = '2023, Max Mustermann'
-author = 'Max Mustermann'
+copyright = '2023, Yuanfei Lin, Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang'
+author = 'Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang'
 release = 'v0.2.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-		'sphinx.ext.autodoc'
+		'sphinx.ext.autodoc',
+		'sphinx.ext.viewcode'
 		]
 exclude_patterns = []
 todo_include_todos = False

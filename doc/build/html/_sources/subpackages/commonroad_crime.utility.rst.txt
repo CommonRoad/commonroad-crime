@@ -1,10 +1,8 @@
-commonroad\_crime.utility package
+Utility
 =================================
 
-Submodules
-----------
 
-commonroad\_crime.utility.batch\_evaluation module
+BatchEvaluation
 --------------------------------------------------
 
 .. automodule:: commonroad_crime.utility.batch_evaluation
@@ -12,7 +10,7 @@ commonroad\_crime.utility.batch\_evaluation module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.general module
+General
 ----------------------------------------
 
 .. automodule:: commonroad_crime.utility.general
@@ -20,7 +18,7 @@ commonroad\_crime.utility.general module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.logger module
+Logger
 ---------------------------------------
 
 .. automodule:: commonroad_crime.utility.logger
@@ -28,7 +26,7 @@ commonroad\_crime.utility.logger module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.optimization module
+Optimization
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.utility.optimization
@@ -36,7 +34,7 @@ commonroad\_crime.utility.optimization module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.simulation module
+Simulation
 -------------------------------------------
 
 .. automodule:: commonroad_crime.utility.simulation
@@ -44,7 +42,7 @@ commonroad\_crime.utility.simulation module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.solver module
+Solver
 ---------------------------------------
 
 .. automodule:: commonroad_crime.utility.solver
@@ -52,7 +50,7 @@ commonroad\_crime.utility.solver module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.utility.visualization module
+Visualization
 ----------------------------------------------
 
 .. automodule:: commonroad_crime.utility.visualization
@@ -60,10 +58,3 @@ commonroad\_crime.utility.visualization module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.utility
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,8 +1,5 @@
-commonroad\_crime.measure package
+Measure
 =================================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 4
@@ -17,10 +14,4 @@ Subpackages
    commonroad_crime.measure.time
    commonroad_crime.measure.velocity
 
-Module contents
----------------
 
-.. automodule:: commonroad_crime.measure
-   :members:
-   :undoc-members:
-   :show-inheritance:

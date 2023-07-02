@@ -1,10 +1,24 @@
-commonroad\_crime.data\_structure.config\_defaults package
+Config Defaults 
 ==========================================================
+These files defines the default configuration of each measure.
 
-Module contents
----------------
+``acceleration_scale.yaml``
 
-.. automodule:: commonroad_crime.data_structure.config_defaults
-   :members:
-   :undoc-members:
-   :show-inheritance:
+``debug.yaml``
+
+``general.yaml``
+
+``index_scale.yaml``
+
+``potential_scale.yaml``
+
+``probability_scale.yaml``
+
+``reachable_set_scale.yaml``
+
+``time_scale.yaml``
+
+``vehicle.yaml``
+
+``velocity_scale.yaml``
+

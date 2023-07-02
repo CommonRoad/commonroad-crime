@@ -1,4 +1,4 @@
-commonroad\_crime.measure.probability package
+Probability
 =============================================
 
 Submodules

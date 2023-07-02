@@ -1,4 +1,4 @@
-commonroad\_crime.measure.potential package
+Potential
 ===========================================
 
 Submodules

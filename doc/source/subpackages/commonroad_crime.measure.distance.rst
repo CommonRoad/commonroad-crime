@@ -1,4 +1,4 @@
-commonroad\_crime.measure.distance package
+Distance
 ==========================================
 
 Submodules

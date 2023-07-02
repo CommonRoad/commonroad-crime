@@ -1,4 +1,4 @@
-commonroad\_crime.measure.acceleration package
+Acceleration
 ==============================================
 
 Submodules

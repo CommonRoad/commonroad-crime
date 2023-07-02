@@ -1,4 +1,4 @@
-commonroad\_crime.measure.index package
+Index
 =======================================
 
 Submodules
