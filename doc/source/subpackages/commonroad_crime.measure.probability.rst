@@ -1,10 +1,8 @@
 Probability
 =============================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.probability.p\_mc module
+PMc
 --------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_mc
@@ -12,7 +10,7 @@ commonroad\_crime.measure.probability.p\_mc module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.probability.p\_smh module
+PSmh
 ---------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_smh
@@ -20,7 +18,7 @@ commonroad\_crime.measure.probability.p\_smh module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.probability.p\_srs module
+PSrs
 ---------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_srs
@@ -28,10 +26,3 @@ commonroad\_crime.measure.probability.p\_srs module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.measure.probability
-   :members:
-   :undoc-members:
-   :show-inheritance:

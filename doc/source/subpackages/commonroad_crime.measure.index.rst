@@ -1,10 +1,8 @@
 Index
 =======================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.index.aci module
+ACI
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.aci
@@ -12,7 +10,7 @@ commonroad\_crime.measure.index.aci module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.btn module
+BTN
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.btn
@@ -20,7 +18,7 @@ commonroad\_crime.measure.index.btn module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.ci module
+CI
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.ci
@@ -28,7 +26,7 @@ commonroad\_crime.measure.index.ci module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.cpi module
+CPI
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.cpi
@@ -36,7 +34,7 @@ commonroad\_crime.measure.index.cpi module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.pri module
+PRI
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.pri
@@ -44,7 +42,7 @@ commonroad\_crime.measure.index.pri module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.rss module
+RSS
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.rss
@@ -52,7 +50,7 @@ commonroad\_crime.measure.index.rss module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.soi module
+SOI
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.soi
@@ -60,7 +58,7 @@ commonroad\_crime.measure.index.soi module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.stn module
+STN
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.stn
@@ -68,7 +66,7 @@ commonroad\_crime.measure.index.stn module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.index.tci module
+TCI
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.index.tci
@@ -76,10 +74,4 @@ commonroad\_crime.measure.index.tci module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: commonroad_crime.measure.index
-   :members:
-   :undoc-members:
-   :show-inheritance:

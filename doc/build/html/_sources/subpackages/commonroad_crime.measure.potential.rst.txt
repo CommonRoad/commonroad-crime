@@ -1,10 +1,7 @@
 Potential
 ===========================================
 
-Submodules
-----------
-
-commonroad\_crime.measure.potential.pf module
+PF
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.potential.pf
@@ -12,7 +9,7 @@ commonroad\_crime.measure.potential.pf module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.potential.sp module
+SP
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.potential.sp
@@ -20,10 +17,3 @@ commonroad\_crime.measure.potential.sp module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.measure.potential
-   :members:
-   :undoc-members:
-   :show-inheritance:

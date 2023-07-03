@@ -1,10 +1,8 @@
 Distance
 ==========================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.distance.dce module
+DCE
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.distance.dce
@@ -12,7 +10,7 @@ commonroad\_crime.measure.distance.dce module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.distance.hw module
+HW
 --------------------------------------------
 
 .. automodule:: commonroad_crime.measure.distance.hw
@@ -20,7 +18,7 @@ commonroad\_crime.measure.distance.hw module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.distance.msd module
+MSD
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.distance.msd
@@ -28,7 +26,7 @@ commonroad\_crime.measure.distance.msd module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.distance.psd module
+PSD
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.distance.psd
@@ -36,10 +34,4 @@ commonroad\_crime.measure.distance.psd module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: commonroad_crime.measure.distance
-   :members:
-   :undoc-members:
-   :show-inheritance:

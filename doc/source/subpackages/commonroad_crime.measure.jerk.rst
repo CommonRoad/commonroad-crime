@@ -1,10 +1,8 @@
 Jerk
 ======================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.jerk.lat\_j module
+LatJ
 --------------------------------------------
 
 .. automodule:: commonroad_crime.measure.jerk.lat_j
@@ -12,7 +10,7 @@ commonroad\_crime.measure.jerk.lat\_j module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.jerk.long\_j module
+LongJ
 ---------------------------------------------
 
 .. automodule:: commonroad_crime.measure.jerk.long_j
@@ -20,10 +18,4 @@ commonroad\_crime.measure.jerk.long\_j module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: commonroad_crime.measure.jerk
-   :members:
-   :undoc-members:
-   :show-inheritance:

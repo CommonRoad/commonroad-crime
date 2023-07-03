@@ -1,10 +1,8 @@
 Time
 ======================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.time.ags module
+AGS
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ags
@@ -12,7 +10,7 @@ commonroad\_crime.measure.time.ags module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.et module
+ET
 ----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.et
@@ -20,7 +18,7 @@ commonroad\_crime.measure.time.et module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.pet module
+PET
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.pet
@@ -28,7 +26,7 @@ commonroad\_crime.measure.time.pet module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.pttc module
+PTTC
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.pttc
@@ -36,7 +34,7 @@ commonroad\_crime.measure.time.pttc module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.tc module
+TC
 ----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.tc
@@ -44,7 +42,7 @@ commonroad\_crime.measure.time.tc module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.tet module
+TET
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.tet
@@ -52,7 +50,7 @@ commonroad\_crime.measure.time.tet module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.thw module
+THW
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.thw
@@ -60,7 +58,7 @@ commonroad\_crime.measure.time.thw module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.tit module
+TIT
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.tit
@@ -68,7 +66,7 @@ commonroad\_crime.measure.time.tit module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttb module
+TTB
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttb
@@ -76,7 +74,7 @@ commonroad\_crime.measure.time.ttb module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttc module
+TTC
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttc
@@ -84,7 +82,7 @@ commonroad\_crime.measure.time.ttc module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttc\_star module
+TTCStar
 -----------------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttc_star
@@ -92,7 +90,7 @@ commonroad\_crime.measure.time.ttc\_star module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttce module
+TTCE
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttce
@@ -100,7 +98,7 @@ commonroad\_crime.measure.time.ttce module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttk module
+TTK
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttk
@@ -108,7 +106,7 @@ commonroad\_crime.measure.time.ttk module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttm module
+TTM
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttm
@@ -116,7 +114,7 @@ commonroad\_crime.measure.time.ttm module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttr module
+TTR
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttr
@@ -124,7 +122,7 @@ commonroad\_crime.measure.time.ttr module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.tts module
+TTS
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.tts
@@ -132,7 +130,7 @@ commonroad\_crime.measure.time.tts module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.ttz module
+TTZ
 -----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.ttz
@@ -140,7 +138,7 @@ commonroad\_crime.measure.time.ttz module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.tv module
+TV
 ----------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.tv
@@ -148,7 +146,7 @@ commonroad\_crime.measure.time.tv module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.wttc module
+WTTC
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.wttc
@@ -156,7 +154,7 @@ commonroad\_crime.measure.time.wttc module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.time.wttr module
+WTTR
 ------------------------------------------
 
 .. automodule:: commonroad_crime.measure.time.wttr
@@ -164,10 +162,3 @@ commonroad\_crime.measure.time.wttr module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.measure.time
-   :members:
-   :undoc-members:
-   :show-inheritance:

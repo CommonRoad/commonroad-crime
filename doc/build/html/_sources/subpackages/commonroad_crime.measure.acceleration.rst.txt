@@ -1,10 +1,8 @@
 Acceleration
 ==============================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.acceleration.a\_lat\_req module
+ALatReq
 ---------------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.acceleration.a_lat_req
@@ -12,7 +10,7 @@ commonroad\_crime.measure.acceleration.a\_lat\_req module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.acceleration.a\_long\_req module
+ALongReq
 ----------------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.acceleration.a_long_req
@@ -20,7 +18,7 @@ commonroad\_crime.measure.acceleration.a\_long\_req module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.acceleration.a\_req module
+AReq
 ----------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.acceleration.a_req
@@ -28,7 +26,7 @@ commonroad\_crime.measure.acceleration.a\_req module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.acceleration.dst module
+DST
 -------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.acceleration.dst
@@ -36,10 +34,3 @@ commonroad\_crime.measure.acceleration.dst module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.measure.acceleration
-   :members:
-   :undoc-members:
-   :show-inheritance:
