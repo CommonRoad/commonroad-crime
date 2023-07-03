@@ -205,6 +205,10 @@ class ET(CriMeBase):
                 first_incoming_lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
             else:
                 return False
+        if first_incoming_lanelet_a.lanelet_id not in self.sce.lanelet_network.map_inc_lanelets_to_intersections.keys():
+            return True
+        if first_incoming_lanelet_b.lanelet_id not in self.sce.lanelet_network.map_inc_lanelets_to_intersections.keys():
+            return True
         intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections[first_incoming_lanelet_a.lanelet_id]
         incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a.lanelet_id]
         incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_b.lanelet_id]
