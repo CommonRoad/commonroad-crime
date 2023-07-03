@@ -1,10 +1,8 @@
 Velocity
 ==========================================
 
-Submodules
-----------
 
-commonroad\_crime.measure.velocity.cs module
+CS
 --------------------------------------------
 
 .. automodule:: commonroad_crime.measure.velocity.cs
@@ -12,7 +10,7 @@ commonroad\_crime.measure.velocity.cs module
    :undoc-members:
    :show-inheritance:
 
-commonroad\_crime.measure.velocity.delta\_v module
+DeltaV
 --------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.velocity.delta_v
@@ -20,10 +18,3 @@ commonroad\_crime.measure.velocity.delta\_v module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: commonroad_crime.measure.velocity
-   :members:
-   :undoc-members:
-   :show-inheritance:

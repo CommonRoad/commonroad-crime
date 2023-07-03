@@ -137,9 +137,9 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Probability</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_mc">PMc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_smh">PSmh</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_srs">PSrs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_mc">P-MC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_smh">P-SMH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.probability.p_srs">P-SRS</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
@@ -170,10 +170,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">commonroad_crime.measure.velocity.cs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">commonroad_crime.measure.velocity.delta_v module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">CS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">DeltaV</a></li>
 </ul>
 </li>
 </ul>
@@ -280,7 +278,7 @@
   <section id="probability">
 <h1>Probability<a class="headerlink" href="#probability" title="Permalink to this heading"></a></h1>
 <section id="module-commonroad_crime.measure.probability.p_mc">
-<span id="pmc"></span><h2>PMc<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_mc" title="Permalink to this heading"></a></h2>
+<span id="p-mc"></span><h2>P-MC<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_mc" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.probability.p_mc.</span></span><span class="sig-name descname"><span class="pre">P_MC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_mc.html#P_MC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC" title="Permalink to this definition"></a></dt>
@@ -289,11 +287,21 @@
 prediction.</p>
 <p>See Broadhurst, Adrian, Simon Baker, and Takeo Kanade. “Monte Carlo road safety reasoning.” IEEE Proceedings of
 Intelligent Vehicles Symposium IEEE, 2005.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_mc.html#P_MC.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.measure_name">
@@ -314,6 +322,16 @@ Intelligent Vehicles Symposium IEEE, 2005.</p>
 :param nr_samples: number of samples</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.rnd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_mc.P_MC.visualize">
 <span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(25,</span> <span class="pre">15)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_mc.html#P_MC.visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_mc.P_MC.visualize" title="Permalink to this definition"></a></dt>
@@ -324,17 +342,27 @@ Intelligent Vehicles Symposium IEEE, 2005.</p>
 
 </section>
 <section id="module-commonroad_crime.measure.probability.p_smh">
-<span id="psmh"></span><h2>PSmh<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_smh" title="Permalink to this heading"></a></h2>
+<span id="p-smh"></span><h2>P-SMH<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_smh" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.probability.p_smh.</span></span><span class="sig-name descname"><span class="pre">P_SMH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_smh.html#P_SMH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_smh.html#P_SMH.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.measure_name">
@@ -344,6 +372,16 @@ Intelligent Vehicles Symposium IEEE, 2005.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_smh.P_SMH.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_smh.P_SMH.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -356,17 +394,27 @@ Intelligent Vehicles Symposium IEEE, 2005.</p>
 
 </section>
 <section id="module-commonroad_crime.measure.probability.p_srs">
-<span id="psrs"></span><h2>PSrs<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_srs" title="Permalink to this heading"></a></h2>
+<span id="p-srs"></span><h2>P-SRS<a class="headerlink" href="#module-commonroad_crime.measure.probability.p_srs" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.probability.p_srs.</span></span><span class="sig-name descname"><span class="pre">P_SRS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_srs.html#P_SRS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/probability/p_srs.html#P_SRS.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.measure_name">
@@ -376,6 +424,16 @@ Intelligent Vehicles Symposium IEEE, 2005.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.probability.p_srs.P_SRS.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.probability.p_srs.P_SRS.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

@@ -65,6 +65,7 @@ def generate_reference_path(lanelet_id: int, lanelet_network: LaneletNetwork, fl
 def int_round(some_float, tolerance=1):
     """
     Round function using int.
+
     :param some_float: number
     :param tolerance: float point
     :return: rounded number

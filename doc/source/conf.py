@@ -7,12 +7,13 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+import os,sys
+sys.path.insert(0, os.path.abspath('../..'))
 
 project = 'CommonRoad-CriMe'
 copyright = '2023, Yuanfei Lin, Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang'
 author = 'Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang'
 release = 'v0.2.4'
-
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 

@@ -28,7 +28,7 @@ class ALatReq(CriMeBase):
     """
     The required lateral acceleration necessary for collision avoidance at TTC.
 
-    - from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
+    from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     measure_name = TypeAcceleration.ALatReq

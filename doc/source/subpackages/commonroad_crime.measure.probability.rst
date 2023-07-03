@@ -2,7 +2,7 @@ Probability
 =============================================
 
 
-PMc
+P-MC
 --------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_mc
@@ -10,7 +10,7 @@ PMc
    :undoc-members:
    :show-inheritance:
 
-PSmh
+P-SMH
 ---------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_smh
@@ -18,7 +18,7 @@ PSmh
    :undoc-members:
    :show-inheritance:
 
-PSrs
+P-SRS
 ---------------------------------------------------
 
 .. automodule:: commonroad_crime.measure.probability.p_srs

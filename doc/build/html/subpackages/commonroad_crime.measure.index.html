@@ -137,9 +137,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.probability.html">Probability</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">PMc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">PSmh</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">PSrs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">P-MC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">P-SMH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">P-SRS</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
@@ -170,10 +170,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">commonroad_crime.measure.velocity.cs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">commonroad_crime.measure.velocity.delta_v module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">CS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">DeltaV</a></li>
 </ul>
 </li>
 </ul>
@@ -286,11 +284,21 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.aci.</span></span><span class="sig-name descname"><span class="pre">ACI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/aci.html#ACI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/aci.html#ACI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.measure_name">
@@ -300,6 +308,16 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.aci.ACI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.aci.ACI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -321,11 +339,21 @@
 available for the vehicle.</p>
 <p>– from Åsljung, Daniel, Jonas Nilsson, and Jonas Fredriksson. “Using extreme value theory for vehicle level safety
 validation and implications for autonomous vehicles.” IEEE Transactions on Intelligent Vehicles 2.4 (2017): 288-297.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/btn.html#BTN.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.measure_name">
@@ -335,6 +363,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.btn.BTN.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.btn.BTN.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -353,11 +391,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.ci.</span></span><span class="sig-name descname"><span class="pre">CI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/ci.html#CI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/ci.html#CI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.measure_name">
@@ -367,6 +415,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.ci.CI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.ci.CI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -385,11 +443,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.cpi.</span></span><span class="sig-name descname"><span class="pre">CPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/cpi.html#CPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/cpi.html#CPI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.measure_name">
@@ -399,6 +467,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.cpi.CPI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.cpi.CPI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -417,11 +495,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.pri.</span></span><span class="sig-name descname"><span class="pre">PRI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/pri.html#PRI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/pri.html#PRI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.measure_name">
@@ -431,6 +519,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.pri.PRI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.pri.PRI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -449,11 +547,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.rss.</span></span><span class="sig-name descname"><span class="pre">RSS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/rss.html#RSS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/rss.html#RSS.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.measure_name">
@@ -463,6 +571,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.rss.RSS.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.rss.RSS.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -481,11 +599,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.index.soi.</span></span><span class="sig-name descname"><span class="pre">SOI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/soi.html#SOI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/soi.html#SOI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.measure_name">
@@ -495,6 +623,16 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.soi.SOI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.soi.SOI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -516,11 +654,21 @@ validation and implications for autonomous vehicles.” IEEE Transactions on Int
 acceleration is denoted as the steering threat number (STN).</p>
 <p>– from Hosseini, SeyedMehrdad, et al. “Adaptive forward collision warning algorithm for automotive applications.”
 2016 American Control Conference (ACC). IEEE, 2016.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/stn.html#STN.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.measure_name">
@@ -530,6 +678,16 @@ acceleration is denoted as the steering threat number (STN).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.stn.STN.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.stn.STN.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -553,6 +711,11 @@ and regulatory constraints.</p>
 <p>– from P. Junietz, F. Bonakdar, B. Klamann, and H. Winner, “Criticality metric for the safety validation of
 automated driving using model predictive trajectory optimization,” in 21st International Conference on Intelligent
 Transportation Systems (ITSC), pp. 60–65, IEEE, 2018.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/index/tci.html#TCI.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.compute" title="Permalink to this definition"></a></dt>
@@ -560,8 +723,23 @@ Transportation Systems (ITSC), pp. 60–65, IEEE, 2018.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.measure_name">
 <span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'trajectory</span> <span class="pre">criticality</span> <span class="pre">index'</span></em><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.measure_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.index.tci.TCI.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.index.tci.TCI.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

@@ -137,9 +137,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.probability.html">Probability</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">PMc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">PSmh</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">PSrs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">P-MC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">P-SMH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">P-SRS</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
@@ -170,10 +170,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">commonroad_crime.measure.velocity.cs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">commonroad_crime.measure.velocity.delta_v module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">CS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">DeltaV</a></li>
 </ul>
 </li>
 </ul>
@@ -287,12 +285,22 @@
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>J. Eggert, “Predictive risk estimation for intelligent ADAS functions,”
 in 17th International Conference on Intelligent Transportation Systems (ITSC), pp. 711–718, IEEE, 2014.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/distance/dce.html#DCE.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Computed the shortest distance of ego-vehicle and obstacle by calculating the distance between both polygons
 (boundaries of both objects) for each time step and returning the minimum.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.measure_name">
@@ -302,6 +310,16 @@ in 17th International Conference on Intelligent Transportation Systems (ITSC), p
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'negative</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.dce.DCE.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.dce.DCE.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -327,6 +345,16 @@ This is taken as a inherited class from time headway</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.measure_name">
 <span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'headway'</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.measure_name" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -334,6 +362,16 @@ This is taken as a inherited class from time headway</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'negative</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.hw.HW.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.hw.HW.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -352,11 +390,21 @@ This is taken as a inherited class from time headway</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.distance.msd.</span></span><span class="sig-name descname"><span class="pre">MSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/distance/msd.html#MSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/distance/msd.html#MSD.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.measure_name">
@@ -366,6 +414,16 @@ This is taken as a inherited class from time headway</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.msd.MSD.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.msd.MSD.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -384,11 +442,21 @@ This is taken as a inherited class from time headway</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.distance.psd.</span></span><span class="sig-name descname"><span class="pre">PSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/distance/psd.html#PSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/distance/psd.html#PSD.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.compute" title="Permalink to this definition"></a></dt>
 <dd><p>Specific computing function for each measure</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.measure_name">
@@ -398,6 +466,16 @@ This is taken as a inherited class from time headway</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.monotone">
 <span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'negative</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.distance.psd.PSD.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.distance.psd.PSD.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
