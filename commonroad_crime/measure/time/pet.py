@@ -23,7 +23,7 @@ from commonroad.scenario.obstacle import DynamicObstacle
 logger = logging.getLogger(__name__)
 
 
-class PET(CriMeBase):
+class PET(ET):
     """
     See https://criticality-metrics.readthedocs.io/
     """
@@ -52,25 +52,17 @@ class PET(CriMeBase):
             self.value = math.inf
             return self.value
         # Create an agent object of ET to obtain the conflict area
-        proxy_et = ET(self.configuration)
-        proxy_et.compute(vehicle_id, call_from_pet=True)
-        self.ego_vehicle_exit_time = proxy_et.exit_time
-        self.ego_vehicle_enter_time = proxy_et.enter_time
-        self.ca = proxy_et.ca
-        self.value = self.get_pet(self.time_step, self.ca)
+        self.ca = self.get_ca()
+        self.value, self.other_vehicle_enter_time, self.other_vehicle_exit_time = (
+            self.get_ca_duration(self.other_vehicle, self.time_step, self.ca)
+        )
+        _, self.ego_vehicle_enter_time, self.ego_vehicle_exit_time = (
+            self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
+        )
         # The conflict area may not exist, indicated by self.ca being None.
         # Even if the conflict area exists, there are two scenarios where the PET remains undefined,
-        # and we set it to infinity.
-        if self.ca is None:
-            utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, PET is set to inf.")
-        elif math.isinf(self.value):
-            if self.other_vehicle_enter_time == None:
-                utils_log.print_and_log_info(logger,
-                                             "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
-            else:
-                utils_log.print_and_log_info(logger,
-                                             "* \t\tThe ego vehicle encroaches the CA, "
-                                             "but never leaves it, PET is set to inf.")
+        # and we set it to infinity. This information is logged in info_value_not_exit()
+        self.info_value_not_exist()
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -95,7 +87,7 @@ class PET(CriMeBase):
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
-                                  color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
+                                  color=TUMcolor.TUMgreen, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
@@ -119,26 +111,18 @@ class PET(CriMeBase):
             else:
                 plt.show()
 
-    def get_pet(self, time_step, CA):
-        if CA is None:
-            return math.inf
-        already_in = None
-        enter_time = None
-        for i in range(time_step, len(self.other_vehicle.prediction.trajectory.state_list)):
-            other_v_poly = create_polygon(self.other_vehicle, i)
-            if other_v_poly.intersects(CA) and already_in is None:
-                enter_time = i
-                self.other_vehicle_enter_time = enter_time - 1
-                already_in = True
-            if not other_v_poly.intersects(CA) and already_in is True:
-                exit_time = i
-                self.other_vehicle_exit_time = exit_time
-                time = exit_time - enter_time
-                # time steps to seconds
-                time = time * self.dt
-                return time
-        return math.inf
-
     def sce_without_ego_and_other(self):
         self.sce.remove_obstacle(self.ego_vehicle)
         self.sce.remove_obstacle(self.other_vehicle)
+
+    def info_value_not_exist(self):
+        if self.ca is None:
+            utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, PET is set to inf.")
+        elif math.isinf(self.value):
+            if self.other_vehicle_enter_time == None:
+                utils_log.print_and_log_info(logger,
+                                             "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
+            else:
+                utils_log.print_and_log_info(logger,
+                                             "* \t\tThe ego vehicle encroaches the CA, "
+                                             "but never leaves it, PET is set to inf.")
