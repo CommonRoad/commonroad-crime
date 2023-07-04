@@ -33,11 +33,13 @@ class ET(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(ET, self).__init__(config)
-        self.ca = None  # ca stands for conflict area
-        self.enter_time = None  # The time points when the ego vehicle enters and leaves the conflict area
+        # Conflict area
+        self.ca = None
+        # The time points when the ego vehicle enters and leaves the conflict area
+        self.enter_time = None
         self.exit_time = None
 
-    def compute(self, vehicle_id, time_step: int = 0, call_from_pet: bool = False):
+    def compute(self, vehicle_id: int, time_step: int = 0, call_from_pet: bool = False):
         # If is called by PET to calculate the conflict area, log information of ET will not be output.
         if not call_from_pet:
             utils_log.print_and_log_info(logger,
@@ -121,14 +123,14 @@ class ET(CriMeBase):
         self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         self.sce = save_sce
-        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::3],
+        utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
-        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::3],
+        utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMblack)
+                                         color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMblue)
+                                         color=TUMcolor.TUMgreen, alpha=1)
         if self.exit_time is not None:
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.exit_time,
                                              color=TUMcolor.TUMblack)
@@ -203,6 +205,10 @@ class ET(CriMeBase):
                 first_incoming_lanelet_b = self.sce.lanelet_network.find_lanelet_by_id(predecessor[0])
             else:
                 return False
+        if first_incoming_lanelet_a.lanelet_id not in self.sce.lanelet_network.map_inc_lanelets_to_intersections.keys():
+            return True
+        if first_incoming_lanelet_b.lanelet_id not in self.sce.lanelet_network.map_inc_lanelets_to_intersections.keys():
+            return True
         intersection = self.sce.lanelet_network.map_inc_lanelets_to_intersections[first_incoming_lanelet_a.lanelet_id]
         incoming_a = intersection.map_incoming_lanelets[first_incoming_lanelet_a.lanelet_id]
         incoming_b = intersection.map_incoming_lanelets[first_incoming_lanelet_b.lanelet_id]
@@ -257,6 +263,8 @@ class ET(CriMeBase):
     def sce_without_ego_and_other(self):
         self.sce.remove_obstacle(self.ego_vehicle)
         self.sce.remove_obstacle(self.other_vehicle)
+
+
 def create_polygon(obstacle: DynamicObstacle, time_step: int, w: float = 0,
                    l_front: float = 0,
                    l_back: float = 0) -> Polygon:

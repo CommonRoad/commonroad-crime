@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 class PSD(CriMeBase):
     """
-    B. L. Allen, B. T. Shin, and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,” Transportation Research Record, vol. 667, pp. 67–74, 1978.
+    See https://criticality-metrics.readthedocs.io/
     """
     metric_name = TypeDistance.PSD
     measure_name = TypeDistance.PSD
@@ -141,3 +141,4 @@ class PSD(CriMeBase):
                     utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
                 else:
                     plt.show()
+        

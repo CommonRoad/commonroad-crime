@@ -5,7 +5,7 @@ Unit tests of the module distance-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import PSD,MSD
+from commonroad_crime.measure import PSD, MSD
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -23,7 +23,6 @@ class TestDistanceDomain(unittest.TestCase):
         msd = msd_object.compute(328, 0)
         self.assertGreater(msd, 0)
         self.assertEqual(msd, 7.6)
-        
 
     def test_PSD(self):
         psd_object = PSD(self.config)

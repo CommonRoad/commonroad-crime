@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 class MSD(CriMeBase):
     """
-    See https://criticality-metrics.readthedocs.io/
+    B. L. Allen, B. T. Shin, and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,” Transportation Research Record, vol. 667, pp. 67–74, 1978.
     """
     metric_name = TypeDistance.MSD
     measure_name = TypeDistance.MSD
@@ -43,8 +43,8 @@ class MSD(CriMeBase):
         state = self.ego_vehicle.state_at_time(time_step)
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
                                                                        position])[0]
-        
-        #compute the orientation of ego-vehicle
+
+        # compute the orientation of ego-vehicle
         ego_orientation = utils_sol.compute_lanelet_width_orientation(
                 self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
                 self.ego_vehicle.state_at_time(time_step).position
@@ -57,8 +57,8 @@ class MSD(CriMeBase):
                 state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
                 ego_orientation)
         
-        #compute MSD
-        if a_ego == 0 :
+        # compute MSD
+        if a_ego == 0.:
             self.value = math.inf
         else:
             self.value = utils_gen.int_round(v_ego ** 2 / (2 * np.abs(a_ego)), 2)

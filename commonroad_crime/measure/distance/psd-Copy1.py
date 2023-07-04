@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 class PSD(CriMeBase):
     """
-    B. L. Allen, B. T. Shin, and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,” Transportation Research Record, vol. 667, pp. 67–74, 1978.
+    See https://criticality-metrics.readthedocs.io/
     """
     metric_name = TypeDistance.PSD
     measure_name = TypeDistance.PSD
@@ -55,10 +55,9 @@ class PSD(CriMeBase):
         self._et_object.time_step = time_step
         self.value = None
         state_list = self.ego_vehicle.prediction.trajectory.state_list[self.time_step:]
-        enter_time = None
+        intersected_points = None
         #compute MSD
         msd = self._msd_object.compute(vehicle_id, time_step)
-        self.msd = msd
         if msd == 0:
             utils_log.print_and_log_info(logger, f"*\t\t msd is zero")
             return math.inf
@@ -67,22 +66,28 @@ class PSD(CriMeBase):
             return 0
         if isinstance(self.other_vehicle, DynamicObstacle):
             ca = self._et_object.get_ca()
-            if ca is not None:
-                for ts in range(time_step, self.ego_vehicle.prediction.final_time_step):
-                    ego_poly = self.ego_vehicle.occupancy_at_time(ts).shape.shapely_object
-                    if ego_poly.intersects(ca):
-                        enter_time = ts
-                        self.enter_time = enter_time
-                        break
-                if enter_time is not None:
+            if ca is Polygon:
+                xi, yi = ca.exterior.xy
+                ca_exterior_pline_t = np.vstack((xi, yi))
+                ca_exterior_pline = ca_exterior_pline_t.transpose()
+                pos = np.asarray([state.position for state in state_list])
+                intersected_points = compute_polyline_intersections(ca_exterior_pline, pos)
+                if intersected_points is not None and intersected_points.shape[0] == 1:
                     self.ca = ca
+                    self.enter_position = intersected_points
+                elif intersected_points is not None and intersected_points.shape[0] > 1:
+                    self.ca = ca
+                    self.enter_position = intersected_points[0,:]
+                    for ts in range(time_step, self.ego_vehicle.prediction.final_time_step):
+                        if ca.contains_point(self.ego_vehicle.state_at_time(ts).position):
+                            enter_time = ts - 1
+                            break
                     end_position = self.ego_vehicle.state_at_time(enter_time).position
-                    self.end_position = end_position
                     state_list_new = self.ego_vehicle.prediction.trajectory.state_list[self.time_step:enter_time+1]
                     pos_new = np.asarray([state.position for state in state_list_new])
-                    if pos_new.shape[0] < 2:
-                        return 0
                     distance = compute_total_polyline_length(pos_new)
+                    distance += \
+                    math.sqrt((self.enter_position[0]-end_position[0])**2+(self.enter_position[1]-end_position[1])**2)
                     psd = utils_gen.int_round(distance / msd, 2)
                     self.value = psd
                     utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {psd}")
@@ -117,7 +122,6 @@ class PSD(CriMeBase):
         else:
             self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
             self.rnd.render()
-            msd_position = self._msd_object.MSD_position(self.msd, self.time_step)
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMred)
             plt.fill(x_i, y_i, color=TUMcolor.TUMred)
@@ -127,12 +131,8 @@ class PSD(CriMeBase):
                                       color=TUMcolor.TUMlightgray, linewidth=1)
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                              color=TUMcolor.TUMgreen)
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.enter_time,
-                                             color=TUMcolor.TUMgreen)
-            utils_vis.draw_circle(self.rnd, self.end_position, 0.5, 0.5, color=TUMcolor.TUMorange)
-            utils_vis.draw_circle(self.rnd, msd_position, 0.5, 0.5, color=TUMcolor.TUMblack)
+            utils_vis.draw_circle(self.rnd, self.enter_position, 1, 0.5, color=TUMcolor.TUMred)
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step, color=TUMcolor.TUMdarkred)
-            
             plt.title(f"{self.metric_name} of {self.time_step} time steps")
         
             
@@ -141,3 +141,4 @@ class PSD(CriMeBase):
                     utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
                 else:
                     plt.show()
+            

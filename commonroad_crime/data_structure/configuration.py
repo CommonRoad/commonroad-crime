@@ -9,6 +9,8 @@ __status__ = "Pre-alpha"
 import logging
 from typing import Union, Optional
 from omegaconf import ListConfig, DictConfig
+import dataclasses
+from dataclasses import dataclass, field
 
 from commonroad.scenario.scenario import Scenario
 from commonroad.common.solution import VehicleType
