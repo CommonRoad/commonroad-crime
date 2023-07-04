@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -12,12 +12,9 @@ import logging
 
 from commonroad.scenario.state import State
 
-try:
-    from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
-    from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
-    from commonroad_reach.utility import visualization as util_visual
-except ImportWarning:
-    raise ModuleNotFoundError('commonroad_reach is not installed')
+from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
+from commonroad_reach.utility import visualization as util_visual
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.measure.time.ttc_star import TTCStar
