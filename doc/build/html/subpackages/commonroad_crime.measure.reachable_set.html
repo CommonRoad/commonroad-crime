@@ -143,7 +143,7 @@
 </ul>
 </li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">ReachableSet</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#drivablearea">DrivableArea</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.reachable_set.drivable_area">DrivableArea</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.time.html">Time</a><ul>
@@ -166,7 +166,7 @@
 <li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttz">TTZ</a></li>
 <li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tv">TV</a></li>
 <li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttc">WTTC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#wttr">WTTR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttr">WTTR</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
@@ -277,8 +277,45 @@
              
   <section id="reachableset">
 <h1>ReachableSet<a class="headerlink" href="#reachableset" title="Permalink to this heading"></a></h1>
-<section id="drivablearea">
-<h2>DrivableArea<a class="headerlink" href="#drivablearea" title="Permalink to this heading"></a></h2>
+<section id="module-commonroad_crime.measure.reachable_set.drivable_area">
+<span id="drivablearea"></span><h2>DrivableArea<a class="headerlink" href="#module-commonroad_crime.measure.reachable_set.drivable_area" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.reachable_set.drivable_area.</span></span><span class="sig-name descname"><span class="pre">DA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#DA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
+<p>Klischat, Moritz, et al. “Scenario factory: Creating safety-critical traffic scenarios for automated vehicles.”
+2020 IEEE 23rd International Conference on Intelligent Transportation Systems (ITSC). IEEE, 2020.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#DA.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.compute" title="Permalink to this definition"></a></dt>
+<dd><p>Specific computing function for each measure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.measure_name">
+<span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'drivable</span> <span class="pre">area'</span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.measure_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#DA.visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize the result, which will be measure-dependent.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.compute_drivable_area">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.reachable_set.drivable_area.</span></span><span class="sig-name descname"><span class="pre">compute_drivable_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reachable_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ReachNode</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#compute_drivable_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.compute_drivable_area" title="Permalink to this definition"></a></dt>
+<dd><p>Computes drivable area.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.compute_drivable_area_profile">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.reachable_set.drivable_area.</span></span><span class="sig-name descname"><span class="pre">compute_drivable_area_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reachable_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ReachNode</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#compute_drivable_area_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.compute_drivable_area_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Computes area profile for given reachability analysis.</p>
+</dd></dl>
+
 </section>
 </section>
 
