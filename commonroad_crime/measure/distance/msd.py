@@ -18,6 +18,9 @@ from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.visualization as utils_vis
+from commonroad.geometry.polyline_util import compute_polyline_lengths, compute_polyline_intersections, is_point_on_polyline, compute_total_polyline_length
+from commonroad_crime.utility.visualization import TUMcolor
 
 
 logger = logging.getLogger(__name__)
@@ -62,6 +65,67 @@ class MSD(CriMeBase):
         
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
         return self.value
-
-    def visualize(self):
-        pass
+    
+    def MSD_position(self, msd: float = 0, time_step: int = 0):
+        distance = 0
+        state_list = self.ego_vehicle.prediction.trajectory.state_list[time_step:]
+        for ts in range(time_step+2, self.ego_vehicle.prediction.final_time_step+1):
+            state_list = self.ego_vehicle.prediction.trajectory.state_list[time_step:ts]
+            pos = np.asarray([state.position for state in state_list])
+            distance = compute_total_polyline_length(pos)
+            if distance > msd or distance == msd:
+                msd_position = self.ego_vehicle.state_at_time(ts-1).position
+                return msd_position
+            
+        '''
+        for ts in range(time_step, self.ego_vehicle.prediction.final_time_step-1):
+            x1 = self.ego_vehicle.state_at_time(ts).position[0]
+            y1 = self.ego_vehicle.state_at_time(ts).position[1]
+            x2 = self.ego_vehicle.state_at_time(ts+1).position[0]
+            y2 = self.ego_vehicle.state_at_time(ts+1).position[1]
+            distance += math.sqrt((y2-y1)**2+(x2-x1)**2)
+            if distance > msd or distance == msd:
+                msd_position = self.ego_vehicle.state_at_time(ts+1).position
+                return msd_position
+        
+        x_clcs, y_clcs = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
+        msd_position_x_clcs = x_clcs + msd
+        msd_position[0], msd_position[1] = self.clcs.convert_to_cartesian_coords(msd_position_x_clcs, y_clcs)
+        '''
+        
+        
+                
+    def visualize(self, figsize: tuple = (25,15)):
+        msd_position = self.MSD_position(self.value, self.time_step)
+        
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
+                                                                self.ego_vehicle.prediction.
+                                                                trajectory.state_list,
+                                                                margin=10)
+        
+        if self.value == math.inf:
+            utils_log.print_and_log_info(logger, "* msd is infinity")
+            
+        elif self.value == 0:
+            utils_log.print_and_log_info(logger, "* msd is zero")
+         
+        
+        else :
+            self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
+            self.rnd.render()
+            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
+                                      color=TUMcolor.TUMblue, linewidth=1)
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
+                                         color=TUMcolor.TUMgreen)
+            utils_vis.draw_circle(self.rnd, msd_position, 1, 0.5, color=TUMcolor.TUMred)
+            plt.title(f"{self.metric_name} of {self.time_step} time steps")
+        
+            
+            if self.configuration.debug.draw_visualization:
+                if self.configuration.debug.save_plots:
+                    utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+                else:
+                    plt.show()

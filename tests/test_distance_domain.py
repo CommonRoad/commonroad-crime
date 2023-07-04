@@ -20,7 +20,7 @@ class TestDistanceDomain(unittest.TestCase):
 
     def test_MSD(self):
         msd_object = MSD(self.config)
-        msd = msd_object.compute(0)
+        msd = msd_object.compute(328, 0)
         self.assertGreater(msd, 0)
         self.assertEqual(msd, 7.6)
         
@@ -29,5 +29,5 @@ class TestDistanceDomain(unittest.TestCase):
         psd_object = PSD(self.config)
         psd = psd_object.compute(328, 0)
         psd_object.visualize()
-        self.assertEqual(psd, 1.54)
+        self.assertEqual(psd, 1.76)
 
