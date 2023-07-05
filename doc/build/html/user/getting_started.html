@@ -47,7 +47,22 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Manual</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-criticality-measure">Single Criticality Measure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#import-and-building-configuration">Import and Building Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compute-the-criticality">Compute the criticality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualization-of-the-evaluation-result">Visualization of the evaluation result</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#evasive-maneuver-to-avoid-the-collision">Evasive maneuver to avoid the collision?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-criticality-measures">Multiple Criticality Measures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Import and Building Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compute-the-criticality-with-various-measures">Compute the criticality with various measures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualization">Visualization</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../subpackages/index.html">Packages</a><ul>
@@ -143,7 +158,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.reachable_set.html#drivablearea">DrivableArea</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.reachable_set.html#module-commonroad_crime.measure.reachable_set.drivable_area">DrivableArea</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html">Time</a><ul>
@@ -166,7 +181,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttz">TTZ</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tv">TV</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttc">WTTC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html#wttr">WTTR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../subpackages/commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttr">WTTR</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../subpackages/commonroad_crime.measure.velocity.html">Velocity</a><ul>
@@ -276,7 +291,138 @@
              
   <section id="getting-started">
 <span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h1>
-<p>Ask chatgpt.</p>
+<section id="single-criticality-measure">
+<h2>Single Criticality Measure<a class="headerlink" href="#single-criticality-measure" title="Permalink to this heading"></a></h2>
+<p>This tutorial demonstrates how to use CommonRoad-CriMe with signal
+criticality measure. Please make sure that you have correctly installed
+the package and have gone through the tutorials for CommonRoad
+Input-Output beforehand.</p>
+<section id="import-and-building-configuration">
+<h3>Import and Building Configuration<a class="headerlink" href="#import-and-building-configuration" title="Permalink to this heading"></a></h3>
+<p>Computing the criticality requires a configuration that hold essential
+parameters of the measure. The configuration is often built from default
+parameters (located in <code class="docutils literal notranslate"><span class="pre">./config_files/defaults/</span></code>) and
+scenario-specific parameters. If you wish to overwrite a parameter for a
+specific scenario, simply create a .yaml file with the name of the
+scenario under <code class="docutils literal notranslate"><span class="pre">./config_files/</span></code> and store the parameter in it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration_builder</span> <span class="kn">import</span> <span class="n">ConfigurationBuilder</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.crime_interface</span> <span class="kn">import</span> <span class="n">CriMeInterface</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.measure</span> <span class="kn">import</span> <span class="n">TTCStar</span>
+
+<span class="c1"># Specify the scenario</span>
+<span class="n">scenario_id</span> <span class="o">=</span> <span class="s2">&quot;ZAM_Urban-7_1_S-2&quot;</span>
+
+<span class="c1"># Build the configuration</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigurationBuilder</span><span class="o">.</span><span class="n">build_configuration</span><span class="p">(</span><span class="n">scenario_id</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">print_configuration_summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-the-criticality">
+<h3>Compute the criticality<a class="headerlink" href="#compute-the-criticality" title="Permalink to this heading"></a></h3>
+<p>In this tutorial, we should the evaluation of the <code class="docutils literal notranslate"><span class="pre">time-to-collision</span></code>
+with given predication, which we call <code class="docutils literal notranslate"><span class="pre">TTCStar</span></code>. The set-based
+prediction of other traffic participants is given.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">TTCStar</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">other_veh_id</span> <span class="o">=</span> <span class="mi">99</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">time_step</span><span class="p">,</span> <span class="n">other_veh_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualization-of-the-evaluation-result">
+<h3>Visualization of the evaluation result<a class="headerlink" href="#visualization-of-the-evaluation-result" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">save_plots</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="evasive-maneuver-to-avoid-the-collision">
+<h3>Evasive maneuver to avoid the collision?<a class="headerlink" href="#evasive-maneuver-to-avoid-the-collision" title="Permalink to this heading"></a></h3>
+<p>The TTC and its variants do not provide enough information for collision
+avoidance, as they do not include possible evasive maneuvers. To address
+this limitation, the time-to-react (TTR) is proposed as the latest
+possible time before the TTC, at which an evasive maneuver still exists.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">commonroad_crime.measure</span> <span class="kn">import</span> <span class="n">TTR</span>
+
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">TTR</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">time_step</span><span class="p">,</span> <span class="n">other_veh_id</span><span class="p">)</span>
+<span class="n">evaluator</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multiple-criticality-measures">
+<h2>Multiple Criticality Measures<a class="headerlink" href="#multiple-criticality-measures" title="Permalink to this heading"></a></h2>
+<p>This tutorial demonstrates how to use CommonRoad-CriMe to evaluate the
+criticality of a considered ego vehicle given a CommonRoad
+scenario/scene and multiple measures. Please make sure that you have
+correctly gone through the tutorial Nr. 0.</p>
+<section id="id2">
+<h3>Import and Building Configuration<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.configuration_builder</span> <span class="kn">import</span> <span class="n">ConfigurationBuilder</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.data_structure.crime_interface</span> <span class="kn">import</span> <span class="n">CriMeInterface</span>
+<span class="kn">from</span> <span class="nn">commonroad_crime.measure</span> <span class="kn">import</span> <span class="p">(</span><span class="n">HW</span><span class="p">,</span> <span class="n">TTC</span><span class="p">,</span> <span class="n">TTR</span><span class="p">,</span> <span class="n">ALongReq</span><span class="p">,</span> <span class="n">LongJ</span><span class="p">,</span> <span class="n">BTN</span><span class="p">,</span> <span class="n">P_MC</span><span class="p">,</span> <span class="n">PF</span><span class="p">)</span>
+
+<span class="c1"># Specify the scenario</span>
+
+<span class="n">scenario_id</span> <span class="o">=</span> <span class="s2">&quot;DEU_Gar-1_1_T-1&quot;</span>
+
+<span class="c1"># Build the configuration</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigurationBuilder</span><span class="o">.</span><span class="n">build_configuration</span><span class="p">(</span><span class="n">scenario_id</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">print_configuration_summary</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="compute-the-criticality-with-various-measures">
+<h3>Compute the criticality with various measures<a class="headerlink" href="#compute-the-criticality-with-various-measures" title="Permalink to this heading"></a></h3>
+<p>Invoking criticality measurement is done via the <code class="docutils literal notranslate"><span class="pre">CriMeInterface</span></code>
+class. We should the evaluation process with the following exemplary
+metrics: - <code class="docutils literal notranslate"><span class="pre">HW</span></code>: Headway - <code class="docutils literal notranslate"><span class="pre">TTC</span></code>: Time-To-Collision - <code class="docutils literal notranslate"><span class="pre">TTR</span></code>:
+Time-To-React - <code class="docutils literal notranslate"><span class="pre">ALongReq</span></code>: Required Longitudinal Acceleration -
+<code class="docutils literal notranslate"><span class="pre">LongJ</span></code>: Longitudinal Jerk - <code class="docutils literal notranslate"><span class="pre">LatJ</span></code>: Lateral Jerk - <code class="docutils literal notranslate"><span class="pre">BTN</span></code>: Brake
+Threat Number - <code class="docutils literal notranslate"><span class="pre">STN</span></code>: Steer Threat Number - <code class="docutils literal notranslate"><span class="pre">P_MC</span></code>: Collision
+Probability via Monte Carlo Simulation - <code class="docutils literal notranslate"><span class="pre">PF</span></code>: Potential Functions as
+Superposition of Scoring Functions</p>
+<section id="evaluation-on-scene-first-time-step">
+<h4>1. Evaluation on Scene (first time step)<a class="headerlink" href="#evaluation-on-scene-first-time-step" title="Permalink to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crime_interface</span> <span class="o">=</span> <span class="n">CriMeInterface</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">crime_interface</span><span class="o">.</span><span class="n">evaluate_scene</span><span class="p">([</span><span class="n">HW</span><span class="p">,</span> <span class="n">TTC</span><span class="p">,</span> <span class="n">TTR</span><span class="p">,</span> <span class="n">ALongReq</span><span class="p">,</span> <span class="n">LongJ</span><span class="p">,</span> <span class="n">BTN</span><span class="p">,</span> <span class="n">P_MC</span><span class="p">,</span> <span class="n">PF</span><span class="p">],)</span>
+</pre></div>
+</div>
+</section>
+<section id="evaluation-on-scenario">
+<h4>2. Evaluation on Scenario<a class="headerlink" href="#evaluation-on-scenario" title="Permalink to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts_start</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># starting time step</span>
+<span class="n">ts_end</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># ending time step</span>
+<span class="n">crime_interface</span><span class="o">.</span><span class="n">evaluate_scenario</span><span class="p">([</span><span class="n">HW</span><span class="p">,</span> <span class="n">TTC</span><span class="p">,</span> <span class="n">TTR</span><span class="p">,</span> <span class="n">ALongReq</span><span class="p">,</span> <span class="n">LongJ</span><span class="p">,</span> <span class="n">BTN</span><span class="p">,</span> <span class="n">P_MC</span><span class="p">,</span> <span class="n">PF</span><span class="p">],</span> <span class="n">ts_start</span><span class="p">,</span> <span class="n">ts_end</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading"></a></h3>
+<section id="evaluation-results-for-debugging-and-showcasting">
+<h4>1. Evaluation results for debugging and showcasting<a class="headerlink" href="#evaluation-results-for-debugging-and-showcasting" title="Permalink to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">select_ts</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">config</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">save_plots</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">crime_interface</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">select_ts</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="criticality-curves">
+<h4>2. Criticality curves<a class="headerlink" href="#criticality-curves" title="Permalink to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">commonroad_crime.utility.visualization</span> <span class="k">as</span> <span class="nn">utils_vis</span>
+
+<span class="n">utils_vis</span><span class="o">.</span><span class="n">plot_criticality_curve</span><span class="p">(</span><span class="n">crime_interface</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
 </section>
 
 

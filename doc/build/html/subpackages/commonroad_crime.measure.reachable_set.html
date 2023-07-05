@@ -48,6 +48,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Manual</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html#single-criticality-measure">Single Criticality Measure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#import-and-building-configuration">Import and Building Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#compute-the-criticality">Compute the criticality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#visualization-of-the-evaluation-result">Visualization of the evaluation result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#evasive-maneuver-to-avoid-the-collision">Evasive maneuver to avoid the collision?</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Packages</a><ul class="current">
@@ -285,6 +292,11 @@
 <dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
 <p>Klischat, Moritz, et al. “Scenario factory: Creating safety-critical traffic scenarios for automated vehicles.”
 2020 IEEE 23rd International Conference on Intelligent Transportation Systems (ITSC). IEEE, 2020.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.compute">
 <span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/reachable_set/drivable_area.html#DA.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.compute" title="Permalink to this definition"></a></dt>
@@ -292,8 +304,23 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.measure_name">
 <span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'drivable</span> <span class="pre">area'</span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.measure_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.reachable_set.drivable_area.DA.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.reachable_set.drivable_area.DA.rnd" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
