@@ -225,7 +225,7 @@ class ET(CriMeBase):
     def get_ca_duration(self, vehicle, time_step, ca):
         # In case conflict area does not exist, ET will be set to inf.
         if ca is None:
-            return math.inf
+            return math.inf, None, None
         already_in = None
         enter_time = None
         for i in range(time_step, len(vehicle.prediction.trajectory.state_list)):
