@@ -76,9 +76,9 @@ class TTC(CriMeBase):
                 state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
                 ego_orientation)
             if isinstance(self.other_vehicle, DynamicObstacle):
-                v_other = np.sign(state_other.velocity) * math.sqrt(
+                v_other = math.sqrt(
                     state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
-                a_other = np.sign(state_other.acceleration) * math.sqrt(
+                a_other = math.sqrt(
                     state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
             else:
                 v_other = 0.
