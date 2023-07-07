@@ -52,8 +52,6 @@ class CI(CriMeBase):
         state_list_ego = self.ego_vehicle.prediction.trajectory.state_list
         state_list_other = self.other_vehicle.prediction.trajectory.state_list
         
-        
-        
         # Only for scenarios with intersection tag
         if (Tag.INTERSECTION not in self.sce.tags) or (len(self.sce.lanelet_network.intersections) == 0):
             utils_log.print_and_log_info(logger, f"* \t\tMeasure only for intersection. CI is set to 0.")
@@ -113,11 +111,19 @@ class CI(CriMeBase):
 
         k_delta = 1/2*(m1 * u1**2) + 1/2*(m2 * u2**2) - 1/2*(m1+m2) * v**2
         self.value = alpha * k_delta / math.exp(beta * pet)
+        
+        if time_step==0 and self.value > 0:
+            self.other_vehicle_visual = vehicle_id
 
         return self.value
 
         
     def visualize(self, figsize: tuple = (25, 15)):
+        logger = logging.getLogger()
+        logger.disabled = True
+        if self.other_vehicle_visual != None:
+            print("For ego vehicle and other vehicle "+ str(self.other_vehicle_visual))
+            self.compute(self.other_vehicle_visual,0)
         if self.ca is None:
             utils_log.print_and_log_info(logger, "* \t\tNo conflict area")
             return 0
@@ -138,9 +144,9 @@ class CI(CriMeBase):
         utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMblack, alpha=1)
+                                         color=TUMcolor.TUMblack)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
-                                         color=TUMcolor.TUMgreen, alpha=1)
+                                         color=TUMcolor.TUMgreen)
 
 
         plt.title(f"{self.measure_name} of {self.value} time steps")
@@ -155,55 +161,17 @@ class CI(CriMeBase):
             y = centroid.y
             state_ego.velocity
             plt.arrow(x=x, y=y, dx=state_ego.velocity, dy=state_ego.velocity_y, 
-                      head_width = 0.4, width = 0.1, ec ='black')
+                      head_width = 0.4, width = 0.1, ec ='black',zorder=1002)
             plt.arrow(x=x, y=y, dx=state_other.velocity, dy=state_other.velocity_y, 
-                      head_width = 0.4, width = 0.1, ec ='green')
-            plt.arrow(x=x, y=y, dx=self.v_x, dy=self.v_y, head_width = 0.4, width = 0.1, ec ='red')
-
+                      head_width = 0.4, width = 0.1, ec ='green',zorder=1002)
+            plt.arrow(x=x, y=y, dx=self.v_x, dy=self.v_y, head_width = 0.4, width = 0.1, ec ='blue', zorder=1002)
+            
+        logger.disabled = False
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
                 utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
             else:
                 plt.show()
-    """           
-    def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(figsize=figsize,
-                             plot_limit=utils_vis.
-                             plot_limits_from_state_list(self.time_step,
-                                                         self.ego_vehicle.prediction.trajectory.state_list,
-                                                         margin=50))
-        self.rnd.render()
-        if self.intersection is None:
-            utils_log.print_and_log_info(logger, "* No conflict area")
-            return 0
-
-        plt.title(f"{self.measure_name} of {self.value} m")
-        
-        for i in range(self.cte+1):            
-            x_i, y_i = self.ego_vehicle.occupancy_at_time(i).shape.shapely_object.exterior.xy
-            plt.plot(x_i, y_i, color='blue')
-            plt.fill(x_i, y_i, color='blue')
-            
-        for i in range(self.cto+1):            
-            x_i, y_i = self.other_vehicle.occupancy_at_time(i).shape.shapely_object.exterior.xy
-            plt.plot(x_i, y_i, color='orange')
-            plt.fill(x_i, y_i, color='orange')
-            
-        self.other_vehicle.occupancy_at_time(i).shape.shapely_object
-        if self.intersection.geom_type == "Polygon":
-            x_i, y_i = self.intersection.exterior.xy
-            plt.plot(x_i, y_i, color='red')
-            plt.fill(x_i, y_i, color='red')
-            centroid = self.intersection.centroid
-            x = centroid.x
-            y = centroid.y
-            plt.arrow(x=x, y=y, dx=self.v_x, dy=self.v_y, head_width = 0.4, width = 0.1, ec ='red')
-
-
-        
-        if self.configuration.debug.draw_visualization:
-            if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
-            else:
-                plt.show()
-        """
+    def sce_without_ego_and_other(self):
+        self.sce.remove_obstacle(self.ego_vehicle)
+        self.sce.remove_obstacle(self.other_vehicle)
