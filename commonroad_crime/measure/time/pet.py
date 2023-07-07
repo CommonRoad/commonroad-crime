@@ -53,9 +53,8 @@ class PET(ET):
             return self.value
         # Create an agent object of ET to obtain the conflict area
         self.ca = self.get_ca()
-        self.value, self.other_vehicle_enter_time, self.other_vehicle_exit_time = (
+        self.value, self.other_vehicle_enter_time, self.other_vehicle_exit_time = \
             self.get_ca_duration(self.other_vehicle, self.time_step, self.ca)
-        )
         _, self.ego_vehicle_enter_time, self.ego_vehicle_exit_time = (
             self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
         )
