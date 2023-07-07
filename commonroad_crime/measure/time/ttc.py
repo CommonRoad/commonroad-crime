@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Oliver Specht"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -88,16 +88,13 @@ class TTC(CriMeBase):
 
             if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
-            elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) < 0:
+            elif delta_v ** 2 - 2 * delta_d * delta_a < 0:
                 self.value = math.inf
-            elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
+            elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 > delta_a):
                 first = - (delta_v / delta_a)
                 second = np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a
-                if delta_v < 0:
-                    self.value = utils_gen.int_round(first - second, 2)
-                else:
-                    self.value = utils_gen.int_round(first + second, 2)
-            else:  # (delta_v >= 0 and delta_a >= 0) or (delta_v ** 2 - 2 * delta_d * delta_a < 0)
+                self.value = utils_gen.int_round(first - second, 2)
+            else:  # delta_v >= 0 and delta_a >= 0
                 self.value = math.inf
 
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
