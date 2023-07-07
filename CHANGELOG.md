@@ -1,4 +1,7 @@
 # Changelog
+## [0.3.0] - 2023.xx.xx
+### Fixed
+- The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
 ## [0.2.3 & 0.2.4] - 2023.05.08
 ### Fixed
 - fix the way of obtaining the default configurations, which didn't work for using the crime with the pip package
