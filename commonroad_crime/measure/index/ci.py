@@ -84,16 +84,16 @@ class CI(CriMeBase):
         # Use PET object
         pet = self._pet_object.compute(vehicle_id, time_step)
         
-        # Threshold of 5.0 as standard in the paper
+        # Threshold of 5.0 as standard configuration in the paper
         threshold = self.ci_config.pet_threshold
         
         # As PET = math.inf in case of no conflict area for PET, no separate check is needed
         if pet >= threshold:
-            utils_log.print_and_log_info(logger, f"* As the PET is beyond the threshold, the CI is 0 for the ego vehicle and vehicle {vehicle_id}")
+            utils_log.print_and_log_info(logger, f"* PET beyond configuration threshold, CI for the ego vehicle and vehicle {vehicle_id} is set to 0")
             value = 0
             return value
         
-        # Find the collision time and the conflict area with the help of the PET object
+        # Find the collision time and the conflict area with the assistance of the PET object
         
         self.ego_vehicle_enter_time = self._pet_object.ego_vehicle_enter_time 
         self.other_vehicle_enter_time = self._pet_object.other_vehicle_enter_time
@@ -108,10 +108,14 @@ class CI(CriMeBase):
         
         u1 = math.sqrt(state_ego.velocity ** 2 + state_ego.velocity_y ** 2)
         u2 = math.sqrt(state_other.velocity ** 2 + state_other.velocity_y ** 2)
-
+        
+        # k_delta to calculate the kinetic energy difference before and after the collision
         k_delta = 1/2*(m1 * u1**2) + 1/2*(m2 * u2**2) - 1/2*(m1+m2) * v**2
         self.value = alpha * k_delta / math.exp(beta * pet)
-        
+
+        utils_log.print_and_log_info(logger, f"* CI for the ego vehicle and vehicle {vehicle_id} is set to {self.value}")
+
+        # For visualization
         if time_step==0 and self.value > 0:
             self.other_vehicle_visual = vehicle_id
 
