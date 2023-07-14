@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import logging
 import math
 
+import numpy as np
+
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
@@ -53,11 +55,16 @@ class PET(ET):
             return self.value
         # Create an agent object of ET to obtain the conflict area
         self.ca = self.get_ca()
-        self.value, self.other_vehicle_enter_time, self.other_vehicle_exit_time = \
+        _, self.other_vehicle_enter_time, self.other_vehicle_exit_time = \
             self.get_ca_duration(self.other_vehicle, self.time_step, self.ca)
-        _, self.ego_vehicle_enter_time, self.ego_vehicle_exit_time = (
+        _, self.ego_vehicle_enter_time, self.ego_vehicle_exit_time = \
             self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
-        )
+        if self.other_vehicle_enter_time is None or self.ego_vehicle_exit_time is None:
+            self.value = math.inf
+        elif self.other_vehicle_enter_time < self.ego_vehicle_exit_time:
+            self.value = math.inf
+        else:
+            self.value = self.other_vehicle_enter_time - self.ego_vehicle_exit_time
         # The conflict area may not exist, indicated by self.ca being None.
         # Even if the conflict area exists, there are two scenarios where the PET remains undefined,
         # and we set it to infinity. This information is logged in info_value_not_exit()
@@ -91,9 +98,9 @@ class PET(ET):
                                          color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMgreen, alpha=1)
-        if self.other_vehicle_exit_time is not None:
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_exit_time,
-                                             color=TUMcolor.TUMgreen)
+        if self.ego_vehicle_exit_time is not None:
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.ego_vehicle_exit_time,
+                                             color=TUMcolor.TUMblack)
         if self.other_vehicle_enter_time is not None:
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_enter_time,
                                              color=TUMcolor.TUMgreen)
@@ -118,10 +125,14 @@ class PET(ET):
         if self.ca is None:
             utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, PET is set to inf.")
         elif math.isinf(self.value):
-            if self.other_vehicle_enter_time == None:
+            if self.other_vehicle_enter_time is None:
                 utils_log.print_and_log_info(logger,
                                              "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
-            else:
+            elif self.ego_vehicle_exit_time is None:
                 utils_log.print_and_log_info(logger,
-                                             "* \t\tThe ego vehicle encroaches the CA, "
+                                             "* \t\tThe ego vehicle has not left the CA, "
                                              "but never leaves it, PET is set to inf.")
+            elif self.ego_vehicle_exit_time > self.other_vehicle_enter_time:
+                utils_log.print_and_log_info(logger,
+                                             "* \t\tThe ego vehicle left CA, "
+                                             "after the other vehicle enters CA, PET is set to inf.")
