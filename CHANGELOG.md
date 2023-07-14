@@ -1,4 +1,7 @@
 # Changelog
+## [0.3.0] - 2023.xx.xx
+### Fixed
+- fix the TCI, whose optimization problem was not reset each time before
 ## [0.2.3 & 0.2.4] - 2023.05.08
 ### Fixed
 - fix the way of obtaining the default configurations, which didn't work for using the crime with the pip package
