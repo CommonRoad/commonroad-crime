@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Oliver Specht"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -76,9 +76,9 @@ class TTC(CriMeBase):
                 state.acceleration ** 2 + state.acceleration_y ** 2) * math.cos(
                 ego_orientation)
             if isinstance(self.other_vehicle, DynamicObstacle):
-                v_other = np.sign(state_other.velocity) * math.sqrt(
+                v_other = math.sqrt(
                     state_other.velocity ** 2 + state_other.velocity_y ** 2) * math.cos(other_orientation)
-                a_other = np.sign(state_other.acceleration) * math.sqrt(
+                a_other = math.sqrt(
                     state_other.acceleration ** 2 + state_other.acceleration_y ** 2) * math.cos(other_orientation)
             else:
                 v_other = 0.
@@ -88,16 +88,13 @@ class TTC(CriMeBase):
 
             if delta_v < 0 and abs(delta_a) <= 0.1:
                 self.value = utils_gen.int_round(- (delta_d / delta_v), 2)
-            elif np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) < 0:
+            elif delta_v ** 2 - 2 * delta_d * delta_a < 0:
                 self.value = math.inf
-            elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 and delta_a < 0):
+            elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 > delta_a):
                 first = - (delta_v / delta_a)
                 second = np.sqrt(delta_v ** 2 - 2 * delta_d * delta_a) / delta_a
-                if delta_v < 0:
-                    self.value = utils_gen.int_round(first - second, 2)
-                else:
-                    self.value = utils_gen.int_round(first + second, 2)
-            else:  # (delta_v >= 0 and delta_a >= 0) or (delta_v ** 2 - 2 * delta_d * delta_a < 0)
+                self.value = utils_gen.int_round(first - second, 2)
+            else:  # delta_v >= 0 and delta_a >= 0
                 self.value = math.inf
 
         utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
