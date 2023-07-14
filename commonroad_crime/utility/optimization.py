@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -48,16 +48,16 @@ class TCIOptimizer(OptimizerBase):
         self.tci_config = self.config.index.tci
         self.veh_config = self.config.vehicle
 
-        self.opti = ca.Opti()
-        # define state and input variables
-        # x_w, y_w, v_v, psi
-        self._opt_states = self.opti.variable(self.tci_config.N + 1, 4)
-
-        # a_x, a_y
-        self._opt_controls = self.opti.variable(self.tci_config.N, 2)
+        self.opti, self._opt_states, self._opt_controls = self.reset_opti()
 
         self.dt = sce.dt
         self.sce = sce
+
+    def reset_opti(self):
+        opti = ca.Opti()
+        # define state and input variables
+        # x_w, y_w, v_v, psi, a_x, a_y
+        return opti, opti.variable(self.tci_config.N + 1, 4), opti.variable(self.tci_config.N, 2)
 
     def vehicle_model(self, ref_state: PMState):
         # initializing the model using the velocity in the reference path
@@ -80,7 +80,8 @@ class TCIOptimizer(OptimizerBase):
         # three circle approximation
         rad_ego, dis_ego = utils_sol.compute_disc_radius_and_distance(ego_veh.obstacle_shape.length,
                                                                       ego_veh.obstacle_shape.width)
-        for k in range(self.tci_config.N):
+        for k in range(x_initial.time_step,
+                       min(x_initial.time_step + self.tci_config.N + 1, len(ref_state_list)) - 1):
             x_next = self._opt_states[k, :] + self.vehicle_model(ref_state_list[k])(self._opt_states[k, :],
                                                                                     self._opt_controls[k,
                                                                                     :]).T * self.dt
@@ -154,6 +155,7 @@ class TCIOptimizer(OptimizerBase):
     def optimize(self,
                  ego_vehicle: DynamicObstacle,
                  time_step: int) -> Tuple[ca.OptiSol, float]:
+        self.opti, self._opt_states, self._opt_controls = self.reset_opti()
         r_y, d_y, d_x, boundary_limit_list = self.compute_params(ego_vehicle, time_step)
         obj = self.cost_function(ego_vehicle.state_at_time(time_step),
                                  ego_vehicle.prediction.trajectory.state_list, d_y, r_y, d_x)
