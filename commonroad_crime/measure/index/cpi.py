@@ -47,7 +47,7 @@ class CPI(CriMeBase):
         a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
         b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
         self._madr_dist = truncnorm(a, b,self.cpi_config.madr_mean,self.cpi_config.madr_devi)
-        self.d_lon_req_list = []
+        self.dr_lon_req_list = []
         self.value = 0
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
@@ -61,22 +61,22 @@ class CPI(CriMeBase):
 
         for ts in range(self.time_step, self.end_time_step):
             try:
-                d_lon_req = -self._a_lon_req_object.compute(vehicle_id, ts)
-                self.d_lon_req_list.append(d_lon_req)
+                dr_lon_req = -self._a_lon_req_object.compute(vehicle_id, ts)
+                self.dr_lon_req_list.append(dr_lon_req)
             except ValueError:
                 utils_log.print_and_log_info(
                     logger,
                     f"*\t\t vehicle {vehicle_id} is no longer in the lanelets.",
                     verbose)
-                self.d_lon_req_list.append(self.cpi_config.madr_lowb)
+                self.dr_lon_req_list.append(self.cpi_config.madr_lowb)
                 continue
-            if d_lon_req <= self.cpi_config.madr_lowb:
+            if dr_lon_req <= self.cpi_config.madr_lowb:
                 continue
             else:
                 # P(ALonReq>MADR)
-                #d_long_req_norm = (d_lon_req - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
-                if not math.isnan(self._madr_dist.cdf(d_lon_req)):
-                    self.value += self._madr_dist.cdf(d_lon_req)
+                #dr_long_req_norm = (dr_lon_req - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+                if not math.isnan(self._madr_dist.cdf(dr_lon_req)):
+                    self.value += self._madr_dist.cdf(dr_lon_req)
 
         # Normalize the result with timespan.
         try:
@@ -89,7 +89,7 @@ class CPI(CriMeBase):
         return float(self.value)
 
     def visualize(self):
-        num_data = len(self.d_lon_req_list)
+        num_data = len(self.dr_lon_req_list)
         if num_data == 0:
             utils_log.print_and_log_error(logger, f"No valid Data to plot.")
             return
@@ -106,7 +106,7 @@ class CPI(CriMeBase):
         # Plot datapoint at different time with different color
 
         scatter = None
-        for dr, c in zip(self.d_lon_req_list, colors):
+        for dr, c in zip(self.dr_lon_req_list, colors):
             scatter = ax.scatter(dr, self._madr_dist.pdf(dr), color=c)
         if scatter is not None:
             scatter.set_clim(self.time_step, self.end_time_step)
