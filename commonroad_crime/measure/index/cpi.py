@@ -44,16 +44,17 @@ class CPI(CriMeBase):
         # We assume the MADR (aka. Maximum Available Deceleration Rate)
         # is normally distributed.
         self.cpi_config = self.configuration.index.cpi
-        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
-        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
-        self._madr_dist = truncnorm(a, b,self.cpi_config.madr_mean,self.cpi_config.madr_devi)
+        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+        self._madr_dist = truncnorm(a, b, self.cpi_config.madr_mean, self.cpi_config.madr_devi)
         self.dr_lon_req_list = []
         self.value = 0
+        self.end_time_step = self.ego_vehicle.prediction.final_time_step
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
             logger, f"* Computing the {self.measure_name} between ego vehicle"
-            f" and vehicle {vehicle_id} at timestep {time_step}.")
+                    f" and vehicle {vehicle_id} at timestep {time_step}.")
 
         self.time_step = time_step
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
@@ -74,7 +75,7 @@ class CPI(CriMeBase):
                 continue
             else:
                 # P(ALonReq>MADR)
-                #dr_long_req_norm = (dr_lon_req - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+                # dr_long_req_norm = (dr_lon_req - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
                 if not math.isnan(self._madr_dist.cdf(dr_lon_req)):
                     self.value += self._madr_dist.cdf(dr_lon_req)
 
