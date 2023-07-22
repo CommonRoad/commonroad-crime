@@ -39,6 +39,7 @@ class PET(ET):
         self.other_vehicle_enter_time = None
         self.ego_vehicle_exit_time = None
         self.ego_vehicle_enter_time = None
+        self.case_one = None
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} beginning at time step {time_step}")
@@ -82,6 +83,7 @@ class PET(ET):
         # The conflict area may not exist, indicated by self.ca being None.
         # Even if the conflict area exists, there are two scenarios where the PET remains undefined,
         # and we set it to infinity. This information is logged in info_value_not_exit()
+        self.case_one = case_one
         self.info_value_not_exist(case_one)
         return self.value
 
@@ -112,12 +114,20 @@ class PET(ET):
                                          color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMgreen, alpha=1)
-        if self.ego_vehicle_exit_time is not None:
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.ego_vehicle_exit_time,
-                                             color=TUMcolor.TUMblack)
-        if self.other_vehicle_enter_time is not None:
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_enter_time,
-                                             color=TUMcolor.TUMgreen)
+        if self.case_one is True:
+            if self.ego_vehicle_exit_time is not None:
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.ego_vehicle_exit_time,
+                                                 color=TUMcolor.TUMblack)
+            if self.other_vehicle_enter_time is not None:
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_enter_time,
+                                                 color=TUMcolor.TUMgreen)
+        elif self.case_one is False:
+            if self.other_vehicle_exit_time is not None:
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.other_vehicle_exit_time,
+                                                 color=TUMcolor.TUMgreen)
+            if self.ego_vehicle_enter_time is not None:
+                utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.ego_vehicle_enter_time,
+                                                 color=TUMcolor.TUMblack)
 
         plt.title(f"{self.measure_name} of {self.value} time steps")
         if self.ca is not None:
