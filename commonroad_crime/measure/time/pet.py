@@ -59,16 +59,30 @@ class PET(ET):
             self.get_ca_duration(self.other_vehicle, self.time_step, self.ca)
         _, self.ego_vehicle_enter_time, self.ego_vehicle_exit_time = \
             self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
+        # Definition of PET is:
+        # PET(A1, A2, Conflict Area) = t_entry(A2, Conflict Area) - t_exit(A1, Conflict Area)
+        # The variable A1 in the equation may not necessarily correspond to the ego vehicle.
+        # Depending on the relative time points of both vehicles entering and leaving the conflict area,
+        # A1 could represent either the ego vehicle or the other vehicle. So there are two cases:
+        # Case 1: A1 is ego vehicle
+        case_one = True
         if self.other_vehicle_enter_time is None or self.ego_vehicle_exit_time is None:
-            self.value = math.inf
-        elif self.other_vehicle_enter_time < self.ego_vehicle_exit_time:
             self.value = math.inf
         else:
             self.value = self.other_vehicle_enter_time - self.ego_vehicle_exit_time
+        # case 2: A1 is the other vehicle
+        if self.value < 0:
+            case_one = False
+            if self.ego_vehicle_enter_time is None or self.other_vehicle_exit_time is None:
+                self.value = math.inf
+            else:
+                self.value = self.ego_vehicle_enter_time - self.other_vehicle_exit_time
+        if self.value < 0:
+            self.value = None
         # The conflict area may not exist, indicated by self.ca being None.
         # Even if the conflict area exists, there are two scenarios where the PET remains undefined,
         # and we set it to infinity. This information is logged in info_value_not_exit()
-        self.info_value_not_exist()
+        self.info_value_not_exist(case_one)
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -121,18 +135,35 @@ class PET(ET):
         self.sce.remove_obstacle(self.ego_vehicle)
         self.sce.remove_obstacle(self.other_vehicle)
 
-    def info_value_not_exist(self):
+    def info_value_not_exist(self, case_one):
         if self.ca is None:
             utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, PET is set to inf.")
-        elif math.isinf(self.value):
-            if self.other_vehicle_enter_time is None:
-                utils_log.print_and_log_info(logger,
-                                             "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
-            elif self.ego_vehicle_exit_time is None:
-                utils_log.print_and_log_info(logger,
-                                             "* \t\tThe ego vehicle has not left the CA, "
-                                             "but never leaves it, PET is set to inf.")
-            elif self.ego_vehicle_exit_time > self.other_vehicle_enter_time:
-                utils_log.print_and_log_info(logger,
-                                             "* \t\tThe ego vehicle left CA, "
-                                             "after the other vehicle enters CA, PET is set to inf.")
+            return
+        if case_one is True:
+            if math.isinf(self.value):
+                if self.other_vehicle_enter_time is None:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
+                elif self.ego_vehicle_exit_time is None:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe ego vehicle has not left the CA, "
+                                                 "but never leaves it, PET is set to inf.")
+                elif self.other_vehicle_enter_time < self.ego_vehicle_exit_time:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe ego vehicle left the conflict area, "
+                                                         "after the other vehicle entered.")
+            return
+        else:
+            if math.isinf(self.value):
+                if self.ego_vehicle_enter_time is None:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe ego vehicle never encroaches the CA, PET is set to inf.")
+                elif self.other_vehicle_exit_time is None:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe other vehicle has not left the CA, "
+                                                 "but never leaves it, PET is set to inf.")
+                elif self.ego_vehicle_enter_time < self.other_vehicle_exit_time:
+                    utils_log.print_and_log_info(logger,
+                                                 "* \t\tThe other vehicle left the conflict area, "
+                                                         "after the ego vehicle entered.")
+            return
