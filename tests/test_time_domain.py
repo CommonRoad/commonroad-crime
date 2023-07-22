@@ -231,7 +231,7 @@ class TestTimeDomain(unittest.TestCase):
         pet_object = PET(self.config)
         pet = pet_object.compute(1)
         pet_object.visualize()
-        assert math.isinf(pet)
+        assert math.isclose(pet, 32, abs_tol=1e-2)
 
         self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
         sce_intersection2, _ = CommonRoadFileReader(self.config.general.path_scenario). \

@@ -156,7 +156,7 @@ class PET(ET):
                                                  "* \t\tThe other vehicle never encroaches the CA, PET is set to inf.")
                 elif self.ego_vehicle_exit_time is None:
                     utils_log.print_and_log_info(logger,
-                                                 "* \t\tThe ego vehicle has not left the CA, "
+                                                 "* \t\tThe ego vehicle entered the CA, "
                                                  "but never leaves it, PET is set to inf.")
                 elif self.other_vehicle_enter_time < self.ego_vehicle_exit_time:
                     utils_log.print_and_log_info(logger,
@@ -170,7 +170,7 @@ class PET(ET):
                                                  "* \t\tThe ego vehicle never encroaches the CA, PET is set to inf.")
                 elif self.other_vehicle_exit_time is None:
                     utils_log.print_and_log_info(logger,
-                                                 "* \t\tThe other vehicle has not left the CA, "
+                                                 "* \t\tThe other vehicle has entered the CA, "
                                                  "but never leaves it, PET is set to inf.")
                 elif self.ego_vehicle_enter_time < self.other_vehicle_exit_time:
                     utils_log.print_and_log_info(logger,
