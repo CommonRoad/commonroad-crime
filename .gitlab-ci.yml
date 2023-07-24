@@ -1,11 +1,13 @@
 image: python:3.8
 
 stages:
+  - style_check
   - test
   - publish
 
 before_script:
     - apt-get update && apt-get install -y build-essential
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.lrz.de/".insteadOf "git@gitlab.lrz.de:"
 
 unittest:
   stage: test
@@ -24,6 +26,8 @@ pages:
   stage: publish
   script:
     - pip install --upgrade pip
+    # installation of reach, but will be replaced in the future
+    - pip install git+ssh://git@gitlab.lrz.de/cps/commonroad-reachable-set.git@develop
     - pip install -e .
     - pip install -r ./docs/requirements_doc.txt
     - cd docs/sphinx
