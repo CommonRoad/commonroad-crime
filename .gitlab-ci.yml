@@ -26,8 +26,7 @@ pages:
   stage: publish
   script:
     - pip install --upgrade pip
-    # installation of reach, but will be replaced in the future
-    - pip install git+ssh://git@gitlab.lrz.de/cps/commonroad-reachable-set.git
+    # installation of reach?
     - pip install -e .
     - pip install -r ./docs/requirements_doc.txt
     - cd docs/sphinx
