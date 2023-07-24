@@ -24,6 +24,7 @@ pages:
   stage: publish
   script:
     - pip install --upgrade pip
+    - pip install -e .
     - pip install -r ./docs/requirements_doc.txt
     - cd docs/sphinx
     - make html
