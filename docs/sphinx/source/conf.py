@@ -10,6 +10,7 @@
 
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../../../'))
 sys.path.insert(0, os.path.abspath('../../../commonroad_crime/'))
 
@@ -21,18 +22,30 @@ release = 'v0.2.4'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-		'sphinx.ext.autodoc',
-		'sphinx.ext.viewcode'
-		]
-exclude_patterns = []
-todo_include_todos = False
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
+extensions = ["sphinx.ext.autodoc",
+              "sphinx.ext.viewcode",
+              "sphinx.ext.napoleon",
+              'sphinx.ext.inheritance_diagram',
+              "sphinx.ext.todo",
+              'sphinx_autodoc_typehints',
+              "m2r2"
+              ]
 
+# order of displaying the members in an automodule/autoclass
+autodoc_member_order = "bysource"
+
+# show todo items
+todo_include_todos = True
+
+autodoc_typehints = "both"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"  #pip install sphinx_rtd_theme
+html_theme = 'sphinx_rtd_theme'
 
 html_theme_options = {
     'canonical_url': '',

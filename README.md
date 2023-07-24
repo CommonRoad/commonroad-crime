@@ -51,7 +51,6 @@ $ cd tests
 $ python -m unittest -v
 ```
 
-This will install related dependencies specified in `requirements.txt`. Or simply install the dependencies listed in `requirements.txt` and add this repository to your python path.
 
 To get started your journey with our criticality measures, check the `tutorials` and the following tips.
 
@@ -70,6 +69,21 @@ and some explanations there
 3. navigate to `commonroad_crime/data_structure/configuation.py` to find the above-mentioned category and add a new 
 instance to the class as `self.<parameter> = config_relevant.<parameter>`
 4. you can then directly call the values using `self.configuration.<category>.<parameter>` in your measure class
+
+
+## Documentation
+
+The documentation of our toolbox is available on our website: https://commonroad.in.tum.de/docs/commonroad-reach/.
+
+In order to generate the documentation via Sphinx locally, run the following commands in the root directory:
+
+```bash
+$ pip install -r ./docs/requirements_doc.txt
+$ cd docs/S=sphinx
+$ make html
+```
+
+The documentation can then be launched by browsing ``./docs/sphinx/build/html/index.html/``.
 
 ### Contributors (in alphabetical order by last name)
 - Liguo Chen
