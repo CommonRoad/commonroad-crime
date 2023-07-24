@@ -74,6 +74,7 @@ instance to the class as `self.<parameter> = config_relevant.<parameter>`
 ### Contributors (in alphabetical order by last name)
 - Liguo Chen
 - Yuanfei Lin
+- Sebastian Maierhofer
 - Ivana Peneva
 - Kun Qian
 - Oliver Specht
