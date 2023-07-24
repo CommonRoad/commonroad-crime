@@ -26,7 +26,7 @@ class ALongReq(CriMeBase):
     The required longitudinal acceleration measures the longitudinal acceleration required to bring the relative
     velocity to zero at the time of the collision.
 
-    - from Sec.5.3.5 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
+    from Sec.5.3.5 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     measure_name = TypeAcceleration.ALongReq

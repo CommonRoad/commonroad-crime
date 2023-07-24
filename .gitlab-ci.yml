@@ -1,5 +1,9 @@
+image: python:3.8
+
 stages:
+  - style_check
   - test
+  - publish
 
 before_script:
     - apt-get update && apt-get install -y build-essential
@@ -13,3 +17,25 @@ unittest:
   script:
     - pip install -e .
     - cd $CI_PROJECT_DIR/tests && python -m unittest
+
+### publish documentation ###
+pages:
+  # Push the latest documentation of the master branch to the GitLab Pages documentation
+  # at https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
+  stage: publish
+  script:
+    - pip install --upgrade pip
+    # installation of reach?
+    - pip install -e .
+    - pip install -r ./docs/requirements_doc.txt
+    - cd docs/sphinx
+    - make html
+    - mv ./build/html ../../public
+  artifacts:
+    paths:
+      - public
+  environment:
+    name: Gitlab Pages
+    url: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
+  only:
+    - master

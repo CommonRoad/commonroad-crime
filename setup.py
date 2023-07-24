@@ -1,15 +1,27 @@
 #!/usr/bin/env python
 
+import os
+
 from setuptools import setup, find_packages
+
+
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as f:
+    readme = f.read()
+
 
 setup(name='commonroad-crime',
       version='0.2.4',
       description='criticality measures of automated vehicles',
       keywords="criticality, autonomous driving",
-      author='Yuanfei Lin, Oliver Specht, Ivana Peneva',
-      author_email='yuanfei.lin@tum.de',
+      long_description_content_type='text/markdown',
+      long_description=readme,
+      author='Technical University of Munich',
+      author_email='commonroad@lists.lrz.de',
       license='BSD 3-Clause',
+      url='https://commonroad.in.tum.de/tools/commonroad-crime',
       packages=find_packages(),
+      data_files=[('.', ['LICENSE'])],
       install_requires=[
           'commonroad-io>=2022.3',
           'commonroad-vehicle-models>=3.0.0',
@@ -27,6 +39,15 @@ setup(name='commonroad-crime',
               'pytest>=7.1'
           ]
       },
+      classifiers=[
+          "Programming Language :: C++",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "License :: OSI Approved :: BSD 3-Clause",
+          "Operating System :: POSIX :: Linux",
+      ],
       include_package_data=True,
       package_data={'': ['*.yaml']}
       )
