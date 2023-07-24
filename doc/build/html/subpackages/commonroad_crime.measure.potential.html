@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Potential &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Probability" href="commonroad_crime.measure.probability.html" />
+    <link rel="prev" title="Jerk" href="commonroad_crime.measure.jerk.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html#single-criticality-measure">Single Criticality Measure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#import-and-building-configuration">Import and Building Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#compute-the-criticality">Compute the criticality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#visualization-of-the-evaluation-result">Visualization of the evaluation result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#evasive-maneuver-to-avoid-the-collision">Evasive maneuver to avoid the collision?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="commonroad_crime.data_structure.html">Data Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.config_defaults.html">Config Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">Base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase"><code class="docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.AccelerationDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">AccelerationDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration"><code class="docutils literal notranslate"><span class="pre">CriMeConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.DebugConfiguration"><code class="docutils literal notranslate"><span class="pre">DebugConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.GeneralConfiguration"><code class="docutils literal notranslate"><span class="pre">GeneralConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.IndexDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">IndexDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.PotentialDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">PotentialDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.ProbabilityDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">ProbabilityDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.ReachableSetDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">ReachableSetDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.TimeDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">TimeDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.VehicleConfiguration"><code class="docutils literal notranslate"><span class="pre">VehicleConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.VelocityDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">VelocityDomainConfiguration</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">ConfigurationBuilder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder"><code class="docutils literal notranslate"><span class="pre">ConfigurationBuilder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">CrimeInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.crime_interface.CriMeInterface"><code class="docutils literal notranslate"><span class="pre">CriMeInterface</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">Scene</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.scene.Scene"><code class="docutils literal notranslate"><span class="pre">Scene</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">Type</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeAcceleration"><code class="docutils literal notranslate"><span class="pre">TypeAcceleration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeDistance"><code class="docutils literal notranslate"><span class="pre">TypeDistance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeIndex"><code class="docutils literal notranslate"><span class="pre">TypeIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeJerk"><code class="docutils literal notranslate"><span class="pre">TypeJerk</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeMonotone"><code class="docutils literal notranslate"><span class="pre">TypeMonotone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeNone"><code class="docutils literal notranslate"><span class="pre">TypeNone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypePotential"><code class="docutils literal notranslate"><span class="pre">TypePotential</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeProbability"><code class="docutils literal notranslate"><span class="pre">TypeProbability</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeReachableSet"><code class="docutils literal notranslate"><span class="pre">TypeReachableSet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeTime"><code class="docutils literal notranslate"><span class="pre">TypeTime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeVelocity"><code class="docutils literal notranslate"><span class="pre">TypeVelocity</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="commonroad_crime.measure.html">Measure</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.acceleration.html">Acceleration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_lat_req">ALatReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_long_req">ALongReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_req">AReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.dst">DST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.distance.html">Distance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.dce">DCE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.hw">HW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.msd">MSD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.psd">PSD</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.index.html">Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.aci">ACI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.btn">BTN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.ci">CI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.cpi">CPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.pri">PRI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.rss">RSS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.soi">SOI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.stn">STN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.tci">TCI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.jerk.html">Jerk</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.jerk.html#module-commonroad_crime.measure.jerk.lat_j">LatJ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.jerk.html#module-commonroad_crime.measure.jerk.long_j">LongJ</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Potential</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.potential.pf">PF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-commonroad_crime.measure.potential.sp">SP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.probability.html">Probability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">P-MC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">P-SMH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">P-SRS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html#module-commonroad_crime.measure.reachable_set.drivable_area">DrivableArea</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.time.html">Time</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ags">AGS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.et">ET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.pet">PET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.pttc">PTTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tc">TC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tet">TET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.thw">THW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tit">TIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttb">TTB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttc">TTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttc_star">TTCStar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttce">TTCE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttk">TTK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttm">TTM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttr">TTR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tts">TTS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttz">TTZ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tv">TV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttc">WTTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttr">WTTR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">CS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">DeltaV</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="commonroad_crime.utility.html">Utility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.batch_evaluation">BatchEvaluation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.ScenarioLoader"><code class="docutils literal notranslate"><span class="pre">ScenarioLoader</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.initialize_process"><code class="docutils literal notranslate"><span class="pre">initialize_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.run_parallel"><code class="docutils literal notranslate"><span class="pre">run_parallel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.run_sequential"><code class="docutils literal notranslate"><span class="pre">run_sequential()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.batch_evaluation.write_result_to_csv"><code class="docutils literal notranslate"><span class="pre">write_result_to_csv()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.general">General</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.check_elements_state"><code class="docutils literal notranslate"><span class="pre">check_elements_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.check_elements_state_list"><code class="docutils literal notranslate"><span class="pre">check_elements_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.check_in_same_lanelet"><code class="docutils literal notranslate"><span class="pre">check_in_same_lanelet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.generate_reference_path"><code class="docutils literal notranslate"><span class="pre">generate_reference_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.int_round"><code class="docutils literal notranslate"><span class="pre">int_round()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.general.load_scenario"><code class="docutils literal notranslate"><span class="pre">load_scenario()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.logger">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.logger.initialize_logger"><code class="docutils literal notranslate"><span class="pre">initialize_logger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.logger.print_and_log_debug"><code class="docutils literal notranslate"><span class="pre">print_and_log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.logger.print_and_log_error"><code class="docutils literal notranslate"><span class="pre">print_and_log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.logger.print_and_log_info"><code class="docutils literal notranslate"><span class="pre">print_and_log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.logger.print_and_log_warning"><code class="docutils literal notranslate"><span class="pre">print_and_log_warning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.optimization">Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.optimization.OptimizerBase"><code class="docutils literal notranslate"><span class="pre">OptimizerBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.optimization.TCIOptimizer"><code class="docutils literal notranslate"><span class="pre">TCIOptimizer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.simulation">Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.Maneuver"><code class="docutils literal notranslate"><span class="pre">Maneuver</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationBase"><code class="docutils literal notranslate"><span class="pre">SimulationBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationLat"><code class="docutils literal notranslate"><span class="pre">SimulationLat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationLatMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationLatMonteCarlo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationLong"><code class="docutils literal notranslate"><span class="pre">SimulationLong</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationLongMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationLongMonteCarlo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationRandoMonteCarlo</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.solver">Solver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_acceleration"><code class="docutils literal notranslate"><span class="pre">compute_acceleration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_clcs_distance"><code class="docutils literal notranslate"><span class="pre">compute_clcs_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_closest_coordinate_from_list_of_points"><code class="docutils literal notranslate"><span class="pre">compute_closest_coordinate_from_list_of_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_disc_radius_and_distance"><code class="docutils literal notranslate"><span class="pre">compute_disc_radius_and_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_jerk"><code class="docutils literal notranslate"><span class="pre">compute_jerk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_lanelet_width_orientation"><code class="docutils literal notranslate"><span class="pre">compute_lanelet_width_orientation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.compute_veh_dis_to_boundary"><code class="docutils literal notranslate"><span class="pre">compute_veh_dis_to_boundary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.obtain_road_boundary"><code class="docutils literal notranslate"><span class="pre">obtain_road_boundary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.solver.solver_wttc"><code class="docutils literal notranslate"><span class="pre">solver_wttc()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.utility.html#module-commonroad_crime.utility.visualization">Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.TUMcolor"><code class="docutils literal notranslate"><span class="pre">TUMcolor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_circle"><code class="docutils literal notranslate"><span class="pre">draw_circle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_dyn_vehicle_shape"><code class="docutils literal notranslate"><span class="pre">draw_dyn_vehicle_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_reference_path"><code class="docutils literal notranslate"><span class="pre">draw_reference_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_sce_at_time_step"><code class="docutils literal notranslate"><span class="pre">draw_sce_at_time_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_state"><code class="docutils literal notranslate"><span class="pre">draw_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.draw_state_list"><code class="docutils literal notranslate"><span class="pre">draw_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.plot_criticality_curve"><code class="docutils literal notranslate"><span class="pre">plot_criticality_curve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.plot_limits_from_state_list"><code class="docutils literal notranslate"><span class="pre">plot_limits_from_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.save_fig"><code class="docutils literal notranslate"><span class="pre">save_fig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.utility.html#commonroad_crime.utility.visualization.visualize_scenario_at_time_steps"><code class="docutils literal notranslate"><span class="pre">visualize_scenario_at_time_steps()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Packages</a></li>
+          <li class="breadcrumb-item"><a href="commonroad_crime.measure.html">Measure</a></li>
+      <li class="breadcrumb-item active">Potential</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/subpackages/commonroad_crime.measure.potential.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="potential">
+<h1>Potential<a class="headerlink" href="#potential" title="Permalink to this heading"></a></h1>
+<section id="module-commonroad_crime.measure.potential.pf">
+<span id="pf"></span><h2>PF<a class="headerlink" href="#module-commonroad_crime.measure.potential.pf" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.potential.pf.</span></span><span class="sig-name descname"><span class="pre">PF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/pf.html#PF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
+<p>Jerk is the rate of change in acceleration, and thus quantifies over the abruptness of a maneuver.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.calc_total_potential">
+<span class="sig-name descname"><span class="pre">calc_total_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">veh_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">State</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_veh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_veh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/pf.html#PF.calc_total_potential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.calc_total_potential" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/pf.html#PF.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.compute" title="Permalink to this definition"></a></dt>
+<dd><p>Specific computing function for each measure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.measure_name">
+<span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'potential</span> <span class="pre">functions</span> <span class="pre">as</span> <span class="pre">superposition</span> <span class="pre">of</span> <span class="pre">scoring</span> <span class="pre">functions'</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.measure_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.monotone">
+<span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.rnd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.pf.PF.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(25,</span> <span class="pre">15)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/pf.html#PF.visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.pf.PF.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize the result, which will be measure-dependent.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-commonroad_crime.measure.potential.sp">
+<span id="sp"></span><h2>SP<a class="headerlink" href="#module-commonroad_crime.measure.potential.sp" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.measure.potential.sp.</span></span><span class="sig-name descname"><span class="pre">SP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/sp.html#SP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></p>
+<p>See <a class="reference external" href="https://criticality-metrics.readthedocs.io/">https://criticality-metrics.readthedocs.io/</a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.clcs">
+<span class="sig-name descname"><span class="pre">clcs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">CurvilinearCoordinateSystem</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.clcs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.compute">
+<span class="sig-name descname"><span class="pre">compute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/sp.html#SP.compute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.compute" title="Permalink to this definition"></a></dt>
+<dd><p>Specific computing function for each measure</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.ego_vehicle">
+<span class="sig-name descname"><span class="pre">ego_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.ego_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.measure_name">
+<span class="sig-name descname"><span class="pre">measure_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'safety</span> <span class="pre">potential'</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.measure_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.monotone">
+<span class="sig-name descname"><span class="pre">monotone</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positive</span> <span class="pre">monotonic'</span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.monotone" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.other_vehicle">
+<span class="sig-name descname"><span class="pre">other_vehicle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Obstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.other_vehicle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.rnd">
+<span class="sig-name descname"><span class="pre">rnd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MPRenderer</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.rnd" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.measure.potential.sp.SP.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/measure/potential/sp.html#SP.visualize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.measure.potential.sp.SP.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Visualize the result, which will be measure-dependent.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="commonroad_crime.measure.jerk.html" class="btn btn-neutral float-left" title="Jerk" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="commonroad_crime.measure.probability.html" class="btn btn-neutral float-right" title="Probability" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Yuanfei Lin, Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

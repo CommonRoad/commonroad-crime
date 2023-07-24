@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Utility &mdash; CommonRoad-CriMe v0.2.4 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Velocity" href="commonroad_crime.measure.velocity.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CommonRoad-CriMe
+              <img src="../_static/CriMe-logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/getting_started.html#single-criticality-measure">Single Criticality Measure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#import-and-building-configuration">Import and Building Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#compute-the-criticality">Compute the criticality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#visualization-of-the-evaluation-result">Visualization of the evaluation result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user/getting_started.html#evasive-maneuver-to-avoid-the-collision">Evasive maneuver to avoid the collision?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="commonroad_crime.data_structure.html">Data Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.config_defaults.html">Config Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.base">Base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase"><code class="docutils literal notranslate"><span class="pre">CriMeBase</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration">Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.AccelerationDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">AccelerationDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration"><code class="docutils literal notranslate"><span class="pre">CriMeConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.DebugConfiguration"><code class="docutils literal notranslate"><span class="pre">DebugConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.GeneralConfiguration"><code class="docutils literal notranslate"><span class="pre">GeneralConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.IndexDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">IndexDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.PotentialDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">PotentialDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.ProbabilityDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">ProbabilityDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.ReachableSetDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">ReachableSetDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.TimeDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">TimeDomainConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.VehicleConfiguration"><code class="docutils literal notranslate"><span class="pre">VehicleConfiguration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.VelocityDomainConfiguration"><code class="docutils literal notranslate"><span class="pre">VelocityDomainConfiguration</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.configuration_builder">ConfigurationBuilder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration_builder.ConfigurationBuilder"><code class="docutils literal notranslate"><span class="pre">ConfigurationBuilder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.crime_interface">CrimeInterface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.crime_interface.CriMeInterface"><code class="docutils literal notranslate"><span class="pre">CriMeInterface</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.scene">Scene</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.scene.Scene"><code class="docutils literal notranslate"><span class="pre">Scene</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.data_structure.html#module-commonroad_crime.data_structure.type">Type</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeAcceleration"><code class="docutils literal notranslate"><span class="pre">TypeAcceleration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeDistance"><code class="docutils literal notranslate"><span class="pre">TypeDistance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeIndex"><code class="docutils literal notranslate"><span class="pre">TypeIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeJerk"><code class="docutils literal notranslate"><span class="pre">TypeJerk</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeMonotone"><code class="docutils literal notranslate"><span class="pre">TypeMonotone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeNone"><code class="docutils literal notranslate"><span class="pre">TypeNone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypePotential"><code class="docutils literal notranslate"><span class="pre">TypePotential</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeProbability"><code class="docutils literal notranslate"><span class="pre">TypeProbability</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeReachableSet"><code class="docutils literal notranslate"><span class="pre">TypeReachableSet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeTime"><code class="docutils literal notranslate"><span class="pre">TypeTime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.type.TypeVelocity"><code class="docutils literal notranslate"><span class="pre">TypeVelocity</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="commonroad_crime.measure.html">Measure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.acceleration.html">Acceleration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_lat_req">ALatReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_long_req">ALongReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.a_req">AReq</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.acceleration.html#module-commonroad_crime.measure.acceleration.dst">DST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.distance.html">Distance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.dce">DCE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.hw">HW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.msd">MSD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.distance.html#module-commonroad_crime.measure.distance.psd">PSD</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.index.html">Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.aci">ACI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.btn">BTN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.ci">CI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.cpi">CPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.pri">PRI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.rss">RSS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.soi">SOI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.stn">STN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.index.html#module-commonroad_crime.measure.index.tci">TCI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.jerk.html">Jerk</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.jerk.html#module-commonroad_crime.measure.jerk.lat_j">LatJ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.jerk.html#module-commonroad_crime.measure.jerk.long_j">LongJ</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.potential.html">Potential</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.potential.html#module-commonroad_crime.measure.potential.pf">PF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.potential.html#module-commonroad_crime.measure.potential.sp">SP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.probability.html">Probability</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_mc">P-MC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_smh">P-SMH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.probability.html#module-commonroad_crime.measure.probability.p_srs">P-SRS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html">ReachableSet</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.reachable_set.html#module-commonroad_crime.measure.reachable_set.drivable_area">DrivableArea</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.time.html">Time</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ags">AGS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.et">ET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.pet">PET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.pttc">PTTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tc">TC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tet">TET</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.thw">THW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tit">TIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttb">TTB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttc">TTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttc_star">TTCStar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttce">TTCE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttk">TTK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttm">TTM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttr">TTR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tts">TTS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.ttz">TTZ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.tv">TV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttc">WTTC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.time.html#module-commonroad_crime.measure.time.wttr">WTTR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commonroad_crime.measure.velocity.html">Velocity</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.cs">CS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commonroad_crime.measure.velocity.html#module-commonroad_crime.measure.velocity.delta_v">DeltaV</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Utility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.batch_evaluation">BatchEvaluation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.batch_evaluation.ScenarioLoader"><code class="docutils literal notranslate"><span class="pre">ScenarioLoader</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.batch_evaluation.initialize_process"><code class="docutils literal notranslate"><span class="pre">initialize_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.batch_evaluation.run_parallel"><code class="docutils literal notranslate"><span class="pre">run_parallel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.batch_evaluation.run_sequential"><code class="docutils literal notranslate"><span class="pre">run_sequential()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.batch_evaluation.write_result_to_csv"><code class="docutils literal notranslate"><span class="pre">write_result_to_csv()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.general">General</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.check_elements_state"><code class="docutils literal notranslate"><span class="pre">check_elements_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.check_elements_state_list"><code class="docutils literal notranslate"><span class="pre">check_elements_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.check_in_same_lanelet"><code class="docutils literal notranslate"><span class="pre">check_in_same_lanelet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.generate_reference_path"><code class="docutils literal notranslate"><span class="pre">generate_reference_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.int_round"><code class="docutils literal notranslate"><span class="pre">int_round()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.general.load_scenario"><code class="docutils literal notranslate"><span class="pre">load_scenario()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.logger">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.logger.initialize_logger"><code class="docutils literal notranslate"><span class="pre">initialize_logger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.logger.print_and_log_debug"><code class="docutils literal notranslate"><span class="pre">print_and_log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.logger.print_and_log_error"><code class="docutils literal notranslate"><span class="pre">print_and_log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.logger.print_and_log_info"><code class="docutils literal notranslate"><span class="pre">print_and_log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.logger.print_and_log_warning"><code class="docutils literal notranslate"><span class="pre">print_and_log_warning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.optimization">Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.optimization.OptimizerBase"><code class="docutils literal notranslate"><span class="pre">OptimizerBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.optimization.TCIOptimizer"><code class="docutils literal notranslate"><span class="pre">TCIOptimizer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.simulation">Simulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver"><code class="docutils literal notranslate"><span class="pre">Maneuver</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationBase"><code class="docutils literal notranslate"><span class="pre">SimulationBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLat"><code class="docutils literal notranslate"><span class="pre">SimulationLat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLatMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationLatMonteCarlo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLong"><code class="docutils literal notranslate"><span class="pre">SimulationLong</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLongMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationLongMonteCarlo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo"><code class="docutils literal notranslate"><span class="pre">SimulationRandoMonteCarlo</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.solver">Solver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_acceleration"><code class="docutils literal notranslate"><span class="pre">compute_acceleration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_clcs_distance"><code class="docutils literal notranslate"><span class="pre">compute_clcs_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_closest_coordinate_from_list_of_points"><code class="docutils literal notranslate"><span class="pre">compute_closest_coordinate_from_list_of_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_disc_radius_and_distance"><code class="docutils literal notranslate"><span class="pre">compute_disc_radius_and_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_jerk"><code class="docutils literal notranslate"><span class="pre">compute_jerk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_lanelet_width_orientation"><code class="docutils literal notranslate"><span class="pre">compute_lanelet_width_orientation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.compute_veh_dis_to_boundary"><code class="docutils literal notranslate"><span class="pre">compute_veh_dis_to_boundary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.obtain_road_boundary"><code class="docutils literal notranslate"><span class="pre">obtain_road_boundary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.solver.solver_wttc"><code class="docutils literal notranslate"><span class="pre">solver_wttc()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-commonroad_crime.utility.visualization">Visualization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor"><code class="docutils literal notranslate"><span class="pre">TUMcolor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_circle"><code class="docutils literal notranslate"><span class="pre">draw_circle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_dyn_vehicle_shape"><code class="docutils literal notranslate"><span class="pre">draw_dyn_vehicle_shape()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_reference_path"><code class="docutils literal notranslate"><span class="pre">draw_reference_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_sce_at_time_step"><code class="docutils literal notranslate"><span class="pre">draw_sce_at_time_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_state"><code class="docutils literal notranslate"><span class="pre">draw_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.draw_state_list"><code class="docutils literal notranslate"><span class="pre">draw_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.plot_criticality_curve"><code class="docutils literal notranslate"><span class="pre">plot_criticality_curve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.plot_limits_from_state_list"><code class="docutils literal notranslate"><span class="pre">plot_limits_from_state_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.save_fig"><code class="docutils literal notranslate"><span class="pre">save_fig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonroad_crime.utility.visualization.visualize_scenario_at_time_steps"><code class="docutils literal notranslate"><span class="pre">visualize_scenario_at_time_steps()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CommonRoad-CriMe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Packages</a></li>
+      <li class="breadcrumb-item active">Utility</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/subpackages/commonroad_crime.utility.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utility">
+<h1>Utility<a class="headerlink" href="#utility" title="Permalink to this heading"></a></h1>
+<section id="module-commonroad_crime.utility.batch_evaluation">
+<span id="batchevaluation"></span><h2>BatchEvaluation<a class="headerlink" href="#module-commonroad_crime.utility.batch_evaluation" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.batch_evaluation.ScenarioLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.batch_evaluation.</span></span><span class="sig-name descname"><span class="pre">ScenarioLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/batch_evaluation.html#ScenarioLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.batch_evaluation.ScenarioLoader" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.batch_evaluation.initialize_process">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.batch_evaluation.</span></span><span class="sig-name descname"><span class="pre">initialize_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_multi_processing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/batch_evaluation.html#initialize_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.batch_evaluation.initialize_process" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.batch_evaluation.run_parallel">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.batch_evaluation.</span></span><span class="sig-name descname"><span class="pre">run_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/batch_evaluation.html#run_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.batch_evaluation.run_parallel" title="Permalink to this definition"></a></dt>
+<dd><p>Parallel batch evaluation of measures, where the computation of criticality is carried out on multiple threads
+simultaneously. This reduces the runtime required to test your metric on more scenarios. One drawback is that it is
+not very easy to debug your code with parallel batch evaluation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.batch_evaluation.run_sequential">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.batch_evaluation.</span></span><span class="sig-name descname"><span class="pre">run_sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.base.CriMeBase" title="commonroad_crime.data_structure.base.CriMeBase"><span class="pre">CriMeBase</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/batch_evaluation.html#run_sequential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.batch_evaluation.run_sequential" title="Permalink to this definition"></a></dt>
+<dd><p>Sequential batch evaluation of measures, where the computation of criticality is carried out on a single thread.
+This is more user-friendly choice for test your metric on more scenarios since you can easily debug your code in
+your IDEs by creating breakpoints.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.batch_evaluation.write_result_to_csv">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.batch_evaluation.</span></span><span class="sig-name descname"><span class="pre">write_result_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/batch_evaluation.html#write_result_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.batch_evaluation.write_result_to_csv" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.general">
+<span id="general"></span><h2>General<a class="headerlink" href="#module-commonroad_crime.utility.general" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.check_elements_state">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">check_elements_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">KSState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">LongitudinalState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CustomState</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veh_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">PMInputState</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">KSState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">LongitudinalState</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#check_elements_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.check_elements_state" title="Permalink to this definition"></a></dt>
+<dd><p>checks the missing elements needed for PM model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.check_elements_state_list">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">check_elements_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">LongitudinalState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CustomState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PMState</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#check_elements_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.check_elements_state_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.check_in_same_lanelet">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">check_in_same_lanelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lanelet_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LaneletNetwork</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vehicle_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">DynamicObstacle</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">StaticObstacle</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#check_in_same_lanelet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.check_in_same_lanelet" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.generate_reference_path">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">generate_reference_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lanelet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lanelet_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LaneletNetwork</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_resampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#generate_reference_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.generate_reference_path" title="Permalink to this definition"></a></dt>
+<dd><p>Generate the reference path based on the center line of the provided lanelet.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.int_round">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">int_round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">some_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#int_round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.int_round" title="Permalink to this definition"></a></dt>
+<dd><p>Round function using int.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>some_float</strong> – number</p></li>
+<li><p><strong>tolerance</strong> – float point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rounded number</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.general.load_scenario">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.general.</span></span><span class="sig-name descname"><span class="pre">load_scenario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Scenario</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/general.html#load_scenario"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.general.load_scenario" title="Permalink to this definition"></a></dt>
+<dd><p>Loads a scenario from the configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – configuration</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>scenario</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.logger">
+<span id="logger"></span><h2>Logger<a class="headerlink" href="#module-commonroad_crime.utility.logger" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.logger.initialize_logger">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.logger.</span></span><span class="sig-name descname"><span class="pre">initialize_logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/logger.html#initialize_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.logger.initialize_logger" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.logger.print_and_log_debug">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.logger.</span></span><span class="sig-name descname"><span class="pre">print_and_log_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/logger.html#print_and_log_debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.logger.print_and_log_debug" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.logger.print_and_log_error">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.logger.</span></span><span class="sig-name descname"><span class="pre">print_and_log_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/logger.html#print_and_log_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.logger.print_and_log_error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.logger.print_and_log_info">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.logger.</span></span><span class="sig-name descname"><span class="pre">print_and_log_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/logger.html#print_and_log_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.logger.print_and_log_info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.logger.print_and_log_warning">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.logger.</span></span><span class="sig-name descname"><span class="pre">print_and_log_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/logger.html#print_and_log_warning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.logger.print_and_log_warning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.optimization">
+<span id="optimization"></span><h2>Optimization<a class="headerlink" href="#module-commonroad_crime.utility.optimization" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.OptimizerBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.optimization.</span></span><span class="sig-name descname"><span class="pre">OptimizerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#OptimizerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.OptimizerBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.OptimizerBase.constraints">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#OptimizerBase.constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.OptimizerBase.constraints" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.OptimizerBase.cost_function">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cost_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#OptimizerBase.cost_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.OptimizerBase.cost_function" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.OptimizerBase.optimize">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#OptimizerBase.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.OptimizerBase.optimize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.OptimizerBase.vehicle_model">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vehicle_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#OptimizerBase.vehicle_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.OptimizerBase.vehicle_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.optimization.</span></span><span class="sig-name descname"><span class="pre">TCIOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Scenario</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.scene.Scene" title="commonroad_crime.data_structure.scene.Scene"><span class="pre">Scene</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.optimization.OptimizerBase" title="commonroad_crime.utility.optimization.OptimizerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizerBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.compute_params">
+<span class="sig-name descname"><span class="pre">compute_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.compute_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.compute_params" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the state with the maximum lateral distance to all obstacles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.constraints">
+<span class="sig-name descname"><span class="pre">constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ego_veh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_limit_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.constraints" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.convert_result_to_cr_trajectory">
+<span class="sig-name descname"><span class="pre">convert_result_to_cr_trajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OptiSol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.convert_result_to_cr_trajectory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.convert_result_to_cr_trajectory" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the current result to the CommonRoad trajectory</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.cost_function">
+<span class="sig-name descname"><span class="pre">cost_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_initial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InitialState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_state_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.cost_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.cost_function" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.optimize">
+<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ego_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">OptiSol</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.optimize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.optimization.TCIOptimizer.vehicle_model">
+<span class="sig-name descname"><span class="pre">vehicle_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/optimization.html#TCIOptimizer.vehicle_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.optimization.TCIOptimizer.vehicle_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.simulation">
+<span id="simulation"></span><h2>Simulation<a class="headerlink" href="#module-commonroad_crime.utility.simulation" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">Maneuver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#Maneuver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.BRAKE">
+<span class="sig-name descname"><span class="pre">BRAKE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'brake'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.BRAKE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.CONSTANT">
+<span class="sig-name descname"><span class="pre">CONSTANT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'constant</span> <span class="pre">velocity'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.CONSTANT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.KICKDOWN">
+<span class="sig-name descname"><span class="pre">KICKDOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'kick-down'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.KICKDOWN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.LANECHANGEMC">
+<span class="sig-name descname"><span class="pre">LANECHANGEMC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lane</span> <span class="pre">change</span> <span class="pre">with</span> <span class="pre">Monte</span> <span class="pre">Carlo'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.LANECHANGEMC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.NONE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.OVERTAKELEFT">
+<span class="sig-name descname"><span class="pre">OVERTAKELEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'overtake</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">left'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.OVERTAKELEFT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.OVERTAKEMC">
+<span class="sig-name descname"><span class="pre">OVERTAKEMC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'overtake</span> <span class="pre">with</span> <span class="pre">Monte</span> <span class="pre">Carlo'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.OVERTAKEMC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.OVERTAKERIGHT">
+<span class="sig-name descname"><span class="pre">OVERTAKERIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'overtake</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">right'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.OVERTAKERIGHT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.RANDOMMC">
+<span class="sig-name descname"><span class="pre">RANDOMMC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'random</span> <span class="pre">with</span> <span class="pre">Monte</span> <span class="pre">Carlo'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.RANDOMMC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.STEERLEFT">
+<span class="sig-name descname"><span class="pre">STEERLEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'steer</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">left'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.STEERLEFT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.STEERRIGHT">
+<span class="sig-name descname"><span class="pre">STEERRIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'steer</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">right'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.STEERRIGHT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.STOPMC">
+<span class="sig-name descname"><span class="pre">STOPMC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'stop</span> <span class="pre">with</span> <span class="pre">Monte</span> <span class="pre">Carlo'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.STOPMC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.TURNLEFT">
+<span class="sig-name descname"><span class="pre">TURNLEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'turn</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">left'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.TURNLEFT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.TURNMC">
+<span class="sig-name descname"><span class="pre">TURNMC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'turn</span> <span class="pre">with</span> <span class="pre">Monte</span> <span class="pre">Carlo'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.TURNMC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.Maneuver.TURNRIGHT">
+<span class="sig-name descname"><span class="pre">TURNRIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'turn</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">right'</span></em><a class="headerlink" href="#commonroad_crime.utility.simulation.Maneuver.TURNRIGHT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.check_velocity_feasibility">
+<span class="sig-name descname"><span class="pre">check_velocity_feasibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.check_velocity_feasibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.check_velocity_feasibility" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.initialize_simulator">
+<span class="sig-name descname"><span class="pre">initialize_simulator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.initialize_simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.initialize_simulator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.initialize_state_list">
+<span class="sig-name descname"><span class="pre">initialize_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.initialize_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.initialize_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>Initializing the state list based on the given time step. All the states before the time step would be returned.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.input">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">input</span></span><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.input" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.set_a_long_and_a_lat">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_a_long_and_a_lat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.set_a_long_and_a_lat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.set_a_long_and_a_lat" title="Permalink to this definition"></a></dt>
+<dd><p>sets the longitudinal and lateral acceleration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.set_inputs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>sets the input pairs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.simulate_state_list">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">simulate_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.simulate_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.simulate_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>forward simulation of the state list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.update_inputs_x_y">
+<span class="sig-name descname"><span class="pre">update_inputs_x_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">PMInputState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PMState</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">KSState</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.update_inputs_x_y"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.update_inputs_x_y" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationBase.update_maneuver">
+<span class="sig-name descname"><span class="pre">update_maneuver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationBase.update_maneuver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationBase.update_maneuver" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationLat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationBase" title="commonroad_crime.utility.simulation.SimulationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationBase</span></code></a></p>
+<p>Simulate the trajectory in the lateral direction.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.adjust_velocity">
+<span class="sig-name descname"><span class="pre">adjust_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_orient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lane_orient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.adjust_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.adjust_velocity" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.bang_bang_simulation">
+<span class="sig-name descname"><span class="pre">bang_bang_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_orientation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.bang_bang_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.bang_bang_simulation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.initialize_simulator">
+<span class="sig-name descname"><span class="pre">initialize_simulator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.initialize_simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.initialize_simulator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.set_a_long_and_a_lat">
+<span class="sig-name descname"><span class="pre">set_a_long_and_a_lat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.set_a_long_and_a_lat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.set_a_long_and_a_lat" title="Permalink to this definition"></a></dt>
+<dd><p>sets the longitudinal and lateral acceleration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.set_bang_bang_timestep_orientation">
+<span class="sig-name descname"><span class="pre">set_bang_bang_timestep_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.set_bang_bang_timestep_orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.set_bang_bang_timestep_orientation" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the time for the bang–bang controller of the lane change.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Sets inputs for the lateral simulation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.set_maximal_orientation">
+<span class="sig-name descname"><span class="pre">set_maximal_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lane_orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nr_stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.set_maximal_orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.set_maximal_orientation" title="Permalink to this definition"></a></dt>
+<dd><p>adds additional constraints for the orientation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.sign_change">
+<span class="sig-name descname"><span class="pre">sign_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.sign_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.sign_change" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLat.simulate_state_list">
+<span class="sig-name descname"><span class="pre">simulate_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLat.simulate_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLat.simulate_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates the lateral state list from the given start time step.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLatMonteCarlo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationLatMonteCarlo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLatMonteCarlo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLatMonteCarlo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLat" title="commonroad_crime.utility.simulation.SimulationLat"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationLat</span></code></a></p>
+<p>Simulate the longitudinal trajectory using Monte-Carlo sampling</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLatMonteCarlo.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLatMonteCarlo.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLatMonteCarlo.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Sets inputs for the lateral simulation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLong">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationLong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLong"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLong" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationBase" title="commonroad_crime.utility.simulation.SimulationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationBase</span></code></a></p>
+<p>Simulate the trajectory in the longitudinal direction.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLong.set_a_long_and_a_lat">
+<span class="sig-name descname"><span class="pre">set_a_long_and_a_lat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLong.set_a_long_and_a_lat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLong.set_a_long_and_a_lat" title="Permalink to this definition"></a></dt>
+<dd><p>sets the longitudinal and lateral acceleration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLong.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLong.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLong.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Sets inputs for the longitudinal simulation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLong.simulate_state_list">
+<span class="sig-name descname"><span class="pre">simulate_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLong.simulate_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLong.simulate_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>Simulates the longitudinal state list from the given start time step.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLongMonteCarlo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationLongMonteCarlo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLongMonteCarlo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLongMonteCarlo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationLong" title="commonroad_crime.utility.simulation.SimulationLong"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationLong</span></code></a></p>
+<p>Simulate the longitudinal trajectory using Monte-Carlo sampling</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationLongMonteCarlo.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationLongMonteCarlo.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationLongMonteCarlo.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Sets inputs for the longitudinal simulation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationRandoMonteCarlo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulationRandoMonteCarlo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maneuver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.simulation.Maneuver" title="commonroad_crime.utility.simulation.Maneuver"><span class="pre">Maneuver</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulated_vehicle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationRandoMonteCarlo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commonroad_crime.utility.simulation.SimulationBase" title="commonroad_crime.utility.simulation.SimulationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimulationBase</span></code></a></p>
+<p>Simulate the random behavior of vehicles.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.set_a_long_and_a_lat">
+<span class="sig-name descname"><span class="pre">set_a_long_and_a_lat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationRandoMonteCarlo.set_a_long_and_a_lat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.set_a_long_and_a_lat" title="Permalink to this definition"></a></dt>
+<dd><p>sets the longitudinal and lateral acceleration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.set_inputs">
+<span class="sig-name descname"><span class="pre">set_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationRandoMonteCarlo.set_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.set_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>sets the input pairs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.simulate_state_list">
+<span class="sig-name descname"><span class="pre">simulate_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">given_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/simulation.html#SimulationRandoMonteCarlo.simulate_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.simulation.SimulationRandoMonteCarlo.simulate_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>forward simulation of the state list</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.solver">
+<span id="solver"></span><h2>Solver<a class="headerlink" href="#module-commonroad_crime.utility.solver" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_acceleration">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_acceleration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_acceleration" title="Permalink to this definition"></a></dt>
+<dd><p>Computes acceleration given velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current_velocity</strong> – velocity of current time step</p></li>
+<li><p><strong>next_velocity</strong> – velocity of previous time step</p></li>
+<li><p><strong>dt</strong> – time step size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>acceleration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_clcs_distance">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_clcs_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CurvilinearCoordinateSystem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veh_rear_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veh_front_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_clcs_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_clcs_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the distance between two vehicles along the curvilinear coordinate system. The sign of the distance
+is based on the assumption of the relative position of the vehicles. If the distance &gt; 0, the relative
+position relationship holds. And vice versa.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clcs</strong> – curvi-linear coordinate system</p></li>
+<li><p><strong>veh_rear_pos</strong> – the position of the rear vehicle</p></li>
+<li><p><strong>veh_front_pos</strong> – the position of the front vehicle</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return the longitudinal and lateral relative distances</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_closest_coordinate_from_list_of_points">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_closest_coordinate_from_list_of_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">State</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_closest_coordinate_from_list_of_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_closest_coordinate_from_list_of_points" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the closest coordinate from a list of points</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_disc_radius_and_distance">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_disc_radius_and_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_disc_radius_and_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_disc_radius_and_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the radius of discs and their distances used as the approximation of the shape of the ego vehicle.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_jerk">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_jerk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_acceleration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_acceleration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_jerk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_jerk" title="Permalink to this definition"></a></dt>
+<dd><p>Computes jerk given acceleration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current_acceleration</strong> – acceleration of current time step</p></li>
+<li><p><strong>next_acceleration</strong> – acceleration of previous time step</p></li>
+<li><p><strong>dt</strong> – time step size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>jerk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_lanelet_width_orientation">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_lanelet_width_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lanelet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Lanelet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_lanelet_width_orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_lanelet_width_orientation" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the width and the orientation of the lanelet at given position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lanelet</strong> – a lanelet</p></li>
+<li><p><strong>position</strong> – position of the vehicle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.compute_veh_dis_to_boundary">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">compute_veh_dis_to_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">State</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lanelet_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LaneletNetwork</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#compute_veh_dis_to_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.compute_veh_dis_to_boundary" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the distance between the vehicle cenver and the road boundary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(distance to the right boundary,
+distance to the left boundary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.obtain_road_boundary">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">obtain_road_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">State</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lanelet_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LaneletNetwork</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#obtain_road_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.obtain_road_boundary" title="Permalink to this definition"></a></dt>
+<dd><p>Obtains the road boundaries based on the vehicle state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(left boundary, right boundary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.solver.solver_wttc">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.solver.</span></span><span class="sig-name descname"><span class="pre">solver_wttc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">veh_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Obstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veh_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Obstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/solver.html#solver_wttc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.solver.solver_wttc" title="Permalink to this definition"></a></dt>
+<dd><p>Analytical solution of the worst-time-to-collision.</p>
+</dd></dl>
+
+</section>
+<section id="module-commonroad_crime.utility.visualization">
+<span id="visualization"></span><h2>Visualization<a class="headerlink" href="#module-commonroad_crime.utility.visualization" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">TUMcolor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#TUMcolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMblack">
+<span class="sig-name descname"><span class="pre">TUMblack</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMblack" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMblue">
+<span class="sig-name descname"><span class="pre">TUMblue</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0.396078431372549,</span> <span class="pre">0.7411764705882353)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMblue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMdarkblue">
+<span class="sig-name descname"><span class="pre">TUMdarkblue</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0.3215686274509804,</span> <span class="pre">0.5764705882352941)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMdarkblue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMdarkgray">
+<span class="sig-name descname"><span class="pre">TUMdarkgray</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.34509803921568627,</span> <span class="pre">0.34509803921568627,</span> <span class="pre">0.38823529411764707)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMdarkgray" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMdarkred">
+<span class="sig-name descname"><span class="pre">TUMdarkred</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.5450980392156862,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMdarkred" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMgray">
+<span class="sig-name descname"><span class="pre">TUMgray</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.611764705882353,</span> <span class="pre">0.615686274509804,</span> <span class="pre">0.6235294117647059)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMgray" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMgreen">
+<span class="sig-name descname"><span class="pre">TUMgreen</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.6352941176470588,</span> <span class="pre">0.6784313725490196,</span> <span class="pre">0)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMgreen" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMlightgray">
+<span class="sig-name descname"><span class="pre">TUMlightgray</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.8509803921568627,</span> <span class="pre">0.8549019607843137,</span> <span class="pre">0.8588235294117647)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMlightgray" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMorange">
+<span class="sig-name descname"><span class="pre">TUMorange</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.8901960784313725,</span> <span class="pre">0.4470588235294118,</span> <span class="pre">0.13333333333333333)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMorange" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMred">
+<span class="sig-name descname"><span class="pre">TUMred</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.8901960784313725,</span> <span class="pre">0.10588235294117647,</span> <span class="pre">0.13725490196078433)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMred" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.TUMcolor.TUMwhite">
+<span class="sig-name descname"><span class="pre">TUMwhite</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></em><a class="headerlink" href="#commonroad_crime.utility.visualization.TUMcolor.TUMwhite" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_circle">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor" title="commonroad_crime.utility.visualization.TUMcolor"><span class="pre">TUMcolor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TUMcolor.TUMblue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_circle" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_dyn_vehicle_shape">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_dyn_vehicle_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obstacle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DynamicObstacle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor" title="commonroad_crime.utility.visualization.TUMcolor"><span class="pre">TUMcolor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TUMcolor.TUMblue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_dyn_vehicle_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_dyn_vehicle_shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_reference_path">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_reference_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor" title="commonroad_crime.utility.visualization.TUMcolor"><span class="pre">TUMcolor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TUMcolor.TUMorange</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_reference_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_reference_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_sce_at_time_step">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_sce_at_time_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.configuration.CriMeConfiguration" title="commonroad_crime.data_structure.configuration.CriMeConfiguration"><span class="pre">CriMeConfiguration</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Scenario</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="commonroad_crime.data_structure.html#commonroad_crime.data_structure.scene.Scene" title="commonroad_crime.data_structure.scene.Scene"><span class="pre">Scene</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_sce_at_time_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_sce_at_time_step" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_state">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PMState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor" title="commonroad_crime.utility.visualization.TUMcolor"><span class="pre">TUMcolor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TUMcolor.TUMgreen</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_state" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.draw_state_list">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">draw_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rnd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MPRenderer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#commonroad_crime.utility.visualization.TUMcolor" title="commonroad_crime.utility.visualization.TUMcolor"><span class="pre">TUMcolor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TUMcolor.TUMdarkblue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#draw_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.draw_state_list" title="Permalink to this definition"></a></dt>
+<dd><p>Visualizing the state list as a connecting trajectory. The transparency is based on the starting
+time step.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.plot_criticality_curve">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_criticality_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nr_per_row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_latex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#plot_criticality_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.plot_criticality_curve" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.plot_limits_from_state_list">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_limits_from_state_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">PMState</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#plot_limits_from_state_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.plot_limits_from_state_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.save_fig">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">save_fig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#save_fig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.save_fig" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commonroad_crime.utility.visualization.visualize_scenario_at_time_steps">
+<span class="sig-prename descclassname"><span class="pre">commonroad_crime.utility.visualization.</span></span><span class="sig-name descname"><span class="pre">visualize_scenario_at_time_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Scenario</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/commonroad_crime/utility/visualization.html#visualize_scenario_at_time_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commonroad_crime.utility.visualization.visualize_scenario_at_time_steps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="commonroad_crime.measure.velocity.html" class="btn btn-neutral float-left" title="Velocity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Yuanfei Lin, Liguo Chen, Kun Qian, Ziqian Xu, Sicheng Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
