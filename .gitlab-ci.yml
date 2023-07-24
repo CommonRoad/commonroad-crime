@@ -13,3 +13,22 @@ unittest:
   script:
     - pip install -e .
     - cd $CI_PROJECT_DIR/tests && python -m unittest
+
+### publish documentation ###
+pages:
+  # Push the latest documentation of the master branch to the GitLab Pages documentation
+  # at https://cps.pages.gitlab.lrz.de/commonroad-crime
+  stage: publish
+  script:
+    - pip install -e .
+    - cd docs/sphinx
+    - make html
+    - mv ./build/html ../../public
+  artifacts:
+    paths:
+      - public
+  environment:
+    name: Gitlab Pages
+    url: https://cps.pages.gitlab.lrz.de/commonroad-crime
+  only:
+    - master
