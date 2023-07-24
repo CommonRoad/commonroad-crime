@@ -1,10 +1,10 @@
 # CommonRoad-CriMe
 ![image info](./docs/figures/CriMe-banner.png)
-[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
+[![Linux](https://img.shields.io/badge/os-linux?&logo=Linux&logoColor=white&labelColor=gray)](https://pypi.python.org/pypi/commonroad-openscenario-converter/)
+[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
+[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
 [![PyPI download month](https://img.shields.io/pypi/dm/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/) 
 [![PyPI download week](https://img.shields.io/pypi/dw/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/)<br>
-[![Linux](https://svgshare.com/i/Zhy.svg?style=plastic)](https://svgshare.com/i/Zhy.svg)
-[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
 
 Toolbox to compute **Cri**ticality **Me**asures 
 (e.g. time-to-collision, time-to-react,...). Such measures
