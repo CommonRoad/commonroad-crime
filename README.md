@@ -73,7 +73,7 @@ instance to the class as `self.<parameter> = config_relevant.<parameter>`
 
 ## Documentation
 
-The documentation of our toolbox is available on our website: https://commonroad.in.tum.de/docs/commonroad-reach/.
+The documentation of our toolbox is available on our website: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures/.
 
 In order to generate the documentation via Sphinx locally, run the following commands in the root directory:
 
