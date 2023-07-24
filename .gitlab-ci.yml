@@ -17,7 +17,7 @@ unittest:
 ### publish documentation ###
 pages:
   # Push the latest documentation of the master branch to the GitLab Pages documentation
-  # at https://cps.pages.gitlab.lrz.de/commonroad-crime
+  # at https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
   stage: publish
   script:
     - pip install -e .
@@ -29,6 +29,6 @@ pages:
       - public
   environment:
     name: Gitlab Pages
-    url: https://cps.pages.gitlab.lrz.de/commonroad-crime
+    url: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
   only:
     - master
