@@ -79,7 +79,7 @@ In order to generate the documentation via Sphinx locally, run the following com
 
 ```bash
 $ pip install -r ./docs/requirements_doc.txt
-$ cd docs/S=sphinx
+$ cd docs/sphinx
 $ make html
 ```
 
