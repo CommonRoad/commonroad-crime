@@ -210,6 +210,8 @@ class IndexDomainConfiguration:
 
 class VehicleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
+        self._width = None
+        self._length = None
         config_relevant = config.vehicle
         self.ego_id = config_relevant.ego_id
 
