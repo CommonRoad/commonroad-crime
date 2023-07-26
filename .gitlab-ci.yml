@@ -1,7 +1,7 @@
 image: python:3.8
 
 stages:
-  - style_check
+  - style
   - test
   - publish
 
@@ -10,6 +10,17 @@ before_script:
     - apt-get install -y libgl1
     - pip install --upgrade pip
     - pip install -e .
+
+black:
+  stage: style
+  needs: []
+  image: pyfound/black:23.1.0
+  before_script: []
+  cache: []
+  allow_failure: true
+  script:
+    - black --check --verbose --diff --color commonroad_crime
+    - black --check --verbose --diff --color tests
 
 unittest:
   stage: test
