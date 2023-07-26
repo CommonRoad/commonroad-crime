@@ -37,7 +37,7 @@ class DA(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(DA, self).__init__(config)
-        self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
+        self.reach_config = ConfigurationBuilder().build_configuration(config.general.name_scenario)
         # update the paths based on CriMe
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
         self.reach_config.general.path_output = self.configuration.general.path_output
