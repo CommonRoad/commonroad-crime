@@ -13,12 +13,7 @@ from commonroad_crime.data_structure.configuration_builder import ConfigurationB
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.utility.simulation import Maneuver
 
-try:
-    import commonroad_reach.pycrreach
-    from commonroad_crime.measure.time.wttr import WTTR
-    module_failed = False
-except ImportError:
-    module_failed = True
+from commonroad_crime.measure.time.wttr import WTTR
 
 
 class TestTimeDomain(unittest.TestCase):
@@ -154,7 +149,6 @@ class TestTimeDomain(unittest.TestCase):
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 
-    @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)

@@ -40,10 +40,6 @@ $ cd <path-to-this-repo>
 $ pip install -e .
 $ conda develop .
 ```
-**(optional)** In order to run reachability analysis related measures 
-(e.g., ``worst-time-to-react (WTTR)``, `drivable area (DA)`), you have to install the following repositories as well:
-
-- [commonroad-reach](https://gitlab.lrz.de/tum-cps/commonroad-reach) (version: >=2023.1)
 
 To test the installition, run unittest:
 ```bash

@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -19,16 +19,13 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.logger as utils_log
 
-logger = logging.getLogger(__name__)
+from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
+from commonroad_reach.pycrreach import ReachPolygon, ReachNode
+from commonroad_reach.utility import visualization as util_visual
+import commonroad_reach.utility.reach_operation as utils_ops
 
-try:
-    from commonroad_reach.data_structure.configuration_builder import ConfigurationBuilder
-    from commonroad_reach.data_structure.reach.reach_interface import ReachableSetInterface
-    from commonroad_reach.pycrreach import ReachPolygon, ReachNode
-    from commonroad_reach.utility import visualization as util_visual
-    import commonroad_reach.utility.reach_operation as utils_ops
-except ImportWarning:
-    utils_log.print_and_log_warning(logger, 'commonroad_reach is not installed')
+logger = logging.getLogger(__name__)
 
 
 class DA(CriMeBase):
@@ -40,7 +37,7 @@ class DA(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(DA, self).__init__(config)
-        self.reach_config = ConfigurationBuilder.build_configuration(config.general.name_scenario)
+        self.reach_config = ConfigurationBuilder().build_configuration(config.general.name_scenario)
         # update the paths based on CriMe
         self.reach_config.general.path_scenario = self.configuration.general.path_scenario
         self.reach_config.general.path_output = self.configuration.general.path_output

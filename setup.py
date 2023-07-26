@@ -11,7 +11,7 @@ with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as f
 
 
 setup(name='commonroad-crime',
-      version='0.2.4',
+      version='0.3.0',
       description='criticality measures of automated vehicles',
       keywords="criticality, autonomous driving",
       long_description_content_type='text/markdown',
@@ -30,8 +30,10 @@ setup(name='commonroad-crime',
       install_requires=[
           'commonroad-io>=2022.3',
           'commonroad-vehicle-models>=3.0.0',
+          'commonroad-reach>=2022.3',
           'commonroad-route-planner>=2022.3',
           'commonroad-drivability-checker>=2023.1',
+          'commonroad-reach>=2023.1',
           'matplotlib>=3.5.2',
           'numpy>=1.19.0',
           'scipy>=1.7.3',
