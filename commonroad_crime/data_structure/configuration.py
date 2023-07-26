@@ -123,7 +123,7 @@ class GeneralConfiguration:
 
 class TimeDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.time_scale
+        config_relevant = config.time
         self.activated = config_relevant.activated
         self.metric = config_relevant.metric
         self.steer_width = config_relevant.steer_width
