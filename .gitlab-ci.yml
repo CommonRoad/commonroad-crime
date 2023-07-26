@@ -7,6 +7,8 @@ stages:
 
 before_script:
     - apt-get update && apt-get install -y build-essential
+    - pip install --upgrade pip
+    - pip install -e .
 
 unittest:
   stage: test
@@ -23,9 +25,6 @@ pages:
   # at https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
   stage: publish
   script:
-    - pip install --upgrade pip
-    # installation of reach?
-    - pip install -e .
     - pip install -r ./docs/requirements_doc.txt
     - cd docs/sphinx
     - make html
