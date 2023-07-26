@@ -8,10 +8,6 @@ stages:
 before_script:
     - apt-get update && apt-get install -y build-essential
 
-    # install commonroad-reach
-    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.lrz.de/".insteadOf "git@gitlab.lrz.de:"
-    - pip install git+ssh://git@gitlab.lrz.de/cps/commonroad-reachable-set
-
 unittest:
   stage: test
   image: python:$PYTHON_VERSIONS
