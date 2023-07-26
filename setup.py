@@ -33,6 +33,7 @@ setup(name='commonroad-crime',
           'commonroad-reach>=2022.3'
           'commonroad-route-planner>=2022.3',
           'commonroad-drivability-checker>=2023.1',
+          'commonroad-reach>=2023.1',
           'matplotlib>=3.5.2',
           'numpy>=1.19.0',
           'scipy>=1.7.3',
