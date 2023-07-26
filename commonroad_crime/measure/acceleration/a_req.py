@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import math
 import logging
@@ -27,6 +27,7 @@ class AReq(CriMeBase):
     from Sec.5.3.10 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
+
     measure_name = TypeAcceleration.AReq
     monotone = TypeMonotone.POS
 
@@ -36,15 +37,19 @@ class AReq(CriMeBase):
         self._a_lat_object = ALatReq(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
+        utils_log.print_and_log_info(
+            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+        )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         self.value = math.sqrt(
-            self._a_long_object.compute(vehicle_id, time_step) ** 2 +
-            self._a_lat_object.compute(vehicle_id, time_step) ** 2
+            self._a_long_object.compute(vehicle_id, time_step) ** 2
+            + self._a_lat_object.compute(vehicle_id, time_step) ** 2
         )
         self.value = utils_gen.int_round(self.value, 2)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def visualize(self):

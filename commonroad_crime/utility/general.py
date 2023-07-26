@@ -7,7 +7,13 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import LaneletNetwork
-from commonroad.scenario.state import KSState, LongitudinalState, PMInputState, PMState, CustomState
+from commonroad.scenario.state import (
+    KSState,
+    LongitudinalState,
+    PMInputState,
+    PMState,
+    CustomState,
+)
 from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstacle
 from commonroad.common.file_reader import CommonRoadFileReader
 
@@ -28,11 +34,15 @@ def load_scenario(config) -> Scenario:
     :param config: configuration
     :return: scenario
     """
-    scenario, _ = CommonRoadFileReader(config.general.path_scenario).open(lanelet_assignment=True)
+    scenario, _ = CommonRoadFileReader(config.general.path_scenario).open(
+        lanelet_assignment=True
+    )
     return scenario
 
 
-def generate_reference_path(lanelet_id: int, lanelet_network: LaneletNetwork, flag_resampling=True):
+def generate_reference_path(
+    lanelet_id: int, lanelet_network: LaneletNetwork, flag_resampling=True
+):
     """
     Generate the reference path based on the center line of the provided lanelet.
     """
@@ -70,23 +80,31 @@ def int_round(some_float, tolerance=1):
     :param tolerance: float point
     :return: rounded number
     """
-    p = float(10 ** tolerance)
+    p = float(10**tolerance)
     if some_float < 0:
         return int(some_float * p - 0.5) / p
     else:
         return int(some_float * p + 0.5) / p
 
 
-def check_in_same_lanelet(lanelet_network: LaneletNetwork,
-                          vehicle_1: DynamicObstacle,
-                          vehicle_2: Union[DynamicObstacle, StaticObstacle],
-                          time_step: int):
-    lanelets_1 = lanelet_network.find_lanelet_by_shape(vehicle_1.occupancy_at_time(time_step).shape)
-    lanelets_2 = lanelet_network.find_lanelet_by_shape(vehicle_2.occupancy_at_time(time_step).shape)
+def check_in_same_lanelet(
+    lanelet_network: LaneletNetwork,
+    vehicle_1: DynamicObstacle,
+    vehicle_2: Union[DynamicObstacle, StaticObstacle],
+    time_step: int,
+):
+    lanelets_1 = lanelet_network.find_lanelet_by_shape(
+        vehicle_1.occupancy_at_time(time_step).shape
+    )
+    lanelets_2 = lanelet_network.find_lanelet_by_shape(
+        vehicle_2.occupancy_at_time(time_step).shape
+    )
     return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 
-def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState, CustomState, PMState]], dt: float):
+def check_elements_state_list(
+    state_list: List[Union[LongitudinalState, KSState, CustomState, PMState]], dt: float
+):
     v_list = [state.velocity for state in state_list]
     t_list = [state.time_step * dt for state in state_list]
     a_list = np.gradient(np.array(v_list), t_list)
@@ -97,9 +115,12 @@ def check_elements_state_list(state_list: List[Union[LongitudinalState, KSState,
         check_elements_state(state_list[i], dt=dt)
 
 
-def check_elements_state(state: Union[KSState, LongitudinalState, PMState, CustomState],
-                         veh_input: PMInputState = None,
-                         next_state: Union[KSState, LongitudinalState] = None, dt: float = 0.1):
+def check_elements_state(
+    state: Union[KSState, LongitudinalState, PMState, CustomState],
+    veh_input: PMInputState = None,
+    next_state: Union[KSState, LongitudinalState] = None,
+    dt: float = 0.1,
+):
     """
     checks the missing elements needed for PM model
     """
@@ -120,12 +141,14 @@ def check_elements_state(state: Union[KSState, LongitudinalState, PMState, Custo
                 state.velocity, next_state.velocity, dt
             )
         else:
-            state.acceleration = 0.
-        state.jerk = 0.
+            state.acceleration = 0.0
+        state.jerk = 0.0
     else:
         if next_state:
-            if hasattr(next_state, 'acceleration'):
-                state.jerk = utils_sol.compute_jerk(state.acceleration, next_state.acceleration, dt)
+            if hasattr(next_state, "acceleration"):
+                state.jerk = utils_sol.compute_jerk(
+                    state.acceleration, next_state.acceleration, dt
+                )
     if veh_input is not None:
         state.acceleration = veh_input.acceleration
         state.acceleration_y = veh_input.acceleration_y

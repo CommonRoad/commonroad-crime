@@ -4,7 +4,7 @@ __credits__ = ["KoSi"]
 __version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import math
 import copy
@@ -29,19 +29,30 @@ logger = logging.getLogger(__name__)
 class WTTR(CriMeBase):
     measure_name = TypeTime.WTTR
 
-    def __init__(self,
-                 config: CriMeConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(WTTR, self).__init__(config)
         self.ttc_object = TTCStar(config)
         self.ttc = None
-        self.reach_config = ConfigurationBuilder().build_configuration(config.general.name_scenario)
+        self.reach_config = ConfigurationBuilder().build_configuration(
+            config.general.name_scenario
+        )
         # update the paths based on CriMe
-        self.reach_config.general.path_scenario = self.configuration.general.path_scenario
+        self.reach_config.general.path_scenario = (
+            self.configuration.general.path_scenario
+        )
         self.reach_config.general.path_output = self.configuration.general.path_output
-        self.reach_config.vehicle.ego.a_lon_min = self.configuration.vehicle.curvilinear.a_lon_min
-        self.reach_config.vehicle.ego.a_lon_max = self.configuration.vehicle.curvilinear.a_lon_max
-        self.reach_config.vehicle.ego.a_lat_min = self.configuration.vehicle.curvilinear.a_lat_min
-        self.reach_config.vehicle.ego.a_lat_max = self.configuration.vehicle.curvilinear.a_lat_max
+        self.reach_config.vehicle.ego.a_lon_min = (
+            self.configuration.vehicle.curvilinear.a_lon_min
+        )
+        self.reach_config.vehicle.ego.a_lon_max = (
+            self.configuration.vehicle.curvilinear.a_lon_max
+        )
+        self.reach_config.vehicle.ego.a_lat_min = (
+            self.configuration.vehicle.curvilinear.a_lat_min
+        )
+        self.reach_config.vehicle.ego.a_lat_max = (
+            self.configuration.vehicle.curvilinear.a_lat_max
+        )
         self.reach_config.planning.dt = self.sce.dt
         # self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
@@ -49,12 +60,20 @@ class WTTR(CriMeBase):
         self._end_sim = None
 
     def _update_initial_state(self, target_state: State):
-        self.reach_config.planning_problem.initial_state.position = target_state.position
-        self.reach_config.planning_problem.initial_state.velocity = target_state.velocity
-        self.reach_config.planning_problem.initial_state.orientation = target_state.orientation
-        self.reach_config.planning_problem.initial_state.time_step = target_state.time_step
+        self.reach_config.planning_problem.initial_state.position = (
+            target_state.position
+        )
+        self.reach_config.planning_problem.initial_state.velocity = (
+            target_state.velocity
+        )
+        self.reach_config.planning_problem.initial_state.orientation = (
+            target_state.orientation
+        )
+        self.reach_config.planning_problem.initial_state.time_step = (
+            target_state.time_step
+        )
 
-    def compute(self, time_step: int = 0, vehicle_id = None, verbose: bool = False):
+    def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = False):
         self.time_step = time_step
         self.ttc = self.ttc_object.compute(time_step)
         if self.ttc == 0:
@@ -64,28 +83,39 @@ class WTTR(CriMeBase):
         else:
             self.value = self.binary_search(time_step)
         if self.value in [math.inf, -math.inf]:
-            utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+            utils_log.print_and_log_info(
+                logger, f"*\t\t {self.measure_name} = {self.value}"
+            )
             return self.value
-        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find("."))
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def binary_search(self, initial_step: int):
         """
         Binary search to find the last time to execute the maneuver.
         """
-        wttr = - math.inf
+        wttr = -math.inf
         low = initial_step
-        tstc = int(utils_gen.int_round(self.ttc / self.dt + self.time_step,  str(self.dt)[::-1].find('.')))
+        tstc = int(
+            utils_gen.int_round(
+                self.ttc / self.dt + self.time_step, str(self.dt)[::-1].find(".")
+            )
+        )
         high = tstc + initial_step
         time_end = self.ego_vehicle.prediction.final_time_step
         while low < high:
             mid = int((low + high) / 2)
             mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(mid))
             self._update_initial_state(mid_state)
-            self.reach_config.update(planning_problem=self.reach_config.planning_problem)
+            self.reach_config.update(
+                planning_problem=self.reach_config.planning_problem
+            )
             self.reach_config.scenario.remove_obstacle(
-                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
+                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
+            )
             self.reach_interface.reset(self.reach_config)
             self._end_sim = time_end - mid
             self.reach_interface.compute_reachable_sets(0, time_end, verbose=True)
@@ -101,18 +131,22 @@ class WTTR(CriMeBase):
 
     def visualize(self):
         if self.value not in [math.inf, -math.inf]:
-            wtstr = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step - 1
+            wtstr = (
+                int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step - 1
+            )
             mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(wtstr))
             self._update_initial_state(mid_state)
-            self.reach_config.update(planning_problem=self.reach_config.planning_problem)
+            self.reach_config.update(
+                planning_problem=self.reach_config.planning_problem
+            )
             self.reach_config.scenario.remove_obstacle(
-                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id))
+                self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
+            )
             self.reach_interface.reset(self.reach_config)
             self._end_sim = self.ego_vehicle.prediction.final_time_step
 
             self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
-            util_visual.plot_scenario_with_reachable_sets(self.reach_interface,
-                                                          step_start=0,
-                                                          step_end=self._end_sim)
+            util_visual.plot_scenario_with_reachable_sets(
+                self.reach_interface, step_start=0, step_end=self._end_sim
+            )
             # util_visual.plot_collision_checker(self.reach_interface)
-

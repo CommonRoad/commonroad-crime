@@ -21,6 +21,7 @@ class CS(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+
     measure_name = TypeVelocity.CS
     monotone = TypeMonotone.POS
 

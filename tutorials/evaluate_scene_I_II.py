@@ -7,9 +7,30 @@ Experiment: Sec. IV.A Evaluation on Scenes
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 import commonroad_crime.utility.logger as utils_log
-from commonroad_crime.measure import (TTC, TTCStar, TTB, TTS, TTK, TTR, THW, WTTC, ET, PET,
-                                      BTN, PF, HW, DCE, TTCE, ALongReq, ALatReq, STN, P_MC,
-                                      LongJ, LatJ, DeltaV)
+from commonroad_crime.measure import (
+    TTC,
+    TTCStar,
+    TTB,
+    TTS,
+    TTK,
+    TTR,
+    THW,
+    WTTC,
+    ET,
+    PET,
+    BTN,
+    PF,
+    HW,
+    DCE,
+    TTCE,
+    ALongReq,
+    ALatReq,
+    STN,
+    P_MC,
+    LongJ,
+    LatJ,
+    DeltaV,
+)
 from commonroad_crime.measure.time.wttr import WTTR
 from commonroad_crime.measure.reachable_set.drivable_area import DA
 
@@ -28,10 +49,35 @@ def main():
 
     # ==== compute the criticality using CriMe interface
     crime_interface = CriMeInterface(config)
-    crime_interface.evaluate_scene([HW, THW, ET, PET, TTC,
-                                    WTTC, TTCStar, TTCE, DCE, TTS, TTK, TTB,
-                                    TTR, WTTR, ALongReq, ALatReq, LongJ, LatJ,
-                                    DeltaV, BTN, STN, DA, P_MC, PF], time_step=0)
+    crime_interface.evaluate_scene(
+        [
+            HW,
+            THW,
+            ET,
+            PET,
+            TTC,
+            WTTC,
+            TTCStar,
+            TTCE,
+            DCE,
+            TTS,
+            TTK,
+            TTB,
+            TTR,
+            WTTR,
+            ALongReq,
+            ALatReq,
+            LongJ,
+            LatJ,
+            DeltaV,
+            BTN,
+            STN,
+            DA,
+            P_MC,
+            PF,
+        ],
+        time_step=0,
+    )
 
     # ==== visualize the results
     crime_interface.visualize(time_step=0)

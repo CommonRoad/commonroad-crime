@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 """
 Types of different criticality measures categorized by the output, see https://criticality-metrics.readthedocs.io/
@@ -17,6 +17,7 @@ class TypeMonotone(str, Enum):
     """
     Monotonic relationship between the metric value and the criticality
     """
+
     POS = "positive monotonic"
     NEG = "negative monotonic"
 
@@ -62,7 +63,9 @@ class TypeVelocity(str, Enum):
 
 class TypeAcceleration(str, Enum):
     DST = "deceleration-to-safety-time"
-    ALongReq = "required longitudinal acceleration (aka deceleration rate to avoid crash)"
+    ALongReq = (
+        "required longitudinal acceleration (aka deceleration rate to avoid crash)"
+    )
     ALatReq = "required lateral acceleration"
     AReq = "required acceleration"
 
@@ -97,4 +100,3 @@ class TypeProbability(str, Enum):
 class TypePotential(str, Enum):
     PF = "potential functions as superposition of scoring functions"
     SP = "safety potential"
-
