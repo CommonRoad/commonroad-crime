@@ -4,7 +4,7 @@ __credits__ = ["KoSi"]
 __version__ = "0.0.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,6 +29,7 @@ class TIT(CriMeBase):
     safety assessment,” Accident Analysis & Prevention,
     vol. 33, pp. 89–97, 2001.
     """
+
     measure_name = TypeTime.TIT
     monotone = TypeMonotone.POS
 
@@ -54,15 +55,17 @@ class TIT(CriMeBase):
             if ttc_result <= tau:
                 self.value += (tau - ttc_result) * self.dt
         self.value = utils_gen.int_round(self.value, 4)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def visualize(self):
         plt.cla()
         tau = self.configuration.time.tau
 
-        plt.xlabel('time step')
-        plt.ylabel('TTC')
+        plt.xlabel("time step")
+        plt.ylabel("TTC")
 
         # Extract the time_step and ttc_result from the cache dictionary
         time_step_list = list(self._ttc_cache.keys())
@@ -72,23 +75,31 @@ class TIT(CriMeBase):
         below_tau_indices = np.where(np.array(ttc_result_list) < tau)[0]
 
         # Plot the time_step vs. ttc_result curve
-        plt.plot(time_step_list, ttc_result_list, label='TTC curve')
+        plt.plot(time_step_list, ttc_result_list, label="TTC curve")
 
         # Plot the tau curve as a horizontal line
-        plt.axhline(y=tau, color=TUMcolor.TUMred, linestyle='--', label='Tau')
+        plt.axhline(y=tau, color=TUMcolor.TUMred, linestyle="--", label="Tau")
 
         # Fill the region where ttc_result < tau with the predefined color
         for i in range(1, len(below_tau_indices)):
             idx1 = below_tau_indices[i - 1]
             idx2 = below_tau_indices[i]
-            plt.fill_between(time_step_list[idx1:idx2 + 1], ttc_result_list[idx1:idx2 + 1],
-                             tau, color=TUMcolor.TUMred, alpha=0.5)
+            plt.fill_between(
+                time_step_list[idx1 : idx2 + 1],
+                ttc_result_list[idx1 : idx2 + 1],
+                tau,
+                color=TUMcolor.TUMred,
+                alpha=0.5,
+            )
 
         plt.legend()
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
+                utils_vis.save_fig(
+                    self.measure_name,
+                    self.configuration.general.path_output,
+                    self.time_step,
+                )
             else:
                 plt.show()
-

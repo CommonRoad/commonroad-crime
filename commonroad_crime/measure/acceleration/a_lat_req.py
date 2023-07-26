@@ -4,7 +4,7 @@ __credits__ = ["KoSi"]
 __version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import math
 import logging
@@ -31,6 +31,7 @@ class ALatReq(CriMeBase):
     from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
+
     measure_name = TypeAcceleration.ALatReq
     monotone = TypeMonotone.POS
 
@@ -38,7 +39,14 @@ class ALatReq(CriMeBase):
         super(ALatReq, self).__init__(config)
         self._ttc_object = TTC(config)
 
-    def _compute_a_lat(self, a_obj_lat: float, d_rel_lat: float, v_rel_lat: float, ttc: float, flag_dir: str) -> float:
+    def _compute_a_lat(
+        self,
+        a_obj_lat: float,
+        d_rel_lat: float,
+        v_rel_lat: float,
+        ttc: float,
+        flag_dir: str,
+    ) -> float:
         """
         compute the acceleration required to pass to the left or the right of the obstacle
 
@@ -50,60 +58,81 @@ class ALatReq(CriMeBase):
 
         :return a_lat: required lateral acceleration of the ego vehicle
         """
-        sign = 1 if flag_dir == 'left' else -1
+        sign = 1 if flag_dir == "left" else -1
         if isinstance(self.other_vehicle.obstacle_shape, Circle):
             other_width = self.other_vehicle.obstacle_shape.radius
         else:
-            other_width = self.other_vehicle.obstacle_shape.width/2
-        return a_obj_lat - 2 * (-d_rel_lat + sign * (other_width + self.ego_vehicle.obstacle_shape.width / 2)
-                                - v_rel_lat * ttc) / ttc ** 2
+            other_width = self.other_vehicle.obstacle_shape.width / 2
+        return (
+            a_obj_lat
+            - 2
+            * (
+                -d_rel_lat
+                + sign * (other_width + self.ego_vehicle.obstacle_shape.width / 2)
+                - v_rel_lat * ttc
+            )
+            / ttc**2
+        )
 
     def compute(self, vehicle_id: int, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
+        utils_log.print_and_log_info(
+            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+        )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         if self._except_obstacle_in_same_lanelet(expected_value=0.0):
             # no negative acceleration is needed for avoiding a collision
             return self.value
-        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position([self.ego_vehicle.state_at_time(time_step).
-                                                                       position])[0]
+        lanelet_id = self.sce.lanelet_network.find_lanelet_by_position(
+            [self.ego_vehicle.state_at_time(time_step).position]
+        )[0]
         # orientation of the ego vehicle and the other vehicle
         ego_orientation = utils_sol.compute_lanelet_width_orientation(
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.ego_vehicle.state_at_time(time_step).position
+            self.ego_vehicle.state_at_time(time_step).position,
         )[1]
         other_orientation = utils_sol.compute_lanelet_width_orientation(
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.other_vehicle.state_at_time(time_step).position
+            self.other_vehicle.state_at_time(time_step).position,
         )[1]
         ttc = self._ttc_object.compute(vehicle_id, time_step)
         utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}")
         if ttc == math.inf:
             # no lateral acceleration is needed for avoiding a collision
-            self.value = 0.
+            self.value = 0.0
             return self.value
         a_obj_lat = math.sqrt(
-            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
-            self.other_vehicle.state_at_time(time_step).acceleration ** 2) * \
-                    math.sin(other_orientation)
+            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
+            + self.other_vehicle.state_at_time(time_step).acceleration ** 2
+        ) * math.sin(other_orientation)
 
         # compute the headway distance
-        d_rel_lat = utils_sol.compute_clcs_distance(self.clcs,
-                                                    self.ego_vehicle.state_at_time(time_step).position,
-                                                    self.ego_vehicle.state_at_time(time_step).position)[1]
-        v_rel_lat = (math.sqrt(self.other_vehicle.state_at_time(time_step).velocity ** 2 +
-                               self.other_vehicle.state_at_time(time_step).velocity_y ** 2) * math.sin(
-            other_orientation) -
-                     math.sqrt(self.ego_vehicle.state_at_time(time_step).velocity ** 2 +
-                               self.ego_vehicle.state_at_time(time_step).velocity_y ** 2)) * math.sin(ego_orientation)
+        d_rel_lat = utils_sol.compute_clcs_distance(
+            self.clcs,
+            self.ego_vehicle.state_at_time(time_step).position,
+            self.ego_vehicle.state_at_time(time_step).position,
+        )[1]
+        v_rel_lat = (
+            math.sqrt(
+                self.other_vehicle.state_at_time(time_step).velocity ** 2
+                + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+            )
+            * math.sin(other_orientation)
+            - math.sqrt(
+                self.ego_vehicle.state_at_time(time_step).velocity ** 2
+                + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
+            )
+        ) * math.sin(ego_orientation)
         self.value = min(
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, 'left')),
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, 'right'))
+            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "left")),
+            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "right")),
         )
         if self.value != math.inf:
             self.value = utils_gen.int_round(self.value, 2)
 
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def visualize(self):
