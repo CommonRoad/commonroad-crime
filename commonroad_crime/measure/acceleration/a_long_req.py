@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -26,7 +26,7 @@ class ALongReq(CriMeBase):
     The required longitudinal acceleration measures the longitudinal acceleration required to bring the relative
     velocity to zero at the time of the collision.
 
-    - from Sec.5.3.5 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
+    from Sec.5.3.5 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     measure_name = TypeAcceleration.ALongReq
@@ -55,7 +55,7 @@ class ALongReq(CriMeBase):
             self.other_vehicle.state_at_time(time_step).position
         )[1]
         # acceleration of the other vehicle along the lanelet
-        a_obj = np.sign(self.other_vehicle.state_at_time(time_step).acceleration) * math.sqrt(
+        a_obj = math.sqrt(
             self.other_vehicle.state_at_time(time_step).acceleration ** 2 +
             self.other_vehicle.state_at_time(time_step).acceleration_y ** 2) * math.cos(
             other_orientation)

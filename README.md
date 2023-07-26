@@ -1,10 +1,10 @@
 # CommonRoad-CriMe
 ![image info](./docs/figures/CriMe-banner.png)
-[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
+[![Linux](https://img.shields.io/badge/os-linux?&logo=Linux&logoColor=white&labelColor=gray)](https://pypi.python.org/pypi/commonroad-openscenario-converter/)
+[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
+[![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
 [![PyPI download month](https://img.shields.io/pypi/dm/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/) 
 [![PyPI download week](https://img.shields.io/pypi/dw/commonroad-crime.svg?style=plastic&label=PyPI%20downloads)](https://pypi.python.org/pypi/commonroad-crime/)<br>
-[![Linux](https://svgshare.com/i/Zhy.svg?style=plastic)](https://svgshare.com/i/Zhy.svg)
-[![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
 
 Toolbox to compute **Cri**ticality **Me**asures 
 (e.g. time-to-collision, time-to-react,...). Such measures
@@ -47,7 +47,6 @@ $ cd tests
 $ python -m unittest -v
 ```
 
-This will install related dependencies specified in `requirements.txt`. Or simply install the dependencies listed in `requirements.txt` and add this repository to your python path.
 
 To get started your journey with our criticality measures, check the `tutorials` and the following tips.
 
@@ -67,9 +66,25 @@ and some explanations there
 instance to the class as `self.<parameter> = config_relevant.<parameter>`
 4. you can then directly call the values using `self.configuration.<category>.<parameter>` in your measure class
 
+
+## Documentation
+
+The documentation of our toolbox is available on our website: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures/.
+
+In order to generate the documentation via Sphinx locally, run the following commands in the root directory:
+
+```bash
+$ pip install -r ./docs/requirements_doc.txt
+$ cd docs/sphinx
+$ make html
+```
+
+The documentation can then be launched by browsing ``./docs/sphinx/build/html/index.html/``.
+
 ### Contributors (in alphabetical order by last name)
 - Liguo Chen
 - Yuanfei Lin
+- Sebastian Maierhofer
 - Ivana Peneva
 - Kun Qian
 - Oliver Specht

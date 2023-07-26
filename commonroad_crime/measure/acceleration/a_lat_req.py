@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -28,7 +28,7 @@ class ALatReq(CriMeBase):
     """
     The required lateral acceleration necessary for collision avoidance at TTC.
 
-    - from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
+    from Sec.5.3.8 in Jansson J, Collision Avoidance Theory: With application to automotive collision mitigation.
     PhD Thesis, 2005, Linköping University, Linköping, Sweden.
     """
     measure_name = TypeAcceleration.ALatReq
@@ -82,7 +82,7 @@ class ALatReq(CriMeBase):
             # no lateral acceleration is needed for avoiding a collision
             self.value = 0.
             return self.value
-        a_obj_lat = np.sign(self.other_vehicle.state_at_time(time_step).acceleration) * math.sqrt(
+        a_obj_lat = math.sqrt(
             self.other_vehicle.state_at_time(time_step).acceleration_y ** 2 +
             self.other_vehicle.state_at_time(time_step).acceleration ** 2) * \
                     math.sin(other_orientation)

@@ -57,7 +57,7 @@ def obtain_road_boundary(state: State, lanelet_network: LaneletNetwork) -> Tuple
     """
     Obtains the road boundaries based on the vehicle state.
 
-    return: (left boundary, right boundary)
+    :return: (left boundary, right boundary)
     """
     veh_lanelet_id = lanelet_network.find_lanelet_by_position([state.position])[0]
     lanelet_leftmost = lanelet_rightmost = lanelet_network.find_lanelet_by_id(veh_lanelet_id[0])
@@ -74,7 +74,7 @@ def compute_veh_dis_to_boundary(state: State, lanelet_network: LaneletNetwork) -
     """
     Computes the distance between the vehicle cenver and the road boundary
 
-    return: (distance to the right boundary,
+    :return: (distance to the right boundary,
              distance to the left boundary)
     """
     left_b, right_b = obtain_road_boundary(state, lanelet_network)

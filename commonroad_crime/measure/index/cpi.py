@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Sicheng Wang"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.2.5"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -10,7 +10,7 @@ import logging
 import math
 
 import numpy as np
-from scipy.stats import norm, truncnorm
+from scipy.stats import truncnorm
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -44,39 +44,40 @@ class CPI(CriMeBase):
         # We assume the MADR (aka. Maximum Available Deceleration Rate)
         # is normally distributed.
         self.cpi_config = self.configuration.index.cpi
-        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
-        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean)/self.cpi_config.madr_devi
-        self._madr_dist = truncnorm(a, b)
-        self.a_lon_req_list = []
+        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+        self._madr_dist = truncnorm(a, b, self.cpi_config.madr_mean, self.cpi_config.madr_devi)
+        self.dr_lon_req_list = []
         self.value = 0
+        self.end_time_step = self.ego_vehicle.prediction.final_time_step
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
             logger, f"* Computing the {self.measure_name} between ego vehicle"
-            f" and vehicle {vehicle_id} at timestep {time_step}.")
+                    f" and vehicle {vehicle_id} at timestep {time_step}.")
 
         self.time_step = time_step
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
-        self.value = 0
+        self.value = 0.0
 
         for ts in range(self.time_step, self.end_time_step):
             try:
-                a_lon_req = self._a_lon_req_object.compute(vehicle_id, ts)
-                self.a_lon_req_list.append(a_lon_req)
+                dr_lon_req = -self._a_lon_req_object.compute(vehicle_id, ts)
+                self.dr_lon_req_list.append(dr_lon_req)
             except ValueError:
                 utils_log.print_and_log_info(
                     logger,
                     f"*\t\t vehicle {vehicle_id} is no longer in the lanelets.",
                     verbose)
-                self.a_lon_req_list.append(self.cpi_config.madr_uppb)
+                self.dr_lon_req_list.append(self.cpi_config.madr_lowb)
                 continue
-            if a_lon_req == 0.:
+            if dr_lon_req <= self.cpi_config.madr_lowb:
                 continue
             else:
                 # P(ALonReq>MADR)
-                a_long_req_norm = (abs(a_lon_req) - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
-                if not math.isnan(self._madr_dist.cdf(a_long_req_norm)):
-                    self.value += self._madr_dist.cdf(a_long_req_norm)
+                # dr_long_req_norm = (dr_lon_req - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
+                if not math.isnan(self._madr_dist.cdf(dr_lon_req)):
+                    self.value += self._madr_dist.cdf(dr_lon_req)
 
         # Normalize the result with timespan.
         try:
@@ -86,10 +87,11 @@ class CPI(CriMeBase):
 
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}.")
-        return self.value
+        return float(self.value)
 
     def visualize(self):
-        if len(self.a_lon_req_list) == 0:
+        num_data = len(self.dr_lon_req_list)
+        if num_data == 0:
             utils_log.print_and_log_error(logger, f"No valid Data to plot.")
             return
 
@@ -100,12 +102,12 @@ class CPI(CriMeBase):
         ax.plot(x, self._madr_dist.pdf(x), label='MADR')
         ax.legend()
         # Build colormap
-        cmap = cm.get_cmap("viridis", len(self.a_lon_req_list))
-        colors = cmap(np.linspace(0, 1, len(self.a_lon_req_list)))
+        cmap = cm.get_cmap("viridis", num_data)
+        colors = cmap(np.linspace(0, 1, num_data))
         # Plot datapoint at different time with different color
 
         scatter = None
-        for dr, c in zip(self.a_lon_req_list, colors):
+        for dr, c in zip(self.dr_lon_req_list, colors):
             scatter = ax.scatter(dr, self._madr_dist.pdf(dr), color=c)
         if scatter is not None:
             scatter.set_clim(self.time_step, self.end_time_step)
