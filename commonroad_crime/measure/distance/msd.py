@@ -75,6 +75,7 @@ class MSD(CriMeBase):
             distance = compute_total_polyline_length(pos)
             if distance > msd or distance == msd:
                 msd_position = self.ego_vehicle.state_at_time(ts-1).position
+                self.msd_timestep = ts - 1
                 return msd_position
             
         '''
@@ -120,6 +121,8 @@ class MSD(CriMeBase):
                                       color=TUMcolor.TUMblue, linewidth=1)
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMgreen)
+            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.msd_timestep,
+                                         color=TUMcolor.TUMorange)
             utils_vis.draw_circle(self.rnd, msd_position, 1, 0.5, color=TUMcolor.TUMred)
             plt.title(f"{self.metric_name} of {self.time_step} time steps")
         

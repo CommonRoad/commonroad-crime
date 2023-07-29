@@ -68,12 +68,14 @@ class PSD(CriMeBase):
         if isinstance(self.other_vehicle, DynamicObstacle):
             ca = self._et_object.get_ca()
             if ca is not None:
+                #test whether the ego vehicle enters the CA or not
                 for ts in range(time_step, self.ego_vehicle.prediction.final_time_step):
                     ego_poly = self.ego_vehicle.occupancy_at_time(ts).shape.shapely_object
                     if ego_poly.intersects(ca):
                         enter_time = ts
                         self.enter_time = enter_time
                         break
+                #compute the remaining distance using polyline
                 if enter_time is not None:
                     self.ca = ca
                     end_position = self.ego_vehicle.state_at_time(enter_time).position
@@ -141,3 +143,24 @@ class PSD(CriMeBase):
                     utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
                 else:
                     plt.show()
+    
+    def visualize_graph(self):
+        
+        state_list = self.ego_vehicle.prediction.trajectory.state_list
+        psd_list = []
+        for i in range(0, len(state_list)):
+            psd_list.append(self.compute(self.other_vehicle.obstacle_id, i))
+
+        list_numbers = list(range(0, len(state_list)))
+        plt.xlabel('time step at which it brakes')
+        plt.ylabel('psd-value')
+        plt.plot(list_numbers, psd_list)
+        plt.title(label="PSD Graph",
+                  fontsize=15,
+                  color="green")
+        plt.legend(loc="upper right")
+        if self.configuration.debug.draw_visualization:
+            if self.configuration.debug.save_plots:
+                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+            else:
+                plt.show()
