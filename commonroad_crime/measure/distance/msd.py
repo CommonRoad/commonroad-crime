@@ -67,6 +67,7 @@ class MSD(CriMeBase):
         return self.value
     
     def MSD_position(self, msd: float = 0, time_step: int = 0):
+        #compute the estimated stop position according to MSD
         distance = 0
         state_list = self.ego_vehicle.prediction.trajectory.state_list[time_step:]
         for ts in range(time_step+2, self.ego_vehicle.prediction.final_time_step+1):
@@ -77,24 +78,6 @@ class MSD(CriMeBase):
                 msd_position = self.ego_vehicle.state_at_time(ts-1).position
                 self.msd_timestep = ts - 1
                 return msd_position
-            
-        '''
-        for ts in range(time_step, self.ego_vehicle.prediction.final_time_step-1):
-            x1 = self.ego_vehicle.state_at_time(ts).position[0]
-            y1 = self.ego_vehicle.state_at_time(ts).position[1]
-            x2 = self.ego_vehicle.state_at_time(ts+1).position[0]
-            y2 = self.ego_vehicle.state_at_time(ts+1).position[1]
-            distance += math.sqrt((y2-y1)**2+(x2-x1)**2)
-            if distance > msd or distance == msd:
-                msd_position = self.ego_vehicle.state_at_time(ts+1).position
-                return msd_position
-        
-        x_clcs, y_clcs = self.clcs.convert_to_curvilinear_coords(ego_position[0], ego_position[1])
-        msd_position_x_clcs = x_clcs + msd
-        msd_position[0], msd_position[1] = self.clcs.convert_to_cartesian_coords(msd_position_x_clcs, y_clcs)
-        '''
-        
-        
                 
     def visualize(self, figsize: tuple = (25,15)):
         msd_position = self.MSD_position(self.value, self.time_step)

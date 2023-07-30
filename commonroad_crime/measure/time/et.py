@@ -39,43 +39,29 @@ class ET(CriMeBase):
         self.enter_time = None
         self.exit_time = None
 
-    def compute(self, vehicle_id: int, time_step: int = 0, call_from_pet: bool = False):
-        # If is called by PET to calculate the conflict area, log information of ET will not be output.
-        if not call_from_pet:
-            utils_log.print_and_log_info(logger,
-                                         f"* Computing the {self.measure_name} beginning at time step {time_step}")
-        if (Tag.INTERSECTION not in self.sce.tags) or (len(self.sce.lanelet_network.intersections) == 0):
-            if not call_from_pet:
-                utils_log.print_and_log_info(logger, f"* \t\tMeasure only for intersection. ET is set to inf.")
-            self.value = math.inf
-            return self.value
+    def compute(self, vehicle_id: int, time_step: int = 0):
+        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} beginning at time step {time_step}")
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
-        if isinstance(self.other_vehicle, DynamicObstacle):
-            self.ca = self.get_ca()
-            self.value = self.get_et(self.time_step, self.ca)
-            # The conflict area may not exist, indicated by self.ca being None.
-            # Even if the conflict area exists, there are two scenarios where the ET remains undefined,
-            # and we set it to infinity.
-            if self.ca is None:
-                if not call_from_pet:
-                    utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, ET is set to inf.")
-            elif math.isinf(self.value):
-                if not call_from_pet:
-                    if self.enter_time is None:
-                        utils_log.print_and_log_info(logger,
-                                                     "* \t\tThe ego vehicle never encroaches the CA, ET is set to inf.")
-                    else:
-                        utils_log.print_and_log_info(logger,
-                                                     "* \t\tThe ego vehicle encroaches the CA, "
-                                                     "but never leaves it, ET is set to inf.")
-            return self.value
-        else:
-            if not call_from_pet:
-                utils_log.print_and_log_info(logger,
-                                             f"*\t\t {self.other_vehicle} Not a dynamic obstacle, ET is set to inf")
+        if (Tag.INTERSECTION not in self.sce.tags) or (len(self.sce.lanelet_network.intersections) == 0):
+            utils_log.print_and_log_info(logger, f"* \t\tMeasure only for intersection. ET is set to inf.")
             self.value = math.inf
             return self.value
+        if not isinstance(self.other_vehicle, DynamicObstacle):
+            utils_log.print_and_log_info(logger,
+                                         f"*\t\t {self.other_vehicle} Not a dynamic obstacle, ET is set to inf")
+            self.value = math.inf
+            return self.value
+        self.ca = self.get_ca()
+        self.value, self.enter_time, self.exit_time = self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
+        # The conflict area may not exist, indicated by self.ca being None.
+        # Even if the conflict area exists, there are two scenarios where the ET remains undefined,
+        # and we set it to infinity. This information is logged in info_value_not_exit()
+        self.info_value_not_exist()
+        # Transfer time steps to seconds
+        if self.value is not None:
+            self.value = self.value * self.sce.dt
+        return self.value
 
     def get_ca(self):
         """
@@ -126,7 +112,7 @@ class ET(CriMeBase):
         utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step::5],
                                   color=TUMcolor.TUMlightgray, linewidth=1, start_time_step=0)
         utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step::5],
-                                  color=TUMcolor.TUMgray, linewidth=1, start_time_step=0)
+                                  color=TUMcolor.TUMgreen, linewidth=1, start_time_step=0)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
                                          color=TUMcolor.TUMblack, alpha=1)
         utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step,
@@ -138,7 +124,7 @@ class ET(CriMeBase):
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.enter_time,
                                              color=TUMcolor.TUMblack)
 
-        plt.title(f"{self.measure_name} of {self.value} time steps")
+        plt.title(f"{self.measure_name} of {self.value} seconds")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)
@@ -239,30 +225,44 @@ class ET(CriMeBase):
             ref_path_lanelets_id.update(lanelet_id)
         return list(ref_path_lanelets_id)
 
-    def get_et(self, time_step, ca):
+    def get_ca_duration(self, vehicle, time_step, ca):
         # In case conflict area does not exist, ET will be set to inf.
         if ca is None:
-            return math.inf
+            return math.inf, None, None
         already_in = None
         enter_time = None
-        for i in range(time_step, len(self.ego_vehicle.prediction.trajectory.state_list)):
-            ego_v_poly = create_polygon(self.ego_vehicle, i)
-            if ego_v_poly.intersects(ca) and already_in is None:
+        for i in range(time_step, len(vehicle.prediction.trajectory.state_list)):
+            v_poly = create_polygon(vehicle, i)
+            if v_poly.intersects(ca) and already_in is None:
                 enter_time = i
-                self.enter_time = enter_time - 1
                 already_in = True
-            if not ego_v_poly.intersects(ca) and already_in is True:
+            if not v_poly.intersects(ca) and already_in is True:
                 exit_time = i
                 self.exit_time = exit_time
                 time = exit_time - enter_time
                 # time steps to seconds
                 time = time * self.dt
-                return time
-        return math.inf
+                return time, enter_time - 1, exit_time
+        if enter_time is None:
+            return math.inf, None, None
+        else:
+            return math.inf, enter_time - 1, None
 
     def sce_without_ego_and_other(self):
         self.sce.remove_obstacle(self.ego_vehicle)
         self.sce.remove_obstacle(self.other_vehicle)
+
+    def info_value_not_exist(self):
+        if self.ca is None:
+            utils_log.print_and_log_info(logger, f"* \t\tconflict area does not exist, ET is set to inf.")
+        elif math.isinf(self.value):
+            if self.enter_time is None:
+                utils_log.print_and_log_info(logger,
+                                             "* \t\tThe ego vehicle never encroaches the CA, ET is set to inf.")
+            else:
+                utils_log.print_and_log_info(logger,
+                                             "* \t\tThe ego vehicle encroaches the CA, "
+                                             "but never leaves it, ET is set to inf.")
 
 
 def create_polygon(obstacle: DynamicObstacle, time_step: int, w: float = 0,
