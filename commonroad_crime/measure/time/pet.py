@@ -85,6 +85,9 @@ class PET(ET):
         # and we set it to infinity. This information is logged in info_value_not_exit()
         self.case_one = case_one
         self.info_value_not_exist(case_one)
+        # Transfer time steps to seconds
+        if self.value is not None:
+            self.value = self.value * self.sce.dt
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -129,7 +132,7 @@ class PET(ET):
                 utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.ego_vehicle_enter_time,
                                                  color=TUMcolor.TUMblack)
 
-        plt.title(f"{self.measure_name} of {self.value} time steps")
+        plt.title(f"{self.measure_name} of {self.value} seconds")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)
