@@ -85,8 +85,13 @@ def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgr
     rnd.ax.add_patch(cir_b)
 
 
-def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
-                           color: TUMcolor = TUMcolor.TUMblue, alpha: float = 0.5):
+def draw_dyn_vehicle_shape(
+    rnd: MPRenderer,
+    obstacle: DynamicObstacle,
+    time_step: int,
+    color: TUMcolor = TUMcolor.TUMblue,
+    alpha: float = 0.5,
+):
     global zorder
     obs_shape = obstacle.occupancy_at_time(time_step).shape
     if isinstance(obs_shape, ShapeGroup):
