@@ -15,7 +15,7 @@ import numpy as np
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
-from commonroad_crime.measure.time.et import ET, create_polygon
+from commonroad_crime.measure.time.et import ET
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.utility.visualization import TUMcolor
