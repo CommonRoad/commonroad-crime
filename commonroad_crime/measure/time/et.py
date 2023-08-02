@@ -57,7 +57,8 @@ class ET(CriMeBase):
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger, f"* \t\tMeasure only for intersection. {self.measure_name} is set to inf."
+                logger,
+                f"* \t\tMeasure only for intersection. {self.measure_name} is set to inf.",
             )
             self.value = math.inf
             return self.value
@@ -70,7 +71,7 @@ class ET(CriMeBase):
             return self.value
         # obtain the conflict area
         self.ca = self.get_ca()
-        self.value = self.get_ca_duration(
+        self.value, self.enter_time, self.exit_time = self.get_ca_time_info(
             self.ego_vehicle, self.time_step, self.ca
         )
         # The conflict area may not exist, indicated by self.ca being None.
@@ -98,7 +99,7 @@ class ET(CriMeBase):
         if self.value is not math.inf:
             # fixme: shouldn't multiply again
             # self.value = self.value * self.sce.dt
-            self.value = utils_gen.int_round(self.value, 4)
+            self.value = utils_gen.int_round(self.value * self.dt, 4)
             utils_log.print_and_log_info(
                 logger, f"*\t\t {self.measure_name} = {self.value}"
             )
@@ -260,7 +261,9 @@ class ET(CriMeBase):
             [vehicle.state_at_time(time_step)]
         )[0]
 
-    def get_ca_from_lanelets(self, lanelet_id_a: Union[int, None], lanelet_id_b: Union[int, None]):
+    def get_ca_from_lanelets(
+        self, lanelet_id_a: Union[int, None], lanelet_id_b: Union[int, None]
+    ):
         """
         Using shapely to obtain the conflict area from the given lanelets
         """
@@ -354,24 +357,27 @@ class ET(CriMeBase):
             ref_path_lanelets_id.update(lanelet_id)
         return list(ref_path_lanelets_id)
 
-    def get_ca_duration(self, vehicle: DynamicObstacle, time_step: int, ca: Polygon):
+    def get_ca_time_info(self, vehicle: DynamicObstacle, time_step: int, ca: Polygon):
         """
-        Compute the duration of the vehicle within the conflict area.
+        Compute the duration of the vehicle within the conflict area as well as its enter and exit time.
         """
         # In case conflict area does not exist, ET will be set to inf.
         # fixme: do what the function is supported to di
         if ca is None:
-            return math.inf
-        already_in = None
-        self.enter_time = math.inf
-        self.exit_time = math.inf
+            return math.inf, math.inf, math.inf
+        already_in = False
+        enter_time = math.inf
         for i in range(time_step, len(vehicle.prediction.trajectory.state_list)):
             v_poly = vehicle.occupancy_at_time(i).shape.shapely_object
-            if v_poly.intersects(ca) and already_in is None:
-                self.enter_time = i
+            if v_poly.intersects(ca) and already_in is False:
+                # if the vehicle is already within the conflict area, then the enter time is set to 0
+                enter_time = max(i - 1, 0)
                 already_in = True
             if not v_poly.intersects(ca) and already_in is True:
-                self.exit_time = i
-                return (self.exit_time - self.enter_time) * self.dt
-        return math.inf
-
+                exit_time = i
+                # fixme: time = time * self.dt
+                return exit_time - enter_time, enter_time, exit_time
+        if enter_time is math.inf:
+            return math.inf, math.inf, math.inf
+        else:
+            return math.inf, enter_time, math.inf

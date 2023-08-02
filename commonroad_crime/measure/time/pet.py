@@ -70,12 +70,12 @@ class PET(ET):
             _,
             self.other_vehicle_enter_time,
             self.other_vehicle_exit_time,
-        ) = self.get_ca_duration(self.other_vehicle, self.time_step, self.ca)
+        ) = self.get_ca_time_info(self.other_vehicle, self.time_step, self.ca)
         (
             _,
             self.ego_vehicle_enter_time,
             self.ego_vehicle_exit_time,
-        ) = self.get_ca_duration(self.ego_vehicle, self.time_step, self.ca)
+        ) = self.get_ca_time_info(self.ego_vehicle, self.time_step, self.ca)
         # Definition of PET is:
         # PET(A1, A2, Conflict Area) = t_entry(A2, Conflict Area) - t_exit(A1, Conflict Area)
         # The variable A1 in the equation may not necessarily correspond to the ego vehicle.
@@ -83,7 +83,10 @@ class PET(ET):
         # A1 could represent either the ego vehicle or the other vehicle. So there are two cases:
         # Case 1: A1 is ego vehicle
         case_one = True
-        if self.other_vehicle_enter_time is None or self.ego_vehicle_exit_time is None:
+        if (
+            self.other_vehicle_enter_time is math.inf
+            or self.ego_vehicle_exit_time is math.inf
+        ):
             self.value = math.inf
         else:
             self.value = self.other_vehicle_enter_time - self.ego_vehicle_exit_time
@@ -91,22 +94,22 @@ class PET(ET):
         if self.value < 0:
             case_one = False
             if (
-                self.ego_vehicle_enter_time is None
-                or self.other_vehicle_exit_time is None
+                self.ego_vehicle_enter_time is math.inf
+                or self.other_vehicle_exit_time is math.inf
             ):
                 self.value = math.inf
             else:
                 self.value = self.ego_vehicle_enter_time - self.other_vehicle_exit_time
         if self.value < 0:
-            self.value = None
+            self.value = math.inf
         # The conflict area may not exist, indicated by self.ca being None.
         # Even if the conflict area exists, there are two scenarios where the PET remains undefined,
         # and we set it to infinity. This information is logged in info_value_not_exit()
         self.case_one = case_one
         self.info_value_not_exist(case_one)
         # Transfer time steps to seconds
-        if self.value is not None:
-            self.value = self.value * self.sce.dt
+        if self.value is not math.inf:
+            self.value = self.value * self.dt
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
@@ -161,14 +164,14 @@ class PET(ET):
             alpha=1,
         )
         if self.case_one is True:
-            if self.ego_vehicle_exit_time is not None:
+            if self.ego_vehicle_exit_time is not math.inf:
                 utils_vis.draw_dyn_vehicle_shape(
                     self.rnd,
                     self.ego_vehicle,
                     time_step=self.ego_vehicle_exit_time,
                     color=TUMcolor.TUMblack,
                 )
-            if self.other_vehicle_enter_time is not None:
+            if self.other_vehicle_enter_time is not math.inf:
                 utils_vis.draw_dyn_vehicle_shape(
                     self.rnd,
                     self.other_vehicle,
@@ -176,14 +179,14 @@ class PET(ET):
                     color=TUMcolor.TUMgreen,
                 )
         elif self.case_one is False:
-            if self.other_vehicle_exit_time is not None:
+            if self.other_vehicle_exit_time is not math.inf:
                 utils_vis.draw_dyn_vehicle_shape(
                     self.rnd,
                     self.other_vehicle,
                     time_step=self.other_vehicle_exit_time,
                     color=TUMcolor.TUMgreen,
                 )
-            if self.ego_vehicle_enter_time is not None:
+            if self.ego_vehicle_enter_time is not math.inf:
                 utils_vis.draw_dyn_vehicle_shape(
                     self.rnd,
                     self.ego_vehicle,
