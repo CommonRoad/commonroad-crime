@@ -12,9 +12,9 @@ def main():
     config.print_configuration_summary()
 
     # ==== visualize the scenario at given time steps
-    utils_vis.visualize_scenario_at_time_steps(config.scenario,
-                                               plot_limit=config.debug.plot_limits,
-                                               time_steps=[69, 121, 129])
+    utils_vis.visualize_scenario_at_time_steps(
+        config.scenario, plot_limit=config.debug.plot_limits, time_steps=[69, 121, 129]
+    )
 
 
 if __name__ == "__main__":

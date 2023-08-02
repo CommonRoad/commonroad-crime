@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import logging
 import matplotlib.pyplot as plt
@@ -29,6 +29,7 @@ class STN(CriMeBase):
     -- from Hosseini, SeyedMehrdad, et al. "Adaptive forward collision warning algorithm for automotive applications."
     2016 American Control Conference (ACC). IEEE, 2016.
     """
+
     measure_name = TypeIndex.STN
     monotone = TypeMonotone.POS
 
@@ -37,13 +38,19 @@ class STN(CriMeBase):
         self._a_lat_req_object = ALatReq(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
+        utils_log.print_and_log_info(
+            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+        )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         a_lat_req = self._a_lat_req_object.compute(vehicle_id, time_step)
         # (1) in "Adaptive forward collision warning algorithm for automotive applications."
-        self.value = utils_gen.int_round(abs(a_lat_req / self.configuration.vehicle.curvilinear.a_lat_max), 4)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        self.value = utils_gen.int_round(
+            abs(a_lat_req / self.configuration.vehicle.curvilinear.a_lat_max), 4
+        )
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def visualize(self):

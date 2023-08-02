@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin, Liguo Chen"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import matplotlib.pyplot as plt
 import logging
@@ -29,6 +29,7 @@ class PET(ET):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+
     measure_name = TypeTime.PET
     monotone = TypeMonotone.NEG
 

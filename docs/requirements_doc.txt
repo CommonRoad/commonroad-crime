@@ -1,0 +1,4 @@
+Sphinx>=4.5.0,<7
+sphinx-autodoc-typehints>=1.18.1
+sphinx_rtd_theme
+m2r2

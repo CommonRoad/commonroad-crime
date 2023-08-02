@@ -13,18 +13,13 @@ from commonroad_crime.data_structure.configuration_builder import ConfigurationB
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.utility.simulation import Maneuver
 
-try:
-    import commonroad_reach.pycrreach
-    from commonroad_crime.measure.time.wttr import WTTR
-    module_failed = False
-except ImportError:
-    module_failed = True
+from commonroad_crime.measure.time.wttr import WTTR
 
 
 class TestTimeDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'ZAM_Urban-3_3_Repair'
+        scenario_id = "ZAM_Urban-3_3_Repair"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -71,12 +66,13 @@ class TestTimeDomain(unittest.TestCase):
 
         # test scenario with set-based prediction
         self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
-        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_3 = TTCStar(self.config)
         ttc_3 = ttc_object_3.compute()
-        assert math.isclose(ttc_3, 9*sce_set.dt, abs_tol=1e-2)
+        assert math.isclose(ttc_3, 9 * sce_set.dt, abs_tol=1e-2)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
@@ -122,8 +118,9 @@ class TestTimeDomain(unittest.TestCase):
 
         # test scenario with set-based prediction
         self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
-        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_4 = TTR(self.config)
         ttc_4 = ttc_object_4.compute()
@@ -154,19 +151,19 @@ class TestTimeDomain(unittest.TestCase):
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 
-    @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)
         wttr_object.visualize()
         self.assertEqual(wttr, 1.3)
         wttr2 = wttr_object.compute()
-        self.assertAlmostEqual(wttr, wttr2 - 1.)
+        self.assertAlmostEqual(wttr, wttr2 - 1.0)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
-        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)

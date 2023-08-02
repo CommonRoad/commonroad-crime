@@ -4,7 +4,7 @@ __credits__ = ["KoSi"]
 __version__ = "0.0.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import logging
 
@@ -41,5 +41,7 @@ class TET(TIT):
             if ttc_result <= tau:
                 self.value += self.dt
         self.value = utils_gen.int_round(self.value, 4)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
