@@ -13,6 +13,7 @@ class TestDistanceDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = 'BEL_Putte-8_2_T-1'
+        scenario_id = "ZAM_Urban-3_3_Repair"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()

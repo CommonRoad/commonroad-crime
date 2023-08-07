@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin, Ziqian Xu"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import math
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ class MSD(CriMeBase):
     """
     B. L. Allen, B. T. Shin, and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,” Transportation Research Record, vol. 667, pp. 67–74, 1978.
     """
-    metric_name = TypeDistance.MSD
+
     measure_name = TypeDistance.MSD
     monotone = TypeMonotone.POS
 

@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import logging
 
@@ -21,6 +21,7 @@ class AGS(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+
     measure_name = TypeTime.AGS
     monotone = TypeMonotone.NEG
 

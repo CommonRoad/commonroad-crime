@@ -1,16 +1,51 @@
-stages:
-  - test
+image: python:3.8
 
-image: continuumio/anaconda3
+stages:
+  - style
+  - test
+  - publish
 
 before_script:
     - apt-get update && apt-get install -y build-essential
-    - conda create -n commonroad-py37 python=3.7 -y
-    - source activate commonroad-py37
-    - conda info
+    - apt-get install -y libgl1
+    - pip install --upgrade pip
+    - pip install -e .
+
+black:
+  stage: style
+  needs: []
+  image: pyfound/black:23.1.0
+  before_script: []
+  cache: []
+  allow_failure: true
+  script:
+    - black --check --verbose --diff --color commonroad_crime
+    - black --check --verbose --diff --color tests
 
 unittest:
   stage: test
+  image: python:$PYTHON_VERSIONS
+  parallel:
+    matrix:
+      - PYTHON_VERSIONS: [ "3.7", "3.8", "3.9", "3.10" ] # 3.11 limited by drivability-checker
   script:
-    - pip install -e .
     - cd $CI_PROJECT_DIR/tests && python -m unittest
+
+### publish documentation ###
+pages:
+  # Push the latest documentation of the master branch to the GitLab Pages documentation
+  # at https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
+  stage: publish
+  script:
+    - pip install -r ./docs/requirements_doc.txt
+    - cd docs/sphinx
+    - make html
+    - mv ./build/html ../../public
+  artifacts:
+    paths:
+      - public
+  environment:
+    name: Gitlab Pages
+    url: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
+  only:
+    - master

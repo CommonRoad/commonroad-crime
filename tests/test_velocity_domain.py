@@ -12,7 +12,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestVelocityDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Gar-1_1_T-1'
+        scenario_id = "DEU_Gar-1_1_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -22,4 +22,3 @@ class TestVelocityDomain(unittest.TestCase):
         delta_v_object = DeltaV(self.config)
         delta_v = delta_v_object.compute(0, 202)
         self.assertEqual(delta_v, 13.0)
-

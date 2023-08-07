@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import math
 import matplotlib.pyplot as plt
@@ -29,17 +29,12 @@ logger = logging.getLogger(__name__)
 class TTM(CriMeBase):
     measure_name = TypeTime.TTM
 
-    def __init__(self,
-                 config: CriMeConfiguration,
-                 maneuver: Union[Maneuver, None]):
+    def __init__(self, config: CriMeConfiguration, maneuver: Union[Maneuver, None]):
         super(TTM, self).__init__(config)
         self._maneuver = maneuver
-        if maneuver in [Maneuver.BRAKE,
-                        Maneuver.KICKDOWN,
-                        Maneuver.CONSTANT]:
+        if maneuver in [Maneuver.BRAKE, Maneuver.KICKDOWN, Maneuver.CONSTANT]:
             self.simulator = SimulationLong(maneuver, self.ego_vehicle, config)
-        elif maneuver in [Maneuver.STEERLEFT,
-                          Maneuver.STEERRIGHT]:
+        elif maneuver in [Maneuver.STEERLEFT, Maneuver.STEERRIGHT]:
             self.simulator = SimulationLat(maneuver, self.ego_vehicle, config)
         else:
             self.simulator = None
@@ -60,48 +55,84 @@ class TTM(CriMeBase):
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits
         else:
-            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                self.ego_vehicle.prediction.
-                                                                trajectory.state_list,
-                                                                margin=10)
+            plot_limits = utils_vis.plot_limits_from_state_list(
+                self.time_step,
+                self.ego_vehicle.prediction.trajectory.state_list,
+                margin=10,
+            )
         self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.ttc_object.draw_collision_checker(self.rnd)
         for veh in self.sce.obstacles:
             if veh is not self.ego_vehicle:
                 veh.draw(self.rnd)
         self.rnd.render()
-        if self.time_step == 0 and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0:
-            utils_vis.draw_state_list(self.rnd, [self.ego_vehicle.initial_state] +
-                                      self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                      color=TUMcolor.TUMblue, linewidth=5)
+        if (
+            self.time_step == 0
+            and self.ego_vehicle.prediction.trajectory.state_list[0].time_step != 0
+        ):
+            utils_vis.draw_state_list(
+                self.rnd,
+                [self.ego_vehicle.initial_state]
+                + self.ego_vehicle.prediction.trajectory.state_list[self.time_step :],
+                color=TUMcolor.TUMblue,
+                linewidth=5,
+            )
         else:
-            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                      color=TUMcolor.TUMblue, linewidth=5)
+            utils_vis.draw_state_list(
+                self.rnd,
+                self.ego_vehicle.prediction.trajectory.state_list[self.time_step :],
+                color=TUMcolor.TUMblue,
+                linewidth=5,
+            )
         for sl in self.state_list_set:
             utils_vis.draw_state_list(self.rnd, sl)
         if self.value not in [math.inf, -math.inf] and self.ttc:
             tstm = int(utils_gen.int_round(self.value / self.dt, 0)) + self.time_step
-            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen)
-            tstc = int(utils_gen.int_round(self.ttc_object.value / self.dt, 0)) + self.time_step
-            utils_vis.draw_state(self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred)
+            utils_vis.draw_state(
+                self.rnd, self.ego_vehicle.state_at_time(tstm), TUMcolor.TUMgreen
+            )
+            tstc = (
+                int(utils_gen.int_round(self.ttc_object.value / self.dt, 0))
+                + self.time_step
+            )
+            utils_vis.draw_state(
+                self.rnd, self.ego_vehicle.state_at_time(tstc), TUMcolor.TUMred
+            )
 
             tstc = int(utils_gen.int_round(self.ttc / self.dt, 0)) + self.time_step
             utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, tstc)
-            utils_vis.draw_state_list(self.rnd, self.selected_state_list[tstm:],
-                                      color=TUMcolor.TUMgreen, linewidth=5)
+            utils_vis.draw_state_list(
+                self.rnd,
+                self.selected_state_list[tstm:],
+                color=TUMcolor.TUMgreen,
+                linewidth=5,
+            )
         else:
             tstm = self.value
-        
+
         plt.title(f"{self.measure_name} at time step {tstm - self.time_step}")
         if self.configuration.debug.save_plots:
-            utils_vis.save_fig(self.measure_name, self.configuration.general.path_output,
-                               tstm - self.time_step)
+            utils_vis.save_fig(
+                self.measure_name,
+                self.configuration.general.path_output,
+                tstm - self.time_step,
+            )
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0, vehicle_id: Union[int, None] = None, ttc: float = None, verbose: bool = True):
+    def compute(
+        self,
+        time_step: int = 0,
+        vehicle_id: Union[int, None] = None,
+        ttc: float = None,
+        verbose: bool = True,
+    ):
         self.state_list_set = []
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}", verbose)
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
         self.time_step = time_step
         if ttc:
             self.ttc = ttc
@@ -114,24 +145,34 @@ class TTM(CriMeBase):
         else:
             self.value = self.binary_search(time_step)
         if self.value in [math.inf, -math.inf]:
-            utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+            utils_log.print_and_log_info(
+                logger, f"*\t\t {self.measure_name} = {self.value}"
+            )
             return self.value
-        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find('.'))
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find("."))
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}"
+        )
         return self.value
 
     def binary_search(self, initial_step: int) -> float:
         """
         Binary search to find the last time to execute the maneuver.
         """
-        ttm = - math.inf
+        ttm = -math.inf
         low = initial_step
-        high = int(utils_gen.int_round(self.ttc / self.dt + self.time_step,  str(self.dt)[::-1].find('.')))
+        high = int(
+            utils_gen.int_round(
+                self.ttc / self.dt + self.time_step, str(self.dt)[::-1].find(".")
+            )
+        )
         while low < high:
             mid = int((low + high) / 2)
             state_list = self.simulator.simulate_state_list(mid)
             # flag for successful simulation, 0: False, 1: True
-            flag_succ = state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
+            flag_succ = (
+                state_list[-1].time_step == self.ego_vehicle.prediction.final_time_step
+            )
             if not flag_succ:
                 high = mid
                 continue
