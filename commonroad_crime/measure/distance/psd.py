@@ -26,7 +26,12 @@ from commonroad_crime.utility.visualization import TUMcolor
 from commonroad_crime.measure.distance.msd import MSD
 from commonroad_crime.measure.time.et import ET
 from commonroad.geometry.shape import ShapeGroup
-from commonroad.geometry.polyline_util import compute_polyline_lengths, compute_polyline_intersections, is_point_on_polyline, compute_total_polyline_length
+from commonroad.geometry.polyline_util import (
+    compute_polyline_lengths,
+    compute_polyline_intersections,
+    is_point_on_polyline,
+    compute_total_polyline_length,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -44,19 +49,21 @@ class PSD(CriMeBase):
         super(PSD, self).__init__(config)
         self._msd_object = MSD(config)
         self._et_object = ET(config)
-   
 
     def compute(self, vehicle_id: int = None, time_step: int = 0):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.metric_name} beginning at time step {time_step}")
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} beginning at time step {time_step}",
+        )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
         other_vehicle = self.sce.obstacle_by_id(vehicle_id)
         self._et_object.other_vehicle = other_vehicle
         self._et_object.time_step = time_step
         self.value = None
-        state_list = self.ego_vehicle.prediction.trajectory.state_list[self.time_step:]
+        state_list = self.ego_vehicle.prediction.trajectory.state_list[self.time_step :]
         enter_time = None
-        #compute MSD
+        # compute MSD
         msd = self._msd_object.compute(vehicle_id, time_step)
         self.msd = msd
         if msd == 0:
@@ -68,54 +75,66 @@ class PSD(CriMeBase):
         if isinstance(self.other_vehicle, DynamicObstacle):
             ca = self._et_object.get_ca()
             if ca is not None:
-                #test whether the ego vehicle enters the CA or not
+                # test whether the ego vehicle enters the CA or not
                 for ts in range(time_step, self.ego_vehicle.prediction.final_time_step):
-                    ego_poly = self.ego_vehicle.occupancy_at_time(ts).shape.shapely_object
+                    ego_poly = self.ego_vehicle.occupancy_at_time(
+                        ts
+                    ).shape.shapely_object
                     if ego_poly.intersects(ca):
                         enter_time = ts
                         self.enter_time = enter_time
                         break
-                #compute the remaining distance using polyline
+                # compute the remaining distance using polyline
                 if enter_time is not None:
                     self.ca = ca
                     end_position = self.ego_vehicle.state_at_time(enter_time).position
                     self.end_position = end_position
-                    state_list_new = self.ego_vehicle.prediction.trajectory.state_list[self.time_step:enter_time+1]
+                    state_list_new = self.ego_vehicle.prediction.trajectory.state_list[
+                        self.time_step : enter_time + 1
+                    ]
                     pos_new = np.asarray([state.position for state in state_list_new])
                     if pos_new.shape[0] < 2:
                         return 0
                     distance = compute_total_polyline_length(pos_new)
                     psd = utils_gen.int_round(distance / msd, 2)
                     self.value = psd
-                    utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {psd}")
+                    utils_log.print_and_log_info(
+                        logger, f"*\t\t {self.measure_name} = {psd}"
+                    )
                     return psd
                 else:
-                    utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
+                    utils_log.print_and_log_info(
+                        logger, f"*\t\t valid ca does not exist in this scenario"
+                    )
                     return math.inf
-            else :
-                utils_log.print_and_log_info(logger, f"*\t\t valid ca does not exist in this scenario")
+            else:
+                utils_log.print_and_log_info(
+                    logger, f"*\t\t valid ca does not exist in this scenario"
+                )
                 return math.inf
-        else :
-            utils_log.print_and_log_info(logger, f"*\t\t {other_vehicle} Not a dynamic obstacle, ca does not exist")
+        else:
+            utils_log.print_and_log_info(
+                logger,
+                f"*\t\t {other_vehicle} Not a dynamic obstacle, ca does not exist",
+            )
             return math.inf
-    
-                
-    def visualize(self, figsize: tuple = (25,15)):
-        
+
+    def visualize(self, figsize: tuple = (25, 15)):
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits
         else:
-            plot_limits = utils_vis.plot_limits_from_state_list(self.time_step,
-                                                                self.ego_vehicle.prediction.
-                                                                trajectory.state_list,
-                                                                margin=10)
-        
+            plot_limits = utils_vis.plot_limits_from_state_list(
+                self.time_step,
+                self.ego_vehicle.prediction.trajectory.state_list,
+                margin=10,
+            )
+
         if self.value is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
-          
+
         elif self.ca is None:
             utils_log.print_and_log_info(logger, "* No conflict area")
-      
+
         else:
             self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
             self.rnd.render()
@@ -123,44 +142,73 @@ class PSD(CriMeBase):
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMred)
             plt.fill(x_i, y_i, color=TUMcolor.TUMred)
-            utils_vis.draw_state_list(self.rnd, self.ego_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                      color=TUMcolor.TUMblue, linewidth=1)
-            utils_vis.draw_state_list(self.rnd, self.other_vehicle.prediction.trajectory.state_list[self.time_step:],
-                                      color=TUMcolor.TUMlightgray, linewidth=1)
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.time_step,
-                                             color=TUMcolor.TUMgreen)
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.ego_vehicle, time_step=self.enter_time,
-                                             color=TUMcolor.TUMgreen)
-            utils_vis.draw_circle(self.rnd, self.end_position, 0.5, 0.5, color=TUMcolor.TUMorange)
-            utils_vis.draw_circle(self.rnd, msd_position, 0.5, 0.5, color=TUMcolor.TUMblack)
-            utils_vis.draw_dyn_vehicle_shape(self.rnd, self.other_vehicle, time_step=self.time_step, color=TUMcolor.TUMdarkred)
-            
+            utils_vis.draw_state_list(
+                self.rnd,
+                self.ego_vehicle.prediction.trajectory.state_list[self.time_step :],
+                color=TUMcolor.TUMblue,
+                linewidth=1,
+            )
+            utils_vis.draw_state_list(
+                self.rnd,
+                self.other_vehicle.prediction.trajectory.state_list[self.time_step :],
+                color=TUMcolor.TUMlightgray,
+                linewidth=1,
+            )
+            utils_vis.draw_dyn_vehicle_shape(
+                self.rnd,
+                self.ego_vehicle,
+                time_step=self.time_step,
+                color=TUMcolor.TUMgreen,
+            )
+            utils_vis.draw_dyn_vehicle_shape(
+                self.rnd,
+                self.ego_vehicle,
+                time_step=self.enter_time,
+                color=TUMcolor.TUMgreen,
+            )
+            utils_vis.draw_circle(
+                self.rnd, self.end_position, 0.5, 0.5, color=TUMcolor.TUMorange
+            )
+            utils_vis.draw_circle(
+                self.rnd, msd_position, 0.5, 0.5, color=TUMcolor.TUMblack
+            )
+            utils_vis.draw_dyn_vehicle_shape(
+                self.rnd,
+                self.other_vehicle,
+                time_step=self.time_step,
+                color=TUMcolor.TUMdarkred,
+            )
+
             plt.title(f"{self.metric_name} of {self.time_step} time steps")
-        
-            
+
             if self.configuration.debug.draw_visualization:
                 if self.configuration.debug.save_plots:
-                    utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+                    utils_vis.save_fig(
+                        self.metric_name,
+                        self.configuration.general.path_output,
+                        self.time_step,
+                    )
                 else:
                     plt.show()
-    
+
     def visualize_graph(self):
-        
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         psd_list = []
         for i in range(0, len(state_list)):
             psd_list.append(self.compute(self.other_vehicle.obstacle_id, i))
 
         list_numbers = list(range(0, len(state_list)))
-        plt.xlabel('time step at which it brakes')
-        plt.ylabel('psd-value')
+        plt.xlabel("time step at which it brakes")
+        plt.ylabel("psd-value")
         plt.plot(list_numbers, psd_list)
-        plt.title(label="PSD Graph",
-                  fontsize=15,
-                  color="green")
+        plt.title(label="PSD Graph", fontsize=15, color="green")
         plt.legend(loc="upper right")
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.metric_name, self.configuration.general.path_output, self.time_step)
+                utils_vis.save_fig(
+                    self.metric_name,
+                    self.configuration.general.path_output,
+                    self.time_step,
+                )
             else:
                 plt.show()
