@@ -199,6 +199,7 @@ class IndexDomainConfiguration:
             self.w_ax = dict_tci.w_ax
             self.w_ay = dict_tci.w_ay
             self.N = dict_tci.prediction_horizon
+
     class CI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_ci = dict_config.CI
