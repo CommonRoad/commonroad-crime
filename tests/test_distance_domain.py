@@ -32,6 +32,11 @@ class TestDistanceDomain(unittest.TestCase):
         self.config.debug.plot_limits = [-320, -380, 210, 290]
         msd_object.visualize()
 
+        psd_object = PSD(self.config)
+        psd = psd_object.compute(328, 0)
+        self.assertEqual(psd, 61.58)
+        psd_object.visualize()
+
     def test_hw(self):
         hw_object = HW(self.config)
         hw = hw_object.compute(6, 0)

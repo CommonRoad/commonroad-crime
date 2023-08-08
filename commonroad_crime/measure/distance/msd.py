@@ -19,9 +19,6 @@ import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.solver as utils_sol
 import commonroad_crime.utility.visualization as utils_vis
-from commonroad.geometry.polyline_util import (
-    compute_total_polyline_length,
-)
 from commonroad_crime.utility.visualization import TUMcolor
 
 

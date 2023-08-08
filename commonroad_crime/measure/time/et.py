@@ -70,7 +70,7 @@ class ET(CriMeBase):
             self.value = math.inf
             return self.value
         # obtain the conflict area
-        self.ca = self.get_ca()
+        self.ca = self.get_ca(self.time_step, self.other_vehicle)
         self.value, self.enter_time, self.exit_time = self.get_ca_time_info(
             self.ego_vehicle, self.time_step, self.ca
         )
@@ -105,7 +105,7 @@ class ET(CriMeBase):
             )
         return self.value
 
-    def get_ca(self):
+    def get_ca(self, time_step: int, other_vehicle: DynamicObstacle):
         """
         Determine the existence of a conflict area based on the definition, and return it if it exists.
         1.Determine if there is any intersection between the lanelets traversed by the ego vehicle and other vehicles.
@@ -113,8 +113,6 @@ class ET(CriMeBase):
         3.Determine if the intersecting lanelets are not in the direction of trajectory of the other vehicle.
         4.Determine if the ego vehicle and the other vehicle originate from different incomings.
         """
-        time_step = self.time_step
-        other_vehicle = self.other_vehicle
         ref_path_lanelets_ego = self.get_ref_path_lanelets_id(
             time_step, self.ego_vehicle
         )
@@ -135,7 +133,7 @@ class ET(CriMeBase):
                 )
                 if self.is_at_intersection(intersected_lanelet):  # 2.
                     other_vehicle_dir_lanelet_id = self.get_dir_lanelet_id(
-                        self.other_vehicle, i
+                        other_vehicle, i
                     )
                     if (
                         other_vehicle_dir_lanelet_id != intersected_lanelet.lanelet_id
