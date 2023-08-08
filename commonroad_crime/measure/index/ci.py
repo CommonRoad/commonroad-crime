@@ -18,7 +18,7 @@ from commonroad.scenario.scenario import Tag
 
 from commonroad_crime.measure.time.pet import PET
 from commonroad.scenario.obstacle import DynamicObstacle
-
+import commonroad_crime.utility.general as utils_gen
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.utility.visualization import TUMcolor
 import numpy as np
@@ -40,9 +40,6 @@ class CI(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(CI, self).__init__(config)
-        self.other_vehicle_enter_time = None
-        self.ego_vehicle_enter_time = None
-        self.ca = None
         self._pet_object = PET(config)
         self.ci_config = config.index.ci
 
@@ -51,34 +48,32 @@ class CI(CriMeBase):
             logger, f"* Computing the {self.measure_name} at time step {time_step}"
         )
         self.set_other_vehicles(vehicle_id)
-        state_list_ego = self.ego_vehicle.prediction.trajectory.state_list
-        state_list_other = self.other_vehicle.prediction.trajectory.state_list
+        self.time_step = time_step
 
         # Only for scenarios with intersection tag
         if (Tag.INTERSECTION not in self.sce.tags) or (
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger, f"* \t\tMeasure only for intersection. CI is set to 0."
+                logger, f"* \t\t Measure only for intersection. CI is set to 0.0."
             )
-            self.value = 0
+            self.value = 0.0
             return self.value
         if not isinstance(self.other_vehicle, DynamicObstacle):
             utils_log.print_and_log_info(
                 logger,
-                f"*\t\t {self.other_vehicle} Not a dynamic obstacle, CI is set to 0",
+                f"*\t\t {self.other_vehicle} is not a dynamic obstacle, CI is set to 0.0",
             )
-            self.value = 0
+            self.value = 0.0
             return self.value
 
         # Alpha determines to which degree released collision energy affects vehicle occupants.
         alpha = self.ci_config.alpha
-
         # Beta depends on conflict type and surrounding collisions
         beta = self.ci_config.beta
 
         # Standard value for mass of vehicles 1500kg
-        if self.configuration.vehicle.dynamic.parameters.m != None:
+        if self.configuration.vehicle.dynamic.parameters.m is not None:
             m1 = self.configuration.vehicle.dynamic.parameters.m
         else:
             m1 = self.ci_config.m
@@ -98,52 +93,54 @@ class CI(CriMeBase):
         if pet >= threshold:
             utils_log.print_and_log_info(
                 logger,
-                f"* PET beyond configuration threshold, CI for the ego vehicle and vehicle {vehicle_id} is set to 0",
+                f"*\t\t PET beyond configuration threshold, "
+                f"CI for the ego vehicle and vehicle {vehicle_id} is set to 0",
             )
-            value = 0
-            return value
+            self.value = 0.0
+            return self.value
 
-        # Find the collision time and the conflict area with the assistance of the PET object
+        conflict_state_ego = self.ego_vehicle.state_at_time(
+            self._pet_object.ego_vehicle_enter_time
+        )
+        conflict_state_other = self.other_vehicle.state_at_time(
+            self._pet_object.other_vehicle_enter_time
+        )
 
-        self.ego_vehicle_enter_time = self._pet_object.ego_vehicle_enter_time
-        self.other_vehicle_enter_time = self._pet_object.other_vehicle_enter_time
-        self.ca = self._pet_object.ca
+        theta1 = conflict_state_ego.orientation
+        theta2 = conflict_state_other.orientation
 
-        state_ego = self.ego_vehicle.state_at_time(self.ego_vehicle_enter_time)
-        state_other = self.other_vehicle.state_at_time(self.other_vehicle_enter_time)
+        u1 = math.sqrt(
+            conflict_state_ego.velocity**2 + conflict_state_ego.velocity_y**2
+        )
+        u2 = math.sqrt(
+            conflict_state_other.velocity**2 + conflict_state_other.velocity_y**2
+        )
 
-        self.v_x = (m1 * state_ego.velocity + m2 * state_other.velocity) / (m1 + m2)
-        self.v_y = (m1 * state_ego.velocity_y + m2 * state_other.velocity_y) / (m1 + m2)
-        v = math.sqrt(self.v_x**2 + self.v_y**2)
-
-        u1 = math.sqrt(state_ego.velocity**2 + state_ego.velocity_y**2)
-        u2 = math.sqrt(state_other.velocity**2 + state_other.velocity_y**2)
+        # the speed after collision
+        v = (m1 * u1 * math.sin(theta1) + m2 * u2 * math.sin(theta2)) / (
+            (m1 + m2)
+            * math.sin(
+                math.atan(
+                    m1 * u1 * math.sin(theta1)
+                    + m2 * u2 * math.sin(theta2) / m1 * u1 * math.cos(theta1)
+                    + m2 * u2 * math.cos(theta2)
+                )
+            )
+        )
 
         # k_delta to calculate the kinetic energy difference before and after the collision
         k_delta = (
             1 / 2 * (m1 * u1**2) + 1 / 2 * (m2 * u2**2) - 1 / 2 * (m1 + m2) * v**2
         )
-        self.value = alpha * k_delta / math.exp(beta * pet)
-
+        self.value = utils_gen.int_round(alpha * k_delta / math.exp(beta * pet), 2)
         utils_log.print_and_log_info(
-            logger,
-            f"* CI for the ego vehicle and vehicle {vehicle_id} is set to {self.value}",
+            logger, f"*\t\t {self.measure_name} = {self.value}"
         )
-
-        # For visualization
-        if time_step == 0 and self.value > 0:
-            self.other_vehicle_visual = vehicle_id
-
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
-        logger = logging.getLogger()
-        logger.disabled = True
-        if self.other_vehicle_visual != None:
-            print("For ego vehicle and other vehicle " + str(self.other_vehicle_visual))
-            self.compute(self.other_vehicle_visual, 0)
-        if self.ca is None:
-            utils_log.print_and_log_info(logger, "* \t\tNo conflict area")
+        if self._pet_object.ca is None:
+            utils_log.print_and_log_info(logger, "*\t\t No conflict area")
             return 0
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits

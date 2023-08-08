@@ -5,7 +5,7 @@ Unit tests of the module index-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import BTN, STN, TCI, CPI
+from commonroad_crime.measure import BTN, STN, TCI, CPI, CI
 import commonroad_crime.utility.logger as util_logger
 
 from commonroad.common.file_reader import CommonRoadFileReader
@@ -53,3 +53,19 @@ class TestIndexDomain(unittest.TestCase):
         cpi = cpi_object.compute_criticality(0)
         cpi_object.visualize()
         self.assertAlmostEqual(cpi, 4.4345e-06)
+
+    def test_ci(self):
+        ci_object = CI(self.config)
+        ci = ci_object.compute(3, 0)
+        self.assertEqual(ci, 0.0)
+
+        # test scenario with valid conflict area
+        self.config.general.name_scenario = "ZAM_Tjunction-1_97_T-1"
+        sce_pet, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
+        self.config.update(ego_id=5, sce=sce_pet)
+        ci_object = CI(self.config)
+        ci = ci_object.compute(1, 0)
+        self.assertAlmostEqual(ci, 2688.3)
+
