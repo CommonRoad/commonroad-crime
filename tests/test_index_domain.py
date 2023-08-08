@@ -68,4 +68,5 @@ class TestIndexDomain(unittest.TestCase):
         ci_object = CI(self.config)
         ci = ci_object.compute(1, 0)
         self.assertAlmostEqual(ci, 2688.3)
-
+        self.config.debug.plot_limits = [-100, 100, -10, 80]
+        ci_object.visualize()
