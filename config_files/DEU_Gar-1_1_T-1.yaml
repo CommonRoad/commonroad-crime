@@ -1,13 +1,2 @@
 vehicle:
   ego_id: 200
-  cartesian:
-    j_x_min: -5.0
-    j_x_max: 5.0
-    j_y_min: -5.0
-    j_y_max: 5.0
-reachable_set_scale:
-  coordinate_system: 1
-potential_scale:
-  u_max: 500
-debug:
-  plot_limits: # [65, 105, -4, 7.5]
