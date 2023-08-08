@@ -11,10 +11,19 @@ TCI:
   
 # Conflict Index
 CI:
-  # params from   W. K. Alhajyaseen, “The integration of conflict probability and severity for the safety assessment of intersections”,  
+  # params from W. K. Alhajyaseen, “The integration of conflict probability and severity for the safety assessment of intersections”,
   # Arabian Journal for Science and Engineering, vol. 40, no. 2, pp. 421–430, 2015.
   m: 1500.
   m_b: 1500.
   alpha: 1.
   beta: 1.
-  pet_threshold: 5.  
+  pet_threshold: 5.
+
+# Crash Potential Index
+CPI:
+  # params are obtained from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno. Microlevel traffic simulation method
+  # for assessing crash potential at intersections. No. 07-2180. 2007.
+  madr_mean: 8.45
+  madr_devi: 1.40
+  madr_uppb: 12.68
+  madr_lowb: 4.23
