@@ -7,17 +7,12 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import math
-from typing import Union
-import shapely.ops
-from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
-from commonroad.scenario.lanelet import Lanelet
-from shapely.geometry import Polygon
+from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
 import commonroad_crime.utility.logger as utils_log
 import commonroad_crime.utility.visualization as utils_vis
-import commonroad_crime.utility.solver as utils_sol
 import matplotlib.pyplot as plt
 import logging
 import numpy as np
@@ -25,11 +20,7 @@ import commonroad_crime.utility.general as utils_gen
 from commonroad_crime.utility.visualization import TUMcolor
 from commonroad_crime.measure.distance.msd import MSD
 from commonroad_crime.measure.time.et import ET
-from commonroad.geometry.shape import ShapeGroup
 from commonroad.geometry.polyline_util import (
-    compute_polyline_lengths,
-    compute_polyline_intersections,
-    is_point_on_polyline,
     compute_total_polyline_length,
 )
 
