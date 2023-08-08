@@ -188,6 +188,7 @@ class IndexDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
         config_relevant = config.index
         self.tci = IndexDomainConfiguration.TCI(config_relevant)
+        self.ci = IndexDomainConfiguration.CI(config_relevant)
         self.cpi = IndexDomainConfiguration.CPI(config_relevant)
 
     class TCI:
@@ -198,6 +199,15 @@ class IndexDomainConfiguration:
             self.w_ax = dict_tci.w_ax
             self.w_ay = dict_tci.w_ay
             self.N = dict_tci.prediction_horizon
+
+    class CI:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_ci = dict_config.CI
+            self.m = dict_ci.m
+            self.m_b = dict_ci.m_b
+            self.alpha = dict_ci.alpha
+            self.beta = dict_ci.beta
+            self.pet_threshold = dict_ci.pet_threshold
 
     class CPI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
