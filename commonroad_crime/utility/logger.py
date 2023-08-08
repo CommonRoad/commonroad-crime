@@ -52,18 +52,18 @@ def print_and_log_debug(logger: logging.Logger, message: str, verbose: bool = Fa
 
 
 def print_and_log_info(logger: logging.Logger, message: str, verbose: bool = True):
-    #if verbose:
+    # if verbose:
     #    print(message)
     logger.info(message)
 
 
 def print_and_log_warning(logger: logging.Logger, message: str, verbose: bool = True):
-    #if verbose:
+    # if verbose:
     #    print(message)
     logger.warning(message)
 
 
 def print_and_log_error(logger: logging.Logger, message: str, verbose: bool = True):
-    #if verbose:
+    # if verbose:
     #    print(message)
     logger.error(message)
