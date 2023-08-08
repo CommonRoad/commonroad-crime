@@ -240,7 +240,9 @@ class VehicleConfiguration:
     class Curvilinear:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_curvilinear = dict_config.curvilinear
-            self.clcs = None
+            self.clcs: CurvilinearCoordinateSystem = Union[
+                None, CurvilinearCoordinateSystem
+            ]
 
             self.v_lon_min = dict_curvilinear.v_lon_min
             self.v_lon_max = dict_curvilinear.v_lon_max
