@@ -4,8 +4,7 @@ import time
 
 
 def main():
-    scenario_path_4p = "./../scenarios/"
-    scenario_path_4s = "./../scenarios/"
+    scenario_path_4p = scenario_path_4s = "./../scenarios/batch/"
     start = time.time()
     print("Testing run_parallel()...")
     utils_batch.run_parallel(scenario_path_4p, measures=[TTC])
