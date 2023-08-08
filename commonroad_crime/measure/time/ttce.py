@@ -1,8 +1,8 @@
 __author__ = "Oliver Specht, Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
-__maintainer__ = "Yuanfei Lin"
+__version__ = "0.3.0"
+__maintainer__ = "beta"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
@@ -25,6 +25,7 @@ class TTCE(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+
     measure_name = TypeTime.TTCE
     monotone = TypeMonotone.NEG
 
@@ -36,17 +37,27 @@ class TTCE(CriMeBase):
         """
         Using DCE to calculate the TTCE value. DCE marks the time step when the minimal distance is reached.
         """
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
+        utils_log.print_and_log_info(
+            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+        )
         self._dce_object.compute(vehicle_id, time_step)
-        self.value = utils_gen.int_round((self._dce_object.time_dce - time_step) * self.dt, 3)
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}")
+        self.value = utils_gen.int_round(
+            (self._dce_object.time_dce - time_step) * self.dt, 3
+        )
+        utils_log.print_and_log_info(
+            logger,
+            f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}",
+        )
         return self.value
 
     def visualize(self):
         self._dce_object.configuration.debug.draw_visualization = False
         self._dce_object.visualize()
         if self.configuration.debug.save_plots:
-            utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
+            utils_vis.save_fig(
+                self.measure_name,
+                self.configuration.general.path_output,
+                self.time_step,
+            )
         else:
             plt.show()
-

@@ -1,4 +1,3 @@
-
 import unittest
 
 from commonroad_crime.data_structure.scene import Scene
@@ -10,7 +9,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestBase(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Test-1_1_T-1'
+        scenario_id = "DEU_Test-1_1_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()

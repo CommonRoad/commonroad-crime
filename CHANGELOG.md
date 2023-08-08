@@ -1,4 +1,13 @@
 # Changelog
+## [0.3.0] - 2023.xx.xx
+### Fixed
+- The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
+- fix the TCI, whose optimization problem was not reset each time before
+### Added
+- support for Python 3.10 and preparation for 3.11
+- add code style checking (black)
+### Updated
+- update the installation of commonroad-reach using pip install, the corresponding code part is updated
 ## [0.2.3 & 0.2.4] - 2023.05.08
 ### Fixed
 - fix the way of obtaining the default configurations, which didn't work for using the crime with the pip package

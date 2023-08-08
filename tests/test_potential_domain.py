@@ -12,7 +12,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestPotentialDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Gar-1_1_T-1'
+        scenario_id = "DEU_Gar-1_1_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -23,4 +23,3 @@ class TestPotentialDomain(unittest.TestCase):
         pf = pf_object.compute(20)
         self.assertEqual(pf, self.config.potential.u_max)
         pf_object.visualize()
-

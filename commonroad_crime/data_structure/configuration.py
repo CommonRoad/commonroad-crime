@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import logging
 from typing import Union, Optional
@@ -36,17 +36,26 @@ class CriMeConfiguration:
 
         self.time: TimeDomainConfiguration = TimeDomainConfiguration(config)
         self.velocity: VelocityDomainConfiguration = VelocityDomainConfiguration(config)
-        self.acceleration: AccelerationDomainConfiguration = AccelerationDomainConfiguration(config)
-        self.potential: PotentialDomainConfiguration = PotentialDomainConfiguration(config)
-        self.probability: ProbabilityDomainConfiguration = ProbabilityDomainConfiguration(config)
-        self.reachable_set: ReachableSetDomainConfiguration = ReachableSetDomainConfiguration(config)
+        self.acceleration: AccelerationDomainConfiguration = (
+            AccelerationDomainConfiguration(config)
+        )
+        self.potential: PotentialDomainConfiguration = PotentialDomainConfiguration(
+            config
+        )
+        self.probability: ProbabilityDomainConfiguration = (
+            ProbabilityDomainConfiguration(config)
+        )
+        self.reachable_set: ReachableSetDomainConfiguration = (
+            ReachableSetDomainConfiguration(config)
+        )
         self.index: IndexDomainConfiguration = IndexDomainConfiguration(config)
 
-    def update(self,
-               ego_id: int = None,
-               sce: Union[Scene, Scenario] = None,
-               CLCS: Optional[CurvilinearCoordinateSystem] = None,
-               ):
+    def update(
+        self,
+        ego_id: int = None,
+        sce: Union[Scene, Scenario] = None,
+        CLCS: Optional[CurvilinearCoordinateSystem] = None,
+    ):
         """
         Updates criticality configuration based on the given attributes.
 
@@ -61,19 +70,23 @@ class CriMeConfiguration:
             self.scene = sce
         elif isinstance(sce, Scenario):
             self.scenario = sce
-        elif not sce and (self.scene or self.scenario):  # prevent reloading the existing scenario
+        elif not sce and (
+            self.scene or self.scenario
+        ):  # prevent reloading the existing scenario
             pass
         else:
-            self.scenario = utils_general.load_scenario(self)  # if none is provided, scenario is at default
+            self.scenario = utils_general.load_scenario(
+                self
+            )  # if none is provided, scenario is at default
         if CLCS:
             self.vehicle.curvilinear.clcs = CLCS
         if ego_id:
             if self.scenario:
                 if self.scenario.obstacle_by_id(ego_id) is None:
-                    assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
+                    assert f"<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!"
             if self.scene:
                 if self.scene.obstacle_by_id(ego_id) is None:
-                    assert f'<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!'
+                    assert f"<Criticality>: Vehicle (id: {ego_id}) is not contained in the scenario!"
             self.vehicle.ego_id = ego_id
 
     def print_configuration_summary(self):
@@ -110,7 +123,7 @@ class GeneralConfiguration:
 
 class TimeDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.time_scale
+        config_relevant = config.time
         self.activated = config_relevant.activated
         self.metric = config_relevant.metric
         self.steer_width = config_relevant.steer_width
@@ -119,27 +132,27 @@ class TimeDomainConfiguration:
 
 class ReachableSetDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.reachable_set_scale
+        config_relevant = config.reachable_set
         self.time_horizon = config_relevant.time_horizon
         self.cosy = config_relevant.coordinate_system
 
 
 class VelocityDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.velocity_scale
+        config_relevant = config.velocity
         self.m_b = config_relevant.m_b
 
 
 class AccelerationDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.acceleration_scale
+        config_relevant = config.acceleration
         self.safety_time = config_relevant.safety_time
         self.acceleration_mode = config_relevant.acceleration_mode
 
 
 class PotentialDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.potential_scale
+        config_relevant = config.potential
         self.A_lane = config_relevant.A_lane
         self.A_car = config_relevant.A_car
 
@@ -160,9 +173,9 @@ class PotentialDomainConfiguration:
 
 class ProbabilityDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.probability_scale
+        config_relevant = config.probability
         self.monte_carlo = ProbabilityDomainConfiguration.MonteCarlo(config_relevant)
-        
+
     class MonteCarlo:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
             dict_mc = dict_config.monte_carlo
@@ -173,9 +186,10 @@ class ProbabilityDomainConfiguration:
 
 class IndexDomainConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.index_scale
+        config_relevant = config.index
         self.tci = IndexDomainConfiguration.TCI(config_relevant)
         self.ci = IndexDomainConfiguration.CI(config_relevant)
+        self.cpi = IndexDomainConfiguration.CPI(config_relevant)
 
     class TCI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
@@ -194,9 +208,19 @@ class IndexDomainConfiguration:
             self.beta = dict_ci.beta
             self.pet_threshold = dict_ci.pet_threshold
 
+    class CPI:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_cpi = dict_config.CPI
+            self.madr_mean = dict_cpi.madr_mean
+            self.madr_devi = dict_cpi.madr_devi
+            self.madr_uppb = dict_cpi.madr_uppb
+            self.madr_lowb = dict_cpi.madr_lowb
+
 
 class VehicleConfiguration:
     def __init__(self, config: Union[ListConfig, DictConfig]):
+        self._width = None
+        self._length = None
         config_relevant = config.vehicle
         self.ego_id = config_relevant.ego_id
 
@@ -209,7 +233,9 @@ class VehicleConfiguration:
         self.complete_cartesian_constraints(config_relevant)
         self.dynamic = PointMassDynamics(VehicleType(id_type_vehicle))
 
-    def complete_cartesian_constraints(self, dict_config: Union[ListConfig, DictConfig]):
+    def complete_cartesian_constraints(
+        self, dict_config: Union[ListConfig, DictConfig]
+    ):
         dict_cartesian = dict_config.cartesian
         self.cartesian.j_x_min = dict_cartesian.j_x_min
         self.cartesian.j_x_max = dict_cartesian.j_x_max
@@ -246,7 +272,6 @@ class VehicleConfiguration:
     @staticmethod
     def to_vehicle_parameter(vehicle_type: str):
         if vehicle_type == 1:
-
             return parameters_vehicle1()
         elif vehicle_type == 2:
             return parameters_vehicle2()

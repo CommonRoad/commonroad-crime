@@ -5,14 +5,16 @@ Unit tests of the module index-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import BTN, STN, TCI
+from commonroad_crime.measure import BTN, STN, TCI, CPI
 import commonroad_crime.utility.logger as util_logger
+
+from commonroad.common.file_reader import CommonRoadFileReader
 
 
 class TestIndexDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'ZAM_Zip-1_56_T-1'
+        scenario_id = "ZAM_Zip-1_56_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -45,3 +47,9 @@ class TestIndexDomain(unittest.TestCase):
         tci_1 = tci_object.compute(0)
         tci_object.visualize()
         self.assertEqual(tci_1, 0.0)
+
+    def test_cpi(self):
+        cpi_object = CPI(self.config)
+        cpi = cpi_object.compute_criticality(0)
+        cpi_object.visualize()
+        self.assertAlmostEqual(cpi, 4.4345e-06)

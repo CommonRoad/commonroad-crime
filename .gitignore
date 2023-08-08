@@ -18,3 +18,5 @@ output/
 /scenarios/batch
 
 /scenarios/evaluation_result.csv
+
+docs/sphinx/build

@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.2.3"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import glob
 import os
@@ -13,15 +13,20 @@ from omegaconf import OmegaConf, ListConfig, DictConfig
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 
+
 class ConfigurationBuilder:
     path_root: str = None
     path_config: str = None
     path_config_default: str = None
 
     @classmethod
-    def build_configuration(cls, name_scenario: str, path_root: str = None,
-                            dir_config: str = "config_files",
-                            dir_config_default: str = None) -> CriMeConfiguration:
+    def build_configuration(
+        cls,
+        name_scenario: str,
+        path_root: str = None,
+        dir_config: str = "config_files",
+        dir_config_default: str = None,
+    ) -> CriMeConfiguration:
         """Builds configuration from default, scenario-specific, and commandline config files.
 
         Args:
@@ -30,10 +35,16 @@ class ConfigurationBuilder:
             dir_config (str): directory storing configurations
         """
         if path_root is None:
-            path_root = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
+            path_root = os.path.normpath(
+                os.path.join(os.path.dirname(__file__), "../..")
+            )
 
         if cls.path_root is None:
-            cls.set_paths(path_root=path_root, dir_config=dir_config, dir_config_default=dir_config_default)
+            cls.set_paths(
+                path_root=path_root,
+                dir_config=dir_config,
+                dir_config_default=dir_config_default,
+            )
 
         config_default = cls.construct_default_configuration()
         config_scenario = cls.construct_scenario_configuration(name_scenario)
@@ -68,11 +79,15 @@ class ConfigurationBuilder:
         """
         config_default = OmegaConf.create()
         if cls.path_config_default == "":
-
-            resource_dir = os.path.dirname(os.path.realpath(__file__)) + '/config_defaults/'
+            resource_dir = (
+                os.path.dirname(os.path.realpath(__file__)) + "/config_defaults/"
+            )
             path_file_all = os.listdir(resource_dir)
-            path_file_all = [os.path.join(resource_dir, filename)
-                             for filename in path_file_all if filename.endswith('.yaml')]
+            path_file_all = [
+                os.path.join(resource_dir, filename)
+                for filename in path_file_all
+                if filename.endswith(".yaml")
+            ]
         else:
             path_file_all = glob.glob(cls.path_config_default + "/*.yaml")
         for path_file in path_file_all:
@@ -92,7 +107,9 @@ class ConfigurationBuilder:
         return config_default
 
     @classmethod
-    def convert_to_absolute_paths(cls, config_default: Union[ListConfig, DictConfig]) -> Union[ListConfig, DictConfig]:
+    def convert_to_absolute_paths(
+        cls, config_default: Union[ListConfig, DictConfig]
+    ) -> Union[ListConfig, DictConfig]:
         """Converts relative paths to absolute paths."""
         for key, path in config_default["general"].items():
             path_relative = os.path.join(cls.path_root, path)
@@ -102,7 +119,9 @@ class ConfigurationBuilder:
         return config_default
 
     @classmethod
-    def construct_scenario_configuration(cls, name_scenario: str) -> Union[DictConfig, ListConfig]:
+    def construct_scenario_configuration(
+        cls, name_scenario: str
+    ) -> Union[DictConfig, ListConfig]:
         """Constructs scenario-specific configuration."""
         config_scenario = OmegaConf.create()
 
