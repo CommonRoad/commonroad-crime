@@ -8,3 +8,12 @@ TCI:
   w_ax: 0.1
   w_ay: 1.
   prediction_horizon: 20 # nr of time steps
+
+# Crash Potential Index
+CPI:
+  # params are obtained from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno. Microlevel traffic simulation method
+  # for assessing crash potential at intersections. No. 07-2180. 2007.
+  madr_mean: 8.45
+  madr_devi: 1.40
+  madr_uppb: 12.68
+  madr_lowb: 4.23

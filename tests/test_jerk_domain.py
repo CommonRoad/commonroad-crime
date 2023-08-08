@@ -12,7 +12,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestJerkDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'ZAM_Zip-1_56_T-1'
+        scenario_id = "ZAM_Zip-1_56_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()

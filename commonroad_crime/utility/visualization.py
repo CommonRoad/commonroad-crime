@@ -42,34 +42,55 @@ class TUMcolor(tuple, Enum):
 zorder = 22
 
 
-
 def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
-    plt.savefig(f'{path_output}{metric_name}_{time_step:.0f}.svg', format="svg", bbox_inches="tight",
-                transparent=False)
+    plt.savefig(
+        f"{path_output}{metric_name}_{time_step:.0f}.svg",
+        format="svg",
+        bbox_inches="tight",
+        transparent=False,
+    )
 
 
-def plot_limits_from_state_list(time_step: int, state_list: List[PMState], margin: float = 10.0):
-    return [state_list[time_step].position[0] - margin,
-            state_list[-1].position[0] + margin,
-            state_list[time_step].position[1] - margin / 2,
-            state_list[time_step].position[1] + margin / 2]
+def plot_limits_from_state_list(
+    time_step: int, state_list: List[PMState], margin: float = 10.0
+):
+    return [
+        state_list[time_step].position[0] - margin,
+        state_list[-1].position[0] + margin,
+        state_list[time_step].position[1] - margin / 2,
+        state_list[time_step].position[1] + margin / 2,
+    ]
 
 
 def draw_state(rnd: MPRenderer, state: PMState, color: TUMcolor = TUMcolor.TUMgreen):
     global zorder
-    cir_c = plt.Circle((state.position[0], state.position[1]), 0.12, color=color,
-                       linewidth=10., zorder=zorder)
-    cir_b = plt.Circle((state.position[0], state.position[1]), 0.2, color=TUMcolor.TUMwhite,
-                       linewidth=10., zorder=zorder - 1)
+    cir_c = plt.Circle(
+        (state.position[0], state.position[1]),
+        0.12,
+        color=color,
+        linewidth=10.0,
+        zorder=zorder,
+    )
+    cir_b = plt.Circle(
+        (state.position[0], state.position[1]),
+        0.2,
+        color=TUMcolor.TUMwhite,
+        linewidth=10.0,
+        zorder=zorder - 1,
+    )
     zorder += 1
     rnd.ax.add_patch(cir_c)
     rnd.ax.add_patch(cir_b)
 
 
-def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step: int,
-                           color: TUMcolor = TUMcolor.TUMblue):
+def draw_dyn_vehicle_shape(
+    rnd: MPRenderer,
+    obstacle: DynamicObstacle,
+    time_step: int,
+    color: TUMcolor = TUMcolor.TUMblue,
+):
     global zorder
     obs_shape = obstacle.occupancy_at_time(time_step).shape
     if isinstance(obs_shape, ShapeGroup):
@@ -82,26 +103,45 @@ def draw_dyn_vehicle_shape(rnd: MPRenderer, obstacle: DynamicObstacle, time_step
     zorder += 1
 
 
-def draw_circle(rnd: MPRenderer, center: np.ndarray, radius: float,
-                opacity: float = 0.5, color: TUMcolor = TUMcolor.TUMblue):
+def draw_circle(
+    rnd: MPRenderer,
+    center: np.ndarray,
+    radius: float,
+    opacity: float = 0.5,
+    color: TUMcolor = TUMcolor.TUMblue,
+):
     global zorder
-    cir = plt.Circle((center[0], center[1]), radius, color=color, zorder=zorder, alpha=opacity)
+    cir = plt.Circle(
+        (center[0], center[1]), radius, color=color, zorder=zorder, alpha=opacity
+    )
     zorder += 1
     rnd.ax.add_patch(cir)
 
 
-def draw_reference_path(rnd: MPRenderer, ref_path: np.ndarray, color: TUMcolor = TUMcolor.TUMorange):
+def draw_reference_path(
+    rnd: MPRenderer, ref_path: np.ndarray, color: TUMcolor = TUMcolor.TUMorange
+):
     global zorder
-    rnd.ax.plot(ref_path[:, 0], ref_path[:, 1], color=color,
-                marker='.', markersize=1, zorder=zorder, linewidth=1.,
-                label='reference path')
+    rnd.ax.plot(
+        ref_path[:, 0],
+        ref_path[:, 1],
+        color=color,
+        marker=".",
+        markersize=1,
+        zorder=zorder,
+        linewidth=1.0,
+        label="reference path",
+    )
     zorder += 1
 
 
-def draw_state_list(rnd: MPRenderer, state_list: List[PMState],
-                    start_time_step: Union[None, int] = None,
-                    color: TUMcolor = TUMcolor.TUMdarkblue,
-                    linewidth: float = 0.75) -> None:
+def draw_state_list(
+    rnd: MPRenderer,
+    state_list: List[PMState],
+    start_time_step: Union[None, int] = None,
+    color: TUMcolor = TUMcolor.TUMdarkblue,
+    linewidth: float = 0.75,
+) -> None:
     """
     Visualizing the state list as a connecting trajectory. The transparency is based on the starting
     time step.
@@ -113,15 +153,26 @@ def draw_state_list(rnd: MPRenderer, state_list: List[PMState],
         opacity = 0.5 * (start_time_step / len(state_list) + 1)
     else:
         opacity = 1
-    rnd.ax.plot(pos[:, 0], pos[:, 1], linestyle='-', marker='o', color=color, markersize=5,
-                zorder=zorder, linewidth=linewidth, alpha=opacity)
+    rnd.ax.plot(
+        pos[:, 0],
+        pos[:, 1],
+        linestyle="-",
+        marker="o",
+        color=color,
+        markersize=5,
+        zorder=zorder,
+        linewidth=linewidth,
+        alpha=opacity,
+    )
     zorder += 1
 
 
-def draw_sce_at_time_step(rnd: MPRenderer,
-                          config: CriMeConfiguration,
-                          sce: Union[Scenario, Scene],
-                          time_step: int):
+def draw_sce_at_time_step(
+    rnd: MPRenderer,
+    config: CriMeConfiguration,
+    sce: Union[Scenario, Scene],
+    time_step: int,
+):
     rnd.draw_params.time_begin = time_step
     rnd.draw_params.trajectory.draw_trajectory = False
     rnd.draw_params.dynamic_obstacle.draw_icon = config.debug.draw_icons
@@ -135,11 +186,11 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
     if flag_latex:
         # use Latex font
         FONTSIZE = 28
-        plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+        plt.rcParams["text.latex.preamble"] = [r"\usepackage{lmodern}"]
         pgf_with_latex = {  # setup matplotlib to use latex for output
             "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
             "text.usetex": True,  # use LaTeX to write all text
-            "font.family": 'lmodern',
+            "font.family": "lmodern",
             # blank entries should cause plots
             "font.sans-serif": [],  # ['Avant Garde'],              # to inherit fonts from the document
             # 'text.latex.unicode': True,
@@ -153,10 +204,14 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
                 r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
                 r"\usepackage[T1]{fontenc}",  # plots will be generated
                 r"\usepackage[detect-all,locale=DE]{siunitx}",
-            ]  # using this preamble
+            ],  # using this preamble
         }
         matplotlib.rcParams.update(pgf_with_latex)
-    if crime.measures is not None and crime.time_start is not None and crime.time_end is not None:
+    if (
+        crime.measures is not None
+        and crime.time_start is not None
+        and crime.time_end is not None
+    ):
         nr_metrics = len(crime.measures)
         if nr_metrics > nr_per_row:
             nr_column = nr_per_row
@@ -164,14 +219,18 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
         else:
             nr_column = nr_metrics
             nr_row = 1
-        fig, axs = plt.subplots(nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row))
+        fig, axs = plt.subplots(
+            nr_row, nr_column, figsize=(7.5 * nr_column, 5 * nr_row)
+        )
         count_row, count_column = 0, 0
         for measure in crime.measures:
             criticality_list = []
             time_list = []
             for time_step in range(crime.time_start, crime.time_end + 1):
                 if measure.measure_name.value in crime.criticality_dict[time_step]:
-                    criticality_list.append(crime.criticality_dict[time_step][measure.measure_name.value])
+                    criticality_list.append(
+                        crime.criticality_dict[time_step][measure.measure_name.value]
+                    )
                     time_list.append(time_step)
             if nr_metrics == 1:
                 ax = axs
@@ -192,7 +251,9 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
         plt.show()
 
 
-def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps: List[int]):
+def visualize_scenario_at_time_steps(
+    scenario: Scenario, plot_limit, time_steps: List[int]
+):
     rnd = MPRenderer(plot_limits=plot_limit)
     rnd.draw_params.time_begin = time_steps[0]
     if time_steps:
@@ -202,8 +263,12 @@ def visualize_scenario_at_time_steps(scenario: Scenario, plot_limit, time_steps:
     scenario.draw(rnd)
     rnd.render()
     for obs in scenario.obstacles:
-        draw_state_list(rnd, obs.prediction.trajectory.state_list[time_steps[0]:time_steps[-1] + 1],
-                        color=TUMcolor.TUMblue, linewidth=5)
+        draw_state_list(
+            rnd,
+            obs.prediction.trajectory.state_list[time_steps[0] : time_steps[-1] + 1],
+            color=TUMcolor.TUMblue,
+            linewidth=5,
+        )
         for ts in time_steps[1:]:
             draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
     plt.show()

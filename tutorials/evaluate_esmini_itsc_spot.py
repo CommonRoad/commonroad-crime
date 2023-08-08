@@ -1,15 +1,25 @@
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.visualization as utils_vis
-from commonroad_crime.measure import (TTC, TTCStar, WTTC, HW, BTN, DeltaV, STN, TTR, TTB, TTK)
+from commonroad_crime.measure import (
+    TTC,
+    TTCStar,
+    WTTC,
+    HW,
+    BTN,
+    DeltaV,
+    STN,
+    TTR,
+    TTB,
+    TTK,
+)
 from commonroad_crime.measure.reachable_set.drivable_area import DA
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 
 def main():
-
-    #scenario_id = 'OSC_PedestrianCollision-1_1_T-38'
-    scenario_id = 'OSC_PedestrianCollision-1_1_T-1'
-    #scenario_id = 'OSC_PedestrianCollision-1_1_T-26'
+    # scenario_id = 'OSC_PedestrianCollision-1_1_T-38'
+    scenario_id = "OSC_PedestrianCollision-1_1_T-1"
+    # scenario_id = 'OSC_PedestrianCollision-1_1_T-26'
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
     config.update()
@@ -17,10 +27,9 @@ def main():
 
     crime_interface = CriMeInterface(config)
     # STN: not so good since the last value is too large
-    #crime_interface.evaluate_scene([TTB], time_step=0)
+    # crime_interface.evaluate_scene([TTB], time_step=0)
     # crime_interface.visualize(time_step=56)
-    crime_interface.evaluate_scenario([BTN, STN], time_start=26,
-                                      time_end=56)
+    crime_interface.evaluate_scenario([BTN, STN], time_start=26, time_end=56)
     # config.debug.save_plots = False
     crime_interface.visualize(time_step=0)
     # ==== visualize the scenario at given time steps

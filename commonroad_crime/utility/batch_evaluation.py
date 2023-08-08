@@ -162,8 +162,9 @@ def run_sequential(scenario_path: str,
                         f"Initialization failed {scenario_id}, see {err}")
                     continue
                 sce_res[measure.measure_name][obs.obstacle_id] = dict()
-                if not isinstance(obs.prediction.initial_time_step, int) or \
-                    not isinstance(obs.prediction.final_time_step, int):
+                if not isinstance(
+                    obs.prediction.initial_time_step, int
+                ) or not isinstance(obs.prediction.final_time_step, int):
                     continue
                 for ts in range(obs.prediction.initial_time_step,
                                 obs.prediction.final_time_step):
@@ -212,9 +213,9 @@ class ScenarioLoader:
         scenario_ids = list()
         for root, dirs, files in os.walk(self.scenario_folder):
             for file in files:
-                if file.endswith('.xml'):
+                if file.endswith(".xml"):
                     scenario_id = os.path.splitext(file)[0]
-                    scenario_ids.append((scenario_id, root + '/'))
+                    scenario_ids.append((scenario_id, root + "/"))
         if len(scenario_ids) == 0:
             utils_log.print_and_log_warning(
                 logger,

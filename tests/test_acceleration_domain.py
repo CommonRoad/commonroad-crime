@@ -12,7 +12,7 @@ import commonroad_crime.utility.logger as util_logger
 class TestAccelerationDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'DEU_Gar-1_1_T-1'
+        scenario_id = "DEU_Gar-1_1_T-1"
         self.config = ConfigurationBuilder.build_configuration(scenario_id)
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
@@ -22,7 +22,7 @@ class TestAccelerationDomain(unittest.TestCase):
         dst_object = DST(self.config)
         dst_1 = dst_object.compute(201, 0)
         dst_2 = dst_object.compute(202, 0)
-        self.assertEqual(dst_1, 0.)
+        self.assertEqual(dst_1, 0.0)
         self.assertEqual(dst_2, 24.86)
         dst_object.visualize()
 

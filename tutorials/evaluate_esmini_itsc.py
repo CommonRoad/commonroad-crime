@@ -1,13 +1,23 @@
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 import commonroad_crime.utility.visualization as utils_vis
-from commonroad_crime.measure import (TTC, TTCStar, WTTC, HW, BTN, DeltaV, STN, TTR, TTB, TTK)
+from commonroad_crime.measure import (
+    TTC,
+    TTCStar,
+    WTTC,
+    HW,
+    BTN,
+    DeltaV,
+    STN,
+    TTR,
+    TTB,
+    TTK,
+)
 from commonroad_crime.measure.reachable_set.drivable_area import DA
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
 
 def main():
-
-    scenario_id = 'OSC_PedestrianCollision-1_1_T-38'
+    scenario_id = "OSC_PedestrianCollision-1_1_T-38"
     # ==== build configuration
     config = ConfigurationBuilder.build_configuration(scenario_id)
     config.update()
