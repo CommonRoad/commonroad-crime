@@ -55,7 +55,7 @@ class TIT(CriMeBase):
 
         self.value = 0
         for i in range(time_step, len(state_list)):
-            ttc_result = self.ttc_object.compute(vehicle_id, i)
+            ttc_result = self.ttc_object.compute(vehicle_id, i, verbose=verbose)
             self._ttc_cache[i] = ttc_result
             if ttc_result <= tau:
                 self.value += (tau - ttc_result) * self.dt

@@ -65,7 +65,7 @@ class ALongReq(CriMeBase):
             + self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
         ) * math.cos(other_orientation)
         # compute the headway (relative distance) along the lanelet
-        x_rel = self._hw_object.compute(vehicle_id, time_step)
+        x_rel = self._hw_object.compute(vehicle_id, time_step, verbose=verbose)
         # compute the vehicles' velocity along the lanelet direction
         v_ego_long = math.sqrt(
             self.ego_vehicle.state_at_time(time_step).velocity ** 2

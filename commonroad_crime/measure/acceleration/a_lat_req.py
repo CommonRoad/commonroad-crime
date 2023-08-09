@@ -97,7 +97,7 @@ class ALatReq(CriMeBase):
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.other_vehicle.state_at_time(time_step).position,
         )[1]
-        ttc = self._ttc_object.compute(vehicle_id, time_step)
+        ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
         utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
         if ttc == math.inf:
             # no lateral acceleration is needed for avoiding a collision

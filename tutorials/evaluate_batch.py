@@ -1,5 +1,5 @@
 import commonroad_crime.utility.batch_evaluation as utils_batch
-from commonroad_crime.measure import STN
+from commonroad_crime.measure import BTN
 import time
 
 
@@ -7,10 +7,10 @@ def main():
     scenario_path_4p = scenario_path_4s = "./../scenarios/batch/"
     start = time.time()
     print("Testing run_parallel()...")
-    utils_batch.run_parallel(scenario_path_4p, measures=[STN], verbose=False)
+    utils_batch.run_parallel(scenario_path_4p, measures=[BTN], verbose=False)
     end_par = time.time()
     print("Testing run_sequential()...")
-    utils_batch.run_sequential(scenario_path_4s, measures=[STN], verbose=False)
+    utils_batch.run_sequential(scenario_path_4s, measures=[BTN], verbose=False)
     end_seq = time.time()
     par_t = end_par - start
     seq_t = end_seq - end_par
