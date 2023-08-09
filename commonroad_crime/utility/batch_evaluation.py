@@ -192,10 +192,10 @@ def run_sequential(
                         measure_value = measure_object.compute_criticality(ts)
                         calc_time = time.time() - time_start
                     except Exception as err:
-                        # utils_log.print_and_log_error(
-                        #    logger,
-                        #    f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}"
-                        # )
+                        utils_log.print_and_log_error(
+                           logger,
+                           f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}"
+                        )
                         calc_time = math.nan
                         pass
                     sce_res[measure.measure_name][obs.obstacle_id][ts] = [

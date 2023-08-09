@@ -182,7 +182,7 @@ class CriMeBase:
         return False
 
     @abstractmethod
-    def compute(self, time_step: int, vehicle_id: Union[int, None]):
+    def compute(self, time_step: int, vehicle_id: Union[int, None], verbose: bool):
         """
         Specific computing function for each measure
         """
@@ -220,10 +220,10 @@ class CriMeBase:
             TypePotential.PF,
             TypeProbability.P_MC,
         ]:
-            criti = self.compute(time_step=time_step, vehicle_id=None)
+            criti = self.compute(time_step=time_step, vehicle_id=None, verbose=verbose)
         else:
             for v_id in other_veh_ids:
-                criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id))
+                criti_list.append(self.compute(time_step=time_step, vehicle_id=v_id, verbose=verbose))
             if len([c for c in criti_list if c is not None]) > 0:
                 if self.monotone == TypeMonotone.POS:
                     criti = max(criti_list)
@@ -233,7 +233,7 @@ class CriMeBase:
                 criti = None
         time_computation = time.time() - time_start
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} of the scenario: {criti}"
+            logger, f"*\t\t {self.measure_name} of the scenario: {criti}", verbose
         )
         utils_log.print_and_log_info(
             logger, f"\tTook: \t{time_computation:.3f}s", verbose
