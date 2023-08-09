@@ -137,7 +137,7 @@ class TTM(CriMeBase):
         if ttc:
             self.ttc = ttc
         else:
-            self.ttc = self.ttc_object.compute(time_step)
+            self.ttc = self.ttc_object.compute(time_step, verbose=verbose)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:
@@ -146,12 +146,12 @@ class TTM(CriMeBase):
             self.value = self.binary_search(time_step)
         if self.value in [math.inf, -math.inf]:
             utils_log.print_and_log_info(
-                logger, f"*\t\t {self.measure_name} = {self.value}"
+                logger, f"*\t\t {self.measure_name} = {self.value}", verbose
             )
             return self.value
         self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find("."))
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

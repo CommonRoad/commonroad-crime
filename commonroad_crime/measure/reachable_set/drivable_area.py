@@ -87,7 +87,7 @@ class DA(CriMeBase):
         self.value = compute_drivable_area(self.reach_interface.reachable_set)
         self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

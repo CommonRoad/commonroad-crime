@@ -74,13 +74,15 @@ class ALatReq(CriMeBase):
             / ttc**2
         )
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        if self._except_obstacle_in_same_lanelet(expected_value=0.0):
+        if self._except_obstacle_in_same_lanelet(expected_value=0.0, verbose=verbose):
             # no negative acceleration is needed for avoiding a collision
             return self.value
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position(
@@ -96,7 +98,7 @@ class ALatReq(CriMeBase):
             self.other_vehicle.state_at_time(time_step).position,
         )[1]
         ttc = self._ttc_object.compute(vehicle_id, time_step)
-        utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}")
+        utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
         if ttc == math.inf:
             # no lateral acceleration is needed for avoiding a collision
             self.value = 0.0
@@ -131,7 +133,7 @@ class ALatReq(CriMeBase):
             self.value = utils_gen.int_round(self.value, 2)
 
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

@@ -53,9 +53,10 @@ class P_MC(CriMeBase):
             Maneuver.RANDOMMC,
         ]
         config_mc = self.configuration.probability.monte_carlo
-        assert len(self.maneuver_list) == len(
-            config_mc.mvr_weights
-        ), "Please follow the configuration guide for defining the weights of the maneuvers!"
+        if len(self.maneuver_list) != len(config_mc.mvr_weights):
+            msg = "Please follow the configuration guide for defining the weights of the maneuvers!"
+            utils_log.print_and_log_error(logger, msg)
+            raise ValueError(msg)
         if config_mc.nr_samples < len(self.maneuver_list):
             id_random_mvr = np.random.choice(
                 range(len(self.maneuver_list)), size=config_mc.nr_samples
@@ -81,6 +82,7 @@ class P_MC(CriMeBase):
             logger,
             f"* \t\t nr of samples "
             f"{self.configuration.probability.monte_carlo.nr_samples}",
+            verbose,
         )
         self.time_step = time_step
         colliding_prob_list = []
@@ -104,7 +106,7 @@ class P_MC(CriMeBase):
         p_mc = np.average(np.array(colliding_prob_list))
         self.value = utils_gen.int_round(p_mc, 4)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

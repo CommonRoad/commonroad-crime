@@ -120,14 +120,16 @@ class TTCStar(CriMeBase):
         else:
             plt.show()
 
-    def compute(self, time_step: int = 0, vehicle_id: int = None):
+    def compute(self, time_step: int = 0, vehicle_id: int = None, verbose: bool = True):
         """
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
         """
         self.time_step = time_step
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
@@ -155,6 +157,6 @@ class TTCStar(CriMeBase):
                 # once collides, loop ends -> the first colliding timestep as the ttc
                 break
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value

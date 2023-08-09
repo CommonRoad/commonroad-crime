@@ -28,7 +28,7 @@ class TTR(TTM):
         super(TTR, self).__init__(config, Maneuver.NONE)
         self._evaluator = None
 
-    def initialize_evaluator(self, time_step):
+    def initialize_evaluator(self, time_step: int, verbose: bool):
         """
         Initializes the evaluators for underestimating the ttr.
         """
@@ -39,24 +39,24 @@ class TTR(TTM):
         ]
         self.time_step = time_step
         self.state_list_set = []
-        self.ttc = self.ttc_object.compute(time_step)
+        self.ttc = self.ttc_object.compute(time_step, verbose=verbose)
 
     def compute(
         self,
         time_step: int = 0,
         vehicle_id: Union[int, None] = None,
         ttc: float = None,
-        verbose: bool = False,
+        verbose: bool = True,
     ):
         utils_log.print_and_log_info(
             logger,
             f"* Computing the {self.measure_name} at time step {time_step}",
             verbose,
         )
-        self.initialize_evaluator(time_step)
+        self.initialize_evaluator(time_step, verbose)
         ttm = dict()
         for evl in self._evaluator:
-            ttm[evl] = evl.compute(time_step, self.ttc, verbose=verbose)
+            ttm[evl] = evl.compute(time_step, self.ttc, verbose=False)
             self.state_list_set += evl.state_list_set
         self.value = max(ttm.values())
         # plots the selected state list as the last evasive maneuver.
@@ -64,6 +64,6 @@ class TTR(TTM):
         self.maneuver = max(ttm, key=ttm.get).maneuver
         utils_log.print_and_log_info(logger, "*\t maximum of the values")
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value

@@ -40,7 +40,9 @@ class CI(CriMeBase):
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
@@ -50,7 +52,9 @@ class CI(CriMeBase):
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger, f"* \t\t Measure only for intersection. CI is set to 0.0."
+                logger,
+                f"* \t\t Measure only for intersection. CI is set to 0.0.",
+                verbose,
             )
             self.value = 0.0
             return self.value
@@ -58,6 +62,7 @@ class CI(CriMeBase):
             utils_log.print_and_log_info(
                 logger,
                 f"*\t\t {self.other_vehicle} is not a dynamic obstacle, CI is set to 0.0",
+                verbose,
             )
             self.value = 0.0
             return self.value
@@ -90,6 +95,7 @@ class CI(CriMeBase):
                 logger,
                 f"*\t\t PET beyond configuration threshold, "
                 f"CI for the ego vehicle and vehicle {vehicle_id} is set to 0",
+                verbose,
             )
             self.value = 0.0
             return self.value

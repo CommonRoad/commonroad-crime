@@ -33,9 +33,13 @@ class DeltaV(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(DeltaV, self).__init__(config)
 
-    def compute(self, time_step: int, vehicle_id: Union[int, None]):
+    def compute(
+        self, time_step: int, vehicle_id: Union[int, None], verbose: bool = True
+    ):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
@@ -71,11 +75,13 @@ class DeltaV(CriMeBase):
             self.value = utils_gen.int_round(delta_v, 2)
         else:
             utils_log.print_and_log_warning(
-                logger, f"\t the vehicles have no state at time step {self.time_step}"
+                logger,
+                f"\t the vehicles have no state at time step {self.time_step}",
+                verbose,
             )
             self.value = None
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

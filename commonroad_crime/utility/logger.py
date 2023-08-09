@@ -51,7 +51,7 @@ def print_and_log_debug(logger: logging.Logger, message: str, verbose: bool = Fa
     logger.debug(message)
 
 
-def print_and_log_info(logger: logging.Logger, message: str, verbose: bool = True):
+def print_and_log_info(logger: logging.Logger, message: str, verbose: bool = False):
     if verbose:
         print(message)
     logger.info(message)

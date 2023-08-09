@@ -73,7 +73,9 @@ class THW(CriMeBase):
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
 
-        if self._except_obstacle_in_same_lanelet(expected_value=math.inf):
+        if self._except_obstacle_in_same_lanelet(
+            expected_value=math.inf, verbose=verbose
+        ):
             return self.value
         self.value = self.cal_headway()
         if self.value is not math.inf:
@@ -81,6 +83,7 @@ class THW(CriMeBase):
         utils_log.print_and_log_info(
             logger,
             f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}",
+            verbose,
         )
         return self.value
 

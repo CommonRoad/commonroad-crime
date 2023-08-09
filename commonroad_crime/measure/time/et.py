@@ -45,10 +45,11 @@ class ET(CriMeBase):
         self.enter_time: Union[int, float] = math.inf
         self.exit_time: Union[int, float] = math.inf
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
             logger,
             f"* Computing the {self.measure_name} beginning at time step {time_step}",
+            verbose,
         )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
@@ -59,6 +60,7 @@ class ET(CriMeBase):
             utils_log.print_and_log_info(
                 logger,
                 f"* \t\tMeasure only for intersection. {self.measure_name} is set to inf.",
+                verbose,
             )
             self.value = math.inf
             return self.value
@@ -66,6 +68,7 @@ class ET(CriMeBase):
             utils_log.print_and_log_info(
                 logger,
                 f"*\t\t {self.other_vehicle} is not a dynamic obstacle, {self.measure_name} is set to inf",
+                verbose,
             )
             self.value = math.inf
             return self.value
@@ -80,19 +83,23 @@ class ET(CriMeBase):
         # and we set it to infinity. This information is logged in info_value_not_exit()
         if self.ca is None:
             utils_log.print_and_log_info(
-                logger, f"* \t\tconflict area does not exist, ET is set to inf."
+                logger,
+                f"* \t\tconflict area does not exist, ET is set to inf.",
+                verbose,
             )
         elif math.isinf(self.value):
             if self.enter_time is None:
                 utils_log.print_and_log_info(
                     logger,
                     "* \t\tThe ego vehicle never encroaches the CA, ET is set to inf.",
+                    verbose,
                 )
             else:
                 utils_log.print_and_log_info(
                     logger,
                     "* \t\tThe ego vehicle encroaches the CA, "
                     "but never leaves it, ET is set to inf.",
+                    verbose,
                 )
 
         # Transfer time steps to seconds
@@ -101,7 +108,7 @@ class ET(CriMeBase):
             # self.value = self.value * self.sce.dt
             self.value = utils_gen.int_round(self.value * self.dt, 4)
             utils_log.print_and_log_info(
-                logger, f"*\t\t {self.measure_name} = {self.value}"
+                logger, f"*\t\t {self.measure_name} = {self.value}", verbose
             )
         return self.value
 

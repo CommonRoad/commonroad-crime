@@ -38,7 +38,9 @@ class TTCE(CriMeBase):
         Using DCE to calculate the TTCE value. DCE marks the time step when the minimal distance is reached.
         """
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self._dce_object.compute(vehicle_id, time_step)
         self.value = utils_gen.int_round(
@@ -47,6 +49,7 @@ class TTCE(CriMeBase):
         utils_log.print_and_log_info(
             logger,
             f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}",
+            verbose,
         )
         return self.value
 

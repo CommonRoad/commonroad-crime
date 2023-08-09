@@ -38,9 +38,11 @@ class MSD(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(MSD, self).__init__(config)
 
-    def compute(self, vehicle_id: int = None, time_step: int = 0):
+    def compute(self, vehicle_id: int = None, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.time_step = time_step
         state = self.ego_vehicle.state_at_time(time_step)
@@ -66,7 +68,7 @@ class MSD(CriMeBase):
         )
 
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

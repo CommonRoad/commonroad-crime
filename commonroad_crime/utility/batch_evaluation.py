@@ -53,7 +53,10 @@ def initialize_process(
 
 
 def process_scenario(
-    sce_conf: CriMeConfiguration, measures: List[Type[CriMeBase]], result_dict: Dict
+    sce_conf: CriMeConfiguration,
+    measures: List[Type[CriMeBase]],
+    result_dict: Dict,
+    verbose: bool,
 ):
     scenario_id = sce_conf.general.name_scenario
     for measure in measures:
@@ -82,13 +85,15 @@ def process_scenario(
                 measure_value = math.inf
                 try:
                     time_start = time.time()
-                    measure_value = measure_object.compute_criticality(ts)
+                    measure_value = measure_object.compute_criticality(
+                        ts, verbose=verbose
+                    )
                     calc_time = time.time() - time_start
                 except Exception as err:
                     calc_time = math.nan
                     utils_log.print_and_log_error(
-                       logger,
-                       f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}"
+                        logger,
+                        f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}",
                     )
                 sce_res[measure.measure_name][obs.obstacle_id][ts] = [
                     measure_value,
@@ -102,6 +107,7 @@ def run_parallel(
     measures: List[Type[CriMeBase]],
     config_root: str = None,
     num_worker: int = 16,
+    verbose: bool = False,
 ):
     """
     Parallel batch evaluation of measures, where the computation of criticality is carried out on multiple threads
@@ -132,7 +138,9 @@ def run_parallel(
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()
         pool.apply_async(
-            process_scenario, args=(sce_conf, measures, result_dict), callback=update
+            process_scenario,
+            args=(sce_conf, measures, result_dict, verbose),
+            callback=update,
         )
 
     pool.close()
@@ -143,7 +151,10 @@ def run_parallel(
 
 
 def run_sequential(
-    scenario_path: str, measures: List[Type[CriMeBase]], config_root: str = None
+    scenario_path: str,
+    measures: List[Type[CriMeBase]],
+    config_root: str = None,
+    verbose: bool = False,
 ):
     """
     Sequential batch evaluation of measures, where the computation of criticality is carried out on a single thread.
@@ -189,12 +200,14 @@ def run_sequential(
                     measure_value = math.inf
                     try:
                         time_start = time.time()
-                        measure_value = measure_object.compute_criticality(ts)
+                        measure_value = measure_object.compute_criticality(
+                            ts, verbose=verbose
+                        )
                         calc_time = time.time() - time_start
                     except Exception as err:
                         utils_log.print_and_log_error(
-                           logger,
-                           f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}"
+                            logger,
+                            f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}",
                         )
                         calc_time = math.nan
                         pass

@@ -24,11 +24,16 @@ class TET(TIT):
     def __init__(self, config: CriMeConfiguration):
         super(TET, self).__init__(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         """
         Iterate through all states, calculate ttc, compare it to tau and then add dt to the result
         if ttc is smaller than tau
         """
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} beginning at time step {time_step}",
+            verbose,
+        )
         # init
         self.time_step = time_step
         tau = self.configuration.time.tau
@@ -42,6 +47,6 @@ class TET(TIT):
                 self.value += self.dt
         self.value = utils_gen.int_round(self.value, 4)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value

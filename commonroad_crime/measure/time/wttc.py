@@ -37,6 +37,11 @@ class WTTC(CriMeBase):
         super(WTTC, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
         wttc_list = utils_sol.solver_wttc(
@@ -50,7 +55,7 @@ class WTTC(CriMeBase):
         )
         self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find("."))
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

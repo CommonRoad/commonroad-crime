@@ -104,7 +104,10 @@ def check_in_same_lanelet(
 
 
 def check_elements_state_list(
-    state_list: List[Union[LongitudinalState, KSState, CustomState, PMState, State, None]], dt: float
+    state_list: List[
+        Union[LongitudinalState, KSState, CustomState, PMState, State, None]
+    ],
+    dt: float,
 ):
     v_list = [state.velocity for state in state_list]
     t_list = [state.time_step * dt for state in state_list]

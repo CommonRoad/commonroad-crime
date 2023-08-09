@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.geometry.shape import ShapeGroup
-from commonroad.scenario.state import PMState
+from commonroad.scenario.state import PMState, State
 from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
 
@@ -138,7 +138,7 @@ def draw_reference_path(
 
 def draw_state_list(
     rnd: MPRenderer,
-    state_list: List[PMState],
+    state_list: List[Union[PMState, State]],
     start_time_step: Union[None, int] = None,
     color: TUMcolor = TUMcolor.TUMdarkblue,
     linewidth: float = 0.75,

@@ -35,9 +35,11 @@ class DST(CriMeBase):
         super(DST, self).__init__(config)
         self._hw_solver = HW(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
@@ -56,7 +58,7 @@ class DST(CriMeBase):
         )
         self.value = utils_gen.int_round(dst, 2)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

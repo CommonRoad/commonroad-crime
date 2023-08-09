@@ -43,10 +43,11 @@ class PSD(CriMeBase):
         self._msd_object = MSD(config)
         self._et_object = ET(config)
 
-    def compute(self, vehicle_id: int = None, time_step: int = 0):
+    def compute(self, vehicle_id: int = None, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
             logger,
             f"* Computing the {self.measure_name} beginning at time step {time_step}",
+            verbose,
         )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
@@ -74,23 +75,27 @@ class PSD(CriMeBase):
                     utils_log.print_and_log_info(
                         logger,
                         f"*\t\t The remaining distance to the potential point of collision is {rd:0.2f}",
+                        verbose,
                     )
                     self.value = utils_gen.int_round(
                         rd / self._msd_object.compute(vehicle_id, time_step), 2
                     )
                     utils_log.print_and_log_info(
-                        logger, f"*\t\t {self.measure_name} = {self.value}"
+                        logger, f"*\t\t {self.measure_name} = {self.value}", verbose
                     )
                     return self.value
                 else:
                     utils_log.print_and_log_info(
                         logger,
                         f"*\t\t The ego vehicle will not enter the conflict area",
+                        verbose,
                     )
                     return math.inf
             else:
                 utils_log.print_and_log_info(
-                    logger, f"*\t\t No valid conflict area exists in this scenario"
+                    logger,
+                    f"*\t\t No valid conflict area exists in this scenario",
+                    verbose,
                 )
                 return math.inf
         else:
@@ -98,6 +103,7 @@ class PSD(CriMeBase):
                 logger,
                 f"*\t\t Vehicle {self.other_vehicle} is not a dynamic obstacle, "
                 f"thus the conflict area does not exist",
+                verbose,
             )
             return math.inf
 

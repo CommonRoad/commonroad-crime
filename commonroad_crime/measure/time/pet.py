@@ -47,6 +47,7 @@ class PET(ET):
         utils_log.print_and_log_info(
             logger,
             f"* Computing the {self.measure_name} beginning at time step {time_step}",
+            verbose,
         )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
@@ -54,7 +55,9 @@ class PET(ET):
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger, f"*\t\t Measure only for intersection. PET is set to inf."
+                logger,
+                f"*\t\t Measure only for intersection. PET is set to inf.",
+                verbose,
             )
             self.value = math.inf
             return self.value
@@ -62,6 +65,7 @@ class PET(ET):
             utils_log.print_and_log_info(
                 logger,
                 f"*\t\t {self.other_vehicle} Not a dynamic obstacle, PET is set to inf",
+                verbose,
             )
             self.value = math.inf
             return self.value
@@ -117,15 +121,15 @@ class PET(ET):
             )
         return self.value
 
-    def visualize(self, figsize: tuple = (25, 15)):
+    def visualize(self, figsize: tuple = (25, 15), verbose: bool = True):
         if self.ca is None:
-            utils_log.print_and_log_info(logger, "*\t\t No conflict area")
+            utils_log.print_and_log_info(logger, "*\t\t No conflict area", verbose)
             return
         if (
             self.other_vehicle_exit_time is math.inf
             and self.other_vehicle_enter_time is math.inf
         ):
-            utils_log.print_and_log_info(logger, "*\t\t No conflict area")
+            utils_log.print_and_log_info(logger, "*\t\t No conflict area", verbose)
             return
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits

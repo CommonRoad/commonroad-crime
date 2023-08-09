@@ -43,7 +43,9 @@ class DCE(CriMeBase):
         (boundaries of both objects) for each time step and returning the minimum.
         """
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
@@ -80,6 +82,7 @@ class DCE(CriMeBase):
         utils_log.print_and_log_info(
             logger,
             f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}",
+            verbose,
         )
         return self.value
 
