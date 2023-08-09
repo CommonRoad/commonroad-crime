@@ -190,6 +190,7 @@ class IndexDomainConfiguration:
         self.tci = IndexDomainConfiguration.TCI(config_relevant)
         self.ci = IndexDomainConfiguration.CI(config_relevant)
         self.cpi = IndexDomainConfiguration.CPI(config_relevant)
+        self.soi = IndexDomainConfiguration.SOI(config_relevant)
 
     class TCI:
         def __init__(self, dict_config: Union[ListConfig, DictConfig]):
@@ -216,6 +217,13 @@ class IndexDomainConfiguration:
             self.madr_devi = dict_cpi.madr_devi
             self.madr_uppb = dict_cpi.madr_uppb
             self.madr_lowb = dict_cpi.madr_lowb
+
+    class SOI:
+        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
+            dict_soi = dict_config.SOI
+            self.margin_front = dict_soi.margin_front
+            self.margin_back = dict_soi.margin_back
+            self.margin_side = dict_soi.margin_side
 
 
 class VehicleConfiguration:
