@@ -13,7 +13,13 @@ import math
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
 
-from commonroad.scenario.obstacle import Obstacle, StaticObstacle, State, ObstacleType, DynamicObstacle
+from commonroad.scenario.obstacle import (
+    Obstacle,
+    StaticObstacle,
+    State,
+    ObstacleType,
+    DynamicObstacle,
+)
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
@@ -274,7 +280,14 @@ def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
 
     return np.array(orientation)
 
-def create_polygon(obstacle: DynamicObstacle, time_step: int, w: float = 0, l_front: float = 0, l_back: float = 0) -> Polygon:
+
+def create_polygon(
+    obstacle: DynamicObstacle,
+    time_step: int,
+    w: float = 0,
+    l_front: float = 0,
+    l_back: float = 0,
+) -> Polygon:
     """
     Computes the shapely-polygon of an obstacle/vehicle. Will keep minimum shape of the object, but can be extended by
     providing different values, if they are bigger than the original values.
@@ -293,9 +306,26 @@ def create_polygon(obstacle: DynamicObstacle, time_step: int, w: float = 0, l_fr
     width = max(obstacle.obstacle_shape.width * 0.5, w)
     length_front = max(obstacle.obstacle_shape.length * 0.5, l_front)
     length_back = max(obstacle.obstacle_shape.length * 0.5, l_back)
-    coords = [(pos[0] + length_front * angle_cos - width * angle_sin, pos[1] + length_front * angle_sin + width * angle_cos),
-              (pos[0] - length_back * angle_cos - width * angle_sin, pos[1] - length_back * angle_sin + width * angle_cos),
-              (pos[0] - length_back * angle_cos + width * angle_sin, pos[1] - length_back * angle_sin - width * angle_cos),
-              (pos[0] + length_front * angle_cos + width * angle_sin, pos[1] + length_front * angle_sin - width * angle_cos),
-              (pos[0] + length_front * angle_cos - width * angle_sin, pos[1] + length_front * angle_sin + width * angle_cos)]
+    coords = [
+        (
+            pos[0] + length_front * angle_cos - width * angle_sin,
+            pos[1] + length_front * angle_sin + width * angle_cos,
+        ),
+        (
+            pos[0] - length_back * angle_cos - width * angle_sin,
+            pos[1] - length_back * angle_sin + width * angle_cos,
+        ),
+        (
+            pos[0] - length_back * angle_cos + width * angle_sin,
+            pos[1] - length_back * angle_sin - width * angle_cos,
+        ),
+        (
+            pos[0] + length_front * angle_cos + width * angle_sin,
+            pos[1] + length_front * angle_sin - width * angle_cos,
+        ),
+        (
+            pos[0] + length_front * angle_cos - width * angle_sin,
+            pos[1] + length_front * angle_sin + width * angle_cos,
+        ),
+    ]
     return Polygon(coords)

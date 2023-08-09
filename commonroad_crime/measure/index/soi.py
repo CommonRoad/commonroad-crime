@@ -50,16 +50,26 @@ class SOI(CriMeBase):
         state = obstacle.state_at_time(time_step)
 
         # create minimum required area for vehicle
-        minimum_space = utils_sol.create_polygon(obstacle, time_step, obstacle.obstacle_shape.width * 0.5 + margin_side,
-                                                 obstacle.obstacle_shape.length * 0.5 + margin_front,
-                                                 obstacle.obstacle_shape.length * 0.5 + margin_back)
+        minimum_space = utils_sol.create_polygon(
+            obstacle,
+            time_step,
+            obstacle.obstacle_shape.width * 0.5 + margin_side,
+            obstacle.obstacle_shape.length * 0.5 + margin_front,
+            obstacle.obstacle_shape.length * 0.5 + margin_back,
+        )
 
         # get all lanelets intersected by this area
-        unique_lanelet_list = list(dict.fromkeys(
-            [lanelet for sublist in
-             self.sce.lanelet_network.find_lanelet_by_position(list(minimum_space.exterior.coords))
-             for lanelet in sublist]
-        ))
+        unique_lanelet_list = list(
+            dict.fromkeys(
+                [
+                    lanelet
+                    for sublist in self.sce.lanelet_network.find_lanelet_by_position(
+                        list(minimum_space.exterior.coords)
+                    )
+                    for lanelet in sublist
+                ]
+            )
+        )
 
         """
         calculating the minimum braking distance assuming optimal weather, no slope and no reaction time
@@ -73,25 +83,37 @@ class SOI(CriMeBase):
             It is assumed to be 0.7 on a dry road and between 0.3 and 0.4 on a wet road.
         """
         if isinstance(obstacle, DynamicObstacle):
-            v = math.sqrt(state.velocity ** 2 + state.velocity_y ** 2) * math.cos(state.orientation) * 3.6
+            v = (
+                math.sqrt(state.velocity**2 + state.velocity_y**2)
+                * math.cos(state.orientation)
+                * 3.6
+            )
         else:
             v = 0
-        minimum_breaking_distance = (0.278 * 0 * v) + (v ** 2) / (254 * (0.7 + 0))
+        minimum_breaking_distance = (0.278 * 0 * v) + (v**2) / (254 * (0.7 + 0))
 
         # create vehicle with correct front and back margin as well as exaggerated width to definitely match the whole
         # width of the lanelets
         exaggerated_vehicle = utils_sol.create_polygon(
-            obstacle, time_step,
+            obstacle,
+            time_step,
             obstacle.obstacle_shape.width * 0.5 + margin_side + 5,
-            obstacle.obstacle_shape.length * 0.5 + minimum_breaking_distance + margin_front,
-            obstacle.obstacle_shape.length * 0.5 + margin_back)
+            obstacle.obstacle_shape.length * 0.5
+            + minimum_breaking_distance
+            + margin_front,
+            obstacle.obstacle_shape.length * 0.5 + margin_back,
+        )
 
         # union of all intersections of exaggerated_vehicle with all lanelets,
         # that intersected with the minimum_space before
         personal_space = minimum_space
         for l_id in unique_lanelet_list:
-            lanelet = self.sce.lanelet_network.find_lanelet_by_id(l_id).polygon.shapely_object
-            personal_space = personal_space.union(lanelet.intersection(exaggerated_vehicle))
+            lanelet = self.sce.lanelet_network.find_lanelet_by_id(
+                l_id
+            ).polygon.shapely_object
+            personal_space = personal_space.union(
+                lanelet.intersection(exaggerated_vehicle)
+            )
         return personal_space
 
     def compute(self, time_step: int = 0, vehicle_id: int = None, verbose: bool = True):
@@ -101,12 +123,17 @@ class SOI(CriMeBase):
         self.value = 0
         self.value_list.clear()
 
-        for ts in range(time_step, len(self.ego_vehicle.prediction.trajectory.state_list)):
+        for ts in range(
+            time_step, len(self.ego_vehicle.prediction.trajectory.state_list)
+        ):
             ego_poly = self.create_sp_polygon(self.ego_vehicle, ts)
 
             for obstacle in self.sce.obstacles:
                 # Skip ego-vehicle and obstacles out of scope (e.g. timeline ended for this obstacle)
-                if isinstance(obstacle, DynamicObstacle) and len(obstacle.prediction.trajectory.state_list) < ts:
+                if (
+                    isinstance(obstacle, DynamicObstacle)
+                    and len(obstacle.prediction.trajectory.state_list) < ts
+                ):
                     continue
                 if obstacle.obstacle_id == self.ego_vehicle.obstacle_id:
                     continue
@@ -128,64 +155,97 @@ class SOI(CriMeBase):
         pos2 = self.ego_vehicle.prediction.trajectory.state_list[-1].position
         if pos1[0] < pos2[0]:
             if pos1[1] < pos2[1]:
-                return [pos1[0] - margin, pos2[0] + margin, pos1[1] - margin, pos2[1] + margin]
+                return [
+                    pos1[0] - margin,
+                    pos2[0] + margin,
+                    pos1[1] - margin,
+                    pos2[1] + margin,
+                ]
             else:
-                return [pos1[0] - margin, pos2[0] + margin, pos2[1] - margin, pos1[1] + margin]
+                return [
+                    pos1[0] - margin,
+                    pos2[0] + margin,
+                    pos2[1] - margin,
+                    pos1[1] + margin,
+                ]
         else:
             if pos1[1] < pos2[1]:
-                return [pos2[0] - margin, pos1[0] + margin, pos1[1] - margin, pos2[1] + margin]
+                return [
+                    pos2[0] - margin,
+                    pos1[0] + margin,
+                    pos1[1] - margin,
+                    pos2[1] + margin,
+                ]
             else:
-                return [pos2[0] - margin, pos1[0] + margin, pos2[1] - margin, pos1[1] + margin]
+                return [
+                    pos2[0] - margin,
+                    pos1[0] + margin,
+                    pos2[1] - margin,
+                    pos1[1] + margin,
+                ]
 
     def visualize(self, figsize: tuple = (25, 15)):
         """
         Visualizes each time step with the current soi-value. Adds them to a -gif afterwards.
         """
-        for time_step in range(self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)):
+        for time_step in range(
+            self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)
+        ):
             plt.cla()
-            plt.axis('equal')
+            plt.axis("equal")
             plt.axis(self.bounds(10))
-            plt.title(f"{self.measure_name} of {self.value_list[time_step - self.time_step]}")
+            plt.title(
+                f"{self.measure_name} of {self.value_list[time_step - self.time_step]}"
+            )
 
             for lanelet in self.sce.lanelet_network.lanelet_polygons:
                 x, y = lanelet.shapely_object.exterior.xy
-                plt.plot(x, y, color='black')
+                plt.plot(x, y, color="black")
 
             # draw personal space of ego-vehicle
             obs = self.sce.obstacle_by_id(self.ego_vehicle.obstacle_id)
             x, y = self.create_sp_polygon(obs, time_step).exterior.xy
-            plt.fill(x, y, facecolor='lightblue')
+            plt.fill(x, y, facecolor="lightblue")
 
             # draw ego-vehicle itself
             x, y = utils_sol.create_polygon(obs, time_step).exterior.xy
-            plt.fill(x, y, facecolor='blue')
+            plt.fill(x, y, facecolor="blue")
 
             # draw al other obstacles
             for obstacle in self.sce.obstacles:
                 # Skip ego-vehicle and obstacles out of scope (e.g. timeline ended for this obstacle)
-                if isinstance(obstacle, DynamicObstacle) and len(obstacle.prediction.trajectory.state_list) < time_step:
+                if (
+                    isinstance(obstacle, DynamicObstacle)
+                    and len(obstacle.prediction.trajectory.state_list) < time_step
+                ):
                     continue
                 if obstacle.obstacle_id == self.ego_vehicle.obstacle_id:
                     continue
 
                 else:
                     x, y = utils_sol.create_polygon(obstacle, time_step).exterior.xy
-                    plt.fill(x, y, facecolor='gray')
+                    plt.fill(x, y, facecolor="gray")
 
             if self.configuration.debug.draw_visualization:
                 if self.configuration.debug.save_plots:
                     plt.savefig(
-                        os.path.join(self.configuration.general.path_output, f'{"png_soi"}_{time_step:05d}.png'),
+                        os.path.join(
+                            self.configuration.general.path_output,
+                            f'{"png_soi"}_{time_step:05d}.png',
+                        ),
                         format="png",
                         bbox_inches="tight",
-                        transparent=False)
+                        transparent=False,
+                    )
                 else:
                     plt.show()
 
         # combine each frame to a .gif
-        if self.configuration.debug.draw_visualization and self.configuration.debug.save_plots:
+        if (
+            self.configuration.debug.draw_visualization
+            and self.configuration.debug.save_plots
+        ):
             # not working for pipeline. Doesn't know commonroad_reach
             """utils_vis.make_gif(self.configuration.general.path_output, "png_soi_",
-                     range(self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)),
-                     str(self.configuration.scenario.scenario_id), duration=self.dt)"""
-
+            range(self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)),
+            str(self.configuration.scenario.scenario_id), duration=self.dt)"""
