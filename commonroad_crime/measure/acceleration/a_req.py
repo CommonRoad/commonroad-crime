@@ -45,8 +45,8 @@ class AReq(CriMeBase):
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         self.value = math.sqrt(
-            self._a_long_object.compute(vehicle_id, time_step) ** 2
-            + self._a_lat_object.compute(vehicle_id, time_step) ** 2
+            self._a_long_object.compute(vehicle_id, time_step, verbose) ** 2
+            + self._a_lat_object.compute(vehicle_id, time_step, verbose) ** 2
         )
         self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(

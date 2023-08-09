@@ -83,7 +83,7 @@ class DA(CriMeBase):
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
         )
         self.reach_interface.reset(self.reach_config)
-        self.reach_interface.compute_reachable_sets()
+        self.reach_interface.compute_reachable_sets(verbose=verbose)
         self.value = compute_drivable_area(self.reach_interface.reachable_set)
         self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(

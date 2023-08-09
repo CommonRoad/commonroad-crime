@@ -78,7 +78,7 @@ class PSD(CriMeBase):
                         verbose,
                     )
                     self.value = utils_gen.int_round(
-                        rd / self._msd_object.compute(vehicle_id, time_step), 2
+                        rd / self._msd_object.compute(vehicle_id, time_step, verbose=verbose), 2
                     )
                     utils_log.print_and_log_info(
                         logger, f"*\t\t {self.measure_name} = {self.value}", verbose
