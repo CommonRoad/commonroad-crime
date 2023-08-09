@@ -269,7 +269,7 @@ class PF(CriMeBase):
             * s_veh
         )
 
-    def visualize(self, figsize: tuple = (25, 15)):
+    def visualize(self, figsize: tuple = (25, 15), verbose: bool = True):
         plt.clf()
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(
             self.ego_vehicle.state_at_time(self.time_step), self.sce.lanelet_network
@@ -283,7 +283,7 @@ class PF(CriMeBase):
 
         for i in range(len(s)):
             for j in range(len(d)):
-                U[i, j] = self.calc_total_potential(evaluated_state, S[i, j], D[i, j])
+                U[i, j] = self.calc_total_potential(evaluated_state, S[i, j], D[i, j], verbose=verbose)
 
         # polygons
         for obs in self.sce.obstacles:
