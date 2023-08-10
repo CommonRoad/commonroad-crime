@@ -7,6 +7,8 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
+import os
+import imageio.v3 as iio
 from pathlib import Path
 from typing import Union, List
 from enum import Enum
@@ -42,12 +44,17 @@ class TUMcolor(tuple, Enum):
 zorder = 22
 
 
-def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
+def save_fig(
+    measure_name: str,
+    path_output: str,
+    time_step: Union[int, float],
+    suffix: str = "svg",
+):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
     plt.savefig(
-        f"{path_output}{metric_name}_{time_step:.0f}.svg",
-        format="svg",
+        f"{path_output}{measure_name}_{time_step:.0f}.{suffix}",
+        format=suffix,
         bbox_inches="tight",
         transparent=False,
     )
@@ -273,3 +280,31 @@ def visualize_scenario_at_time_steps(
         for ts in time_steps[1:]:
             draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
     plt.show()
+
+
+def make_gif(
+    path: str,
+    prefix: str,
+    steps: Union[range, List[int]],
+    file_save_name="animation",
+    duration: float = 0.1,
+):
+    """
+    Making the gif out of the pngs, and removing the pngs.
+    """
+    images = []
+    filenames = []
+
+    for step in steps:
+        # svg is not supported
+        im_path = os.path.join(path, prefix + "{}.png".format(step))
+        filenames.append(im_path)
+
+    for filename in filenames:
+        images.append(iio.imread(filename))
+
+    iio.imwrite(os.path.join(path, file_save_name + ".gif"), images, duration=duration)
+
+    # Removing the pngs
+    for filename in filenames:
+        os.remove(filename)

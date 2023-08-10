@@ -8,7 +8,6 @@ __status__ = "beta"
 
 import logging
 import math
-import os
 
 from commonroad.scenario.obstacle import DynamicObstacle
 from matplotlib import pyplot as plt
@@ -17,6 +16,9 @@ from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeIndex, TypeMonotone
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.logger as utils_log
+import commonroad_crime.utility.general as utils_gen
+import commonroad_crime.utility.visualization as utils_vis
 
 
 logger = logging.getLogger(__name__)
@@ -87,9 +89,9 @@ class SOI(CriMeBase):
                 math.sqrt(state.velocity**2 + state.velocity_y**2)
                 * math.cos(state.orientation)
                 * 3.6
-            )
+            )  # in km/h
         else:
-            v = 0
+            v = 0.0
         minimum_breaking_distance = (0.278 * 0 * v) + (v**2) / (254 * (0.7 + 0))
 
         # create vehicle with correct front and back margin as well as exaggerated width to definitely match the whole
@@ -120,6 +122,11 @@ class SOI(CriMeBase):
         """
         Calculates how often the personal space of the ego-vehicle is violated by obstacles in the observed time
         """
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
         self.value = 0
         self.value_list.clear()
 
@@ -143,7 +150,10 @@ class SOI(CriMeBase):
                     self.value += 1
 
             self.value_list.append(self.value)
-
+        self.value = utils_gen.int_round(self.value, 2)
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
+        )
         return self.value
 
     def bounds(self, margin):
@@ -228,14 +238,11 @@ class SOI(CriMeBase):
 
             if self.configuration.debug.draw_visualization:
                 if self.configuration.debug.save_plots:
-                    plt.savefig(
-                        os.path.join(
-                            self.configuration.general.path_output,
-                            f'{"png_soi"}_{time_step:05d}.png',
-                        ),
-                        format="png",
-                        bbox_inches="tight",
-                        transparent=False,
+                    utils_vis.save_fig(
+                        self.measure_name,
+                        self.configuration.general.path_output,
+                        time_step,
+                        suffix="png",
                     )
                 else:
                     plt.show()
@@ -246,6 +253,13 @@ class SOI(CriMeBase):
             and self.configuration.debug.save_plots
         ):
             # not working for pipeline. Doesn't know commonroad_reach
-            """utils_vis.make_gif(self.configuration.general.path_output, "png_soi_",
-            range(self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)),
-            str(self.configuration.scenario.scenario_id), duration=self.dt)"""
+            utils_vis.make_gif(
+                self.configuration.general.path_output,
+                self.measure_name + "_",
+                range(
+                    self.time_step,
+                    len(self.ego_vehicle.prediction.trajectory.state_list),
+                ),
+                f"{self.measure_name} of {self.time_step}",
+                duration=self.dt,
+            )
