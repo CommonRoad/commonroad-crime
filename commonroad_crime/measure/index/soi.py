@@ -75,7 +75,7 @@ class SOI(CriMeBase):
 
         """
         calculating the minimum braking distance assuming optimal weather, no slope and no reaction time
-        according to the formula s = (0.278 × t × v) + v² / (254 × (f + G)) by AASHTO
+        according to the formula s = (0.278 × t × v) + v² / (254 × (f + G)) by AASHTO Formula
         s = stopping distance in meters
         t = reaction time in seconds. Assumed to be 0 for now
         v = speed of the car in km/h
