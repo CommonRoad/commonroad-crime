@@ -12,6 +12,7 @@
   - MSD, PSD
   - CI, CPI
   - ET, PET
+  - SOI
 ### Updated
 - update the installation of commonroad-reach using pip install, the corresponding code part is updated
 ## [0.2.3 & 0.2.4] - 2023.05.08
