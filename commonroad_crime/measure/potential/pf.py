@@ -283,7 +283,9 @@ class PF(CriMeBase):
 
         for i in range(len(s)):
             for j in range(len(d)):
-                U[i, j] = self.calc_total_potential(evaluated_state, S[i, j], D[i, j], verbose=verbose)
+                U[i, j] = self.calc_total_potential(
+                    evaluated_state, S[i, j], D[i, j], verbose=verbose
+                )
 
         # polygons
         for obs in self.sce.obstacles:

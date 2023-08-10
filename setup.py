@@ -42,6 +42,7 @@ setup(
         "omegaconf>=2.1.1",
         "casadi>=3.6.3",
         "tqdm>=4.65.0",
+        "imageio>=2.9.0",
     ],
     extras_require={"tests": ["pytest>=7.1"]},
     classifiers=[

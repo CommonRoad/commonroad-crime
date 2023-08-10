@@ -5,7 +5,7 @@ Unit tests of the module index-scale measures
 import unittest
 
 from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
-from commonroad_crime.measure import BTN, STN, TCI, CPI, CI
+from commonroad_crime.measure import BTN, STN, TCI, CPI, CI, SOI
 import commonroad_crime.utility.logger as util_logger
 
 from commonroad.common.file_reader import CommonRoadFileReader
@@ -70,3 +70,22 @@ class TestIndexDomain(unittest.TestCase):
         self.assertAlmostEqual(ci, 2688.3)
         self.config.debug.plot_limits = [-100, 100, -10, 80]
         ci_object.visualize()
+
+    def test_soi(self):
+        scenario_id = "ZAM_Urban-3_3_Repair"
+        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config.update()
+
+        soi_object_1 = SOI(self.config)
+        soi_1 = soi_object_1.compute()
+        soi_object_1.visualize()
+        self.assertEqual(soi_1, 39.0)
+
+        scenario_id = "USA_Lanker-1_3_T-1"
+        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config.update()
+
+        soi_object_2 = SOI(self.config)
+        soi_2 = soi_object_2.compute()
+        soi_object_2.visualize()
+        self.assertEqual(soi_2, 32.0)
