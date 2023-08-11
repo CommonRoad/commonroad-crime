@@ -7,8 +7,20 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import logging
+from types import SimpleNamespace
 from typing import Union, Optional
 from omegaconf import ListConfig, DictConfig
+import dataclasses
+import inspect
+from dataclasses import dataclass, field
+from typing import Union, Any, Dict, List, Optional
+from datetime import datetime
+import pathlib
+import re
+import os
+import logging
+from omegaconf import OmegaConf
+
 
 from commonroad.scenario.scenario import Scenario
 from commonroad.common.solution import VehicleType
@@ -24,31 +36,368 @@ from vehiclemodels.parameters_vehicle3 import parameters_vehicle3
 logger = logging.getLogger(__name__)
 
 
-class CriMeConfiguration:
-    """Class to hold criticality-measures-related configurations"""
+def _dict_to_params(dict_params: Dict[str, Any], cls: Any) -> Any:
+    """
+    Converts dictionary to parameter class.
+
+    :param dict_params: Dictionary containing parameters.
+    :param cls: Parameter dataclass to which dictionary should be converted to.
+    :return: Parameter class.
+    """
+    fields = dataclasses.fields(cls)
+    cls_map = {f.name: f.type for f in fields}
+    kwargs = {}
+    for k, v in cls_map.items():
+        if k not in dict_params:
+            continue
+        if inspect.isclass(v) and issubclass(v, BaseConfig):
+            kwargs[k] = _dict_to_params(dict_params[k], cls_map[k])
+        else:
+            kwargs[k] = dict_params[k]
+    return cls(**kwargs)
+
+
+@dataclass
+class BaseConfig:
+    """Base CriMe parameters."""
+
+    __initialized: bool = field(init=False, default=False, repr=False)
+
+    def __post_init__(self):
+        """Post initialization of base parameter class."""
+        # pylint: disable=unused-private-member
+        self.__initialized = True
+        # Make sure that the base parameters are propagated to all sub-parameters
+        # This cannot be done in the init method, because the sub-parameters are not yet initialized.
+        # This is not a noop, as it calls the __setattr__ method.
+        # Do not remove!
+        # See commonroad-io how to set the base parameters
+
+    def __getitem__(self, item: str) -> Any:
+        """
+        Getter for base parameter value.
+
+        :param: Item for which content should be returned.
+        :return: Item value.
+        """
+        try:
+            value = self.__getattribute__(item)
+        except AttributeError as e:
+            raise KeyError(
+                f"{item} is not a parameter of {self.__class__.__name__}"
+            ) from e
+        return value
+
+    def __setitem__(self, key: str, value: Any):
+        """
+        Setter for item.
+
+        :param key: Name of item.
+        :param value: Value of item.
+        """
+        try:
+            self.__setattr__(key, value)
+        except AttributeError as e:
+            raise KeyError(
+                f"{key} is not a parameter of {self.__class__.__name__}"
+            ) from e
+
+    @classmethod
+    def load(
+        cls,
+        file_path: Union[pathlib.Path, str],
+        scenario_name: str,
+        validate_types: bool = True,
+    ) -> "CriMeConfiguration":
+        """
+        Loads config file and creates parameter class.
+
+        :param file_path: Path to yaml file containing config parameters.
+        :param scenario_name: Name of scenario which should be used.
+        :param validate_types:  Boolean indicating whether loaded config should be validated against CARLA parameters.
+        :return: Base parameter class.
+        """
+        file_path = pathlib.Path(file_path)
+        assert (
+            file_path.suffix == ".yaml"
+        ), f"File type {file_path.suffix} is unsupported! Please use .yaml!"
+        loaded_yaml = OmegaConf.load(file_path)
+        if validate_types:
+            OmegaConf.merge(OmegaConf.structured(CriMeConfiguration), loaded_yaml)
+        params = _dict_to_params(OmegaConf.to_object(loaded_yaml), cls)
+        params.general.set_path_scenario(scenario_name)
+        return params
+
+
+class VehicleConfiguration:
+    width: Union[None, float] = None
+    length: Union[None, float] = None
+    ego_id: Union[None, int] = None
+    id_type_vehicle: int = 2  # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
 
     def __init__(self, config: Union[ListConfig, DictConfig]):
+        # vehicle configuration in the cartesian frame
+        self.cartesian = self.to_vehicle_parameter(VehicleConfiguration.id_type_vehicle)
+        self.dynamic = PointMassDynamics(VehicleType(VehicleConfiguration.id_type_vehicle))
+        self.complete_cartesian_constraints()
+
+    def complete_cartesian_constraints(self):
+        # jerk in m/s^3
+        self.cartesian.j_x_min = -25.0
+        self.cartesian.j_x_max = 25.0
+        self.cartesian.j_y_min = -25.0
+        self.cartesian.j_y_max = 25.0
+
+        # acceleration in m/s^2
+        self.cartesian.a_x_min = -8.0
+        self.cartesian.a_x_max = 8.0
+        self.cartesian.a_y_min = -8.0
+        self.cartesian.a_y_max = 8.0
+
+    @staticmethod
+    def to_vehicle_parameter(vehicle_type: int):
+        if vehicle_type == 1:
+            return parameters_vehicle1()
+        elif vehicle_type == 2:
+            return parameters_vehicle2()
+        elif vehicle_type == 3:
+            return parameters_vehicle3()
+        else:
+            raise TypeError(f"Vehicle type {vehicle_type} not supported!")
+
+    @dataclass
+    class Curvilinear:
+        """Parameters in the curvilinear coordinate system."""
+
+        # velocity in m/s
+        v_lon_min: float = 0.0
+        v_lon_max: float = 50.0
+        v_lat_min: float = -3.0
+        v_lat_max: float = 3.0
+
+        # acceleration in m/s^2
+        a_lon_max: float = 11.5
+        a_lon_min: float = -11.5  # braking acceleration
+        a_lat_max: float = 8.0
+        a_lat_min: float = -8.0
+        # engine power
+        a_max: float = 8.0
+
+        # jerk in m/s^3
+        j_lon_min: float = -25.0
+        j_lon_max: float = 25.0
+        j_lat_min: float = -25.0
+        j_lat_max: float = 25.0
+
+        reference_point: str = "rear"
+
+    @dataclass
+    class OtherVehicle:
+        """
+        Parameters for other vehicles
+        """
+
+        m_b: Optional[float, None] = None
+
+    other: OtherVehicle = OtherVehicle()
+    curvilinear: Curvilinear = Curvilinear()
+
+
+@dataclass
+class GeneralConfiguration(BaseConfig):
+    """General parameters for evaluations."""
+
+    # paths are relative to the root directory
+    path_scenarios: str = "scenarios/"
+    path_scenarios_batch: str = "scenarios/batch/"
+    path_output_abs: str = "output/"
+    path_logs: str = "output/logs/"
+    path_icons: str = "docs/icons/"
+    name_scenario: Optional[str] = None
+
+    @property
+    def path_scenario(self):
+        return self.path_scenarios + self.name_scenario + ".xml"
+
+    @property
+    def path_output(self):
+        return self.path_output_abs + self.name_scenario + "/"
+
+
+@dataclass
+class TimeDomainConfiguration:
+    """Parameters for time-domain measures"""
+
+    # mode for computing the steering width
+    # 1. default value from the paper "A flexible method for criticality assessment in driver assistance systems"
+    # 2. based on the lane width
+    steer_width: int = 1
+    # threshold for TET and TIT
+    # default value as recommended by Yuanfei
+    tau: float = 2.0
+
+
+@dataclass
+class ReachableSetDomainConfiguration:
+    """Parameters for reachable-set-domain measures"""
+
+    # nr of time steps
+    time_horizon: int = 10
+    # 1 for cartesian frame
+    # 2 for curvilinear coordinate system
+    coordinate_system: int = 2
+
+
+@dataclass
+class VelocityDomainConfiguration:
+    """Parameters for velocity-domain measures"""
+
+    m_b: float = VehicleConfiguration.OtherVehicle.m_b
+
+
+class AccelerationDomainConfiguration:
+    """Parameters for acceleration-domain measures"""
+
+    # from Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic lane-change
+    # maneuvers." IEEE Transactions on Intelligent Transportation Systems 11.3 (2010): 607-616.
+    safety_time: float = 2  # s
+
+    # the assumption of acceleration values
+    # 1. constant acceleration
+    # 2. piecewise constant motion: all vehicles will remain stationary when zero velocity is reached
+    acceleration_mode: int = 1
+
+
+@dataclass
+class PotentialDomainConfiguration:
+    """Parameters for potential-domain measures"""
+
+    # from Wolf, M.T. and Burdick, J.W., 2008, May. Artificial potential functions for highway driving with collision
+    # avoidance. In 2008 IEEE International Conference on Robotics and Automation (pp. 3731-3736). IEEE.
+    A_lane: float = 2.0  # maximum amplitude of the lane divider potential
+    A_car: float = 10.0  # Yukawa amplitude
+    sigma_factor: float = 3.0  # * lane width - how quickly the potential rises/falls
+    scale_factor: float = 100.0  # scaling factor for road potential
+    slope_scale: float = 0.2  # slope scale of velocity potential
+    alpha: float = 0.5  # Yukawa scale
+    beta: float = 0.6  # exponential scale of car potential
+    follow_time: float = 3.0  # desired following time
+    wedge_vertex: float = -0.5  # the location of the rear-most vertex of the triangle
+    desired_speed: float = 20.0  # !!null # to guide the vehicle towards a desired speed
+    d_0: float = (
+        50.0  # the maximum distance at which the car potential exerts an influence
+    )
+    u_max: float = (
+        100.0  # maximum potential for visualization purposes, otherwise it would be inf
+    )
+
+
+@dataclass
+class ProbabilityDomainConfiguration:
+    @dataclass
+    class MonteCarlo:
+        # params are obtained from Eidehall A, Petersson L. Statistical threat assessment for general road scenes using Monte
+        # Carlo sampling. IEEE Transactions on intelligent transportation systems. 2008 Feb 26;9(1):137-47.
+        prediction_horizon: float = 3.0  # second
+        nr_samples: int = 50
+        # weights for maneuvers [stop, turn, lane change, overtake, random]
+        mvr_weights: List[int] = field(default_factory=lambda: [0, 0, 0, 0, 1])
+
+    monte_carlo: MonteCarlo = MonteCarlo()
+
+
+@dataclass
+class IndexDomainConfiguration:
+    @dataclass
+    class TCI:
+        """Trajectory Criticality Index"""
+
+        # params are obtained from P. Junietz, F. Bonakdar, B. Klamann, and H. Winner,
+        # “Criticality metric for the safety validation of automated driving using model predictive trajectory
+        # optimization,” in 21st International Conference on Intelligent Transportation Systems (ITSC),
+        # pp. 60–65, IEEE, 2018.
+        w_x: float = 1.0
+        w_y: float = 1.0
+        w_ax: float = 0.1
+        w_ay: float = 1.0
+        N: int = 20  # nr of time steps
+
+    @dataclass
+    class CI:
+        """Conflict Index"""
+
+        # params from W. K. Alhajyaseen, “The integration of conflict probability and severity for the safety
+        # assessment of intersections”, Arabian Journal for Science and Engineering, vol. 40, no. 2, pp. 421–430,
+        # 2015.
+        m_b: float = VehicleConfiguration.OtherVehicle.m_b
+        alpha: float = 1.0
+        beta: float = 1.0
+        pet_threshold: float = 5.0
+
+    @dataclass
+    class CPI:
+        """Crash Potential Index"""
+
+        # params are obtained from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno. Microlevel
+        # traffic simulation method for assessing crash potential at intersections. No. 07-2180. 2007.
+        madr_mean: float = 8.45
+        madr_devi: float = 1.40
+        madr_uppb: float = 12.68
+        madr_lowb: float = 4.23
+
+    class SOI:
+        """Space Occupancy Index"""
+
+        # Default values for SOI, defining minimum personal space around a vehicle in meters.
+        # Will be added to the calculated personal space.
+        margin_front: float = 2
+        margin_back: float = 0.5
+        margin_side: float = 0.5
+
+    tci: TCI = TCI()
+    ci: CI = CI()
+    cpi: CPI = CPI()
+    soi: SOI = SOI()
+
+
+@dataclass
+class DebugConfiguration:
+    save_plots: bool = True
+    plot_limits: List[float] = None
+    # visualization settings
+    draw_visualization: bool = True
+    # visualize dynamic obstacles with icons
+    draw_icons: bool = True
+
+
+@dataclass
+class CriMeConfiguration(BaseConfig):
+    """Class to hold criticality-measures-related configurations"""
+
+    general: GeneralConfiguration = field(default_factory=GeneralConfiguration)
+    vehicle: VehicleConfiguration = field(default_factory=VehicleConfiguration)
+    debug: DebugConfiguration = field(default_factory=DebugConfiguration)
+    time: TimeDomainConfiguration = field(default_factory=TimeDomainConfiguration)
+    velocity: VelocityDomainConfiguration = field(
+        default_factory=VelocityDomainConfiguration
+    )
+    acceleration: AccelerationDomainConfiguration = field(
+        default_factory=AccelerationDomainConfiguration
+    )
+    potential: PotentialDomainConfiguration = field(
+        default_factory=PotentialDomainConfiguration
+    )
+    probability: ProbabilityDomainConfiguration = field(
+        default_factory=ProbabilityDomainConfiguration
+    )
+    reachable_set: ReachableSetDomainConfiguration = field(
+        default_factory=ReachableSetDomainConfiguration
+    )
+    index: IndexDomainConfiguration = field(default_factory=IndexDomainConfiguration)
+
+    def __init__(self):
         self.scenario: Optional[Scenario] = None
         self.scene: Optional[Scene] = None
-        self.general: GeneralConfiguration = GeneralConfiguration(config)
-        self.vehicle: VehicleConfiguration = VehicleConfiguration(config)
-        self.debug: DebugConfiguration = DebugConfiguration(config)
-
-        self.time: TimeDomainConfiguration = TimeDomainConfiguration(config)
-        self.velocity: VelocityDomainConfiguration = VelocityDomainConfiguration(config)
-        self.acceleration: AccelerationDomainConfiguration = (
-            AccelerationDomainConfiguration(config)
-        )
-        self.potential: PotentialDomainConfiguration = PotentialDomainConfiguration(
-            config
-        )
-        self.probability: ProbabilityDomainConfiguration = (
-            ProbabilityDomainConfiguration(config)
-        )
-        self.reachable_set: ReachableSetDomainConfiguration = (
-            ReachableSetDomainConfiguration(config)
-        )
-        self.index: IndexDomainConfiguration = IndexDomainConfiguration(config)
 
     def update(
         self,
@@ -98,224 +447,3 @@ class CriMeConfiguration:
         print(string)
         for line in string.split("\n"):
             logger.info(line)
-
-
-class GeneralConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.general
-        name_scenario = config_relevant.name_scenario
-
-        self.name_scenario = name_scenario
-        self.path_scenarios = config_relevant.path_scenarios
-        self.path_scenarios_batch = config_relevant.path_scenarios_batch
-        self.path_output_abs = config_relevant.path_output
-        self.path_logs = config_relevant.path_logs
-        self.path_icons = config_relevant.path_icons
-
-    @property
-    def path_scenario(self):
-        return self.path_scenarios + self.name_scenario + ".xml"
-
-    @property
-    def path_output(self):
-        return self.path_output_abs + self.name_scenario + "/"
-
-
-class TimeDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.time
-        self.activated = config_relevant.activated
-        self.metric = config_relevant.metric
-        self.steer_width = config_relevant.steer_width
-        self.tau = config_relevant.tau
-
-
-class ReachableSetDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.reachable_set
-        self.time_horizon = config_relevant.time_horizon
-        self.cosy = config_relevant.coordinate_system
-
-
-class VelocityDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.velocity
-        self.m_b = config_relevant.m_b
-
-
-class AccelerationDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.acceleration
-        self.safety_time = config_relevant.safety_time
-        self.acceleration_mode = config_relevant.acceleration_mode
-
-
-class PotentialDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.potential
-        self.A_lane = config_relevant.A_lane
-        self.A_car = config_relevant.A_car
-
-        self.sigma_factor = config_relevant.sigma_factor
-        self.scale_factor = config_relevant.scale_factor
-        self.slope_scale = config_relevant.slope_scale
-
-        self.alpha = config_relevant.alpha
-        self.beta = config_relevant.beta
-        self.d_0 = config_relevant.d_0
-
-        self.follow_time = config_relevant.follow_time
-        self.wedge_vertex = config_relevant.wedge_vertex
-        self.desired_speed = config_relevant.desired_speed
-
-        self.u_max = config_relevant.u_max
-
-
-class ProbabilityDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.probability
-        self.monte_carlo = ProbabilityDomainConfiguration.MonteCarlo(config_relevant)
-
-    class MonteCarlo:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_mc = dict_config.monte_carlo
-            self.prediction_horizon = dict_mc.prediction_horizon
-            self.nr_samples = dict_mc.nr_samples
-            self.mvr_weights = dict_mc.weights
-
-
-class IndexDomainConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.index
-        self.tci = IndexDomainConfiguration.TCI(config_relevant)
-        self.ci = IndexDomainConfiguration.CI(config_relevant)
-        self.cpi = IndexDomainConfiguration.CPI(config_relevant)
-        self.soi = IndexDomainConfiguration.SOI(config_relevant)
-
-    class TCI:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_tci = dict_config.TCI
-            self.w_x = dict_tci.w_x
-            self.w_y = dict_tci.w_y
-            self.w_ax = dict_tci.w_ax
-            self.w_ay = dict_tci.w_ay
-            self.N = dict_tci.prediction_horizon
-
-    class CI:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_ci = dict_config.CI
-            self.m = dict_ci.m
-            self.m_b = dict_ci.m_b
-            self.alpha = dict_ci.alpha
-            self.beta = dict_ci.beta
-            self.pet_threshold = dict_ci.pet_threshold
-
-    class CPI:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_cpi = dict_config.CPI
-            self.madr_mean = dict_cpi.madr_mean
-            self.madr_devi = dict_cpi.madr_devi
-            self.madr_uppb = dict_cpi.madr_uppb
-            self.madr_lowb = dict_cpi.madr_lowb
-
-    class SOI:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_soi = dict_config.SOI
-            self.margin_front = dict_soi.margin_front
-            self.margin_back = dict_soi.margin_back
-            self.margin_side = dict_soi.margin_side
-
-
-class VehicleConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        self._width = None
-        self._length = None
-        config_relevant = config.vehicle
-        self.ego_id = config_relevant.ego_id
-
-        # vehicle configuration in the curvilinear coordinate system
-        self.curvilinear = VehicleConfiguration.Curvilinear(config_relevant)
-
-        # vehicle configuration in the cartesian frame
-        id_type_vehicle = config_relevant.id_type_vehicle
-        self.cartesian = self.to_vehicle_parameter(id_type_vehicle)
-        self.complete_cartesian_constraints(config_relevant)
-        self.dynamic = PointMassDynamics(VehicleType(id_type_vehicle))
-
-    def complete_cartesian_constraints(
-        self, dict_config: Union[ListConfig, DictConfig]
-    ):
-        dict_cartesian = dict_config.cartesian
-        self.cartesian.j_x_min = dict_cartesian.j_x_min
-        self.cartesian.j_x_max = dict_cartesian.j_x_max
-        self.cartesian.j_y_min = dict_cartesian.j_y_min
-        self.cartesian.j_y_max = dict_cartesian.j_y_max
-        self.cartesian.a_x_min = dict_cartesian.a_x_min
-        self.cartesian.a_x_max = dict_cartesian.a_x_max
-        self.cartesian.a_y_min = dict_cartesian.a_y_min
-        self.cartesian.a_y_max = dict_cartesian.a_y_max
-
-    class Curvilinear:
-        def __init__(self, dict_config: Union[ListConfig, DictConfig]):
-            dict_curvilinear = dict_config.curvilinear
-            self.clcs: CurvilinearCoordinateSystem = Union[
-                None, CurvilinearCoordinateSystem
-            ]
-
-            self.v_lon_min = dict_curvilinear.v_lon_min
-            self.v_lon_max = dict_curvilinear.v_lon_max
-            self.v_lat_min = dict_curvilinear.v_lat_min
-            self.v_lat_max = dict_curvilinear.v_lat_max
-
-            self.a_lon_max = dict_curvilinear.a_lon_max
-            self.a_lon_min = dict_curvilinear.a_lon_min
-            self.a_lat_max = dict_curvilinear.a_lat_max
-            self.a_lat_min = dict_curvilinear.a_lat_min
-            self.a_max = dict_curvilinear.a_max
-
-            self.j_lon_min = dict_curvilinear.j_lon_min
-            self.j_lon_max = dict_curvilinear.j_lon_max
-            self.j_lat_min = dict_curvilinear.j_lat_min
-            self.j_lat_max = dict_curvilinear.j_lat_max
-
-            self.reference_point = dict_curvilinear.reference_point
-
-    @staticmethod
-    def to_vehicle_parameter(vehicle_type: str):
-        if vehicle_type == 1:
-            return parameters_vehicle1()
-        elif vehicle_type == 2:
-            return parameters_vehicle2()
-        elif vehicle_type == 3:
-            return parameters_vehicle3()
-        else:
-            raise TypeError(f"Vehicle type {vehicle_type} not supported!")
-
-    @property
-    def length(self):
-        return self._length
-
-    @length.setter
-    def length(self, length: float):
-        self._length = length
-
-    @property
-    def width(self):
-        return self._width
-
-    @width.setter
-    def width(self, width: float):
-        self._width = width
-
-
-class DebugConfiguration:
-    def __init__(self, config: Union[ListConfig, DictConfig]):
-        config_relevant = config.debug
-
-        self.save_plots = config_relevant.save_plots
-        if config_relevant.plot_limits:
-            self.plot_limits = list(config_relevant.plot_limits)
-        else:
-            self.plot_limits = None
-        self.draw_visualization = config_relevant.draw_visualization
-        self.draw_icons = config_relevant.draw_icons

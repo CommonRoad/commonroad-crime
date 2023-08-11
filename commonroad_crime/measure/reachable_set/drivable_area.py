@@ -50,7 +50,7 @@ class DA(CriMeBase):
             self.configuration.reachable_set.time_horizon
         )
         self.reach_config.planning.dt = self.sce.dt
-        if self.configuration.reachable_set.cosy == 1:
+        if self.configuration.reachable_set.coordinate_system == 1:
             self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
