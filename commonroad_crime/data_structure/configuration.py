@@ -112,9 +112,9 @@ class BaseConfig:
         """
         Loads config file and creates parameter class.
 
-        :param file_path: Path to yaml file containing config parameters.
         :param scenario_name: Name of scenario which should be used.
-        :param validate_types:  Boolean indicating whether loaded config should be validated against CARLA parameters.
+        :param file_path: Path to yaml file containing config parameters.
+        :param validate_types: overwrite the default params
         :return: Base parameter class.
         """
         file_path = pathlib.Path(file_path)
@@ -125,20 +125,18 @@ class BaseConfig:
         if validate_types:
             OmegaConf.merge(OmegaConf.structured(CriMeConfiguration), loaded_yaml)
         params = _dict_to_params(OmegaConf.to_object(loaded_yaml), cls)
-        params.general.set_path_scenario(scenario_name)
+        params.general.set_scenario_name(scenario_name)
         return params
 
 
-class VehicleConfiguration:
-    width: Union[None, float] = None
-    length: Union[None, float] = None
-    ego_id: Union[None, int] = None
-    id_type_vehicle: int = 2  # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
-
-    def __init__(self, config: Union[ListConfig, DictConfig]):
+@dataclass
+class VehicleConfiguration(BaseConfig):
+    def __post_init__(self):
         # vehicle configuration in the cartesian frame
         self.cartesian = self.to_vehicle_parameter(VehicleConfiguration.id_type_vehicle)
-        self.dynamic = PointMassDynamics(VehicleType(VehicleConfiguration.id_type_vehicle))
+        self.dynamic = PointMassDynamics(
+            VehicleType(VehicleConfiguration.id_type_vehicle)
+        )
         self.complete_cartesian_constraints()
 
     def complete_cartesian_constraints(self):
@@ -197,8 +195,12 @@ class VehicleConfiguration:
         Parameters for other vehicles
         """
 
-        m_b: Optional[float, None] = None
+        m_b: Union[float, None] = None
 
+    width: Union[None, float] = None
+    length: Union[None, float] = None
+    ego_id: Union[None, int] = None
+    id_type_vehicle: int = 2  # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
     other: OtherVehicle = OtherVehicle()
     curvilinear: Curvilinear = Curvilinear()
 
@@ -208,11 +210,12 @@ class GeneralConfiguration(BaseConfig):
     """General parameters for evaluations."""
 
     # paths are relative to the root directory
-    path_scenarios: str = "scenarios/"
-    path_scenarios_batch: str = "scenarios/batch/"
-    path_output_abs: str = "output/"
-    path_logs: str = "output/logs/"
-    path_icons: str = "docs/icons/"
+    path_root_abs = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
+    path_scenarios: str = path_root_abs + "/scenarios/"
+    path_scenarios_batch: str = path_root_abs + "/scenarios/batch/"
+    path_output_abs: str = path_root_abs + "/output/"
+    path_logs: str = path_root_abs + "/output/logs/"
+    path_icons: str = path_root_abs + "/docs/icons/"
     name_scenario: Optional[str] = None
 
     @property
@@ -223,9 +226,16 @@ class GeneralConfiguration(BaseConfig):
     def path_output(self):
         return self.path_output_abs + self.name_scenario + "/"
 
+    def set_scenario_name(self, scenario_name: str):
+        """
+        Setter for scenario name.
+        :param scenario_name: Name of CommonRoad scenario.
+        """
+        self.name_scenario = scenario_name
+
 
 @dataclass
-class TimeDomainConfiguration:
+class TimeDomainConfiguration(BaseConfig):
     """Parameters for time-domain measures"""
 
     # mode for computing the steering width
@@ -238,7 +248,7 @@ class TimeDomainConfiguration:
 
 
 @dataclass
-class ReachableSetDomainConfiguration:
+class ReachableSetDomainConfiguration(BaseConfig):
     """Parameters for reachable-set-domain measures"""
 
     # nr of time steps
@@ -249,13 +259,13 @@ class ReachableSetDomainConfiguration:
 
 
 @dataclass
-class VelocityDomainConfiguration:
+class VelocityDomainConfiguration(BaseConfig):
     """Parameters for velocity-domain measures"""
 
-    m_b: float = VehicleConfiguration.OtherVehicle.m_b
+    m_b: Union[float, None] = VehicleConfiguration.OtherVehicle.m_b
 
 
-class AccelerationDomainConfiguration:
+class AccelerationDomainConfiguration(BaseConfig):
     """Parameters for acceleration-domain measures"""
 
     # from Schubert, Robin, Karsten Schulze, and Gerd Wanielik. "Situation assessment for automatic lane-change
@@ -269,7 +279,7 @@ class AccelerationDomainConfiguration:
 
 
 @dataclass
-class PotentialDomainConfiguration:
+class PotentialDomainConfiguration(BaseConfig):
     """Parameters for potential-domain measures"""
 
     # from Wolf, M.T. and Burdick, J.W., 2008, May. Artificial potential functions for highway driving with collision
@@ -293,11 +303,12 @@ class PotentialDomainConfiguration:
 
 
 @dataclass
-class ProbabilityDomainConfiguration:
+class ProbabilityDomainConfiguration(BaseConfig):
     @dataclass
     class MonteCarlo:
-        # params are obtained from Eidehall A, Petersson L. Statistical threat assessment for general road scenes using Monte
-        # Carlo sampling. IEEE Transactions on intelligent transportation systems. 2008 Feb 26;9(1):137-47.
+        # params are obtained from Eidehall A, Petersson L. Statistical threat assessment for general road scenes
+        # using Monte Carlo sampling. IEEE Transactions on intelligent transportation systems. 2008 Feb 26;9(1):
+        # 137-47.
         prediction_horizon: float = 3.0  # second
         nr_samples: int = 50
         # weights for maneuvers [stop, turn, lane change, overtake, random]
@@ -307,7 +318,7 @@ class ProbabilityDomainConfiguration:
 
 
 @dataclass
-class IndexDomainConfiguration:
+class IndexDomainConfiguration(BaseConfig):
     @dataclass
     class TCI:
         """Trajectory Criticality Index"""
@@ -329,7 +340,7 @@ class IndexDomainConfiguration:
         # params from W. K. Alhajyaseen, “The integration of conflict probability and severity for the safety
         # assessment of intersections”, Arabian Journal for Science and Engineering, vol. 40, no. 2, pp. 421–430,
         # 2015.
-        m_b: float = VehicleConfiguration.OtherVehicle.m_b
+        m_b: Union[float, None] = VehicleConfiguration.OtherVehicle.m_b
         alpha: float = 1.0
         beta: float = 1.0
         pet_threshold: float = 5.0
@@ -345,6 +356,7 @@ class IndexDomainConfiguration:
         madr_uppb: float = 12.68
         madr_lowb: float = 4.23
 
+    @dataclass
     class SOI:
         """Space Occupancy Index"""
 
@@ -361,9 +373,9 @@ class IndexDomainConfiguration:
 
 
 @dataclass
-class DebugConfiguration:
+class DebugConfiguration(BaseConfig):
     save_plots: bool = True
-    plot_limits: List[float] = None
+    plot_limits: Union[List[float], None] = None
     # visualization settings
     draw_visualization: bool = True
     # visualize dynamic obstacles with icons
@@ -395,7 +407,7 @@ class CriMeConfiguration(BaseConfig):
     )
     index: IndexDomainConfiguration = field(default_factory=IndexDomainConfiguration)
 
-    def __init__(self):
+    def __post_init__(self):
         self.scenario: Optional[Scenario] = None
         self.scene: Optional[Scene] = None
 

@@ -78,9 +78,8 @@ class ET(CriMeBase):
             self.ego_vehicle, self.time_step, self.ca
         )
         # The conflict area may not exist, indicated by self.ca being None.
-        # fixme: what does this mean?
         # Even if the conflict area exists, there are two scenarios where the ET remains undefined,
-        # and we set it to infinity. This information is logged in info_value_not_exit()
+        # and we set it to infinity.
         if self.ca is None:
             utils_log.print_and_log_info(
                 logger,
@@ -104,8 +103,6 @@ class ET(CriMeBase):
 
         # Transfer time steps to seconds
         if self.value is not math.inf:
-            # fixme: shouldn't multiply again
-            # self.value = self.value * self.sce.dt
             self.value = utils_gen.int_round(self.value * self.dt, 4)
             utils_log.print_and_log_info(
                 logger, f"*\t\t {self.measure_name} = {self.value}", verbose
@@ -367,7 +364,6 @@ class ET(CriMeBase):
         Compute the duration of the vehicle within the conflict area as well as its enter and exit time.
         """
         # In case conflict area does not exist, ET will be set to inf.
-        # fixme: do what the function is supported to di
         if ca is None:
             return math.inf, math.inf, math.inf
         already_in = False
@@ -380,7 +376,6 @@ class ET(CriMeBase):
                 already_in = True
             if not v_poly.intersects(ca) and already_in is True:
                 exit_time = i
-                # fixme: time = time * self.dt
                 return exit_time - enter_time, enter_time, exit_time
         if enter_time is math.inf:
             return math.inf, math.inf, math.inf

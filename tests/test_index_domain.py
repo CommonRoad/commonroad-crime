@@ -4,7 +4,7 @@ Unit tests of the module index-scale measures
 
 import unittest
 
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.measure import BTN, STN, TCI, CPI, CI, SOI
 import commonroad_crime.utility.logger as util_logger
 
@@ -15,7 +15,9 @@ class TestIndexDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = "ZAM_Zip-1_56_T-1"
-        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config = CriMeConfiguration.load(
+            f"../config_files/{scenario_id}.yaml", scenario_id
+        )
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
         self.config.update()
@@ -73,7 +75,9 @@ class TestIndexDomain(unittest.TestCase):
 
     def test_soi(self):
         scenario_id = "ZAM_Urban-3_3_Repair"
-        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config = CriMeConfiguration()
+        self.config.general.set_scenario_name(scenario_id)
+        self.config.vehicle.ego_id = 8
         self.config.update()
 
         soi_object_1 = SOI(self.config)
@@ -82,7 +86,9 @@ class TestIndexDomain(unittest.TestCase):
         self.assertEqual(soi_1, 39.0)
 
         scenario_id = "USA_Lanker-1_3_T-1"
-        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config = CriMeConfiguration.load(
+            f"../config_files/{scenario_id}.yaml", scenario_id
+        )
         self.config.update()
 
         soi_object_2 = SOI(self.config)
