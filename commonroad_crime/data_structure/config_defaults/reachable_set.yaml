@@ -1,2 +1,0 @@
-time_horizon: 10 # nr of time steps
-coordinate_system: 2 # 1 for cartesian frame, 2 for curvilinear coordinate system
