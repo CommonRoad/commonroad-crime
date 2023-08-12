@@ -48,7 +48,7 @@ class WTTC(CriMeBase):
             self.ego_vehicle,
             self.other_vehicle,
             time_step,
-            self.configuration.vehicle.cartesian.longitudinal.a_max,
+            self.configuration.vehicle.params.longitudinal.a_max,
         )
         self.value = max(
             [np.real(x) for x in wttc_list if np.isreal(x) and x > 0][0], 0.0
@@ -90,7 +90,7 @@ class WTTC(CriMeBase):
         r_1 = r_2 = (
             1
             / 2
-            * self.configuration.vehicle.cartesian.longitudinal.a_max
+            * self.configuration.vehicle.params.longitudinal.a_max
             * self.value**2
         )
         if isinstance(self.other_vehicle, StaticObstacle):

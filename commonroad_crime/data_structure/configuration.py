@@ -133,38 +133,29 @@ class BaseConfig:
 class VehicleConfiguration(BaseConfig):
     def __post_init__(self):
         # vehicle configuration in the cartesian frame
-        self.cartesian = self.to_vehicle_parameter(VehicleConfiguration.id_type_vehicle)
         self.dynamic = PointMassDynamics(
             VehicleType(VehicleConfiguration.id_type_vehicle)
         )
-        self.complete_cartesian_constraints()
-
-    def complete_cartesian_constraints(self):
-        # jerk in m/s^3
-        self.cartesian.j_x_min = -25.0
-        self.cartesian.j_x_max = 25.0
-        self.cartesian.j_y_min = -25.0
-        self.cartesian.j_y_max = 25.0
-
-        # acceleration in m/s^2
-        self.cartesian.a_x_min = -8.0
-        self.cartesian.a_x_max = 8.0
-        self.cartesian.a_y_min = -8.0
-        self.cartesian.a_y_max = 8.0
-
-    @staticmethod
-    def to_vehicle_parameter(vehicle_type: int):
-        if vehicle_type == 1:
-            return parameters_vehicle1()
-        elif vehicle_type == 2:
-            return parameters_vehicle2()
-        elif vehicle_type == 3:
-            return parameters_vehicle3()
-        else:
-            raise TypeError(f"Vehicle type {vehicle_type} not supported!")
+        self.params = self.to_vehicle_parameter(VehicleConfiguration.id_type_vehicle)
 
     @dataclass
-    class Curvilinear:
+    class Cartesian(BaseConfig):
+        """Parameters in the Cartesian coordinate system."""
+
+        # jerk in m/s^3
+        j_x_min: str = -25.0
+        j_x_max: str = 25.0
+        j_y_min: str = -25.0
+        j_y_max: str = 25.0
+
+        # acceleration in m/s^2
+        a_x_min: str = -8.0
+        a_x_max: str = 8.0
+        a_y_min: str = -8.0
+        a_y_max: str = 8.0
+
+    @dataclass
+    class Curvilinear(BaseConfig):
         """Parameters in the curvilinear coordinate system."""
 
         # velocity in m/s
@@ -190,19 +181,31 @@ class VehicleConfiguration(BaseConfig):
         reference_point: str = "rear"
 
     @dataclass
-    class OtherVehicle:
+    class OtherVehicle(BaseConfig):
         """
         Parameters for other vehicles
         """
 
         m_b: Union[float, None] = None
 
+    @staticmethod
+    def to_vehicle_parameter(vehicle_type: int):
+        if vehicle_type == 1:
+            return parameters_vehicle1()
+        elif vehicle_type == 2:
+            return parameters_vehicle2()
+        elif vehicle_type == 3:
+            return parameters_vehicle3()
+        else:
+            raise TypeError(f"Vehicle type {vehicle_type} not supported!")
+
     width: Union[None, float] = None
     length: Union[None, float] = None
     ego_id: Union[None, int] = None
     id_type_vehicle: int = 2  # 1 = Ford Escord, 2 = BMW 320i, 3 = VW Vanagon
-    other: OtherVehicle = OtherVehicle()
-    curvilinear: Curvilinear = Curvilinear()
+    other: OtherVehicle = field(default_factory=OtherVehicle)
+    cartesian: Cartesian = field(default_factory=Cartesian)
+    curvilinear: Curvilinear = field(default_factory=Curvilinear)
 
 
 @dataclass
@@ -305,7 +308,7 @@ class PotentialDomainConfiguration(BaseConfig):
 @dataclass
 class ProbabilityDomainConfiguration(BaseConfig):
     @dataclass
-    class MonteCarlo:
+    class MonteCarlo(BaseConfig):
         # params are obtained from Eidehall A, Petersson L. Statistical threat assessment for general road scenes
         # using Monte Carlo sampling. IEEE Transactions on intelligent transportation systems. 2008 Feb 26;9(1):
         # 137-47.
@@ -314,13 +317,13 @@ class ProbabilityDomainConfiguration(BaseConfig):
         # weights for maneuvers [stop, turn, lane change, overtake, random]
         mvr_weights: List[int] = field(default_factory=lambda: [0, 0, 0, 0, 1])
 
-    monte_carlo: MonteCarlo = MonteCarlo()
+    monte_carlo: MonteCarlo = field(default_factory=MonteCarlo)
 
 
 @dataclass
 class IndexDomainConfiguration(BaseConfig):
     @dataclass
-    class TCI:
+    class TCI(BaseConfig):
         """Trajectory Criticality Index"""
 
         # params are obtained from P. Junietz, F. Bonakdar, B. Klamann, and H. Winner,
@@ -334,7 +337,7 @@ class IndexDomainConfiguration(BaseConfig):
         N: int = 20  # nr of time steps
 
     @dataclass
-    class CI:
+    class CI(BaseConfig):
         """Conflict Index"""
 
         # params from W. K. Alhajyaseen, “The integration of conflict probability and severity for the safety
@@ -346,7 +349,7 @@ class IndexDomainConfiguration(BaseConfig):
         pet_threshold: float = 5.0
 
     @dataclass
-    class CPI:
+    class CPI(BaseConfig):
         """Crash Potential Index"""
 
         # params are obtained from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno. Microlevel
@@ -357,7 +360,7 @@ class IndexDomainConfiguration(BaseConfig):
         madr_lowb: float = 4.23
 
     @dataclass
-    class SOI:
+    class SOI(BaseConfig):
         """Space Occupancy Index"""
 
         # Default values for SOI, defining minimum personal space around a vehicle in meters.
@@ -366,10 +369,10 @@ class IndexDomainConfiguration(BaseConfig):
         margin_back: float = 0.5
         margin_side: float = 0.5
 
-    tci: TCI = TCI()
-    ci: CI = CI()
-    cpi: CPI = CPI()
-    soi: SOI = SOI()
+    tci: TCI = field(default_factory=TCI)
+    ci: CI = field(default_factory=CI)
+    cpi: CPI = field(default_factory=CPI)
+    soi: SOI = field(default_factory=SOI)
 
 
 @dataclass
