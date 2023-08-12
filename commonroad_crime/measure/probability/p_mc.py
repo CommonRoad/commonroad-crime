@@ -86,6 +86,8 @@ class P_MC(CriMeBase):
         )
         self.time_step = time_step
         colliding_prob_list = []
+        self.ego_state_list_set_cf = []  # collision-free
+        self.ego_state_list_set_wc = []  # with collisions
         for i in range(len(self.maneuver_list)):
             maneuver = self.maneuver_list[i]
             # randomly rounding to integer
@@ -103,8 +105,14 @@ class P_MC(CriMeBase):
                     self.ego_state_list_set_cf.append(ego_sl_bundle[j])
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
-        p_mc = np.average(np.array(colliding_prob_list))
-        self.value = utils_gen.int_round(p_mc, 4)
+        if colliding_prob_list:
+            p_mc = np.average(np.array(colliding_prob_list))
+            self.value = utils_gen.int_round(p_mc, 4)
+        else:
+            utils_log.print_and_log_error(
+                logger, f"*\t\t no simulation results..", verbose
+            )
+            self.value = 0.0
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
