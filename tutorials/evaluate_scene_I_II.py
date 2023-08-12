@@ -4,7 +4,7 @@ See paper: CommonRoad-CriMe: A Toolbox for Criticality Measures of Autonomous Ve
 Experiment: Sec. IV.A Evaluation on Scenes
 """
 
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 import commonroad_crime.utility.logger as utils_log
 from commonroad_crime.measure import (
@@ -42,7 +42,7 @@ def main():
     # scenario_id = 'ZAM_Urban-7_1_S-2'
 
     # ==== build configuration
-    config = ConfigurationBuilder.build_configuration(scenario_id)
+    config = CriMeConfiguration.load(f"../config_files/{scenario_id}.yaml", scenario_id)
     config.update()
     utils_log.initialize_logger(config)
     config.print_configuration_summary()

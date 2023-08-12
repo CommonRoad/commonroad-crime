@@ -564,19 +564,19 @@ class SimulationLat(SimulationBase):
                 self.cartesian.a_x_min,
             ),
             min(
-                ref_state.acceleration + self.parameters.j_x_max * self.dt,
+                ref_state.acceleration + self.cartesian.j_x_max * self.dt,
                 self.cartesian.a_x_max,
             ),
         )
         self.input.acceleration_y = np.clip(
             (target_velocity_y - ref_state.velocity_y) / self.dt,
             max(
-                ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                self.parameters.a_y_min,
+                ref_state.acceleration_y + self.cartesian.j_y_min * self.dt,
+                self.cartesian.a_y_min,
             ),
             min(
-                ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
-                self.parameters.a_y_max,
+                ref_state.acceleration_y + self.cartesian.j_y_max * self.dt,
+                self.cartesian.a_y_max,
             ),
         )
         self.input.time_step = ref_state.time_step

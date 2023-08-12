@@ -18,7 +18,6 @@ import csv
 from tqdm import tqdm
 from commonroad.scenario.obstacle import StaticObstacle
 
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.logger as utils_log
@@ -132,8 +131,10 @@ def run_parallel(
     for i in range(pbar.total):
         scenario_id, file_path = scenario_loader.scenario_ids[i]
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
-        sce_conf = ConfigurationBuilder.build_configuration(
-            scenario_id, path_root=config_root
+        if not config_root:
+            config_root = "../config_files/"
+        sce_conf = CriMeConfiguration.load(
+            f"{config_root}/{scenario_id}.yaml", scenario_id
         )
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()
@@ -170,8 +171,10 @@ def run_sequential(
     ):
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
-        sce_conf = ConfigurationBuilder.build_configuration(
-            scenario_id, path_root=config_root
+        if not config_root:
+            config_root = "../config_files/"
+        sce_conf = CriMeConfiguration.load(
+            f"{config_root}/{scenario_id}.yaml", scenario_id
         )
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()

@@ -208,9 +208,9 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
             "xtick.labelsize": FONTSIZE,  # a little smaller
             "ytick.labelsize": FONTSIZE,
-            "pgf.preamble": r"\usepackage[utf8x]{inputenc}" +
-                    r"\usepackage[T1]{fontenc}" +
-                    r"\usepackage[detect-all,locale=DE]{siunitx}"
+            "pgf.preamble": r"\usepackage[utf8x]{inputenc}"
+            + r"\usepackage[T1]{fontenc}"
+            + r"\usepackage[detect-all,locale=DE]{siunitx}",
         }
         matplotlib.rcParams.update(pgf_with_latex)
     if (
