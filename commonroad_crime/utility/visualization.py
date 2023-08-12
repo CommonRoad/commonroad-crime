@@ -194,7 +194,7 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
     if flag_latex:
         # use Latex font
         FONTSIZE = 28
-        plt.rcParams["text.latex.preamble"] = [r"\usepackage{lmodern}"]
+        plt.rcParams["text.latex.preamble"] = r"\usepackage{lmodern}"
         pgf_with_latex = {  # setup matplotlib to use latex for output
             "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
             "text.usetex": True,  # use LaTeX to write all text
@@ -208,11 +208,9 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
             "xtick.labelsize": FONTSIZE,  # a little smaller
             "ytick.labelsize": FONTSIZE,
-            "pgf.preamble": [
-                r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
-                r"\usepackage[T1]{fontenc}",  # plots will be generated
-                r"\usepackage[detect-all,locale=DE]{siunitx}",
-            ],  # using this preamble
+            "pgf.preamble": r"\usepackage[utf8x]{inputenc}" +
+                    r"\usepackage[T1]{fontenc}" +
+                    r"\usepackage[detect-all,locale=DE]{siunitx}"
         }
         matplotlib.rcParams.update(pgf_with_latex)
     if (
