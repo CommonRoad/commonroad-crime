@@ -87,7 +87,6 @@ class PET(ET):
         # Depending on the relative time points of both vehicles entering and leaving the conflict area,
         # A1 could represent either the ego vehicle or the other vehicle. So there are two cases:
         # Case 1: A1 is ego vehicle
-        # fixme: what is case one?
         case_one = True
         if (
             self.other_vehicle_enter_time is math.inf
@@ -116,20 +115,18 @@ class PET(ET):
         # Transfer time steps to seconds
         if self.value is not math.inf:
             self.value = utils_gen.int_round(self.value * self.dt, 4)
-            utils_log.print_and_log_info(
-                logger, f"*\t\t {self.measure_name} = {self.value}"
-            )
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
+        )
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15), verbose: bool = True):
         if self.ca is None:
-            utils_log.print_and_log_info(logger, "*\t\t No conflict area", verbose)
             return
         if (
             self.other_vehicle_exit_time is math.inf
             and self.other_vehicle_enter_time is math.inf
         ):
-            utils_log.print_and_log_info(logger, "*\t\t No conflict area", verbose)
             return
         if self.configuration.debug.plot_limits:
             plot_limits = self.configuration.debug.plot_limits
