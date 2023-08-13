@@ -1,7 +1,0 @@
-save_plots: 1
-plot_limits: !!null
-# visualization settings
-draw_visualization: True
-# visualize dynamic obstacles with icons
-draw_icons: True
-

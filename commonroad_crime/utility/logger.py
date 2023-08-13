@@ -24,7 +24,7 @@ def initialize_logger(config: CriMeConfiguration) -> logging.Logger:
     string_date_time = datetime.now().strftime("_%Y_%m_%d_%H-%M-%S")
     path_log = os.path.join(
         config.general.path_logs,
-        f"{config.general.name_scenario}{string_date_time}.log",
+        f"CriMe{string_date_time}.log",
     )
     file_handler = logging.FileHandler(path_log)
 

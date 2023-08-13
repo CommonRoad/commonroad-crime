@@ -2,7 +2,7 @@ import unittest
 
 from commonroad_crime.data_structure.scene import Scene
 from commonroad_crime.data_structure.base import CriMeBase
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.logger as util_logger
 
 
@@ -10,7 +10,9 @@ class TestBase(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = "DEU_Test-1_1_T-1"
-        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        self.config = CriMeConfiguration.load(
+            f"../config_files/{scenario_id}.yaml", scenario_id
+        )
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
 

@@ -77,8 +77,8 @@ class CI(CriMeBase):
             m1 = self.configuration.vehicle.dynamic.parameters.m
         else:
             m1 = self.ci_config.m
-        if self.configuration.velocity.m_b:
-            m2 = self.configuration.velocity.m_b
+        if self.ci_config.m_b:
+            m2 = self.ci_config.m_b
         else:
             # assume that the vehicle b has the same mass as the ego vehicle
             m2 = m1

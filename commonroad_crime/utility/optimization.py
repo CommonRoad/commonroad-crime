@@ -99,7 +99,7 @@ class TCIOptimizer(OptimizerBase):
             self.opti.subject_to(self._opt_states[k + 1, :] == x_next)
             self.opti.subject_to(
                 self._opt_controls[k, 0] ** 2 + self._opt_controls[k, 1] ** 2
-                <= self.veh_config.cartesian.longitudinal.a_max**2
+                <= self.veh_config.params.longitudinal.a_max**2
             )
             # road boundary + ego's shape
             self.opti.subject_to(
@@ -182,16 +182,16 @@ class TCIOptimizer(OptimizerBase):
                     self.tci_config.w_y
                     * (self._opt_states[k, 1] - r_y) ** 2
                     * v_old
-                    / (d_y**2 * self.veh_config.cartesian.longitudinal.v_max)
+                    / (d_y**2 * self.veh_config.params.longitudinal.v_max)
                 )
             if k != x_initial.time_step + self.tci_config.N:
                 obj += (
                     self.tci_config.w_ax
                     * self._opt_controls[k, 0] ** 2
-                    / self.veh_config.cartesian.longitudinal.a_max**2
+                    / self.veh_config.params.longitudinal.a_max**2
                     + self.tci_config.w_ay
                     * self._opt_controls[k, 1] ** 2
-                    / self.veh_config.cartesian.longitudinal.a_max**2
+                    / self.veh_config.params.longitudinal.a_max**2
                 )
         return obj
 

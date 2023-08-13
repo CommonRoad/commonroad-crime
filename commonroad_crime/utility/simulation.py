@@ -57,7 +57,8 @@ class SimulationBase(ABC):
         self.time_horizon = simulated_vehicle.prediction.final_time_step
 
         self.simulated_vehicle = simulated_vehicle
-        self.parameters = config.vehicle.cartesian
+        self.parameters = config.vehicle.params
+        self.cartesian = config.vehicle.cartesian
         self.vehicle_dynamics = config.vehicle.dynamic
         self.plot = config.debug.draw_visualization
 
@@ -74,24 +75,24 @@ class SimulationBase(ABC):
             self.a_long * math.cos(ref_orientation)
             - self.a_lat * math.sin(ref_orientation),
             max(
-                ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                self.parameters.a_x_min,
+                ref_state.acceleration + self.cartesian.j_x_min * self.dt,
+                self.cartesian.a_x_min,
             ),
             min(
-                ref_state.acceleration + self.parameters.j_x_max * self.dt,
-                self.parameters.a_x_max,
+                ref_state.acceleration + self.cartesian.j_x_max * self.dt,
+                self.cartesian.a_x_max,
             ),
         )
         self.input.acceleration_y = np.clip(
             self.a_long * math.sin(ref_orientation)
             + self.a_lat * math.cos(ref_orientation),
             max(
-                ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                self.parameters.a_y_min,
+                ref_state.acceleration_y + self.cartesian.j_y_min * self.dt,
+                self.cartesian.a_y_min,
             ),
             min(
-                ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
-                self.parameters.a_y_max,
+                ref_state.acceleration_y + self.cartesian.j_y_max * self.dt,
+                self.cartesian.a_y_max,
             ),
         )
         self.input.time_step = ref_state.time_step
@@ -559,23 +560,23 @@ class SimulationLat(SimulationBase):
         self.input.acceleration = np.clip(
             (target_velocity_x - ref_state.velocity) / self.dt,
             max(
-                ref_state.acceleration + self.parameters.j_x_min * self.dt,
-                self.parameters.a_x_min,
+                ref_state.acceleration + self.cartesian.j_x_min * self.dt,
+                self.cartesian.a_x_min,
             ),
             min(
-                ref_state.acceleration + self.parameters.j_x_max * self.dt,
-                self.parameters.a_x_max,
+                ref_state.acceleration + self.cartesian.j_x_max * self.dt,
+                self.cartesian.a_x_max,
             ),
         )
         self.input.acceleration_y = np.clip(
             (target_velocity_y - ref_state.velocity_y) / self.dt,
             max(
-                ref_state.acceleration_y + self.parameters.j_y_min * self.dt,
-                self.parameters.a_y_min,
+                ref_state.acceleration_y + self.cartesian.j_y_min * self.dt,
+                self.cartesian.a_y_min,
             ),
             min(
-                ref_state.acceleration_y + self.parameters.j_y_max * self.dt,
-                self.parameters.a_y_max,
+                ref_state.acceleration_y + self.cartesian.j_y_max * self.dt,
+                self.cartesian.a_y_max,
             ),
         )
         self.input.time_step = ref_state.time_step

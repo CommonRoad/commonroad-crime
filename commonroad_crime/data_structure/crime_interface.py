@@ -94,7 +94,7 @@ class CriMeInterface:
             time_end,
         )
         for time_step in range(time_start, time_end + 1):
-            self.evaluate_scene(measures, time_step, vehicle_id, verbose=False)
+            self.evaluate_scene(measures, time_step, vehicle_id, verbose=verbose)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(
             logger, "*********************************", verbose
