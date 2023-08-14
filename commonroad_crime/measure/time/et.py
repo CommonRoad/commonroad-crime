@@ -214,7 +214,7 @@ class ET(CriMeBase):
                 time_step=self.enter_time,
                 color=TUMcolor.TUMblack,
             )
-        plt.title(f"{self.measure_name} of {self.value} seconds")
+        plt.title(f"{self.measure_name} at time step {self.time_step}")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)

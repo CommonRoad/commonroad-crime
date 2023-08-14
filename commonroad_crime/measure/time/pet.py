@@ -8,11 +8,9 @@ __status__ = "beta"
 
 import matplotlib.pyplot as plt
 import logging
+from typing import Union
 import math
 
-import numpy as np
-
-from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
 from commonroad_crime.measure.time.et import ET
@@ -37,11 +35,11 @@ class PET(ET):
     def __init__(self, config: CriMeConfiguration):
         super(PET, self).__init__(config)
         self.ca = None  # ca stands for conflict area
-        self.other_vehicle_exit_time = math.inf
-        self.other_vehicle_enter_time = math.inf
-        self.ego_vehicle_exit_time = math.inf
-        self.ego_vehicle_enter_time = math.inf
-        self.case_one = None
+        self.other_vehicle_exit_time: Union[float, int] = math.inf
+        self.other_vehicle_enter_time: Union[float, int] = math.inf
+        self.ego_vehicle_exit_time: Union[float, int] = math.inf
+        self.ego_vehicle_enter_time: Union[float, int] = math.inf
+        self.case_one: bool = False
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
@@ -55,22 +53,28 @@ class PET(ET):
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger,
-                f"*\t\t Measure only for intersection. PET is set to inf.",
-                verbose,
+                logger, f"*\t\t There is no intersection. \n*\t\t {self.measure_name} = {self.value}", verbose
             )
             self.value = math.inf
             return self.value
         if not isinstance(self.other_vehicle, DynamicObstacle):
             utils_log.print_and_log_info(
                 logger,
-                f"*\t\t {self.other_vehicle} Not a dynamic obstacle, PET is set to inf",
+                f"*\t\t Vehicle {self.other_vehicle} is not a dynamic obstacle",
                 verbose,
+            )
+            utils_log.print_and_log_info(
+                logger, f"*\t\t\t\t {self.measure_name} = {self.value}", verbose
             )
             self.value = math.inf
             return self.value
         # Create an agent object of ET to obtain the conflict area
         self.ca = self.get_ca(self.time_step, self.other_vehicle)
+        utils_log.print_and_log_info(
+            logger,
+            f"*\t\t There is a conflict area in the scenario",
+            verbose,
+        )
         (
             _,
             self.other_vehicle_enter_time,
@@ -200,7 +204,7 @@ class PET(ET):
                     color=TUMcolor.TUMblack,
                 )
 
-        plt.title(f"{self.measure_name} of {self.value} seconds")
+        plt.title(f"{self.measure_name} at time step {self.time_step}")
         if self.ca is not None:
             x_i, y_i = self.ca.exterior.xy
             plt.plot(x_i, y_i, color=TUMcolor.TUMblack, zorder=1001)
