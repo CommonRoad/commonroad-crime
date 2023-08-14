@@ -1,4 +1,4 @@
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.visualization as utils_vis
 from commonroad_crime.measure import (
     TTC,
@@ -21,7 +21,7 @@ def main():
     scenario_id = "OSC_PedestrianCollision-1_1_T-1"
     # scenario_id = 'OSC_PedestrianCollision-1_1_T-26'
     # ==== build configuration
-    config = ConfigurationBuilder.build_configuration(scenario_id)
+    config = CriMeConfiguration.load(f"../config_files/{scenario_id}.yaml", scenario_id)
     config.update()
     config.print_configuration_summary()
 

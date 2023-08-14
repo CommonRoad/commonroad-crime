@@ -3,9 +3,16 @@
 ### Fixed
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
 - fix the TCI, whose optimization problem was not reset each time before
+- verbose for each measure and the batch evaluation
 ### Added
 - support for Python 3.10 and preparation for 3.11
 - add code style checking (black)
+- sequential batch evaluation
+- add the following new measures
+  - MSD, PSD
+  - CI, CPI
+  - ET, PET
+  - SOI
 ### Updated
 - update the installation of commonroad-reach using pip install, the corresponding code part is updated
 ## [0.2.3 & 0.2.4] - 2023.05.08

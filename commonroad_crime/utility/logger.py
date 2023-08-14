@@ -24,7 +24,7 @@ def initialize_logger(config: CriMeConfiguration) -> logging.Logger:
     string_date_time = datetime.now().strftime("_%Y_%m_%d_%H-%M-%S")
     path_log = os.path.join(
         config.general.path_logs,
-        f"{config.general.name_scenario}{string_date_time}.log",
+        f"CriMe{string_date_time}.log",
     )
     file_handler = logging.FileHandler(path_log)
 
@@ -51,7 +51,7 @@ def print_and_log_debug(logger: logging.Logger, message: str, verbose: bool = Fa
     logger.debug(message)
 
 
-def print_and_log_info(logger: logging.Logger, message: str, verbose: bool = True):
+def print_and_log_info(logger: logging.Logger, message: str, verbose: bool = False):
     if verbose:
         print(message)
     logger.info(message)

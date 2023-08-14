@@ -7,6 +7,8 @@ __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import math
+import os
+import imageio.v3 as iio
 from pathlib import Path
 from typing import Union, List
 from enum import Enum
@@ -16,7 +18,7 @@ import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.geometry.shape import ShapeGroup
-from commonroad.scenario.state import PMState
+from commonroad.scenario.state import PMState, State
 from commonroad.scenario.scenario import Scenario
 from commonroad.scenario.obstacle import DynamicObstacle
 
@@ -42,12 +44,17 @@ class TUMcolor(tuple, Enum):
 zorder = 22
 
 
-def save_fig(metric_name: str, path_output: str, time_step: Union[int, float]):
+def save_fig(
+    measure_name: str,
+    path_output: str,
+    time_step: Union[int, float],
+    suffix: str = "svg",
+):
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
     plt.savefig(
-        f"{path_output}{metric_name}_{time_step:.0f}.svg",
-        format="svg",
+        f"{path_output}{measure_name}_{time_step:.0f}.{suffix}",
+        format=suffix,
         bbox_inches="tight",
         transparent=False,
     )
@@ -90,16 +97,17 @@ def draw_dyn_vehicle_shape(
     obstacle: DynamicObstacle,
     time_step: int,
     color: TUMcolor = TUMcolor.TUMblue,
+    alpha: float = 0.5,
 ):
     global zorder
     obs_shape = obstacle.occupancy_at_time(time_step).shape
     if isinstance(obs_shape, ShapeGroup):
         for shape_element in obs_shape.shapes:
             x, y = shape_element.shapely_object.exterior.xy
-            rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+            rnd.ax.fill(x, y, alpha=alpha, fc=color, ec=None, zorder=zorder)
     else:
         x, y = obs_shape.shapely_object.exterior.xy
-        rnd.ax.fill(x, y, alpha=0.5, fc=color, ec=None, zorder=zorder)
+        rnd.ax.fill(x, y, alpha=alpha, fc=color, ec=None, zorder=zorder)
     zorder += 1
 
 
@@ -137,7 +145,7 @@ def draw_reference_path(
 
 def draw_state_list(
     rnd: MPRenderer,
-    state_list: List[PMState],
+    state_list: List[Union[PMState, State]],
     start_time_step: Union[None, int] = None,
     color: TUMcolor = TUMcolor.TUMdarkblue,
     linewidth: float = 0.75,
@@ -186,7 +194,7 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
     if flag_latex:
         # use Latex font
         FONTSIZE = 28
-        plt.rcParams["text.latex.preamble"] = [r"\usepackage{lmodern}"]
+        plt.rcParams["text.latex.preamble"] = r"\usepackage{lmodern}"
         pgf_with_latex = {  # setup matplotlib to use latex for output
             "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
             "text.usetex": True,  # use LaTeX to write all text
@@ -200,11 +208,9 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
             "legend.fontsize": FONTSIZE,  # Make the legend/label fonts
             "xtick.labelsize": FONTSIZE,  # a little smaller
             "ytick.labelsize": FONTSIZE,
-            "pgf.preamble": [
-                r"\usepackage[utf8x]{inputenc}",  # use utf8 fonts
-                r"\usepackage[T1]{fontenc}",  # plots will be generated
-                r"\usepackage[detect-all,locale=DE]{siunitx}",
-            ],  # using this preamble
+            "pgf.preamble": r"\usepackage[utf8x]{inputenc}"
+            + r"\usepackage[T1]{fontenc}"
+            + r"\usepackage[detect-all,locale=DE]{siunitx}",
         }
         matplotlib.rcParams.update(pgf_with_latex)
     if (
@@ -272,3 +278,31 @@ def visualize_scenario_at_time_steps(
         for ts in time_steps[1:]:
             draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
     plt.show()
+
+
+def make_gif(
+    path: str,
+    prefix: str,
+    steps: Union[range, List[int]],
+    file_save_name="animation",
+    duration: float = 0.1,
+):
+    """
+    Making the gif out of the pngs, and removing the pngs.
+    """
+    images = []
+    filenames = []
+
+    for step in steps:
+        # svg is not supported
+        im_path = os.path.join(path, prefix + "{}.png".format(step))
+        filenames.append(im_path)
+
+    for filename in filenames:
+        images.append(iio.imread(filename))
+
+    iio.imwrite(os.path.join(path, file_save_name + ".gif"), images, duration=duration)
+
+    # Removing the pngs
+    for filename in filenames:
+        os.remove(filename)

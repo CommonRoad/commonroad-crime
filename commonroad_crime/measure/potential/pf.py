@@ -39,10 +39,12 @@ class PF(CriMeBase):
         self._s_ego = None
         self._d_ego = None
 
-    def compute(self, time_step: int, vehicle_id: int = None):
+    def compute(self, time_step: int, vehicle_id: int = None, verbose: bool = True):
         self.time_step = time_step
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         evaluated_state = self.ego_vehicle.state_at_time(self.time_step)
         try:
@@ -53,18 +55,20 @@ class PF(CriMeBase):
             utils_log.print_and_log_error(logger, err)
             return None
         self.value = self.calc_total_potential(
-            evaluated_state, self._s_ego, self._d_ego
+            evaluated_state, self._s_ego, self._d_ego, verbose
         )
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 
-    def calc_total_potential(self, veh_state: State, s_veh: float, d_veh: float):
+    def calc_total_potential(
+        self, veh_state: State, s_veh: float, d_veh: float, verbose: bool
+    ):
         u_total = (
             self._calc_lane_potential(veh_state, d_veh)
             + self._calc_road_potential(veh_state, d_veh)
-            + self._calc_car_potential(veh_state, s_veh, d_veh)
+            + self._calc_car_potential(veh_state, s_veh, d_veh, verbose)
         )
         if self.configuration.potential.desired_speed:
             u_total += self._calc_velocity_potential(veh_state, s_veh)
@@ -160,7 +164,9 @@ class PF(CriMeBase):
 
         return u_road
 
-    def _calc_car_potential(self, veh_state: State, s_veh: float, d_veh: float):
+    def _calc_car_potential(
+        self, veh_state: State, s_veh: float, d_veh: float, verbose: bool
+    ):
         def calc_scale_factor(d_0, v, T_f, beta, v_m):
             if v >= d_0 / T_f:
                 xi_0 = d_0 / (T_f * v)
@@ -191,6 +197,7 @@ class PF(CriMeBase):
                         logger,
                         f"At Time step {self.time_step}: the conversion of the polygon to the "
                         f"curvilinear coordinates failed, u_car is set to 0",
+                        verbose,
                     )
                     u_car += 0
                     continue
@@ -262,7 +269,7 @@ class PF(CriMeBase):
             * s_veh
         )
 
-    def visualize(self, figsize: tuple = (25, 15)):
+    def visualize(self, figsize: tuple = (25, 15), verbose: bool = True):
         plt.clf()
         dis_right, dis_left = utils_sol.compute_veh_dis_to_boundary(
             self.ego_vehicle.state_at_time(self.time_step), self.sce.lanelet_network
@@ -276,7 +283,9 @@ class PF(CriMeBase):
 
         for i in range(len(s)):
             for j in range(len(d)):
-                U[i, j] = self.calc_total_potential(evaluated_state, S[i, j], D[i, j])
+                U[i, j] = self.calc_total_potential(
+                    evaluated_state, S[i, j], D[i, j], verbose=verbose
+                )
 
         # polygons
         for obs in self.sce.obstacles:

@@ -1,6 +1,6 @@
 vehicle:
   ego_id: 100
-probability_scale:
+probability:
   monte_carlo:
     nr_samples: 100
 debug:

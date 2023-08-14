@@ -62,6 +62,7 @@ class CPI(CriMeBase):
             logger,
             f"* Computing the {self.measure_name} between ego vehicle"
             f" and vehicle {vehicle_id} at timestep {time_step}.",
+            verbose,
         )
 
         self.time_step = time_step
@@ -92,10 +93,10 @@ class CPI(CriMeBase):
         try:
             self.value /= self.end_time_step - self.time_step
         except ZeroDivisionError:
-            utils_log.print_and_log_error(logger, f"Timespan is zero.")
+            utils_log.print_and_log_error(logger, f"*\t\t Timespan is zero.", verbose)
 
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}."
+            logger, f"*\t\t {self.measure_name} = {self.value}.", verbose
         )
         return float(self.value)
 

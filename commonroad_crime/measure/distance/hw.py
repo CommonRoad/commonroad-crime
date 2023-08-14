@@ -38,7 +38,6 @@ class HW(THW):
 
     def cal_headway(self):
         if isinstance(self.other_vehicle.obstacle_shape, Polygon):
-            # todo: fix for ttz
             other_position = self.other_vehicle.state_at_time(self.time_step).position
         else:
             if isinstance(self.other_vehicle.obstacle_shape, Circle):

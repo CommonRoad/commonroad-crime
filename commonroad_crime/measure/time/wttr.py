@@ -73,7 +73,13 @@ class WTTR(CriMeBase):
             target_state.time_step
         )
 
-    def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = False):
+    def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = True):
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
+
         self.time_step = time_step
         self.ttc = self.ttc_object.compute(time_step)
         if self.ttc == 0:

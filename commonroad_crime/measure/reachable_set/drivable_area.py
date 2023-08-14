@@ -50,7 +50,7 @@ class DA(CriMeBase):
             self.configuration.reachable_set.time_horizon
         )
         self.reach_config.planning.dt = self.sce.dt
-        if self.configuration.reachable_set.cosy == 1:
+        if self.configuration.reachable_set.coordinate_system == 1:
             self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
@@ -83,11 +83,11 @@ class DA(CriMeBase):
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
         )
         self.reach_interface.reset(self.reach_config)
-        self.reach_interface.compute_reachable_sets()
+        self.reach_interface.compute_reachable_sets(verbose=verbose)
         self.value = compute_drivable_area(self.reach_interface.reachable_set)
         self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

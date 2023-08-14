@@ -6,7 +6,7 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
-from commonroad.scenario.scenario import Scenario, LaneletNetwork
+from commonroad.scenario.scenario import Scenario
 from typing import Union, List
 from commonroad.scenario.obstacle import StaticObstacle, DynamicObstacle
 

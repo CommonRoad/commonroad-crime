@@ -36,19 +36,21 @@ class AReq(CriMeBase):
         self._a_long_object = ALongReq(config)
         self._a_lat_object = ALatReq(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         self.value = math.sqrt(
-            self._a_long_object.compute(vehicle_id, time_step) ** 2
-            + self._a_lat_object.compute(vehicle_id, time_step) ** 2
+            self._a_long_object.compute(vehicle_id, time_step, verbose) ** 2
+            + self._a_lat_object.compute(vehicle_id, time_step, verbose) ** 2
         )
         self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

@@ -54,7 +54,9 @@ class CriMeInterface:
             if measure.measure_name.value not in self.criticality_dict[time_step]:
                 self.criticality_dict[time_step][
                     measure.measure_name.value
-                ] = m_evaluator.compute_criticality(time_step, vehicle_id, verbose)
+                ] = m_evaluator.compute_criticality(
+                    time_step, vehicle_id, verbose=verbose
+                )
                 self.measure_evaluators.append(m_evaluator)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(
@@ -92,7 +94,7 @@ class CriMeInterface:
             time_end,
         )
         for time_step in range(time_start, time_end + 1):
-            self.evaluate_scene(measures, time_step, vehicle_id, verbose=False)
+            self.evaluate_scene(measures, time_step, vehicle_id, verbose=verbose)
         # printing out the summary of the evaluations
         utils_log.print_and_log_info(
             logger, "*********************************", verbose

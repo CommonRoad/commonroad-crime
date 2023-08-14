@@ -38,7 +38,7 @@ class TTS(CriMeBase):
         time_step: int = 0,
         vehicle_id: int = None,
         ttc: float = None,
-        verbose: bool = False,
+        verbose: bool = True,
     ):
         utils_log.print_and_log_info(
             logger, f"* Computing the {self.measure_name} at time step {time_step}"
@@ -59,7 +59,7 @@ class TTS(CriMeBase):
             self.selected_state_list = self._right_evaluator.selected_state_list
         self.value = max(tts_left, tts_right)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

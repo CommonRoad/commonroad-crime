@@ -37,20 +37,25 @@ class WTTC(CriMeBase):
         super(WTTC, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
         self.time_step = time_step
         self.set_other_vehicles(vehicle_id)
         wttc_list = utils_sol.solver_wttc(
             self.ego_vehicle,
             self.other_vehicle,
             time_step,
-            self.configuration.vehicle.cartesian.longitudinal.a_max,
+            self.configuration.vehicle.params.longitudinal.a_max,
         )
         self.value = max(
             [np.real(x) for x in wttc_list if np.isreal(x) and x > 0][0], 0.0
         )
         self.value = utils_gen.int_round(self.value, str(self.dt)[::-1].find("."))
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 
@@ -85,7 +90,7 @@ class WTTC(CriMeBase):
         r_1 = r_2 = (
             1
             / 2
-            * self.configuration.vehicle.cartesian.longitudinal.a_max
+            * self.configuration.vehicle.params.longitudinal.a_max
             * self.value**2
         )
         if isinstance(self.other_vehicle, StaticObstacle):

@@ -8,7 +8,6 @@ __status__ = "beta"
 
 import math
 import logging
-import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
@@ -37,13 +36,15 @@ class ALongReq(CriMeBase):
         super(ALongReq, self).__init__(config)
         self._hw_object = HW(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
-        if self._except_obstacle_in_same_lanelet(expected_value=0.0):
+        if self._except_obstacle_in_same_lanelet(expected_value=0.0, verbose=verbose):
             # no negative acceleration is needed for avoiding a collision
             return self.value
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position(
@@ -64,7 +65,7 @@ class ALongReq(CriMeBase):
             + self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
         ) * math.cos(other_orientation)
         # compute the headway (relative distance) along the lanelet
-        x_rel = self._hw_object.compute(vehicle_id, time_step)
+        x_rel = self._hw_object.compute(vehicle_id, time_step, verbose=verbose)
         # compute the vehicles' velocity along the lanelet direction
         v_ego_long = math.sqrt(
             self.ego_vehicle.state_at_time(time_step).velocity ** 2
@@ -78,7 +79,9 @@ class ALongReq(CriMeBase):
             # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
             # implications for autonomous vehicles." is in correct
             v_rel = v_other_long - v_ego_long
-            utils_log.print_and_log_info(logger, f"*\t\t relative velocity is {v_rel}")
+            utils_log.print_and_log_info(
+                logger, f"*\t\t relative velocity is {v_rel}", verbose
+            )
             a_req = min(a_obj - v_rel**2 / (2 * x_rel), 0.0)
         else:
             # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
@@ -89,7 +92,7 @@ class ALongReq(CriMeBase):
         else:
             self.value = utils_gen.int_round(a_req, 2)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

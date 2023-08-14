@@ -38,25 +38,30 @@ class TIT(CriMeBase):
         self.ttc_object = TTC(config)
         self._ttc_cache = dict()
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         """
         Iterate through all states, calculate ttc, compare it to tau and then add dt to the result
         if ttc is smaller than tau
         """
         # init
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} beginning at time step {time_step}",
+            verbose,
+        )
         tau = self.configuration.time.tau
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self._ttc_cache.clear()
 
         self.value = 0
         for i in range(time_step, len(state_list)):
-            ttc_result = self.ttc_object.compute(vehicle_id, i)
+            ttc_result = self.ttc_object.compute(vehicle_id, i, verbose=verbose)
             self._ttc_cache[i] = ttc_result
             if ttc_result <= tau:
                 self.value += (tau - ttc_result) * self.dt
         self.value = utils_gen.int_round(self.value, 4)
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 

@@ -41,9 +41,11 @@ class TTC(CriMeBase):
         super(TTC, self).__init__(config)
         self._hw_object = HW(config)
 
-    def compute(self, vehicle_id: int, time_step: int = 0):
+    def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
         )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
@@ -58,7 +60,7 @@ class TTC(CriMeBase):
         """
 
         # distance along the lanelet
-        delta_d = self._hw_object.compute(vehicle_id, time_step)
+        delta_d = self._hw_object.compute(vehicle_id, time_step, verbose)
 
         if delta_d == math.inf:
             self.value = math.inf
@@ -109,7 +111,7 @@ class TTC(CriMeBase):
                 self.value = math.inf
 
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}"
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
         )
         return self.value
 
