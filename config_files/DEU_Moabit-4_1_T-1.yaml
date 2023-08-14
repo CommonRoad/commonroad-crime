@@ -1,2 +1,6 @@
 vehicle:
   ego_id: 341
+index:
+  soi:
+    margin_back: 1.
+    margin_side: 1.

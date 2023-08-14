@@ -104,6 +104,5 @@ class TestIndexDomain(unittest.TestCase):
 
         soi_object_3 = SOI(self.config)
         soi_3 = soi_object_3.compute()
-        self.config.debug.save_plots = False
         soi_object_3.visualize()
         self.assertEqual(soi_3, 0.0)
