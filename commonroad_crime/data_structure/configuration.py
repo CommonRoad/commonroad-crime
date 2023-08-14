@@ -6,17 +6,11 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
-import logging
-from types import SimpleNamespace
-from typing import Union, Optional
-from omegaconf import ListConfig, DictConfig
 import dataclasses
 import inspect
 from dataclasses import dataclass, field
 from typing import Union, Any, Dict, List, Optional
-from datetime import datetime
 import pathlib
-import re
 import os
 import logging
 from omegaconf import OmegaConf

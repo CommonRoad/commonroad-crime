@@ -8,7 +8,6 @@ __status__ = "beta"
 
 import math
 import logging
-import numpy as np
 
 from commonroad.geometry.shape import Circle
 

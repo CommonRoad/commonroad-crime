@@ -24,7 +24,7 @@ import commonroad_crime.utility.solver as utils_sol
 
 import numpy as np
 import math
-from typing import Optional, List, Union
+from typing import List, Union
 import functools
 
 
