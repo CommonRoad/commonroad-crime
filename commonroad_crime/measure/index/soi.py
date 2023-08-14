@@ -66,7 +66,7 @@ class SOI(CriMeBase):
                 [
                     lanelet
                     for sublist in self.sce.lanelet_network.find_lanelet_by_position(
-                        list(minimum_space.exterior.coords)
+                        list(minimum_space.exterior.coords) + [minimum_space.centroid]
                     )
                     for lanelet in sublist
                 ]
@@ -129,9 +129,10 @@ class SOI(CriMeBase):
         )
         self.value = 0
         self.value_list.clear()
+        self.time_step = time_step
 
         for ts in range(
-            time_step, len(self.ego_vehicle.prediction.trajectory.state_list)
+            self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)
         ):
             ego_poly = self.create_sp_polygon(self.ego_vehicle, ts)
 

@@ -95,3 +95,15 @@ class TestIndexDomain(unittest.TestCase):
         soi_2 = soi_object_2.compute()
         soi_object_2.visualize()
         self.assertEqual(soi_2, 32.0)
+
+        scenario_id = "DEU_Moabit-4_1_T-1"
+        self.config = CriMeConfiguration.load(
+            f"../config_files/{scenario_id}.yaml", scenario_id
+        )
+        self.config.update()
+
+        soi_object_3 = SOI(self.config)
+        soi_3 = soi_object_3.compute()
+        self.config.debug.save_plots = False
+        soi_object_3.visualize()
+        self.assertEqual(soi_3, 0.0)
