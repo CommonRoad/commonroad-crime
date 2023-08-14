@@ -24,7 +24,8 @@ scenario under ``./config_files/`` and store the parameter in it.
 
 .. code-block:: python 
 
-    from commonroad_crime.data_structure.configuration import CriMeConfiguration    from commonroad_crime.data_structure.crime_interface import CriMeInterface
+    from commonroad_crime.data_structure.configuration import CriMeConfiguration
+    from commonroad_crime.data_structure.crime_interface import CriMeInterface
     from commonroad_crime.measure import TTCStar
 
     # Specify the scenario
@@ -85,8 +86,8 @@ Import and Building Configuration
 
 .. code-block:: python
 
-from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.data_structure.crime_interface import CriMeInterface
+    from commonroad_crime.data_structure.configuration import CriMeConfiguration
+    from commonroad_crime.data_structure.crime_interface import CriMeInterface
     from commonroad_crime.measure import (HW, TTC, TTR, ALongReq, LongJ, BTN, P_MC, PF)
 
     # Specify the scenario

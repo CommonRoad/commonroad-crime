@@ -1,5 +1,5 @@
 # Changelog
-## [0.3.0] - 2023.xx.xx
+## [0.3.0] - 2023.08.14
 ### Fixed
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
 - fix the TCI, whose optimization problem was not reset each time before

@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class TTS(CriMeBase):
+    """
+    Time-to-steer: time-to-maneuver with steering
+    """
+
     measure_name = TypeTime.TTS
 
     def __init__(self, config: CriMeConfiguration):

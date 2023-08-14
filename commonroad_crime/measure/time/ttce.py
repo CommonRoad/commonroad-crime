@@ -23,7 +23,9 @@ logger = logging.getLogger(__name__)
 
 class TTCE(CriMeBase):
     """
-    See https://criticality-metrics.readthedocs.io/
+    The TTCE is a distance-dependent risk indicator, which generalizes the concept of the TTC to the non-collision case.
+    J. Eggert, “Predictive risk estimation for intelligent ADAS functions,” in 17th International Conference on Intelligent
+    Transportation Systems (ITSC), pp. 711–718, IEEE, 2014.
     """
 
     measure_name = TypeTime.TTCE

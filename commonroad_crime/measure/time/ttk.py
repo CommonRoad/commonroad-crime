@@ -13,6 +13,10 @@ from commonroad_crime.utility.simulation import Maneuver
 
 
 class TTK(TTM):
+    """
+    Time-to-kickdown: time-to-maneuver with accelerating
+    """
+
     measure_name = TypeTime.TTK
 
     def __init__(self, config: CriMeConfiguration):

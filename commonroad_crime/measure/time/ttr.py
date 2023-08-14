@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 class TTR(TTM):
+    """
+    Time-to-react: latest possible time before the TTC, at which an evasive maneuver still exists. This
+    under-approximative approach is obtained from Tamke, Andreas, Thao Dang, and Gabi Breuel.
+    "A flexible method for criticality assessment in driver assistance systems." 2011 IEEE intelligent
+     vehicles symposium (IV). IEEE, 2011.
+    """
+
     measure_name = TypeTime.TTR
 
     def __init__(self, config: CriMeConfiguration):
