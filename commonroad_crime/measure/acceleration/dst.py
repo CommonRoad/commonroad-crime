@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 class DST(CriMeBase):
     """
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
+
     the deceleration that has to be applied to a vehicle to maintain a certain safety time
     """
 

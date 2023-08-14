@@ -4,9 +4,6 @@ Data Structure
 .. toctree::
    :maxdepth: 4
 
-   commonroad_crime.data_structure.config_defaults
-
-
 Base
 ---------------------------------------------
 
@@ -19,14 +16,6 @@ Configuration
 ------------------------------------------------------
 
 .. automodule:: commonroad_crime.data_structure.configuration
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ConfigurationBuilder
----------------------------------------------------------------
-
-.. automodule:: commonroad_crime.data_structure.configuration_builder
    :members:
    :undoc-members:
    :show-inheritance:

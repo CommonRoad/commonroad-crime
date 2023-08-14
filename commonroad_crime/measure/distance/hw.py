@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 class HW(THW):
     """
     https://criticality-metrics.readthedocs.io/en/latest/time-scale/THW.html
+
     This is taken as a inherited class from time headway
     """
 

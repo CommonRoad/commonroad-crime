@@ -8,7 +8,6 @@ ACI
 .. automodule:: commonroad_crime.measure.index.aci
    :members:
    :undoc-members:
-   :show-inheritance:
 
 BTN
 ------------------------------------------
@@ -16,7 +15,6 @@ BTN
 .. automodule:: commonroad_crime.measure.index.btn
    :members:
    :undoc-members:
-   :show-inheritance:
 
 CI
 -----------------------------------------
@@ -24,7 +22,6 @@ CI
 .. automodule:: commonroad_crime.measure.index.ci
    :members:
    :undoc-members:
-   :show-inheritance:
 
 CPI
 ------------------------------------------
@@ -32,7 +29,6 @@ CPI
 .. automodule:: commonroad_crime.measure.index.cpi
    :members:
    :undoc-members:
-   :show-inheritance:
 
 PRI
 ------------------------------------------
@@ -40,7 +36,6 @@ PRI
 .. automodule:: commonroad_crime.measure.index.pri
    :members:
    :undoc-members:
-   :show-inheritance:
 
 RSS
 ------------------------------------------
@@ -48,7 +43,6 @@ RSS
 .. automodule:: commonroad_crime.measure.index.rss
    :members:
    :undoc-members:
-   :show-inheritance:
 
 SOI
 ------------------------------------------
@@ -56,7 +50,6 @@ SOI
 .. automodule:: commonroad_crime.measure.index.soi
    :members:
    :undoc-members:
-   :show-inheritance:
 
 STN
 ------------------------------------------
@@ -64,7 +57,6 @@ STN
 .. automodule:: commonroad_crime.measure.index.stn
    :members:
    :undoc-members:
-   :show-inheritance:
 
 TCI
 ------------------------------------------
@@ -72,6 +64,5 @@ TCI
 .. automodule:: commonroad_crime.measure.index.tci
    :members:
    :undoc-members:
-   :show-inheritance:
 
 

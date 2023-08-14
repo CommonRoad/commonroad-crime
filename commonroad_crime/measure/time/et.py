@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 
 class ET(CriMeBase):
     """
-    See https://criticality-metrics.readthedocs.io/. The definition is mainly obtained from
-    B. L. Allen, B. T. Shin, and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,”
-    Transportation Research Record, vol. 667, pp. 67–74, 1978.
+    See https://criticality-metrics.readthedocs.io/. The definition is mainly obtained from B. L. Allen, B. T. Shin,
+    and P. J. Cooper, “Analysis of Traffic Conflicts and Collisions,” Transportation Research Record, vol. 667,
+    pp. 67–74, 1978.
     """
 
     measure_name = TypeTime.ET

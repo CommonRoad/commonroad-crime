@@ -8,7 +8,6 @@ DCE
 .. automodule:: commonroad_crime.measure.distance.dce
    :members:
    :undoc-members:
-   :show-inheritance:
 
 HW
 --------------------------------------------
@@ -16,7 +15,6 @@ HW
 .. automodule:: commonroad_crime.measure.distance.hw
    :members:
    :undoc-members:
-   :show-inheritance:
 
 MSD
 ---------------------------------------------
@@ -24,7 +22,6 @@ MSD
 .. automodule:: commonroad_crime.measure.distance.msd
    :members:
    :undoc-members:
-   :show-inheritance:
 
 PSD
 ---------------------------------------------
@@ -32,6 +29,5 @@ PSD
 .. automodule:: commonroad_crime.measure.distance.psd
    :members:
    :undoc-members:
-   :show-inheritance:
 
 

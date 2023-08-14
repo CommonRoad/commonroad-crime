@@ -19,10 +19,8 @@ logger = logging.getLogger(__name__)
 
 class TET(TIT):
     """
-    Minderhoud, Michiel, M and Bovy, Piet, H.L.,
-    “Extended time-to-collision measures for road traffic
-    safety assessment,” Accident Analysis & Prevention,
-    vol. 33, pp. 89–97, 2001.
+    Minderhoud, Michiel, M and Bovy, Piet, H.L., “Extended time-to-collision measures for road traffic safety
+    assessment,” Accident Analysis & Prevention, vol. 33, pp. 89–97, 2001.
     """
 
     measure_name = TypeTime.TET

@@ -29,9 +29,8 @@ class CPI(CriMeBase):
     The CPI is a scenario-level metric and calculates the average probability
     that a vehicle can not avoid a collision by deceleration.
 
-    - from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno.
-    Microlevel traffic simulation method for assessing crash potential at
-    intersections. No. 07-2180. 2007.
+    -- from Cunto, Flavio Jose Craveiro, and Frank F. Saccomanno. Microlevel traffic simulation method for assessing
+    crash potential at intersections. No. 07-2180. 2007.
     """
 
     measure_name = TypeIndex.CPI

@@ -28,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 class PF(CriMeBase):
     """
-    The artificial potential field method uses potential functions (PF) to model the interactions between
-     vehicles and their environment.
+    The artificial potential field method uses potential functions (PF) to model the interactions between vehicles
+    and their environment.
     """
 
     measure_name = TypePotential.PF
