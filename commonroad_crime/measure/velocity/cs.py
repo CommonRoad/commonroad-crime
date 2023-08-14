@@ -21,6 +21,7 @@ class CS(CriMeBase):
     """
     See https://criticality-metrics.readthedocs.io/
     """
+
     measure_name = TypeVelocity.CS
     monotone = TypeMonotone.POS
 
@@ -28,7 +29,7 @@ class CS(CriMeBase):
         super(CS, self).__init__(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(logger, "*\t\t coming soon")
+        utils_log.print_and_log_info(logger, "*\t\t coming soon", verbose)
 
     def visualize(self):
         pass

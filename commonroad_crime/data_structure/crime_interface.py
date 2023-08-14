@@ -1,3 +1,11 @@
+__author__ = "Yuanfei Lin"
+__copyright__ = "TUM Cyber-Physical Systems Group"
+__credits__ = ["KoSi"]
+__version__ = "0.3.0"
+__maintainer__ = "Yuanfei Lin"
+__email__ = "commonroad@lists.lrz.de"
+__status__ = "beta"
+
 import logging
 from typing import List, Type
 
@@ -21,16 +29,22 @@ class CriMeInterface:
         self.measures = []
         self.measure_evaluators = []
 
-    def evaluate_scene(self, measures: List[Type[CriMeBase]],
-                       time_step: int = 0,
-                       vehicle_id: int = None,
-                       verbose: bool = True):
+    def evaluate_scene(
+        self,
+        measures: List[Type[CriMeBase]],
+        time_step: int = 0,
+        vehicle_id: int = None,
+        verbose: bool = True,
+    ):
         """
         Evaluate the criticality of given measures
         """
-        utils_log.print_and_log_info(logger, f"* Given measures for time step {time_step}: "
-                                             f"{', '.join([measure.measure_name.value for measure in measures])}...",
-                                     verbose)
+        utils_log.print_and_log_info(
+            logger,
+            f"* Given measures for time step {time_step}: "
+            f"{', '.join([measure.measure_name.value for measure in measures])}...",
+            verbose,
+        )
         if time_step not in self.criticality_dict:
             self.criticality_dict[time_step] = {}
         for measure in measures:
@@ -38,40 +52,64 @@ class CriMeInterface:
                 self.measures.append(measure)
             m_evaluator = measure(self.config)
             if measure.measure_name.value not in self.criticality_dict[time_step]:
-                self.criticality_dict[time_step][measure.measure_name.value] = \
-                    m_evaluator.compute_criticality(time_step,
-                                                    vehicle_id,
-                                                    verbose)
+                self.criticality_dict[time_step][
+                    measure.measure_name.value
+                ] = m_evaluator.compute_criticality(
+                    time_step, vehicle_id, verbose=verbose
+                )
                 self.measure_evaluators.append(m_evaluator)
         # printing out the summary of the evaluations
-        utils_log.print_and_log_info(logger, "*********************************", verbose)
+        utils_log.print_and_log_info(
+            logger, "*********************************", verbose
+        )
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
-        utils_log.print_and_log_info(logger,
-                                     '\n'.join(
-                                         '* {}: {}'.format(m, value) for m, value in
-                                         self.criticality_dict[time_step].items()),
-                                     verbose)
+        utils_log.print_and_log_info(
+            logger,
+            "\n".join(
+                "* {}: {}".format(m, value)
+                for m, value in self.criticality_dict[time_step].items()
+            ),
+            verbose,
+        )
 
-    def evaluate_scenario(self, measures: List[Type[CriMeBase]],
-                          time_start: int = 0,
-                          time_end: int = 1,
-                          vehicle_id: int = None,
-                          verbose: bool = True):
-        utils_log.print_and_log_info(logger, f"* Given measures for the whole scenario: "
-                                             f"{', '.join([measure.measure_name.value for measure in measures])}...",
-                                     verbose)
-        self.time_start, self.time_end, = time_start, time_end
+    def evaluate_scenario(
+        self,
+        measures: List[Type[CriMeBase]],
+        time_start: int = 0,
+        time_end: int = 1,
+        vehicle_id: int = None,
+        verbose: bool = True,
+    ):
+        utils_log.print_and_log_info(
+            logger,
+            f"* Given measures for the whole scenario: "
+            f"{', '.join([measure.measure_name.value for measure in measures])}...",
+            verbose,
+        )
+        (
+            self.time_start,
+            self.time_end,
+        ) = (
+            time_start,
+            time_end,
+        )
         for time_step in range(time_start, time_end + 1):
-            self.evaluate_scene(measures, time_step, vehicle_id, verbose=False)
+            self.evaluate_scene(measures, time_step, vehicle_id, verbose=verbose)
         # printing out the summary of the evaluations
-        utils_log.print_and_log_info(logger, "*********************************", verbose)
+        utils_log.print_and_log_info(
+            logger, "*********************************", verbose
+        )
         utils_log.print_and_log_info(logger, "\t Summary:", verbose)
         for time_step in range(time_start, time_end + 1):
-            utils_log.print_and_log_info(logger, '* At time step {}: '.format(time_step) +
-                                         ', '.join(
-                                             '{} = {}'.format(m, value) for m, value in
-                                             self.criticality_dict[time_step].items()),
-                                         verbose)
+            utils_log.print_and_log_info(
+                logger,
+                "* At time step {}: ".format(time_step)
+                + ", ".join(
+                    "{} = {}".format(m, value)
+                    for m, value in self.criticality_dict[time_step].items()
+                ),
+                verbose,
+            )
 
     def visualize(self, time_step: int = None):
         for m_evaluator in self.measure_evaluators:
@@ -80,6 +118,3 @@ class CriMeInterface:
             else:
                 if m_evaluator.time_step == time_step:
                     m_evaluator.visualize()
-
-
-

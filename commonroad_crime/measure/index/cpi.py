@@ -1,10 +1,10 @@
 __author__ = "Yuanfei Lin, Sicheng Wang"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.2.5"
+__version__ = "0.3.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
-__status__ = "Pre-alpha"
+__status__ = "beta"
 
 import logging
 import math
@@ -44,17 +44,26 @@ class CPI(CriMeBase):
         # We assume the MADR (aka. Maximum Available Deceleration Rate)
         # is normally distributed.
         self.cpi_config = self.configuration.index.cpi
-        a = (self.cpi_config.madr_lowb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
-        b = (self.cpi_config.madr_uppb - self.cpi_config.madr_mean) / self.cpi_config.madr_devi
-        self._madr_dist = truncnorm(a, b, self.cpi_config.madr_mean, self.cpi_config.madr_devi)
+        a = (
+            self.cpi_config.madr_lowb - self.cpi_config.madr_mean
+        ) / self.cpi_config.madr_devi
+        b = (
+            self.cpi_config.madr_uppb - self.cpi_config.madr_mean
+        ) / self.cpi_config.madr_devi
+        self._madr_dist = truncnorm(
+            a, b, self.cpi_config.madr_mean, self.cpi_config.madr_devi
+        )
         self.dr_lon_req_list = []
         self.value = 0
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} between ego vehicle"
-                    f" and vehicle {vehicle_id} at timestep {time_step}.")
+            logger,
+            f"* Computing the {self.measure_name} between ego vehicle"
+            f" and vehicle {vehicle_id} at timestep {time_step}.",
+            verbose,
+        )
 
         self.time_step = time_step
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
@@ -68,7 +77,8 @@ class CPI(CriMeBase):
                 utils_log.print_and_log_info(
                     logger,
                     f"*\t\t vehicle {vehicle_id} is no longer in the lanelets.",
-                    verbose)
+                    verbose,
+                )
                 self.dr_lon_req_list.append(self.cpi_config.madr_lowb)
                 continue
             if dr_lon_req <= self.cpi_config.madr_lowb:
@@ -81,12 +91,13 @@ class CPI(CriMeBase):
 
         # Normalize the result with timespan.
         try:
-            self.value /= (self.end_time_step - self.time_step)
+            self.value /= self.end_time_step - self.time_step
         except ZeroDivisionError:
-            utils_log.print_and_log_error(logger, f"Timespan is zero.")
+            utils_log.print_and_log_error(logger, f"*\t\t Timespan is zero.", verbose)
 
         utils_log.print_and_log_info(
-            logger, f"*\t\t {self.measure_name} = {self.value}.")
+            logger, f"*\t\t {self.measure_name} = {self.value}.", verbose
+        )
         return float(self.value)
 
     def visualize(self):
@@ -96,10 +107,9 @@ class CPI(CriMeBase):
             return
 
         fig, ax = plt.subplots()
-        x = np.linspace(self.cpi_config.madr_lowb, self.cpi_config.madr_uppb,
-                        100)
+        x = np.linspace(self.cpi_config.madr_lowb, self.cpi_config.madr_uppb, 100)
         # Plot the MADR distribution first.
-        ax.plot(x, self._madr_dist.pdf(x), label='MADR')
+        ax.plot(x, self._madr_dist.pdf(x), label="MADR")
         ax.legend()
         # Build colormap
         cmap = cm.get_cmap("viridis", num_data)
@@ -112,14 +122,18 @@ class CPI(CriMeBase):
         if scatter is not None:
             scatter.set_clim(self.time_step, self.end_time_step)
             # Draw color bar
-            cbar = plt.colorbar(scatter, ax=ax, orientation='horizontal')
-            cbar.set_label('Time Step')
+            cbar = plt.colorbar(scatter, ax=ax, orientation="horizontal")
+            cbar.set_label("Time Step")
 
         plt.title(f"{self.measure_name} of {self.value}")
-        plt.xlabel('Deceleration')
+        plt.xlabel("Deceleration")
 
         if self.configuration.debug.draw_visualization:
             if self.configuration.debug.save_plots:
-                utils_vis.save_fig(self.measure_name, self.configuration.general.path_output, self.time_step)
+                utils_vis.save_fig(
+                    self.measure_name,
+                    self.configuration.general.path_output,
+                    self.time_step,
+                )
             else:
                 plt.show()

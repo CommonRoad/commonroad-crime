@@ -26,15 +26,21 @@ class DeltaV(CriMeBase):
     Shelby, Steven G. "Delta-V as a measures of traffic conflict severity." 3rd International Conference on Road
     Safety and Simulati. September. 2011.
     """
+
     measure_name = TypeVelocity.Delta_V
     monotone = TypeMonotone.POS
 
-    def __init__(self,
-                 config: CriMeConfiguration):
+    def __init__(self, config: CriMeConfiguration):
         super(DeltaV, self).__init__(config)
 
-    def compute(self, time_step: int, vehicle_id: Union[int, None]):
-        utils_log.print_and_log_info(logger, f"* Computing the {self.measure_name} at time step {time_step}")
+    def compute(
+        self, time_step: int, vehicle_id: Union[int, None], verbose: bool = True
+    ):
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
         self.set_other_vehicles(vehicle_id)
         self.time_step = time_step
         m_ego = self.configuration.vehicle.dynamic.parameters.m
@@ -43,19 +49,40 @@ class DeltaV(CriMeBase):
         else:
             # assume that the vehicle b has the same mass as the ego vehicle
             m_b = m_ego
-        if self.ego_vehicle.state_at_time(self.time_step) and self.other_vehicle.state_at_time(self.time_step):
-            v_ego = np.sqrt(self.ego_vehicle.state_at_time(self.time_step).velocity ** 2 +
-                            self.ego_vehicle.state_at_time(self.time_step).velocity_y ** 2)
-            v_b = np.sqrt(self.other_vehicle.state_at_time(self.time_step).velocity ** 2 +
-                          self.other_vehicle.state_at_time(self.time_step).velocity_y ** 2)
-            delta_v = m_b * (v_ego + v_b * np.cos(self.ego_vehicle.state_at_time(self.time_step).orientation -
-                                                  self.other_vehicle.state_at_time(self.time_step).orientation)) / (
-                                  m_b + m_ego)
+        if self.ego_vehicle.state_at_time(
+            self.time_step
+        ) and self.other_vehicle.state_at_time(self.time_step):
+            v_ego = np.sqrt(
+                self.ego_vehicle.state_at_time(self.time_step).velocity ** 2
+                + self.ego_vehicle.state_at_time(self.time_step).velocity_y ** 2
+            )
+            v_b = np.sqrt(
+                self.other_vehicle.state_at_time(self.time_step).velocity ** 2
+                + self.other_vehicle.state_at_time(self.time_step).velocity_y ** 2
+            )
+            delta_v = (
+                m_b
+                * (
+                    v_ego
+                    + v_b
+                    * np.cos(
+                        self.ego_vehicle.state_at_time(self.time_step).orientation
+                        - self.other_vehicle.state_at_time(self.time_step).orientation
+                    )
+                )
+                / (m_b + m_ego)
+            )
             self.value = utils_gen.int_round(delta_v, 2)
         else:
-            utils_log.print_and_log_warning(logger, f"\t the vehicles have no state at time step {self.time_step}")
+            utils_log.print_and_log_warning(
+                logger,
+                f"\t the vehicles have no state at time step {self.time_step}",
+                verbose,
+            )
             self.value = None
-        utils_log.print_and_log_info(logger, f"*\t\t {self.measure_name} = {self.value}")
+        utils_log.print_and_log_info(
+            logger, f"*\t\t {self.measure_name} = {self.value}", verbose
+        )
         return self.value
 
     def visualize(self):

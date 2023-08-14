@@ -1,12 +1,26 @@
 image: python:3.8
 
 stages:
-  - style_check
+  - style
   - test
   - publish
 
 before_script:
     - apt-get update && apt-get install -y build-essential
+    - apt-get install -y libgl1
+    - pip install --upgrade pip
+    - pip install -e .
+
+black:
+  stage: style
+  needs: []
+  image: pyfound/black:23.1.0
+  before_script: []
+  cache: []
+  allow_failure: true
+  script:
+    - black --check --verbose --diff --color commonroad_crime
+    - black --check --verbose --diff --color tests
 
 unittest:
   stage: test
@@ -15,7 +29,6 @@ unittest:
     matrix:
       - PYTHON_VERSIONS: [ "3.7", "3.8", "3.9", "3.10" ] # 3.11 limited by drivability-checker
   script:
-    - pip install -e .
     - cd $CI_PROJECT_DIR/tests && python -m unittest
 
 ### publish documentation ###
@@ -24,9 +37,6 @@ pages:
   # at https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures
   stage: publish
   script:
-    - pip install --upgrade pip
-    # installation of reach?
-    - pip install -e .
     - pip install -r ./docs/requirements_doc.txt
     - cd docs/sphinx
     - make html

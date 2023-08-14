@@ -24,16 +24,14 @@ scenario under ``./config_files/`` and store the parameter in it.
 
 .. code-block:: python 
 
-    from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder 
-    from commonroad_crime.data_structure.crime_interface import CriMeInterface
+    from commonroad_crime.data_structure.configuration import CriMeConfiguration    from commonroad_crime.data_structure.crime_interface import CriMeInterface
     from commonroad_crime.measure import TTCStar
 
     # Specify the scenario
     scenario_id = "ZAM_Urban-7_1_S-2" 
 
     # Build the configuration
-    config = ConfigurationBuilder.build_configuration(scenario_id)
-    config.update() 
+config = CriMeConfiguration.load(f"../config_files/{scenario_id}.yaml", scenario_id)    config.update()
     config.print_configuration_summary()
 
 Compute the criticality
@@ -87,8 +85,8 @@ Import and Building Configuration
 
 .. code-block:: python
 
-    from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder 
-    from commonroad_crime.data_structure.crime_interface import CriMeInterface
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
+from commonroad_crime.data_structure.crime_interface import CriMeInterface
     from commonroad_crime.measure import (HW, TTC, TTR, ALongReq, LongJ, BTN, P_MC, PF)
 
     # Specify the scenario
@@ -97,8 +95,7 @@ Import and Building Configuration
 
     # Build the configuration
 
-    config = ConfigurationBuilder.build_configuration(scenario_id)
-    config.update()
+config = CriMeConfiguration.load(f"../config_files/{scenario_id}.yaml", scenario_id)    config.update()
     config.print_configuration_summary()
 
 Compute the criticality with various measures

@@ -1,5 +1,5 @@
 """
-Unit tests of the module time-scale measures
+Unit tests of the module time-domain measures
 """
 
 import unittest
@@ -8,24 +8,35 @@ import math
 
 from commonroad.common.file_reader import CommonRoadFileReader
 
-from commonroad_crime.measure import TET, TIT, TTCStar, TTB, TTK, TTS, TTR, THW, TTZ, WTTC, TTCE
-from commonroad_crime.data_structure.configuration_builder import ConfigurationBuilder
+from commonroad_crime.measure import (
+    TET,
+    TIT,
+    TTCStar,
+    TTB,
+    TTK,
+    TTS,
+    TTR,
+    THW,
+    TTZ,
+    WTTC,
+    TTCE,
+    ET,
+    PET,
+)
+from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.logger as util_logger
 from commonroad_crime.utility.simulation import Maneuver
 
-try:
-    import commonroad_reach.pycrreach
-    from commonroad_crime.measure.time.wttr import WTTR
-    module_failed = False
-except ImportError:
-    module_failed = True
+from commonroad_crime.measure.time.wttr import WTTR
 
 
 class TestTimeDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
-        scenario_id = 'ZAM_Urban-3_3_Repair'
-        self.config = ConfigurationBuilder.build_configuration(scenario_id)
+        scenario_id = "ZAM_Urban-3_3_Repair"
+        self.config = CriMeConfiguration()
+        self.config.general.set_scenario_name(scenario_id)
+        self.config.vehicle.ego_id = 8
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
         self.config.update()
@@ -71,12 +82,13 @@ class TestTimeDomain(unittest.TestCase):
 
         # test scenario with set-based prediction
         self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
-        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_3 = TTCStar(self.config)
         ttc_3 = ttc_object_3.compute()
-        assert math.isclose(ttc_3, 9*sce_set.dt, abs_tol=1e-2)
+        assert math.isclose(ttc_3, 9 * sce_set.dt, abs_tol=1e-2)
 
     def test_ttm(self):
         self.config.debug.draw_visualization = True
@@ -122,8 +134,9 @@ class TestTimeDomain(unittest.TestCase):
 
         # test scenario with set-based prediction
         self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
-        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_set, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=100, sce=sce_set)
         ttc_object_4 = TTR(self.config)
         ttc_4 = ttc_object_4.compute()
@@ -154,19 +167,19 @@ class TestTimeDomain(unittest.TestCase):
         ttc = ttc_object.compute()
         self.assertGreater(ttc, wttc)
 
-    @unittest.skipIf(module_failed, "No module commonroad_reach installed")
     def test_wttr(self):
         wttr_object = WTTR(self.config)
         wttr = wttr_object.compute(10)
         wttr_object.visualize()
         self.assertEqual(wttr, 1.3)
         wttr2 = wttr_object.compute()
-        self.assertAlmostEqual(wttr, wttr2 - 1.)
+        self.assertAlmostEqual(wttr, wttr2 - 1.0)
 
     def test_ttz(self):
         self.config.general.name_scenario = "ZAM_Zip-2_1_T-1"
-        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).\
-            open(lanelet_assignment=True)
+        sce_crosswalk, _ = CommonRoadFileReader(self.config.general.path_scenario).open(
+            lanelet_assignment=True
+        )
         self.config.update(ego_id=1, sce=sce_crosswalk)
         ttz_object = TTZ(self.config)
         ttz = ttz_object.compute(0)
@@ -186,6 +199,84 @@ class TestTimeDomain(unittest.TestCase):
         ttce3 = ttce_object_2.compute(7, time_step=10)
         assert math.isclose(ttce3, ttce2 - 10 * self.config.scenario.dt, abs_tol=1e-2)
 
+    def test_et(self):
+        self.config.general.name_scenario = "ZAM_Tjunction-1_97_T-1"
+        sce_intersection1, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=1, sce=sce_intersection1)
+        et_object = ET(self.config)
+        et = et_object.compute(5)
+        et_object.visualize()
+        assert math.isclose(et, 1.1, abs_tol=1e-2)
 
+        self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
+        sce_intersection2, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=349, sce=sce_intersection2)
+        et_object = ET(self.config)
+        et = et_object.compute(328)
+        et_object.visualize()
+        assert math.isclose(et, 1.5, abs_tol=1e-2)
 
+        self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
+        sce_intersection3, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=349, sce=sce_intersection3)
+        et_object = ET(self.config)
+        et = et_object.compute(356)
+        et_object.visualize()
+        assert math.isinf(et)
 
+        self.config.general.name_scenario = "DEU_Test-1_1_T-1"
+        sce_intersection4, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=6, sce=sce_intersection4)
+        et_object = ET(self.config)
+        et = et_object.compute(7)
+        et_object.visualize()
+        assert math.isinf(et)
+
+    def test_pet(self):
+        self.config.general.name_scenario = "ZAM_Tjunction-1_97_T-1"
+        sce_intersection1, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=5, sce=sce_intersection1)
+        pet_object = PET(self.config)
+        pet = pet_object.compute(1)
+        pet_object.visualize()
+        assert math.isclose(pet, 3.2, abs_tol=1e-2)
+
+        self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
+        sce_intersection2, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=349, sce=sce_intersection2)
+        pet_object = PET(self.config)
+        pet = pet_object.compute(328)
+        pet_object.visualize()
+        assert math.isinf(pet)
+
+        self.config.general.name_scenario = "BEL_Putte-8_2_T-1"
+        sce_intersection3, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=349, sce=sce_intersection3)
+        pet_object = PET(self.config)
+        pet = pet_object.compute(356)
+        pet_object.visualize()
+        assert math.isinf(pet)
+
+        self.config.general.name_scenario = "DEU_Test-1_1_T-1"
+        sce_intersection4, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=6, sce=sce_intersection4)
+        pet_object = PET(self.config)
+        pet = pet_object.compute(7)
+        pet_object.visualize()
+        assert math.isinf(pet)
