@@ -28,7 +28,8 @@ logger = logging.getLogger(__name__)
 
 class PF(CriMeBase):
     """
-    Jerk is the rate of change in acceleration, and thus quantifies over the abruptness of a maneuver.
+    The artificial potential field method uses potential functions (PF) to model the interactions between
+     vehicles and their environment.
     """
 
     measure_name = TypePotential.PF

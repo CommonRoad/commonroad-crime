@@ -27,6 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 class TTM(CriMeBase):
+    """
+    Time-to-maneuver (base class for different maneuvers): Tamke, Andreas, Thao Dang, and Gabi Breuel.
+    "A flexible method for criticality assessment in driver assistance systems." 2011 IEEE intelligent
+     vehicles symposium (IV). IEEE, 2011.
+    """
+
     measure_name = TypeTime.TTM
 
     def __init__(self, config: CriMeConfiguration, maneuver: Union[Maneuver, None]):

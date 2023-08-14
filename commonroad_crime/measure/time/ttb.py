@@ -13,6 +13,10 @@ from commonroad_crime.utility.simulation import Maneuver
 
 
 class TTB(TTM):
+    """
+    Time-to-brake: time-to-maneuver with braking
+    """
+
     measure_name = TypeTime.TTB
 
     def __init__(self, config: CriMeConfiguration):

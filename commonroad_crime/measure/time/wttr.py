@@ -27,6 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 class WTTR(CriMeBase):
+    """
+    Worst-case of time-to-react. Originally obtained from Sontges, Sebastian, Markus Koschi, and Matthias Althoff.
+     "Worst-case analysis of the time-to-react using reachable sets." 2018 IEEE Intelligent Vehicles Symposium (IV).
+     IEEE, 2018.
+    """
+
     measure_name = TypeTime.WTTR
 
     def __init__(self, config: CriMeConfiguration):

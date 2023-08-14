@@ -36,6 +36,11 @@ logger = logging.getLogger(__name__)
 
 
 class TTCStar(CriMeBase):
+    """
+    A more accurate alternative is to compute the TTC with an intended trajectory of the ego vehicle and the given
+    prediction of other vehicles, which we call TTC∗.
+    """
+
     measure_name = TypeTime.TTCStar
     monotone = TypeMonotone.NEG
 
