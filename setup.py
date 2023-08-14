@@ -51,7 +51,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
-        "License :: OSI Approved :: BSD 3-Clause",
+        "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
     ],
     include_package_data=True,
