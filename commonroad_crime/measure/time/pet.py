@@ -53,7 +53,9 @@ class PET(ET):
             len(self.sce.lanelet_network.intersections) == 0
         ):
             utils_log.print_and_log_info(
-                logger, f"*\t\t There is no intersection. \n*\t\t {self.measure_name} = {self.value}", verbose
+                logger,
+                f"*\t\t There is no intersection. \n*\t\t {self.measure_name} = {self.value}",
+                verbose,
             )
             self.value = math.inf
             return self.value

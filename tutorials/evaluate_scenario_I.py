@@ -8,7 +8,7 @@ Experiment: Sec. IV.B Evaluation on Scenarios
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
-from commonroad_crime.measure import TTC, BTN, PF, ALongReq, ALatReq, STN, P_MC  # DA
+from commonroad_crime.measure import TTC, BTN, PF, ALongReq, ALatReq, STN, P_MC, DA
 
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.logger as utils_log
@@ -27,7 +27,7 @@ def main():
     # ==== compute the criticality using CriMe interface
     crime_interface = CriMeInterface(config)
     crime_interface.evaluate_scenario(
-        [TTC, ALongReq, BTN, ALatReq, STN, P_MC, PF],
+        [TTC, ALongReq, BTN, ALatReq, STN, P_MC, PF, DA],
         time_start=0,
         time_end=20,
         verbose=True,
