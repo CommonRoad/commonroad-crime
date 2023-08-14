@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 
 class WTTC(CriMeBase):
     """
-    The worst-time-to-collision metric extends the usual TTC by considering multiple traces of actors as predicted by an
-    over-approximating dynamic motion model. From: Wachenfeld, Walther, et al. "The worst-time-to-collision metric
+    The worst-time-to-collision metric extends the usual TTC by considering multiple traces of actors as predicted by
+    an over-approximating dynamic motion model. From: Wachenfeld, Walther, et al. "The worst-time-to-collision metric
     for situation identification." 2016 IEEE Intelligent Vehicles Symposium (IV). IEEE, 2016.
     """
 

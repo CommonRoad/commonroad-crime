@@ -30,7 +30,6 @@ logger = logging.getLogger(__name__)
 class TTC(CriMeBase):
     """
     With a constant acceleration decision model of the vehicles motion
-
     -- using (5.24) in "Collision Avoidance Theory with Application to Automotive Collision Mitigation"
     """
 

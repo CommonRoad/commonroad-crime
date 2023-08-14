@@ -8,7 +8,6 @@ ALatReq
 .. automodule:: commonroad_crime.measure.acceleration.a_lat_req
    :members:
    :undoc-members:
-   :show-inheritance:
 
 ALongReq
 ----------------------------------------------------------
@@ -16,7 +15,6 @@ ALongReq
 .. automodule:: commonroad_crime.measure.acceleration.a_long_req
    :members:
    :undoc-members:
-   :show-inheritance:
 
 AReq
 ----------------------------------------------------
@@ -24,7 +22,6 @@ AReq
 .. automodule:: commonroad_crime.measure.acceleration.a_req
    :members:
    :undoc-members:
-   :show-inheritance:
 
 DST
 -------------------------------------------------
@@ -32,5 +29,4 @@ DST
 .. automodule:: commonroad_crime.measure.acceleration.dst
    :members:
    :undoc-members:
-   :show-inheritance:
 
