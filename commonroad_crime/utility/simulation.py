@@ -104,8 +104,10 @@ class SimulationBase(ABC):
         Initializing the state list based on the given time step. All the states before the time step would be returned.
         """
         state_list = []
-        if time_step is not 0:
-            for ts in range(0, time_step):
+        # checking weather the time step is larger than the initial one
+        initial_time_step = self.simulated_vehicle.initial_state.time_step
+        if time_step > initial_time_step:
+            for ts in range(initial_time_step, time_step):
                 state = copy.deepcopy(self.simulated_vehicle.state_at_time(ts))
                 check_elements_state(state)
                 state_list.append(state)
