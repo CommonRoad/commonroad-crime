@@ -512,23 +512,37 @@ class SimulationLat(SimulationBase):
             turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
                 list(turning_lanelet_id)[0]
             )
+            # !! for turning right, the curvatures are negative
             curvature = np.max(
-                compute_curvature_from_polyline(turning_lanelet.center_vertices)
+                np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
             )
             # fixme: add rounding up to make the curvature larger
             curvature = np.ceil(curvature * 10) / 10
-            desired_velocity = np.sqrt(self.a_lat / curvature)
+            desired_velocity = np.sqrt(np.abs(self.a_lat / curvature))
             if (
                 np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
-                > desired_velocity
+                - desired_velocity
+                > 0
             ):
-                #  exceed the limit, decelerate first
+                # exceed the limit, decelerate first
                 self.a_long = -abs(self.a_lat)
                 self.a_lat = 0
-            while (
-                np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
-                > desired_velocity
-            ):
+            else:
+                # too smaller than the limit, accelerate first
+                self.a_long = abs(self.a_lat)
+                self.a_lat = 0
+            while True:
+                # set a margin around the desired velocity
+                if (
+                    np.abs(
+                        np.sqrt(
+                            checked_state.velocity**2 + checked_state.velocity_y**2
+                        )
+                        - desired_velocity
+                    )
+                    < 0.5
+                ):
+                    break
                 check_elements_state(checked_state, self.input)
                 self.update_inputs_x_y(checked_state)
                 suc_state = self.vehicle_dynamics.simulate_next_state(
