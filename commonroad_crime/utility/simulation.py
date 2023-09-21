@@ -490,9 +490,6 @@ class SimulationLat(SimulationBase):
         current_lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
             [checked_state.position]
         )[0][0]
-        current_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-            current_lanelet_id
-        )
         turning_lanelet_id = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
@@ -509,6 +506,8 @@ class SimulationLat(SimulationBase):
             curvature = np.max(
                 compute_curvature_from_polyline(turning_lanelet.center_vertices)
             )
+            # fixme: add rounding up to make the curvature larger
+            curvature = np.ceil(curvature * 10) / 10 
             desired_velocity = np.sqrt(self.a_lat / curvature)
             if (
                 np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
