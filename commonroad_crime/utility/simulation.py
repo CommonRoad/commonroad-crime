@@ -495,13 +495,14 @@ class SimulationLat(SimulationBase):
         turning_lanelet_id = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
-                if (
-                    current_lanelet_id in incoming.incoming_lanelets
-                    or self._scenario.lanelet_network.find_lanelet_by_id(
-                        current_lanelet_id
-                    ).predecessor[0]  # fix: when vehicle is in the turning lanelets
-                    in incoming.incoming_lanelets
-                ):
+                if current_lanelet_id in incoming.incoming_lanelets or np.all(
+                    np.isin(
+                        self._scenario.lanelet_network.find_lanelet_by_id(
+                            current_lanelet_id
+                        ).predecessor,
+                        list(incoming.incoming_lanelets),
+                    )
+                ):  # fix: when vehicle is in the turning lanelets
                     if self.maneuver == Maneuver.TURNLEFT:
                         turning_lanelet_id = incoming.successors_left
                     else:
