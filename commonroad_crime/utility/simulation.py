@@ -495,13 +495,14 @@ class SimulationLat(SimulationBase):
         turning_lanelet_id = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
-                if (
-                    current_lanelet_id in incoming.incoming_lanelets
-                    or self._scenario.lanelet_network.find_lanelet_by_id(
-                        current_lanelet_id
-                    ).predecessor[0]  # fix: when vehicle is in the turning lanelets
-                    in incoming.incoming_lanelets
-                ):
+                if current_lanelet_id in incoming.incoming_lanelets or np.all(
+                    np.isin(
+                        self._scenario.lanelet_network.find_lanelet_by_id(
+                            current_lanelet_id
+                        ).predecessor,
+                        list(incoming.incoming_lanelets),
+                    )
+                ):  # fix: when vehicle is in the turning lanelets
                     if self.maneuver == Maneuver.TURNLEFT:
                         turning_lanelet_id = incoming.successors_left
                     else:
@@ -515,7 +516,7 @@ class SimulationLat(SimulationBase):
                 compute_curvature_from_polyline(turning_lanelet.center_vertices)
             )
             # fixme: add rounding up to make the curvature larger
-            curvature = np.ceil(curvature * 10) / 10 
+            curvature = np.ceil(curvature * 10) / 10
             desired_velocity = np.sqrt(self.a_lat / curvature)
             if (
                 np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
@@ -716,7 +717,7 @@ class SimulationLat(SimulationBase):
                 state_list.append(suc_state)
                 pre_state = suc_state
                 suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
-                if self._direction == 'left':
+                if self._direction == "left":
                     if suc_orientation > max_orientation:
                         break
                 else:
