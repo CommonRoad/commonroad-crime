@@ -489,25 +489,38 @@ class SimulationLat(SimulationBase):
             return state_list, checked_state
 
         # for turning, finding the target lanelet
-        current_lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
+        current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
             [checked_state.position]
-        )[0][0]
+        )[0]
         turning_lanelet_id = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
-                if current_lanelet_id in incoming.incoming_lanelets or np.all(
-                    np.isin(
-                        self._scenario.lanelet_network.find_lanelet_by_id(
-                            current_lanelet_id
-                        ).predecessor,
-                        list(incoming.incoming_lanelets),
+                is_turn_left = self.maneuver in Maneuver.TURNLEFT
+                is_turn_right = self.maneuver in Maneuver.TURNRIGHT
+
+                # Check if the current_lanelet_id is in the correct incoming or successor lanelets based on the maneuver
+                if (
+                    set(current_lanelet_ids).intersection(incoming.incoming_lanelets)
+                    or (
+                        is_turn_left
+                        and set(current_lanelet_ids).intersection(
+                            incoming.successors_left
+                        )
                     )
-                ):  # fix: when vehicle is in the turning lanelets
-                    if self.maneuver == Maneuver.TURNLEFT:
-                        turning_lanelet_id = incoming.successors_left
-                    else:
-                        turning_lanelet_id = incoming.successors_right
+                    or (
+                        is_turn_right
+                        and set(current_lanelet_ids).intersection(
+                            incoming.successors_right
+                        )
+                    )
+                ):
+                    turning_lanelet_id = (
+                        incoming.successors_left
+                        if is_turn_left
+                        else incoming.successors_right
+                    )
                     break
+
         if turning_lanelet_id:
             turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
                 list(turning_lanelet_id)[0]
