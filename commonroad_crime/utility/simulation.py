@@ -15,10 +15,14 @@ from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
 from commonroad.scenario.obstacle import DynamicObstacle
+from commonroad.scenario.scenario import Tag
 from commonroad.scenario.state import PMInputState, PMState, KSState
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.utility.general import check_elements_state
+from commonroad_crime.utility.general import (
+    check_elements_state,
+    compute_curvature_from_polyline,
+)
 from commonroad_crime.utility.solver import compute_lanelet_width_orientation
 
 
@@ -471,6 +475,71 @@ class SimulationLat(SimulationBase):
             orientation,
         )
 
+    def check_intersection_limit(
+        self, state_list: List[PMState], checked_state: PMState
+    ) -> (List[PMState], PMState):
+        # directly check whether it is an intersection scenario
+        if (
+            len(self._scenario.lanelet_network.intersections) == 0
+            or Tag.INTERSECTION not in self._scenario.tags
+            or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+        ):
+            return state_list, checked_state
+
+        # for turning, finding the target lanelet
+        current_lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
+            [checked_state.position]
+        )[0][0]
+        current_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+            current_lanelet_id
+        )
+        turning_lanelet_id = None
+        for intersection in self._scenario.lanelet_network.intersections:
+            for incoming in intersection.incomings:
+                if current_lanelet_id in incoming.incoming_lanelets:
+                    if self.maneuver == Maneuver.TURNLEFT:
+                        turning_lanelet_id = incoming.successors_left
+                    else:
+                        turning_lanelet_id = incoming.successors_right
+                    break
+        if turning_lanelet_id:
+            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                list(turning_lanelet_id)[0]
+            )
+            curvature = np.max(
+                compute_curvature_from_polyline(turning_lanelet.center_vertices)
+            )
+            desired_velocity = np.sqrt(self.a_lat / curvature)
+            if (
+                np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
+                > desired_velocity
+            ):
+                #  exceed the limit, decelerate first
+                self.a_long = -abs(self.a_lat)
+                self.a_lat = 0
+            while (
+                np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
+                > desired_velocity
+            ):
+                check_elements_state(checked_state, self.input)
+                self.update_inputs_x_y(checked_state)
+                suc_state = self.vehicle_dynamics.simulate_next_state(
+                    PMState(
+                        position=checked_state.position,
+                        velocity=checked_state.velocity,
+                        velocity_y=checked_state.velocity_y,
+                        time_step=checked_state.time_step,
+                    ),
+                    self.input,
+                    self.dt,
+                    throw=False,
+                )
+                state_list.append(suc_state)
+                checked_state = suc_state
+        self.set_inputs(checked_state)
+        check_elements_state(checked_state)
+        return state_list, checked_state
+
     def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
         """
         Simulates the lateral state list from the given start time step.
@@ -485,6 +554,8 @@ class SimulationLat(SimulationBase):
         max_orient = 0.0
         if given_time_limit:
             self.time_horizon = given_time_limit
+        # check whether it is an intersection, if yes, the vehicle has to reach a desired velocity
+        state_list, pre_state = self.check_intersection_limit(state_list, pre_state)
         for i in range(self._nr_stage):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(
                 pre_state.position

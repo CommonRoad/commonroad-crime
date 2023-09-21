@@ -164,3 +164,24 @@ def check_elements_state(
         if state.acceleration is not None:
             state.acceleration_y = state.acceleration * math.sin(ref_orientation)
             state.acceleration = state.acceleration * math.cos(ref_orientation)
+
+
+def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
+    """
+    Computes curvature along a polyline
+
+    :param polyline: polyline for which curvature should be calculated
+    :return: curvature along  polyline
+    """
+    assert (
+        isinstance(polyline, np.ndarray)
+        and polyline.ndim == 2
+        and len(polyline[:, 0]) > 2
+    ), "Polyline malformed for curvature computation p={}".format(polyline)
+
+    x_d = np.gradient(polyline[:, 0])
+    x_dd = np.gradient(x_d)
+    y_d = np.gradient(polyline[:, 1])
+    y_dd = np.gradient(y_d)
+
+    return (x_d * y_dd - x_dd * y_d) / ((x_d**2 + y_d**2) ** (3.0 / 2.0))
