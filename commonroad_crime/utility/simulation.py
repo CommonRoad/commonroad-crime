@@ -478,7 +478,7 @@ class SimulationLat(SimulationBase):
         )
 
     def check_intersection_limit(
-        self, state_list: List[PMState], checked_state: PMState
+        self, state_list: List[Union[PMState, KSState]], checked_state: PMState
     ) -> (List[PMState], PMState):
         # directly check whether it is an intersection scenario
         if (
