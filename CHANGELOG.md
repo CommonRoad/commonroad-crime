@@ -2,6 +2,7 @@
 ## [0.3.1] - 2023.xx.xx
 ### Fixed
 - The evasive maneuver simulator: now the initial time step of the simulated vehicle doesn't have to start from 0
+- The adaptive turning behaviors at intersections for the TTM simulation, i.e., the velocity needs to first satify the desired requirements based on the intersection's curvature
 ## [0.3.0] - 2023.08.14
 ### Fixed
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
