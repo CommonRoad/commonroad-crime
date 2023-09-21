@@ -19,6 +19,7 @@ from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstac
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
+import commonroad_dc.pycrccosy as pycrccosy
 
 import commonroad_crime.utility.solver as utils_sol
 
@@ -26,6 +27,7 @@ import numpy as np
 import math
 from typing import List, Union
 import functools
+from scipy.interpolate import splprep, splev
 
 
 def load_scenario(config) -> Scenario:
@@ -173,11 +175,15 @@ def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
     :param polyline: polyline for which curvature should be calculated
     :return: curvature along  polyline
     """
+
     assert (
         isinstance(polyline, np.ndarray)
         and polyline.ndim == 2
         and len(polyline[:, 0]) > 2
     ), "Polyline malformed for curvature computation p={}".format(polyline)
+
+    # fixme: the weight factors need to be adjusted
+    polyline = smoothing_reference_path(polyline, 0.5, 1)
 
     x_d = np.gradient(polyline[:, 0])
     x_dd = np.gradient(x_d)
@@ -185,3 +191,29 @@ def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
     y_dd = np.gradient(y_d)
 
     return (x_d * y_dd - x_dd * y_d) / ((x_d**2 + y_d**2) ** (3.0 / 2.0))
+
+
+def smoothing_reference_path(
+    reference_path: np.ndarray, smooth_factor=None, weight_coefficient=None
+):
+    # generate a smooth reference path
+    transposed_reference_path = reference_path.T
+    # how to generate index okay
+    okay = np.where(
+        np.abs(np.diff(transposed_reference_path[0]))
+        + np.abs(np.diff(transposed_reference_path[1]))
+        > 0
+    )
+    xp = np.r_[transposed_reference_path[0][okay], transposed_reference_path[0][-1]]
+    yp = np.r_[transposed_reference_path[1][okay], transposed_reference_path[1][-1]]
+
+    curvature = pycrccosy.Util.compute_curvature(np.array([xp, yp]).T)
+    # set weights for interpolation:
+    # see details: https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.splprep.html
+    weights = np.exp(-weight_coefficient * (abs(curvature) - np.min(abs(curvature))))
+    # B spline interpolation
+    tck, u = splprep([xp, yp], s=smooth_factor, w=weights)
+    u_new = np.linspace(u.min(), u.max(), 2000)
+    x_new, y_new = splev(u_new, tck, der=0)
+    ref_path_smooth = np.array([x_new, y_new]).transpose()
+    return ref_path_smooth
