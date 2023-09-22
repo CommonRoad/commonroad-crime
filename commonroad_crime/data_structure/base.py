@@ -142,11 +142,16 @@ class CriMeBase:
         """
         Sets up the id for other measure-related vehicle.
         """
+        # if already being set, do not have to reset again
+        if self.other_vehicle:
+            if vehicle_id == self.other_vehicle.obstacle_id:
+                return
+
         if not self.sce.obstacle_by_id(vehicle_id):
             raise ValueError(
                 f"<Criticality>: Vehicle (id: {vehicle_id}) is not contained in the scenario!"
             )
-        self.other_vehicle = self.sce.obstacle_by_id(vehicle_id)
+        self.other_vehicle = copy.deepcopy(self.sce.obstacle_by_id(vehicle_id))
         if isinstance(self.other_vehicle, DynamicObstacle):
             if isinstance(self.other_vehicle.prediction, TrajectoryPrediction):
                 utils_gen.check_elements_state_list(

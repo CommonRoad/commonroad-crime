@@ -8,6 +8,7 @@
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
 - fix the TCI, whose optimization problem was not reset each time before
 - verbose for each measure and the batch evaluation
+- without updating the default vehicle states when creating the other vehicle (together with the `CommonRoad-io==2023.3`)
 ### Added
 - support for Python 3.10 and preparation for 3.11
 - add code style checking (black)
