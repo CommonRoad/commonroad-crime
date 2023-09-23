@@ -23,6 +23,7 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.utility.general import (
     check_elements_state,
     compute_curvature_from_polyline,
+    compute_curvature_from_polyline_start_end,
 )
 from commonroad_crime.utility.solver import compute_lanelet_width_orientation
 
@@ -545,9 +546,12 @@ class SimulationLat(SimulationBase):
                 list(self.turning_lanelet_id)[0]
             )
             # !! for turning right, the curvatures are negative
-            curvature = np.max(
-                np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
-            )
+            # curvature = np.max(
+            #     np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
+            # )
+            # fixme: idea: assume the turning lane is a part of circle,
+            #  calculate the curvature based on the function of chord
+            curvature = abs(compute_curvature_from_polyline_start_end(turning_lanelet.center_vertices))
             # fixme: add rounding up to make the curvature larger
             curvature = np.ceil(curvature * 10) / 10
             desired_velocity = np.sqrt(np.abs(self.a_lat / curvature))

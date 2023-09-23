@@ -168,6 +168,21 @@ def check_elements_state(
             state.acceleration = state.acceleration * math.cos(ref_orientation)
 
 
+def compute_curvature_from_polyline_start_end(polyline: np.ndarray) -> float:
+    """
+    idea: assume the turning lane is a part of circle, calculate the curvature based on the function of chord
+    """
+    assert (
+            isinstance(polyline, np.ndarray)
+            and polyline.ndim == 2
+            and len(polyline[:, 0]) > 2
+    ), "Polyline malformed for curvature computation p={}".format(polyline)
+
+    # fixme: the weight factors need to be adjusted
+    _, kappa = smoothing_reference_path(polyline, 0.1, 1)
+    return kappa
+
+
 def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
     """
     Computes curvature along a polyline
@@ -183,7 +198,7 @@ def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
     ), "Polyline malformed for curvature computation p={}".format(polyline)
 
     # fixme: the weight factors need to be adjusted
-    polyline = smoothing_reference_path(polyline, 0.5, 1)
+    polyline, _ = smoothing_reference_path(polyline, 0.1, 1)
 
     x_d = np.gradient(polyline[:, 0])
     x_dd = np.gradient(x_d)
@@ -216,4 +231,15 @@ def smoothing_reference_path(
     u_new = np.linspace(u.min(), u.max(), 2000)
     x_new, y_new = splev(u_new, tck, der=0)
     ref_path_smooth = np.array([x_new, y_new]).transpose()
-    return ref_path_smooth
+    orientation_start = np.arctan2(y_new[1] - y_new[0], x_new[1] - x_new[0])
+    orientation_end = np.arctan2(y_new[-1] - y_new[-2], x_new[-1] - x_new[-2])
+    delta_orientation = orientation_end - orientation_start
+    # TODO: fix orientation
+    if delta_orientation % (2 * np.pi) > np.pi:
+        delta_orientation -= 2 * np.pi
+    if delta_orientation % (- 2 * np.pi) < np.pi:
+        delta_orientation += 2 * np.pi
+    distance = np.sqrt((x_new[-1] - x_new[0]) ** 2 + (y_new[-1] - y_new[0]) ** 2)
+    r = distance / (2 * np.sin(delta_orientation / 2))
+    kappa = 1 / r
+    return ref_path_smooth, kappa
