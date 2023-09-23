@@ -1,6 +1,6 @@
-vehicle:
-  cartesian:
-    j_x_min: -500.0
-    j_x_max: 500.0
-    j_y_min: -500.0
-    j_y_max: 500.0
+#vehicle:
+#  cartesian:
+#    j_x_min: -500.0
+#    j_x_max: 500.0
+#    j_y_min: -500.0
+#    j_y_max: 500.0
