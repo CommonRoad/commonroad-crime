@@ -24,6 +24,9 @@ from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_dc.geometry.util import resample_polyline
+import commonroad_dc.pycrccosy as pycrccosy
+
+from scipy.interpolate import splprep, splev
 
 logger = logging.getLogger(__name__)
 
@@ -213,10 +216,70 @@ def compute_lanelet_width_orientation(
 
     path_length = _compute_path_length_from_polyline(lanelet.center_vertices)
     lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
-    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
-    return np.interp(position_s, path_length, width_list), np.interp(
+    # fixme: fix outside of projection
+    try:
+        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
+            position[0], position[1]
+        )
+    except:
+        smooth_line = smoothing_reference_path(lanelet.center_vertices, 1.5, 15)
+        lanelet_clcs = CurvilinearCoordinateSystem(smooth_line)
+        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
+            position[0], position[1]
+        )
+    # fixme: fix orientation interpolation
+    return np.interp(position_s, path_length, width_list), get_orientation_point(
         position_s, path_length, orient_list
     )
+
+
+def smoothing_reference_path(
+    reference_path: np.ndarray, smooth_factor=None, weight_coefficient=None
+):
+    # generate a smooth reference path
+    transposed_reference_path = reference_path.T
+    # how to generate index okay
+    okay = np.where(
+        np.abs(np.diff(transposed_reference_path[0]))
+        + np.abs(np.diff(transposed_reference_path[1]))
+        > 0
+    )
+    xp = np.r_[transposed_reference_path[0][okay], transposed_reference_path[0][-1]]
+    yp = np.r_[transposed_reference_path[1][okay], transposed_reference_path[1][-1]]
+
+    curvature = pycrccosy.Util.compute_curvature(np.array([xp, yp]).T)
+    # set weights for interpolation:
+    # see details: https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.splprep.html
+    weights = np.exp(-weight_coefficient * (abs(curvature) - np.min(abs(curvature))))
+    # B spline interpolation
+    tck, u = splprep([xp, yp], s=smooth_factor, w=weights)
+    u_new = np.linspace(u.min(), u.max(), 2000)
+    x_new, y_new = splev(u_new, tck, der=0)
+    ref_path_smooth = np.array([x_new, y_new]).transpose()
+    return ref_path_smooth
+
+
+def get_orientation_point(position: "float", path_length, orientation):
+    # TODO: fix orientation interpolation, since the orientation is in the interval [-pi, pi].
+    #  Problem arises when the orientation is around pi.
+    lower_idx = np.searchsorted(path_length, position, side="right") - 1
+    upper_idx = lower_idx + 1
+    if (orientation[lower_idx] * orientation[upper_idx] <= 0) and (
+        (abs(orientation[lower_idx]) + abs(orientation[upper_idx])) > np.pi
+    ):
+        delta_angle = 2 * np.pi - (
+            abs(orientation[lower_idx]) + abs(orientation[upper_idx])
+        )
+        orientation = orientation[lower_idx] + (position - path_length[lower_idx]) / (
+            path_length[upper_idx] - path_length[lower_idx]
+        ) * delta_angle * np.sign(path_length[lower_idx])
+        if orientation < -np.pi:
+            orientation = 2 * np.pi - orientation
+        elif orientation > np.pi:
+            orientation = orientation - 2 * np.pi
+    else:
+        orientation = np.interp(position, path_length, orientation)
+    return orientation
 
 
 def _compute_width_from_lanalet_boundary(

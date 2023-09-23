@@ -14,6 +14,7 @@ import copy
 from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
+from commonroad.scenario.lanelet import Lanelet
 from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad.scenario.scenario import Tag
 from commonroad.scenario.state import PMInputState, PMState, KSState
@@ -22,6 +23,7 @@ from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.utility.general import (
     check_elements_state,
     compute_curvature_from_polyline,
+    compute_curvature_from_polyline_start_end,
 )
 from commonroad_crime.utility.solver import compute_lanelet_width_orientation
 
@@ -425,6 +427,7 @@ class SimulationLat(SimulationBase):
         # set the longitudinal acceleration to 0
         self.a_long = 0
         # set the lateral acceleration based on the vehicle's capability and the maneuver
+        # TODO: check setting of a_lat
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
             self.a_lat = (
@@ -457,14 +460,36 @@ class SimulationLat(SimulationBase):
         """
         Sets the time for the bang–bang controller of the lane change.
         """
-        lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
-            [position]
-        )[0]
+        if (
+            len(self._scenario.lanelet_network.intersections) == 0
+            or Tag.INTERSECTION not in self._scenario.tags
+            or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+        ):
+            lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
+                [position]
+            )[0]
+            lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
+        else:
+            # intersection scenario
+            # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
+            # extend predecessor and successors to avoid using orientation[0] and outside of projection
+            lanelet_id = list(self.turning_lanelet_id)
+            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                lanelet_id[0]
+            )
+            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                turning_lanelet.predecessor[0]
+            )
+            (
+                extend_suc_lanelet,
+                _,
+            ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
+                turning_lanelet, self._scenario.lanelet_network
+            )
+            lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
         if not lanelet_id:
             return None, None
-        lateral_dis, orientation = compute_lanelet_width_orientation(
-            self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0]), position
-        )
+        lateral_dis, orientation = compute_lanelet_width_orientation(lanelet, position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
         if self._lateral_distance_mode == 1:
@@ -492,7 +517,9 @@ class SimulationLat(SimulationBase):
         current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
             [checked_state.position]
         )[0]
-        turning_lanelet_id = None
+        # store selected incoming and turning lanelet
+        self.turning_lanelet_id = None
+        self.incoming = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
                 is_turn_left = self.maneuver in Maneuver.TURNLEFT
@@ -514,20 +541,28 @@ class SimulationLat(SimulationBase):
                         )
                     )
                 ):
-                    turning_lanelet_id = (
+                    self.turning_lanelet_id = (
                         incoming.successors_left
                         if is_turn_left
                         else incoming.successors_right
                     )
+                    self.incoming = incoming
                     break
 
-        if turning_lanelet_id:
+        if self.turning_lanelet_id:
             turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                list(turning_lanelet_id)[0]
+                list(self.turning_lanelet_id)[0]
             )
             # !! for turning right, the curvatures are negative
-            curvature = np.max(
-                np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
+            # curvature = np.max(
+            #     np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
+            # )
+            # fixme: idea: assume the turning lane is a part of circle,
+            #  calculate the curvature based on the function of chord
+            curvature = abs(
+                compute_curvature_from_polyline_start_end(
+                    turning_lanelet.center_vertices
+                )
             )
             # fixme: add rounding up to make the curvature larger
             curvature = np.ceil(curvature * 10) / 10
@@ -571,6 +606,43 @@ class SimulationLat(SimulationBase):
                 )
                 state_list.append(suc_state)
                 checked_state = suc_state
+            self.set_inputs(checked_state)
+            check_elements_state(checked_state)
+            # fixme: assume vehicle will be go straight at a constant velocity until entering the turning lanelet
+            while True:
+                current_lanelet_ids = (
+                    self._scenario.lanelet_network.find_lanelet_by_position(
+                        [checked_state.position]
+                    )[0]
+                )
+                if (
+                    self.incoming
+                    and len(
+                        self.incoming.incoming_lanelets.intersection(
+                            current_lanelet_ids
+                        )
+                    )
+                    != 0
+                ):
+                    self.a_long = 0
+                    self.a_lat = 0
+                    check_elements_state(checked_state, self.input)
+                    self.update_inputs_x_y(checked_state)
+                    suc_state = self.vehicle_dynamics.simulate_next_state(
+                        PMState(
+                            position=checked_state.position,
+                            velocity=checked_state.velocity,
+                            velocity_y=checked_state.velocity_y,
+                            time_step=checked_state.time_step,
+                        ),
+                        self.input,
+                        self.dt,
+                        throw=False,
+                    )
+                    state_list.append(suc_state)
+                    checked_state = suc_state
+                else:
+                    break
         self.set_inputs(checked_state)
         check_elements_state(checked_state)
         return state_list, checked_state
@@ -740,15 +812,20 @@ class SimulationLat(SimulationBase):
                 throw=False,
             )
             if suc_state:
-                check_elements_state(suc_state)
+                # fixme: accumulate acceleration
+                check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
+                # TODO: fix orientation
                 if self._direction == "left":
-                    if suc_orientation > max_orientation:
+                    if suc_orientation % (2 * np.pi) > max_orientation % (2 * np.pi):
                         break
                 else:
-                    if suc_orientation < max_orientation:
+                    # for scenario 1:
+                    # if suc_orientation < max_orientation:
+                    # for scenario 2:
+                    if suc_orientation % (2 * np.pi) < max_orientation % (2 * np.pi):
                         break
             else:
                 self.input.acceleration_y = 0
