@@ -822,6 +822,9 @@ class SimulationLat(SimulationBase):
                     if suc_orientation % (2 * np.pi) > max_orientation % (2 * np.pi):
                         break
                 else:
+                    # for scenario 1:
+                    # if suc_orientation < max_orientation:
+                    # for scenario 2:
                     if suc_orientation % (2 * np.pi) < max_orientation % (2 * np.pi):
                         break
             else:
