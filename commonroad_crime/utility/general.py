@@ -173,9 +173,9 @@ def compute_curvature_from_polyline_start_end(polyline: np.ndarray) -> float:
     idea: assume the turning lane is a part of circle, calculate the curvature based on the function of chord
     """
     assert (
-            isinstance(polyline, np.ndarray)
-            and polyline.ndim == 2
-            and len(polyline[:, 0]) > 2
+        isinstance(polyline, np.ndarray)
+        and polyline.ndim == 2
+        and len(polyline[:, 0]) > 2
     ), "Polyline malformed for curvature computation p={}".format(polyline)
 
     # fixme: the weight factors need to be adjusted
@@ -237,7 +237,7 @@ def smoothing_reference_path(
     # TODO: fix orientation
     if delta_orientation % (2 * np.pi) > np.pi:
         delta_orientation -= 2 * np.pi
-    if delta_orientation % (- 2 * np.pi) < np.pi:
+    if delta_orientation % (-2 * np.pi) < np.pi:
         delta_orientation += 2 * np.pi
     distance = np.sqrt((x_new[-1] - x_new[0]) ** 2 + (y_new[-1] - y_new[0]) ** 2)
     r = distance / (2 * np.sin(delta_orientation / 2))

@@ -218,11 +218,15 @@ def compute_lanelet_width_orientation(
     lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
     # fixme: fix outside of projection
     try:
-        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
+        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
+            position[0], position[1]
+        )
     except:
         smooth_line = smoothing_reference_path(lanelet.center_vertices, 1.5, 15)
         lanelet_clcs = CurvilinearCoordinateSystem(smooth_line)
-        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
+        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
+            position[0], position[1]
+        )
     # fixme: fix orientation interpolation
     return np.interp(position_s, path_length, width_list), get_orientation_point(
         position_s, path_length, orient_list
@@ -258,12 +262,17 @@ def smoothing_reference_path(
 def get_orientation_point(position: "float", path_length, orientation):
     # TODO: fix orientation interpolation, since the orientation is in the interval [-pi, pi].
     #  Problem arises when the orientation is around pi.
-    lower_idx = np.searchsorted(path_length, position, side='right') - 1
+    lower_idx = np.searchsorted(path_length, position, side="right") - 1
     upper_idx = lower_idx + 1
-    if ((orientation[lower_idx] * orientation[upper_idx] <= 0) and
-            ((abs(orientation[lower_idx]) + abs(orientation[upper_idx])) > np.pi)):
-        delta_angle = 2 * np.pi - (abs(orientation[lower_idx]) + abs(orientation[upper_idx]))
-        orientation = orientation[lower_idx] + (position - path_length[lower_idx]) / (path_length[upper_idx] - path_length[lower_idx]) * delta_angle * np.sign(path_length[lower_idx])
+    if (orientation[lower_idx] * orientation[upper_idx] <= 0) and (
+        (abs(orientation[lower_idx]) + abs(orientation[upper_idx])) > np.pi
+    ):
+        delta_angle = 2 * np.pi - (
+            abs(orientation[lower_idx]) + abs(orientation[upper_idx])
+        )
+        orientation = orientation[lower_idx] + (position - path_length[lower_idx]) / (
+            path_length[upper_idx] - path_length[lower_idx]
+        ) * delta_angle * np.sign(path_length[lower_idx])
         if orientation < -np.pi:
             orientation = 2 * np.pi - orientation
         elif orientation > np.pi:
@@ -271,6 +280,7 @@ def get_orientation_point(position: "float", path_length, orientation):
     else:
         orientation = np.interp(position, path_length, orientation)
     return orientation
+
 
 def _compute_width_from_lanalet_boundary(
     left_polyline: np.ndarray, right_polyline: np.ndarray

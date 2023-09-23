@@ -461,9 +461,9 @@ class SimulationLat(SimulationBase):
         Sets the time for the bang–bang controller of the lane change.
         """
         if (
-                len(self._scenario.lanelet_network.intersections) == 0
-                or Tag.INTERSECTION not in self._scenario.tags
-                or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+            len(self._scenario.lanelet_network.intersections) == 0
+            or Tag.INTERSECTION not in self._scenario.tags
+            or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
         ):
             lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
                 [position]
@@ -474,15 +474,22 @@ class SimulationLat(SimulationBase):
             # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
             # extend predecessor and successors to avoid using orientation[0] and outside of projection
             lanelet_id = list(self.turning_lanelet_id)
-            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
-            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(turning_lanelet.predecessor[0])
-            extend_suc_lanelet, _ = Lanelet.all_lanelets_by_merging_successors_from_lanelet(turning_lanelet, self._scenario.lanelet_network)
+            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                lanelet_id[0]
+            )
+            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                turning_lanelet.predecessor[0]
+            )
+            (
+                extend_suc_lanelet,
+                _,
+            ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
+                turning_lanelet, self._scenario.lanelet_network
+            )
             lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
         if not lanelet_id:
             return None, None
-        lateral_dis, orientation = compute_lanelet_width_orientation(
-            lanelet, position
-        )
+        lateral_dis, orientation = compute_lanelet_width_orientation(lanelet, position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
         if self._lateral_distance_mode == 1:
@@ -552,7 +559,11 @@ class SimulationLat(SimulationBase):
             # )
             # fixme: idea: assume the turning lane is a part of circle,
             #  calculate the curvature based on the function of chord
-            curvature = abs(compute_curvature_from_polyline_start_end(turning_lanelet.center_vertices))
+            curvature = abs(
+                compute_curvature_from_polyline_start_end(
+                    turning_lanelet.center_vertices
+                )
+            )
             # fixme: add rounding up to make the curvature larger
             curvature = np.ceil(curvature * 10) / 10
             desired_velocity = np.sqrt(np.abs(self.a_lat / curvature))
@@ -599,10 +610,20 @@ class SimulationLat(SimulationBase):
             check_elements_state(checked_state)
             # fixme: assume vehicle will be go straight at a constant velocity until entering the turning lanelet
             while True:
-                current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
-                    [checked_state.position]
-                )[0]
-                if self.incoming and len(self.incoming.incoming_lanelets.intersection(current_lanelet_ids)) != 0:
+                current_lanelet_ids = (
+                    self._scenario.lanelet_network.find_lanelet_by_position(
+                        [checked_state.position]
+                    )[0]
+                )
+                if (
+                    self.incoming
+                    and len(
+                        self.incoming.incoming_lanelets.intersection(
+                            current_lanelet_ids
+                        )
+                    )
+                    != 0
+                ):
                     self.a_long = 0
                     self.a_lat = 0
                     check_elements_state(checked_state, self.input)
