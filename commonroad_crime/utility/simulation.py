@@ -427,6 +427,7 @@ class SimulationLat(SimulationBase):
         # set the longitudinal acceleration to 0
         self.a_long = 0
         # set the lateral acceleration based on the vehicle's capability and the maneuver
+        # TODO: check setting of a_lat
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
             self.a_lat = (
@@ -790,7 +791,8 @@ class SimulationLat(SimulationBase):
                 throw=False,
             )
             if suc_state:
-                check_elements_state(suc_state)
+                # fixme: accumulate acceleration
+                check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
