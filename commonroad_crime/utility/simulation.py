@@ -571,6 +571,33 @@ class SimulationLat(SimulationBase):
                 )
                 state_list.append(suc_state)
                 checked_state = suc_state
+            self.set_inputs(checked_state)
+            check_elements_state(checked_state)
+            # fixme: assume vehicle will be go straight at a constant velocity until entering the turning lanelet
+            while True:
+                current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
+                    [checked_state.position]
+                )[0]
+                if self.incoming and len(self.incoming.incoming_lanelets.intersection(current_lanelet_ids)) != 0:
+                    self.a_long = 0
+                    self.a_lat = 0
+                    check_elements_state(checked_state, self.input)
+                    self.update_inputs_x_y(checked_state)
+                    suc_state = self.vehicle_dynamics.simulate_next_state(
+                        PMState(
+                            position=checked_state.position,
+                            velocity=checked_state.velocity,
+                            velocity_y=checked_state.velocity_y,
+                            time_step=checked_state.time_step,
+                        ),
+                        self.input,
+                        self.dt,
+                        throw=False,
+                    )
+                    state_list.append(suc_state)
+                    checked_state = suc_state
+                else:
+                    break
         self.set_inputs(checked_state)
         check_elements_state(checked_state)
         return state_list, checked_state
