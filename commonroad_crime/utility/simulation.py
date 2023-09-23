@@ -14,6 +14,7 @@ import copy
 from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
+from commonroad.scenario.lanelet import Lanelet
 from commonroad.scenario.obstacle import DynamicObstacle
 from commonroad.scenario.scenario import Tag
 from commonroad.scenario.state import PMInputState, PMState, KSState
@@ -457,13 +458,28 @@ class SimulationLat(SimulationBase):
         """
         Sets the time for the bang–bang controller of the lane change.
         """
-        lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
-            [position]
-        )[0]
+        if (
+                len(self._scenario.lanelet_network.intersections) == 0
+                or Tag.INTERSECTION not in self._scenario.tags
+                or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+        ):
+            lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
+                [position]
+            )[0]
+            lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
+        else:
+            # intersection scenario
+            # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
+            # extend predecessor and successors to avoid using orientation[0] and outside of projection
+            lanelet_id = list(self.turning_lanelet_id)
+            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
+            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(turning_lanelet.predecessor[0])
+            extend_suc_lanelet, _ = Lanelet.all_lanelets_by_merging_successors_from_lanelet(turning_lanelet, self._scenario.lanelet_network)
+            lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
         if not lanelet_id:
             return None, None
         lateral_dis, orientation = compute_lanelet_width_orientation(
-            self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0]), position
+            lanelet, position
         )
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
@@ -492,7 +508,9 @@ class SimulationLat(SimulationBase):
         current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
             [checked_state.position]
         )[0]
-        turning_lanelet_id = None
+        # store selected incoming and turning lanelet
+        self.turning_lanelet_id = None
+        self.incoming = None
         for intersection in self._scenario.lanelet_network.intersections:
             for incoming in intersection.incomings:
                 is_turn_left = self.maneuver in Maneuver.TURNLEFT
@@ -514,16 +532,17 @@ class SimulationLat(SimulationBase):
                         )
                     )
                 ):
-                    turning_lanelet_id = (
+                    self.turning_lanelet_id = (
                         incoming.successors_left
                         if is_turn_left
                         else incoming.successors_right
                     )
+                    self.incoming = incoming
                     break
 
-        if turning_lanelet_id:
+        if self.turning_lanelet_id:
             turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                list(turning_lanelet_id)[0]
+                list(self.turning_lanelet_id)[0]
             )
             # !! for turning right, the curvatures are negative
             curvature = np.max(
