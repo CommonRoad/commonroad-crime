@@ -25,7 +25,10 @@ from commonroad_crime.utility.general import (
     compute_curvature_from_polyline,
     compute_curvature_from_polyline_start_end,
 )
-from commonroad_crime.utility.solver import compute_lanelet_width_orientation
+from commonroad_crime.utility.solver import (
+    compute_lanelet_width_orientation,
+    convert_to_0_2pi,
+)
 
 
 class Maneuver(str, Enum):
@@ -565,7 +568,7 @@ class SimulationLat(SimulationBase):
                 )
             )
             # fixme: add rounding up to make the curvature larger
-            curvature = np.ceil(curvature * 100) / 100
+            curvature = np.ceil(curvature * 10) / 10
             desired_velocity = np.sqrt(np.abs(self.a_lat / curvature))
             if (
                 np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
