@@ -841,10 +841,16 @@ class SimulationLat(SimulationBase):
                     math.atan2(suc_state.velocity_y, suc_state.velocity)
                 )
                 if self._direction == "left":
-                    if suc_orientation > max_orientation and suc_orientation + math.pi * 2 > max_orientation:
+                    if (
+                        suc_orientation > max_orientation
+                        and suc_orientation + math.pi * 2 > max_orientation
+                    ):
                         break
                 else:
-                    if suc_orientation < max_orientation and suc_orientation - math.pi * 2 < max_orientation:
+                    if (
+                        suc_orientation < max_orientation
+                        and suc_orientation - math.pi * 2 < max_orientation
+                    ):
                         break
             else:
                 self.input.acceleration_y = 0
