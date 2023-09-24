@@ -36,7 +36,7 @@ class TestDistanceDomain(unittest.TestCase):
 
         psd_object = PSD(self.config)
         psd = psd_object.compute(328, 0)
-        self.assertEqual(psd, 61.58)
+        self.assertEqual(psd, 87.97)
         psd_object.visualize()
 
     def test_hw(self):

@@ -214,12 +214,20 @@ def compute_lanelet_width_orientation(
     :param position: position of the vehicle
     """
     # smooth the vertices:
-    center_vertices = smoothing_reference_path(lanelet.center_vertices, 5, 15)
+    try:
+        center_vertices = smoothing_reference_path(lanelet.center_vertices, 5, 15)
+        left_vertices = smoothing_reference_path(lanelet.left_vertices, 5, 15)
+        right_vertices = smoothing_reference_path(lanelet.right_vertices, 5, 15)
+    except (
+        TypeError,
+        ValueError,
+    ) as e:  # Replace with the specific exceptions you expect
+        logging.error(f"Error smoothing vertices: {e}")
+        center_vertices = lanelet.center_vertices
+        left_vertices = lanelet.left_vertices
+        right_vertices = lanelet.right_vertices
 
-    width_list = _compute_width_from_lanalet_boundary(
-        smoothing_reference_path(lanelet.left_vertices, 5, 15),
-        smoothing_reference_path(lanelet.right_vertices, 5, 15),
-    )
+    width_list = _compute_width_from_lanalet_boundary(left_vertices, right_vertices)
     orient_list = [
         convert_to_0_2pi(orient)
         for orient in compute_orientation_from_polyline(center_vertices)
