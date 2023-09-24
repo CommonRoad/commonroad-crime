@@ -672,10 +672,14 @@ class SimulationLat(SimulationBase):
                 if hasattr(pre_state, "orientation"):
                     max_orient = pre_state.orientation
                 else:
-                    max_orient = math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    max_orient = convert_to_0_2pi(
+                        math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    )
             else:
                 lane_orient = lane_orient_updated
-                max_orient = self.set_maximal_orientation(lane_orient, i)
+                max_orient = convert_to_0_2pi(
+                    self.set_maximal_orientation(lane_orient, i)
+                )
             if i in [1, 3]:  # 1 for lane change; 1, 3 for overtaking
                 self.sign_change()
             bang_state_list = self.bang_bang_simulation(

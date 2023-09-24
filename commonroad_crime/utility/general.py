@@ -233,12 +233,7 @@ def smoothing_reference_path(
     ref_path_smooth = np.array([x_new, y_new]).transpose()
     orientation_start = np.arctan2(y_new[1] - y_new[0], x_new[1] - x_new[0])
     orientation_end = np.arctan2(y_new[-1] - y_new[-2], x_new[-1] - x_new[-2])
-    delta_orientation = orientation_end - orientation_start
-    # TODO: fix orientation
-    if delta_orientation % (2 * np.pi) > np.pi:
-        delta_orientation -= 2 * np.pi
-    if delta_orientation % (-2 * np.pi) < np.pi:
-        delta_orientation += 2 * np.pi
+    delta_orientation = utils_sol.convert_to_0_2pi(orientation_end - orientation_start)
     distance = np.sqrt((x_new[-1] - x_new[0]) ** 2 + (y_new[-1] - y_new[0]) ** 2)
     r = distance / (2 * np.sin(delta_orientation / 2))
     kappa = 1 / r

@@ -392,3 +392,13 @@ def create_polygon(
         ),
     ]
     return Polygon(coords)
+
+
+def convert_to_0_2pi(angle):
+    # If angle is negative, convert to [0, 2π]
+    if angle < 0:
+        angle += 2 * math.pi
+
+    # If angle is more than 2π, convert to [0, 2π]
+    angle = angle % (2 * math.pi)
+    return angle
