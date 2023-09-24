@@ -823,17 +823,11 @@ class SimulationLat(SimulationBase):
                 check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
-                suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
-                # TODO: fix orientation
-                if self._direction == "left":
-                    if suc_orientation % (2 * np.pi) > max_orientation % (2 * np.pi):
-                        break
-                else:
-                    # for scenario 1:
-                    # if suc_orientation < max_orientation:
-                    # for scenario 2:
-                    if suc_orientation % (2 * np.pi) < max_orientation % (2 * np.pi):
-                        break
+                suc_orientation = convert_to_0_2pi(
+                    math.atan2(suc_state.velocity_y, suc_state.velocity)
+                )
+                if abs(suc_orientation - max_orientation) < 0.05:
+                    break
             else:
                 self.input.acceleration_y = 0
         return state_list
