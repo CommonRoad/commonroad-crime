@@ -476,21 +476,30 @@ class SimulationLat(SimulationBase):
             # intersection scenario
             # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
             # extend predecessor and successors to avoid using orientation[0] and outside of projection
-            lanelet_id = list(self.turning_lanelet_id)
-            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                lanelet_id[0]
+            occupied_lanelet_id = (
+                self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
             )
-            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                turning_lanelet.predecessor[0]
-            )
-            (
-                extend_suc_lanelet,
-                _,
-            ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
-                turning_lanelet, self._scenario.lanelet_network
-            )
-            lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
-        if not lanelet_id:
+            if len(occupied_lanelet_id) == 1:
+                lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    occupied_lanelet_id[0]
+                )
+            else:
+                lanelet_id = list(self.turning_lanelet_id)
+
+                turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    lanelet_id[0]
+                )
+                pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    turning_lanelet.predecessor[0]
+                )
+                (
+                    extend_suc_lanelet,
+                    _,
+                ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
+                    turning_lanelet, self._scenario.lanelet_network
+                )
+                lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
+        if not lanelet:
             return None, None
         lateral_dis, orientation = compute_lanelet_width_orientation(lanelet, position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
