@@ -471,6 +471,8 @@ class SimulationLat(SimulationBase):
             lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
                 [position]
             )[0]
+            if not lanelet_id:
+                return None, None
             lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
         else:
             # intersection scenario
@@ -479,6 +481,8 @@ class SimulationLat(SimulationBase):
             occupied_lanelet_id = (
                 self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
             )
+            if len(occupied_lanelet_id) == 0:
+                return None, None
             if len(occupied_lanelet_id) == 1:
                 lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
                     occupied_lanelet_id[0]
@@ -837,8 +841,12 @@ class SimulationLat(SimulationBase):
                 suc_orientation = convert_to_0_2pi(
                     math.atan2(suc_state.velocity_y, suc_state.velocity)
                 )
-                if abs(suc_orientation - max_orientation) < 0.05:
-                    break
+                if self._direction == "left":
+                    if suc_orientation > max_orientation or suc_orientation - math.pi * 2 > max_orientation:
+                        break
+                else:
+                    if suc_orientation < max_orientation or suc_orientation - math.pi * 2 < max_orientation:
+                        break
             else:
                 self.input.acceleration_y = 0
         return state_list
