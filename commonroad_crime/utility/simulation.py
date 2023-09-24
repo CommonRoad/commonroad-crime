@@ -781,6 +781,8 @@ class SimulationLat(SimulationBase):
         """
         adds additional constraints for the orientation.
         """
+        if nr_stage >= 4:
+            return lane_orientation
         if (
             self.maneuver == Maneuver.STEERLEFT
             or (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage <= 1)
