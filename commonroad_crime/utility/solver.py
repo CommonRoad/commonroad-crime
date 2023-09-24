@@ -226,9 +226,7 @@ def compute_lanelet_width_orientation(
     ]
     path_length = compute_pathlength_from_polyline(center_vertices)
     lanelet_clcs = CurvilinearCoordinateSystem(center_vertices)
-    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
-            position[0], position[1]
-        )
+    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
     return np.interp(position_s, path_length, width_list), get_orientation_point(
         position_s, path_length, orient_list
     )
