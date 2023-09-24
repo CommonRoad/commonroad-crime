@@ -834,8 +834,7 @@ class SimulationLat(SimulationBase):
                 throw=False,
             )
             if suc_state:
-                # fixme: accumulate acceleration
-                check_elements_state(suc_state, self.input)
+                check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 suc_orientation = convert_to_0_2pi(
