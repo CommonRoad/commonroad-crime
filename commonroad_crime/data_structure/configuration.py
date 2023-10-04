@@ -426,8 +426,10 @@ class CriMeConfiguration(BaseConfig):
         """
         if isinstance(sce, Scene):
             self.scene = sce
+            self.general.name_scenario = str(sce.scenario_id)
         elif isinstance(sce, Scenario):
             self.scenario = sce
+            self.general.name_scenario = str(sce.scenario_id)
         elif not sce and (
             self.scene or self.scenario
         ):  # prevent reloading the existing scenario
