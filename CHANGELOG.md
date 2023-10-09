@@ -1,5 +1,7 @@
 # Changelog
 ## [0.3.1] - 2023.xx.xx
+### added
+- Add the log verbose for batch evaluation
 ### Changed
 - The lanelet vertices are now smoothed before constructing the curvlinear coordinate system; therefore, some of the test results vary a bit
 ### Fixed
