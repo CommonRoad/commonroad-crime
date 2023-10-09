@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -23,7 +23,11 @@ from commonroad.scenario.obstacle import (
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
-from commonroad_dc.geometry.util import resample_polyline
+from commonroad_dc.geometry.util import (
+    resample_polyline,
+    compute_orientation_from_polyline,
+    compute_pathlength_from_polyline,
+)
 import commonroad_dc.pycrccosy as pycrccosy
 
 from scipy.interpolate import splprep, splev
@@ -193,7 +197,7 @@ def compute_acceleration(current_velocity: float, next_velocity: float, dt: floa
 
     :param current_velocity: velocity of current time step
     :param next_velocity: velocity of previous time step
-    :param dt: time step size
+    :param dt: timestep size
     :return: acceleration
     """
     acceleration = (next_velocity - current_velocity) / dt
@@ -209,25 +213,28 @@ def compute_lanelet_width_orientation(
     :param lanelet: a lanelet
     :param position: position of the vehicle
     """
-    width_list = _compute_width_from_lanalet_boundary(
-        lanelet.left_vertices, lanelet.right_vertices
-    )
-    orient_list = _compute_orientation_from_polyline(lanelet.center_vertices)
-
-    path_length = _compute_path_length_from_polyline(lanelet.center_vertices)
-    lanelet_clcs = CurvilinearCoordinateSystem(lanelet.center_vertices)
-    # fixme: fix outside of projection
+    # smooth the vertices first:
     try:
-        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
-            position[0], position[1]
-        )
-    except:
-        smooth_line = smoothing_reference_path(lanelet.center_vertices, 1.5, 15)
-        lanelet_clcs = CurvilinearCoordinateSystem(smooth_line)
-        position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(
-            position[0], position[1]
-        )
-    # fixme: fix orientation interpolation
+        center_vertices = smoothing_reference_path(lanelet.center_vertices, 5, 15)
+        left_vertices = smoothing_reference_path(lanelet.left_vertices, 5, 15)
+        right_vertices = smoothing_reference_path(lanelet.right_vertices, 5, 15)
+    except (
+        TypeError,
+        ValueError,
+    ) as e:  # Replace with the specific exceptions you expect
+        logging.error(f"Error smoothing vertices: {e}")
+        center_vertices = lanelet.center_vertices
+        left_vertices = lanelet.left_vertices
+        right_vertices = lanelet.right_vertices
+
+    width_list = _compute_width_from_lanalet_boundary(left_vertices, right_vertices)
+    orient_list = [
+        convert_to_0_2pi(orient)
+        for orient in compute_orientation_from_polyline(center_vertices)
+    ]
+    path_length = compute_pathlength_from_polyline(center_vertices)
+    lanelet_clcs = CurvilinearCoordinateSystem(center_vertices)
+    position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
     return np.interp(position_s, path_length, width_list), get_orientation_point(
         position_s, path_length, orient_list
     )
@@ -253,7 +260,8 @@ def smoothing_reference_path(
     weights = np.exp(-weight_coefficient * (abs(curvature) - np.min(abs(curvature))))
     # B spline interpolation
     tck, u = splprep([xp, yp], s=smooth_factor, w=weights)
-    u_new = np.linspace(u.min(), u.max(), 2000)
+    # double the interpolation
+    u_new = np.linspace(u.min(), u.max(), len(reference_path) * 2)
     x_new, y_new = splev(u_new, tck, der=0)
     ref_path_smooth = np.array([x_new, y_new]).transpose()
     return ref_path_smooth
@@ -296,52 +304,6 @@ def _compute_width_from_lanalet_boundary(
     for i in range(len(left_polyline)):
         width_along_lanelet[i] = np.linalg.norm(left_polyline[i] - right_polyline[i])
     return width_along_lanelet
-
-
-def _compute_path_length_from_polyline(polyline: np.ndarray) -> np.ndarray:
-    """
-    Computes the path length of a polyline. Credit: Sebastian Maierhofer.
-
-    :param polyline: polyline for which path length should be calculated
-    :return: path length along polyline
-    """
-    assert (
-        isinstance(polyline, np.ndarray)
-        and polyline.ndim == 2
-        and len(polyline[:, 0]) > 2
-    ), "Polyline malformed for pathlenth computation p={}".format(polyline)
-
-    distance = np.zeros((len(polyline),))
-    for i in range(1, len(polyline)):
-        distance[i] = distance[i - 1] + np.linalg.norm(polyline[i] - polyline[i - 1])
-
-    return np.array(distance)
-
-
-def _compute_orientation_from_polyline(polyline: np.ndarray) -> np.ndarray:
-    """
-    Computes orientation along a polyline. Credit: Sebastian Maierhofer.
-
-    :param polyline: polyline for which orientation should be calculated
-    :return: orientation along polyline
-    """
-    assert (
-        isinstance(polyline, np.ndarray)
-        and len(polyline) > 1
-        and polyline.ndim == 2
-        and len(polyline[0, :]) == 2
-    ), "<Math>: not a valid polyline. polyline = {}".format(polyline)
-    if len(polyline) < 2:
-        raise ValueError("Cannot create orientation from polyline of length < 2")
-
-    orientation = [0]
-    for i in range(1, len(polyline)):
-        pt1 = polyline[i - 1]
-        pt2 = polyline[i]
-        tmp = pt2 - pt1
-        orientation.append(np.arctan2(tmp[1], tmp[0]))
-
-    return np.array(orientation)
 
 
 def create_polygon(
@@ -392,3 +354,13 @@ def create_polygon(
         ),
     ]
     return Polygon(coords)
+
+
+def convert_to_0_2pi(angle):
+    # If angle is negative, convert to [0, 2π]
+    if angle < 0:
+        angle += 2 * math.pi
+
+    # If angle is more than 2π, convert to [0, 2π]
+    angle = angle % (2 * math.pi)
+    return angle

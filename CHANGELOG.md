@@ -1,8 +1,15 @@
 # Changelog
 ## [0.3.1] - 2023.xx.xx
+### added
+- Add the log verbose for batch evaluation
+### Changed
+- The lanelet vertices are now smoothed before constructing the curvlinear coordinate system; therefore, some of the test results vary a bit
 ### Fixed
 - The evasive maneuver simulator: now the initial time step of the simulated vehicle doesn't have to start from 0
-- The adaptive turning behaviors at intersections for the TTM simulation, i.e., the velocity needs to first satify the desired requirements based on the intersection's curvature
+- The adaptive turning behaviors at intersections for the TTM simulation, i.e., the velocity needs to first satisfy the desired requirements based on the intersection's curvature
+- When an empty yaml file is provided for batch evaluation, it would now use the default configuration setup.
+- The bridge to compute the drivable area, now it is able to get the scenario from the same folder
+- The turning simulation: the last stage orientation error
 ## [0.3.0] - 2023.08.14
 ### Fixed
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)

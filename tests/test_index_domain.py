@@ -37,7 +37,7 @@ class TestIndexDomain(unittest.TestCase):
         stn_object = STN(self.config)
         # vehicle in the same lanelet and in front
         stn_1 = stn_object.compute(3, 0)
-        self.assertAlmostEqual(stn_1, 0.0263)
+        self.assertAlmostEqual(stn_1, 0.0238)
 
         # vehicle in another lanelet
         stn_2 = stn_object.compute(1, 0)

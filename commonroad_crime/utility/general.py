@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -178,39 +178,15 @@ def compute_curvature_from_polyline_start_end(polyline: np.ndarray) -> float:
         and len(polyline[:, 0]) > 2
     ), "Polyline malformed for curvature computation p={}".format(polyline)
 
-    # fixme: the weight factors need to be adjusted
+    # fixme: the weight factors might need to be adjusted
     _, kappa = smoothing_reference_path(polyline, 0.1, 1)
     return kappa
-
-
-def compute_curvature_from_polyline(polyline: np.ndarray) -> np.ndarray:
-    """
-    Computes curvature along a polyline
-
-    :param polyline: polyline for which curvature should be calculated
-    :return: curvature along  polyline
-    """
-
-    assert (
-        isinstance(polyline, np.ndarray)
-        and polyline.ndim == 2
-        and len(polyline[:, 0]) > 2
-    ), "Polyline malformed for curvature computation p={}".format(polyline)
-
-    # fixme: the weight factors need to be adjusted
-    polyline, _ = smoothing_reference_path(polyline, 0.1, 1)
-
-    x_d = np.gradient(polyline[:, 0])
-    x_dd = np.gradient(x_d)
-    y_d = np.gradient(polyline[:, 1])
-    y_dd = np.gradient(y_d)
-
-    return (x_d * y_dd - x_dd * y_d) / ((x_d**2 + y_d**2) ** (3.0 / 2.0))
 
 
 def smoothing_reference_path(
     reference_path: np.ndarray, smooth_factor=None, weight_coefficient=None
 ):
+    """Smooth the reference path"""
     # generate a smooth reference path
     transposed_reference_path = reference_path.T
     # how to generate index okay
@@ -233,12 +209,7 @@ def smoothing_reference_path(
     ref_path_smooth = np.array([x_new, y_new]).transpose()
     orientation_start = np.arctan2(y_new[1] - y_new[0], x_new[1] - x_new[0])
     orientation_end = np.arctan2(y_new[-1] - y_new[-2], x_new[-1] - x_new[-2])
-    delta_orientation = orientation_end - orientation_start
-    # TODO: fix orientation
-    if delta_orientation % (2 * np.pi) > np.pi:
-        delta_orientation -= 2 * np.pi
-    if delta_orientation % (-2 * np.pi) < np.pi:
-        delta_orientation += 2 * np.pi
+    delta_orientation = utils_sol.convert_to_0_2pi(orientation_end - orientation_start)
     distance = np.sqrt((x_new[-1] - x_new[0]) ** 2 + (y_new[-1] - y_new[0]) ** 2)
     r = distance / (2 * np.sin(delta_orientation / 2))
     kappa = 1 / r

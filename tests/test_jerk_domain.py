@@ -26,7 +26,7 @@ class TestJerkDomain(unittest.TestCase):
         self.assertEqual(lat_j_1, 0.0)
 
         lat_j_2 = lat_j_obj.compute(40)
-        self.assertEqual(lat_j_2, 0.0)
+        self.assertEqual(lat_j_2, 0.01)
 
         lat_j_3 = lat_j_obj.compute(85)
         self.assertNotEqual(lat_j_3, None)  # last time step

@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -22,10 +22,12 @@ from commonroad.scenario.state import PMInputState, PMState, KSState
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.utility.general import (
     check_elements_state,
-    compute_curvature_from_polyline,
     compute_curvature_from_polyline_start_end,
 )
-from commonroad_crime.utility.solver import compute_lanelet_width_orientation
+from commonroad_crime.utility.solver import (
+    compute_lanelet_width_orientation,
+    convert_to_0_2pi,
+)
 
 
 class Maneuver(str, Enum):
@@ -468,26 +470,39 @@ class SimulationLat(SimulationBase):
             lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
                 [position]
             )[0]
+            if not lanelet_id:
+                return None, None
             lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
         else:
             # intersection scenario
             # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
             # extend predecessor and successors to avoid using orientation[0] and outside of projection
-            lanelet_id = list(self.turning_lanelet_id)
-            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                lanelet_id[0]
+            occupied_lanelet_id = (
+                self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
             )
-            pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
-                turning_lanelet.predecessor[0]
-            )
-            (
-                extend_suc_lanelet,
-                _,
-            ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
-                turning_lanelet, self._scenario.lanelet_network
-            )
-            lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
-        if not lanelet_id:
+            if len(occupied_lanelet_id) == 0:
+                return None, None
+            if len(occupied_lanelet_id) == 1:
+                lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    occupied_lanelet_id[0]
+                )
+            else:
+                lanelet_id = list(self.turning_lanelet_id)
+
+                turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    lanelet_id[0]
+                )
+                pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    turning_lanelet.predecessor[0]
+                )
+                (
+                    extend_suc_lanelet,
+                    _,
+                ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
+                    turning_lanelet, self._scenario.lanelet_network
+                )
+                lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
+        if not lanelet:
             return None, None
         lateral_dis, orientation = compute_lanelet_width_orientation(lanelet, position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
@@ -672,10 +687,14 @@ class SimulationLat(SimulationBase):
                 if hasattr(pre_state, "orientation"):
                     max_orient = pre_state.orientation
                 else:
-                    max_orient = math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    max_orient = convert_to_0_2pi(
+                        math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    )
             else:
                 lane_orient = lane_orient_updated
-                max_orient = self.set_maximal_orientation(lane_orient, i)
+                max_orient = convert_to_0_2pi(
+                    self.set_maximal_orientation(lane_orient, i)
+                )
             if i in [1, 3]:  # 1 for lane change; 1, 3 for overtaking
                 self.sign_change()
             bang_state_list = self.bang_bang_simulation(
@@ -765,6 +784,8 @@ class SimulationLat(SimulationBase):
         """
         adds additional constraints for the orientation.
         """
+        if nr_stage >= 4:
+            return lane_orientation
         if (
             self.maneuver == Maneuver.STEERLEFT
             or (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage <= 1)
@@ -812,20 +833,23 @@ class SimulationLat(SimulationBase):
                 throw=False,
             )
             if suc_state:
-                # fixme: accumulate acceleration
-                check_elements_state(suc_state, self.input)
+                check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
-                suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
-                # TODO: fix orientation
+                suc_orientation = convert_to_0_2pi(
+                    math.atan2(suc_state.velocity_y, suc_state.velocity)
+                )
                 if self._direction == "left":
-                    if suc_orientation % (2 * np.pi) > max_orientation % (2 * np.pi):
+                    if (
+                        suc_orientation > max_orientation
+                        and suc_orientation + math.pi * 2 > max_orientation
+                    ):
                         break
                 else:
-                    # for scenario 1:
-                    # if suc_orientation < max_orientation:
-                    # for scenario 2:
-                    if suc_orientation % (2 * np.pi) < max_orientation % (2 * np.pi):
+                    if (
+                        suc_orientation < max_orientation
+                        and suc_orientation - math.pi * 2 < max_orientation
+                    ):
                         break
             else:
                 self.input.acceleration_y = 0
