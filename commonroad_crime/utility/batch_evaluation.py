@@ -111,6 +111,7 @@ def load_config(config_root: str, scenario_id: str):
         )
     else:
         configuration = CriMeConfiguration()
+        configuration.general.set_scenario_name(scenario_id)
     return configuration
 
 

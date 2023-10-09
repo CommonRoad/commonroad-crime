@@ -47,7 +47,9 @@ class DA(CriMeBase):
         )
         # update the paths
         self.reach_config.general.path_output = self.configuration.general.path_output
-        self.reach_config.general.path_scenarios = self.configuration.general.path_scenarios
+        self.reach_config.general.path_scenarios = (
+            self.configuration.general.path_scenarios
+        )
         self.reach_config.planning.steps_computation = (
             self.configuration.reachable_set.time_horizon
         )
