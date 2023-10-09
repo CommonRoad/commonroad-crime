@@ -69,7 +69,7 @@ def process_scenario(
                 measure_object = measure(sce_conf)
             except Exception as err:
                 utils_log.print_and_log_error(
-                    logger, f"Initialization failed {scenario_id}, see {err}"
+                    logger, f"Initialization failed {scenario_id}, see {err}", verbose
                 )
                 continue
             sce_res[measure.measure_name][obs.obstacle_id] = dict()
@@ -92,6 +92,7 @@ def process_scenario(
                     utils_log.print_and_log_error(
                         logger,
                         f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}",
+                        verbose,
                     )
                 sce_res[measure.measure_name][obs.obstacle_id][ts] = [
                     measure_value,
@@ -101,17 +102,19 @@ def process_scenario(
 
 
 def load_config(config_root: str, scenario_id: str):
-    """Loads configuration file, if does not exist, use the default one"""
-    if not config_root:
-        config_root = "../config_files/"
-    config_file = f"{config_root}/{scenario_id}.yaml"
-    if os.path.exists(config_file):
+    """Loads configuration file, if it does not exist, use the default one"""
+    if not config_root or not os.path.exists(f"{config_root}/{scenario_id}.yaml"):
+        utils_log.print_and_log_info(
+            logger,
+            f"The configuration root is not provided or config file doesn't exist, "
+            f"thus the default configuration is invoked",
+        )
+        configuration = CriMeConfiguration()
+        configuration.general.set_scenario_name(scenario_id)
+    else:
         configuration = CriMeConfiguration.load(
             f"{config_root}/{scenario_id}.yaml", scenario_id
         )
-    else:
-        configuration = CriMeConfiguration()
-        configuration.general.set_scenario_name(scenario_id)
     return configuration
 
 
@@ -127,6 +130,9 @@ def run_parallel(
     simultaneously. This reduces the runtime required to test your metric on more scenarios. One drawback is that it is
     not very easy to debug your code with parallel batch evaluation.
     """
+    config = CriMeConfiguration()
+    utils_log.initialize_logger(config)
+
     scenario_loader, result_dict = initialize_process(
         scenario_path, flag_multi_processing=True
     )
@@ -144,7 +150,9 @@ def run_parallel(
 
     for i in range(pbar.total):
         scenario_id, file_path = scenario_loader.scenario_ids[i]
-        utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
+        utils_log.print_and_log_error(
+            logger, f"Evaluation of scenario {scenario_id}", verbose
+        )
         sce_conf = load_config(config_root, scenario_id)
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()
@@ -175,11 +183,15 @@ def run_sequential(
     scenario_loader, result_dict = initialize_process(
         scenario_path, flag_multi_processing=False
     )
+    config = CriMeConfiguration()
+    utils_log.initialize_logger(config)
 
     for scenario_id, file_path in tqdm(
         scenario_loader.scenario_ids, desc="Scenarios Finished: ", colour="red"
     ):
-        utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
+        utils_log.print_and_log_error(
+            logger, f"Evaluation of scenario {scenario_id}", verbose
+        )
         sce_res = dict()
         sce_conf = load_config(config_root, scenario_id)
         sce_conf.general.path_scenarios = file_path
@@ -195,7 +207,9 @@ def run_sequential(
                     measure_object = measure(sce_conf)
                 except Exception as err:
                     utils_log.print_and_log_error(
-                        logger, f"Initialization failed {scenario_id}, see {err}"
+                        logger,
+                        f"Initialization failed {scenario_id}, see {err}",
+                        verbose,
                     )
                     continue
                 sce_res[measure.measure_name][obs.obstacle_id] = dict()
@@ -217,6 +231,7 @@ def run_sequential(
                         utils_log.print_and_log_error(
                             logger,
                             f"Evaluation failed {scenario_id}:{obs.obstacle_id}, see {err}",
+                            verbose,
                         )
                         calc_time = math.nan
                         pass

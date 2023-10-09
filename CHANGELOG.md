@@ -1,7 +1,7 @@
 # Changelog
 ## [0.3.1] - 2023.xx.xx
 ### Changed
-- The lanelet vertices are now smoothed before constructing the curvlinear coordinate system
+- The lanelet vertices are now smoothed before constructing the curvlinear coordinate system; therefore, some of the test results vary a bit
 ### Fixed
 - The evasive maneuver simulator: now the initial time step of the simulated vehicle doesn't have to start from 0
 - The adaptive turning behaviors at intersections for the TTM simulation, i.e., the velocity needs to first satisfy the desired requirements based on the intersection's curvature
