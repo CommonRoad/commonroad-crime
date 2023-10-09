@@ -85,6 +85,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 - Kun Qian
 - Oliver Specht
 - Sicheng Wang
+- Zekun Xing
 - Ziqian Xu
 
 ### Citation
