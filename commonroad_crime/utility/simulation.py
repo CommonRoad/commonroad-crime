@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -22,7 +22,6 @@ from commonroad.scenario.state import PMInputState, PMState, KSState
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.utility.general import (
     check_elements_state,
-    compute_curvature_from_polyline,
     compute_curvature_from_polyline_start_end,
 )
 from commonroad_crime.utility.solver import (

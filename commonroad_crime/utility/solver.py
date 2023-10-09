@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -197,7 +197,7 @@ def compute_acceleration(current_velocity: float, next_velocity: float, dt: floa
 
     :param current_velocity: velocity of current time step
     :param next_velocity: velocity of previous time step
-    :param dt: time step size
+    :param dt: timestep size
     :return: acceleration
     """
     acceleration = (next_velocity - current_velocity) / dt
@@ -213,7 +213,7 @@ def compute_lanelet_width_orientation(
     :param lanelet: a lanelet
     :param position: position of the vehicle
     """
-    # smooth the vertices:
+    # smooth the vertices first:
     try:
         center_vertices = smoothing_reference_path(lanelet.center_vertices, 5, 15)
         left_vertices = smoothing_reference_path(lanelet.left_vertices, 5, 15)
