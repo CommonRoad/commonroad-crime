@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -45,14 +45,18 @@ class DA(CriMeBase):
         self.reach_config.general.path_scenario = (
             self.configuration.general.path_scenario
         )
+        # update the paths
         self.reach_config.general.path_output = self.configuration.general.path_output
+        self.reach_config.general.path_scenarios = (
+            self.configuration.general.path_scenarios
+        )
         self.reach_config.planning.steps_computation = (
             self.configuration.reachable_set.time_horizon
         )
         self.reach_config.planning.dt = self.sce.dt
         if self.configuration.reachable_set.coordinate_system == 1:
             self.reach_config.planning.coordinate_system = "CART"
-        self.reach_config.update()
+        self.reach_config.update(scenario=self.sce)
         self.reach_interface = ReachableSetInterface(self.reach_config)
 
     def _update_initial_state(self, target_state: Union[InitialState, CustomState]):

@@ -12,7 +12,7 @@ with open(os.path.join(this_directory, "README.md"), "r", encoding="utf-8") as f
 
 setup(
     name="commonroad-crime",
-    version="0.3.0",
+    version="0.3.1",
     description="criticality measures of automated vehicles",
     keywords="criticality, autonomous driving",
     long_description_content_type="text/markdown",
