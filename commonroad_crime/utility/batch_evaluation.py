@@ -100,6 +100,20 @@ def process_scenario(
         result_dict[scenario_id] = sce_res
 
 
+def load_config(config_root: str, scenario_id: str):
+    """Loads configuration file, if does not exist, use the default one"""
+    if not config_root:
+        config_root = "../config_files/"
+    config_file = f"{config_root}/{scenario_id}.yaml"
+    if os.path.exists(config_file):
+        configuration = CriMeConfiguration.load(
+            f"{config_root}/{scenario_id}.yaml", scenario_id
+        )
+    else:
+        configuration = CriMeConfiguration()
+    return configuration
+
+
 def run_parallel(
     scenario_path: str,
     measures: List[Type[CriMeBase]],
@@ -130,11 +144,7 @@ def run_parallel(
     for i in range(pbar.total):
         scenario_id, file_path = scenario_loader.scenario_ids[i]
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
-        if not config_root:
-            config_root = "../config_files/"
-        sce_conf = CriMeConfiguration.load(
-            f"{config_root}/{scenario_id}.yaml", scenario_id
-        )
+        sce_conf = load_config(config_root, scenario_id)
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()
         pool.apply_async(
@@ -170,11 +180,7 @@ def run_sequential(
     ):
         utils_log.print_and_log_error(logger, f"Evaluation of scenario {scenario_id}")
         sce_res = dict()
-        if not config_root:
-            config_root = "../config_files/"
-        sce_conf = CriMeConfiguration.load(
-            f"{config_root}/{scenario_id}.yaml", scenario_id
-        )
+        sce_conf = load_config(config_root, scenario_id)
         sce_conf.general.path_scenarios = file_path
         sce_conf.update()
         for measure in measures:
