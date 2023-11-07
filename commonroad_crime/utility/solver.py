@@ -211,7 +211,6 @@ def compute_lanelet_width_orientation(
     Computes the width and the orientation of the lanelet at given position
 
     :param lanelet: a lanelet
-    :param position: position of the vehicle
     """
     # smooth the vertices first:
     try:
@@ -233,7 +232,7 @@ def compute_lanelet_width_orientation(
         for orient in compute_orientation_from_polyline(center_vertices)
     ]
     path_length = compute_pathlength_from_polyline(center_vertices)
-    lanelet_clcs = CurvilinearCoordinateSystem(center_vertices, 20, 0.1, 5.0)
+    lanelet_clcs = CurvilinearCoordinateSystem(center_vertices)
     position_s, _ = lanelet_clcs.convert_to_curvilinear_coords(position[0], position[1])
     return np.interp(position_s, path_length, width_list), get_orientation_point(
         position_s, path_length, orient_list
@@ -253,15 +252,15 @@ def extrapolate_resample_polyline(
     a = np.array([[x, p(x)]])
     polyline = np.concatenate((a, polyline), axis=0)
 
-    # extend end point
     # extrapolate final point
     p = np.poly1d(np.polyfit(polyline[-2:, 0], polyline[-2:, 1], 1))
+    # extend end point
 
     # this extension helps the ego vehicle can drive to the end of the lane.
-    x = polyline[-1, 0] + 99 * (polyline[-1, 0] - polyline[-2, 0])
+    x = polyline[-1, 0] + 10 * (polyline[-1, 0] - polyline[-2, 0])
     a = np.array([[x, p(x)]])
     polyline_extend = resample_polyline(
-        np.concatenate((polyline[-1, np.newaxis], a), axis=0), step=20.0
+        np.concatenate((polyline[-1, np.newaxis], a), axis=0), step=step
     )
     polyline_origin = resample_polyline(polyline, step=step)
 
@@ -273,7 +272,7 @@ def smoothing_reference_path(
 ):
     reference_path_extended = extrapolate_resample_polyline(reference_path)
     # generate a smooth reference path
-    transposed_reference_path = reference_path_extended.T
+    transposed_reference_path = reference_path.T
     # how to generate index okay
     okay = np.where(
         np.abs(np.diff(transposed_reference_path[0]))
