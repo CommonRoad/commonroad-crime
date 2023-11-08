@@ -23,15 +23,15 @@ For adding new measures, we recommend using [Anaconda](https://www.anaconda.com/
 
 After installing Anaconda, create a new environment with:
 ``` bash
-$ conda create -n commonroad-py37 python=3.7 -y
+$ conda create -n commonroad-py38 python=3.8 -y
 ```
 
-Here the name of the environment is called **commonroad-py37**. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. **Always activate** this environment before you do anything related:
+Here the name of the environment is called **commonroad-py38**. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. **Always activate** this environment before you do anything related:
 
 ```sh
-$ conda activate commonroad-py37
+$ conda activate commonroad-py38
 or
-$ source activate commonroad-py37
+$ source activate commonroad-py38
 ```
 Then, install the dependencies with:
 

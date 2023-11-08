@@ -33,15 +33,15 @@ For adding new measures, we recommend using `Anaconda <https://www.anaconda.com/
 
 After installing Anaconda, create a new environment with::
 
-    conda create -n commonroad-py37 python=3.7 -y
+    conda create -n commonroad-py38 python=3.8 -y
 
-Here the name of the environment is called commonroad-py37. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. Always activate this environment before you do anything related::
+Here the name of the environment is called commonroad-py38. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. Always activate this environment before you do anything related::
 
-    conda activate commonroad-py37
+    conda activate commonroad-py38
 
 or ::
 
-    source activate commonroad-py37
+    source activate commonroad-py38
 
 Then, install the dependencies with::
 
@@ -49,9 +49,6 @@ Then, install the dependencies with::
     pip install -e .
     conda develop .
 
-**(optional)** In order to run reachability analysis related measures
-(e.g., worst-time-to-react (WTTR), drivable area (DA)), you have to install the following repositories as well:
-`commonroad-reach <https://gitlab.lrz.de/tum-cps/commonroad-reach>`__
 
 To test the installation, run unittest::
 
@@ -76,6 +73,7 @@ Citation
          title     = {{CommonRoad-CriMe}: {A} Toolbox for Criticality Measures of Autonomous Vehicles},
          author    = {Yuanfei Lin and Matthias Althoff},
          booktitle = {Proc. of the IEEE Intell. Veh. Symp.},
+         pages     = {1-8},
          year      = {2023},
    }
 
