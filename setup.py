@@ -4,7 +4,7 @@ import os
 
 from setuptools import setup, find_packages
 
-from commonroad_dc.__version__ import __version__
+from commonroad_crime.__version__ import __version__
 
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
