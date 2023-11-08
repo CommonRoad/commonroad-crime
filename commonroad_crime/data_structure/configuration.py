@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -426,8 +426,10 @@ class CriMeConfiguration(BaseConfig):
         """
         if isinstance(sce, Scene):
             self.scene = sce
+            self.general.name_scenario = str(sce.scenario_id)
         elif isinstance(sce, Scenario):
             self.scenario = sce
+            self.general.name_scenario = str(sce.scenario_id)
         elif not sce and (
             self.scene or self.scenario
         ):  # prevent reloading the existing scenario

@@ -8,6 +8,7 @@
 
 import os
 import sys
+from commonroad_crime.__version__ import __version__
 
 sys.path.insert(0, os.path.abspath("../../../"))
 sys.path.insert(0, os.path.abspath("../../../commonroad_crime/"))
@@ -19,7 +20,7 @@ sys.path.insert(0, os.path.abspath("../../../commonroad_crime/"))
 project = "CommonRoad-CriMe"
 copyright = "2023, Technical University of Munich, Cyber-Physical Systems Group"
 author = "Yuanfei Lin, Matthias Althoff"
-release = "v0.2.4"
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

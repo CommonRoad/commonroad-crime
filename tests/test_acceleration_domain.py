@@ -38,12 +38,12 @@ class TestAccelerationDomain(unittest.TestCase):
 
         self.config.acceleration.acceleration_mode = 2
         a_long_req_3 = a_long_req_object.compute(202, 0)
-        self.assertEqual(a_long_req_3, -6.57)
+        self.assertEqual(a_long_req_3, -5.77)
 
     def test_a_lat_req(self):
         a_lat_req_object = ALatReq(self.config)
         a_lat_req_1 = a_lat_req_object.compute(202, 0)
-        self.assertEqual(a_lat_req_1, 0.09)
+        self.assertEqual(a_lat_req_1, 0.02)
 
     def test_a_req(self):
         a_req_object = AReq(self.config)

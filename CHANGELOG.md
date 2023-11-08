@@ -1,9 +1,21 @@
 # Changelog
+## [0.3.1] - 2023.11.08
+### added
+- Add the log verbose for batch evaluation
+### Changed
+- The lanelet vertices are now extended and smoothed before constructing the curvlinear coordinate system; therefore, some of the test results vary a bit
+### Fixed
+- The evasive maneuver simulator: now the initial time step of the simulated vehicle doesn't have to start from 0
+- The adaptive turning behaviors at intersections for the TTM simulation, i.e., the velocity needs to first satisfy the desired requirements based on the intersection's curvature
+- When an empty yaml file is provided for batch evaluation, it would now use the default configuration setup.
+- The bridge to compute the drivable area, now it is able to get the scenario from the same folder
+- The turning simulation: the last stage orientation error
 ## [0.3.0] - 2023.08.14
 ### Fixed
 - The original equation for computing TTC is wrong, now its fixed (also updated in the paper)
 - fix the TCI, whose optimization problem was not reset each time before
 - verbose for each measure and the batch evaluation
+- without updating the default vehicle states when creating the other vehicle (together with the `CommonRoad-io==2023.3`)
 ### Added
 - support for Python 3.10 and preparation for 3.11
 - add code style checking (black)

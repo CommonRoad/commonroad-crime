@@ -1,5 +1,5 @@
 # CommonRoad-CriMe
-![image info](./docs/figures/CriMe-banner.png)
+![image info](https://gitlab.lrz.de/tum-cps/commonroad-crime/-/raw/master/docs/figures/CriMe-banner.png)
 [![Linux](https://img.shields.io/badge/os-linux?&logo=Linux&logoColor=white&labelColor=gray)](https://pypi.python.org/pypi/commonroad-openscenario-converter/)
 [![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
 [![PyPI license](https://img.shields.io/pypi/l/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)<br>
@@ -23,15 +23,15 @@ For adding new measures, we recommend using [Anaconda](https://www.anaconda.com/
 
 After installing Anaconda, create a new environment with:
 ``` bash
-$ conda create -n commonroad-py37 python=3.7 -y
+$ conda create -n commonroad-py38 python=3.8 -y
 ```
 
-Here the name of the environment is called **commonroad-py37**. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. **Always activate** this environment before you do anything related:
+Here the name of the environment is called **commonroad-py38**. You may also change this name as you wish. In such case, don't forget to change it in the following commands as well. **Always activate** this environment before you do anything related:
 
 ```sh
-$ conda activate commonroad-py37
+$ conda activate commonroad-py38
 or
-$ source activate commonroad-py37
+$ source activate commonroad-py38
 ```
 Then, install the dependencies with:
 
@@ -85,6 +85,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 - Kun Qian
 - Oliver Specht
 - Sicheng Wang
+- Zekun Xing
 - Ziqian Xu
 
 ### Citation

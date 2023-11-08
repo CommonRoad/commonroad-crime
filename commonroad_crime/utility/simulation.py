@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -14,12 +14,20 @@ import copy
 from typing import Union, List, Tuple
 from abc import ABC, abstractmethod
 
+from commonroad.scenario.lanelet import Lanelet
 from commonroad.scenario.obstacle import DynamicObstacle
+from commonroad.scenario.scenario import Tag
 from commonroad.scenario.state import PMInputState, PMState, KSState
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
-from commonroad_crime.utility.general import check_elements_state
-from commonroad_crime.utility.solver import compute_lanelet_width_orientation
+from commonroad_crime.utility.general import (
+    check_elements_state,
+    compute_curvature_from_polyline_start_end,
+)
+from commonroad_crime.utility.solver import (
+    compute_lanelet_width_orientation,
+    convert_to_0_2pi,
+)
 
 
 class Maneuver(str, Enum):
@@ -104,8 +112,10 @@ class SimulationBase(ABC):
         Initializing the state list based on the given time step. All the states before the time step would be returned.
         """
         state_list = []
-        if time_step is not 0:
-            for ts in range(0, time_step):
+        # checking weather the time step is larger than the initial one
+        initial_time_step = self.simulated_vehicle.initial_state.time_step
+        if time_step > initial_time_step:
+            for ts in range(initial_time_step, time_step):
                 state = copy.deepcopy(self.simulated_vehicle.state_at_time(ts))
                 check_elements_state(state)
                 state_list.append(state)
@@ -419,6 +429,7 @@ class SimulationLat(SimulationBase):
         # set the longitudinal acceleration to 0
         self.a_long = 0
         # set the lateral acceleration based on the vehicle's capability and the maneuver
+        # TODO: check setting of a_lat
         v_switch = self.parameters.longitudinal.v_switch
         if ref_state.velocity > v_switch:
             self.a_lat = (
@@ -451,14 +462,49 @@ class SimulationLat(SimulationBase):
         """
         Sets the time for the bang–bang controller of the lane change.
         """
-        lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
-            [position]
-        )[0]
-        if not lanelet_id:
+        if (
+            len(self._scenario.lanelet_network.intersections) == 0
+            or Tag.INTERSECTION not in self._scenario.tags
+            or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+        ):
+            lanelet_id = self._scenario.lanelet_network.find_lanelet_by_position(
+                [position]
+            )[0]
+            if not lanelet_id:
+                return None, None
+            lanelet = self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0])
+        else:
+            # intersection scenario
+            # use preselected turning lanelet to avoid confusion of find_lanelet_by_position
+            # extend predecessor and successors to avoid using orientation[0] and outside of projection
+            occupied_lanelet_id = (
+                self._scenario.lanelet_network.find_lanelet_by_position([position])[0]
+            )
+            if len(occupied_lanelet_id) == 0:
+                return None, None
+            if len(occupied_lanelet_id) == 1:
+                lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    occupied_lanelet_id[0]
+                )
+            else:
+                lanelet_id = list(self.turning_lanelet_id)
+
+                turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    lanelet_id[0]
+                )
+                pre_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                    turning_lanelet.predecessor[0]
+                )
+                (
+                    extend_suc_lanelet,
+                    _,
+                ) = Lanelet.all_lanelets_by_merging_successors_from_lanelet(
+                    turning_lanelet, self._scenario.lanelet_network
+                )
+                lanelet = Lanelet.merge_lanelets(extend_suc_lanelet[0], pre_lanelet)
+        if not lanelet:
             return None, None
-        lateral_dis, orientation = compute_lanelet_width_orientation(
-            self._scenario.lanelet_network.find_lanelet_by_id(lanelet_id[0]), position
-        )
+        lateral_dis, orientation = compute_lanelet_width_orientation(lanelet, position)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT] or self.a_lat == 0:
             return math.inf, orientation
         if self._lateral_distance_mode == 1:
@@ -470,6 +516,151 @@ class SimulationLat(SimulationBase):
             int(total_timestep / (2 * self.dt)) + (total_timestep % (2 * self.dt) > 0),
             orientation,
         )
+
+    def check_intersection_limit(
+        self, state_list: List[Union[PMState, KSState]], checked_state: PMState
+    ) -> (List[PMState], PMState):
+        # directly check whether it is an intersection scenario
+        if (
+            len(self._scenario.lanelet_network.intersections) == 0
+            or Tag.INTERSECTION not in self._scenario.tags
+            or self.maneuver not in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT]
+        ):
+            return state_list, checked_state
+
+        # for turning, finding the target lanelet
+        current_lanelet_ids = self._scenario.lanelet_network.find_lanelet_by_position(
+            [checked_state.position]
+        )[0]
+        # store selected incoming and turning lanelet
+        self.turning_lanelet_id = None
+        self.incoming = None
+        for intersection in self._scenario.lanelet_network.intersections:
+            for incoming in intersection.incomings:
+                is_turn_left = self.maneuver in Maneuver.TURNLEFT
+                is_turn_right = self.maneuver in Maneuver.TURNRIGHT
+
+                # Check if the current_lanelet_id is in the correct incoming or successor lanelets based on the maneuver
+                if (
+                    set(current_lanelet_ids).intersection(incoming.incoming_lanelets)
+                    or (
+                        is_turn_left
+                        and set(current_lanelet_ids).intersection(
+                            incoming.successors_left
+                        )
+                    )
+                    or (
+                        is_turn_right
+                        and set(current_lanelet_ids).intersection(
+                            incoming.successors_right
+                        )
+                    )
+                ):
+                    self.turning_lanelet_id = (
+                        incoming.successors_left
+                        if is_turn_left
+                        else incoming.successors_right
+                    )
+                    self.incoming = incoming
+                    break
+
+        if self.turning_lanelet_id:
+            turning_lanelet = self._scenario.lanelet_network.find_lanelet_by_id(
+                list(self.turning_lanelet_id)[0]
+            )
+            # !! for turning right, the curvatures are negative
+            # curvature = np.max(
+            #     np.abs(compute_curvature_from_polyline(turning_lanelet.center_vertices))
+            # )
+            # fixme: idea: assume the turning lane is a part of circle,
+            #  calculate the curvature based on the function of chord
+            curvature = abs(
+                compute_curvature_from_polyline_start_end(
+                    turning_lanelet.center_vertices
+                )
+            )
+            # fixme: add rounding up to make the curvature larger
+            curvature = np.ceil(curvature * 10) / 10
+            desired_velocity = np.sqrt(np.abs(self.a_lat / curvature))
+            if (
+                np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
+                - desired_velocity
+                > 0
+            ):
+                # exceed the limit, decelerate first
+                self.a_long = -abs(self.a_lat)
+                self.a_lat = 0
+            else:
+                # too smaller than the limit, accelerate first
+                self.a_long = abs(self.a_lat)
+                self.a_lat = 0
+            while True:
+                # set a margin around the desired velocity
+                if (
+                    np.abs(
+                        np.sqrt(
+                            checked_state.velocity**2 + checked_state.velocity_y**2
+                        )
+                        - desired_velocity
+                    )
+                    < 0.5
+                ):
+                    break
+                check_elements_state(checked_state, self.input)
+                self.update_inputs_x_y(checked_state)
+                suc_state = self.vehicle_dynamics.simulate_next_state(
+                    PMState(
+                        position=checked_state.position,
+                        velocity=checked_state.velocity,
+                        velocity_y=checked_state.velocity_y,
+                        time_step=checked_state.time_step,
+                    ),
+                    self.input,
+                    self.dt,
+                    throw=False,
+                )
+                state_list.append(suc_state)
+                checked_state = suc_state
+            self.set_inputs(checked_state)
+            check_elements_state(checked_state)
+            # fixme: assume vehicle will be go straight at a constant velocity until entering the turning lanelet
+            while True:
+                current_lanelet_ids = (
+                    self._scenario.lanelet_network.find_lanelet_by_position(
+                        [checked_state.position]
+                    )[0]
+                )
+                if (
+                    self.incoming
+                    and len(
+                        self.incoming.incoming_lanelets.intersection(
+                            current_lanelet_ids
+                        )
+                    )
+                    != 0
+                ):
+                    self.a_long = 0
+                    self.a_lat = 0
+                    check_elements_state(checked_state, self.input)
+                    self.update_inputs_x_y(checked_state)
+                    suc_state = self.vehicle_dynamics.simulate_next_state(
+                        PMState(
+                            position=checked_state.position,
+                            velocity=checked_state.velocity,
+                            velocity_y=checked_state.velocity_y,
+                            time_step=checked_state.time_step,
+                        ),
+                        self.input,
+                        self.dt,
+                        throw=False,
+                    )
+                    state_list.append(suc_state)
+                    checked_state = suc_state
+                else:
+                    break
+        self.set_inputs(checked_state)
+        check_elements_state(checked_state)
+        return state_list, checked_state
 
     def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
         """
@@ -485,6 +676,8 @@ class SimulationLat(SimulationBase):
         max_orient = 0.0
         if given_time_limit:
             self.time_horizon = given_time_limit
+        # check whether it is an intersection, if yes, the vehicle has to reach a desired velocity
+        state_list, pre_state = self.check_intersection_limit(state_list, pre_state)
         for i in range(self._nr_stage):
             bang_bang_ts, lane_orient_updated = self.set_bang_bang_timestep_orientation(
                 pre_state.position
@@ -494,10 +687,14 @@ class SimulationLat(SimulationBase):
                 if hasattr(pre_state, "orientation"):
                     max_orient = pre_state.orientation
                 else:
-                    max_orient = math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    max_orient = convert_to_0_2pi(
+                        math.atan2(pre_state.velocity_y, pre_state.velocity)
+                    )
             else:
                 lane_orient = lane_orient_updated
-                max_orient = self.set_maximal_orientation(lane_orient, i)
+                max_orient = convert_to_0_2pi(
+                    self.set_maximal_orientation(lane_orient, i)
+                )
             if i in [1, 3]:  # 1 for lane change; 1, 3 for overtaking
                 self.sign_change()
             bang_state_list = self.bang_bang_simulation(
@@ -587,6 +784,8 @@ class SimulationLat(SimulationBase):
         """
         adds additional constraints for the orientation.
         """
+        if nr_stage >= 4:
+            return lane_orientation
         if (
             self.maneuver == Maneuver.STEERLEFT
             or (self.maneuver == Maneuver.OVERTAKELEFT and nr_stage <= 1)
@@ -637,9 +836,21 @@ class SimulationLat(SimulationBase):
                 check_elements_state(suc_state)
                 state_list.append(suc_state)
                 pre_state = suc_state
-                suc_orientation = math.atan2(suc_state.velocity_y, suc_state.velocity)
-                if abs(suc_orientation) > abs(max_orientation):
-                    break
+                suc_orientation = convert_to_0_2pi(
+                    math.atan2(suc_state.velocity_y, suc_state.velocity)
+                )
+                if self._direction == "left":
+                    if (
+                        suc_orientation > max_orientation
+                        and suc_orientation + math.pi * 2 > max_orientation
+                    ):
+                        break
+                else:
+                    if (
+                        suc_orientation < max_orientation
+                        and suc_orientation - math.pi * 2 < max_orientation
+                    ):
+                        break
             else:
                 self.input.acceleration_y = 0
         return state_list

@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.3.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -19,6 +19,7 @@ from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstac
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_dc.geometry.util import chaikins_corner_cutting, resample_polyline
+import commonroad_dc.pycrccosy as pycrccosy
 
 import commonroad_crime.utility.solver as utils_sol
 
@@ -26,6 +27,7 @@ import numpy as np
 import math
 from typing import List, Union
 import functools
+from scipy.interpolate import splprep, splev
 
 
 def load_scenario(config) -> Scenario:
@@ -164,3 +166,51 @@ def check_elements_state(
         if state.acceleration is not None:
             state.acceleration_y = state.acceleration * math.sin(ref_orientation)
             state.acceleration = state.acceleration * math.cos(ref_orientation)
+
+
+def compute_curvature_from_polyline_start_end(polyline: np.ndarray) -> float:
+    """
+    idea: assume the turning lane is a part of circle, calculate the curvature based on the function of chord
+    """
+    assert (
+        isinstance(polyline, np.ndarray)
+        and polyline.ndim == 2
+        and len(polyline[:, 0]) > 2
+    ), "Polyline malformed for curvature computation p={}".format(polyline)
+
+    # fixme: the weight factors might need to be adjusted
+    _, kappa = smoothing_reference_path(polyline, 0.1, 1)
+    return kappa
+
+
+def smoothing_reference_path(
+    reference_path: np.ndarray, smooth_factor=None, weight_coefficient=None
+):
+    """Smooth the reference path"""
+    # generate a smooth reference path
+    transposed_reference_path = reference_path.T
+    # how to generate index okay
+    okay = np.where(
+        np.abs(np.diff(transposed_reference_path[0]))
+        + np.abs(np.diff(transposed_reference_path[1]))
+        > 0
+    )
+    xp = np.r_[transposed_reference_path[0][okay], transposed_reference_path[0][-1]]
+    yp = np.r_[transposed_reference_path[1][okay], transposed_reference_path[1][-1]]
+
+    curvature = pycrccosy.Util.compute_curvature(np.array([xp, yp]).T)
+    # set weights for interpolation:
+    # see details: https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.splprep.html
+    weights = np.exp(-weight_coefficient * (abs(curvature) - np.min(abs(curvature))))
+    # B spline interpolation
+    tck, u = splprep([xp, yp], s=smooth_factor, w=weights)
+    u_new = np.linspace(u.min(), u.max(), 2000)
+    x_new, y_new = splev(u_new, tck, der=0)
+    ref_path_smooth = np.array([x_new, y_new]).transpose()
+    orientation_start = np.arctan2(y_new[1] - y_new[0], x_new[1] - x_new[0])
+    orientation_end = np.arctan2(y_new[-1] - y_new[-2], x_new[-1] - x_new[-2])
+    delta_orientation = utils_sol.convert_to_0_2pi(orientation_end - orientation_start)
+    distance = np.sqrt((x_new[-1] - x_new[0]) ** 2 + (y_new[-1] - y_new[0]) ** 2)
+    r = distance / (2 * np.sin(delta_orientation / 2))
+    kappa = 1 / r
+    return ref_path_smooth, kappa
