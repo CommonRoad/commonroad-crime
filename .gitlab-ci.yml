@@ -51,6 +51,18 @@ pages:
   only:
     - master
 
+push_to_internal_pipy_registry:
+  stage: deploy
+  when: manual
+  only:
+    - develop
+  script:
+    - python -m pip install --upgrade setuptools wheel twine
+    - python setup.py sdist bdist_wheel
+    # Configure the GitLab PyPI repository URL and your credentials for twine
+    - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi -u gitlab-ci-token -p ${CI_JOB_TOKEN} dist/*
+    -     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --skip-existing --repository-url https://gitlab.lrz.de/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/* --verbose
+
 push_to_external_pipy_test_registry:
   stage: deploy
   when: manual
@@ -59,7 +71,7 @@ push_to_external_pipy_test_registry:
   script:
     - python -m pip install --upgrade setuptools wheel twine
     - python setup.py sdist bdist_wheel
-    - python -m twine upload --repository-url https://test.pypi.org/legacy/ -u __token__ -p ${CR_PYPI_TEST_API_TOKEN} dist/*
+    - TWINE_PASSWORD=${CR_PYPI_TEST_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/* --verbose
 
 push_to_external_pipy_release_registry:
   stage: deploy
@@ -69,5 +81,7 @@ push_to_external_pipy_release_registry:
   script:
     - python -m pip install --upgrade setuptools wheel twine
     - python setup.py sdist bdist_wheel
-    - python -m twine upload -u __token__ -p ${CR_PYPI_RELEASE_API_TOKEN} dist/*
+    - TWINE_PASSWORD=${CR_PYPI_RELEASE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload dist/* --verbose
+
+
 
