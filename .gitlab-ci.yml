@@ -69,6 +69,7 @@ push_to_external_pipy_test_registry:
   only:
     - master
   script:
+    - python -m pip install --upgrade pip
     - python -m pip install --upgrade setuptools wheel twine
     - python setup.py sdist bdist_wheel
     - TWINE_PASSWORD=${CR_PYPI_TEST_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/* --verbose
@@ -79,6 +80,7 @@ push_to_external_pipy_release_registry:
   only:
     - master
   script:
+    - python -m pip install --upgrade pip
     - python -m pip install --upgrade setuptools wheel twine
     - python setup.py sdist bdist_wheel
     - TWINE_PASSWORD=${CR_PYPI_RELEASE_API_TOKEN} TWINE_USERNAME=__token__ python -m twine upload dist/* --verbose
