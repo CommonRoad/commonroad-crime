@@ -4,6 +4,8 @@ import os
 
 from setuptools import setup, find_packages
 
+from commonroad_dc.__version__ import __version__
+
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(this_directory, "README.md"), "r", encoding="utf-8") as f:
@@ -12,7 +14,7 @@ with open(os.path.join(this_directory, "README.md"), "r", encoding="utf-8") as f
 
 setup(
     name="commonroad-crime",
-    version="0.3.1",
+    version=__version__,
     description="criticality measures of automated vehicles",
     keywords="criticality, autonomous driving",
     long_description_content_type="text/markdown",
@@ -29,7 +31,7 @@ setup(
     packages=find_packages(),
     data_files=[(".", ["LICENSE"])],
     install_requires=[
-        "commonroad-io>=2022.3",
+        "commonroad-io>=2023.1",
         "commonroad-vehicle-models>=3.0.0",
         "commonroad-route-planner>=2022.3",
         "commonroad-drivability-checker>=2023.1",
