@@ -2,6 +2,7 @@
 ## [0.3.2] - 2023.xx.xx
 ### Fixed
 - The extension of the lanelet vertices for projecting between different coordinate domains
+- The compatability with the new commonroad-io version
 ## [0.3.1] - 2023.11.08
 ### added
 - Add the log verbose for batch evaluation
