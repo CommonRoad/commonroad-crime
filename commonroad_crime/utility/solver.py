@@ -16,10 +16,10 @@ from scipy.spatial.distance import cdist
 from commonroad.scenario.obstacle import (
     Obstacle,
     StaticObstacle,
-    State,
     ObstacleType,
     DynamicObstacle,
 )
+from commonroad.scenario.state import State
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
