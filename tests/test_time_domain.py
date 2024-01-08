@@ -113,6 +113,16 @@ class TestTimeDomain(unittest.TestCase):
         tts_object.visualize()
         self.assertEqual(tts, tts2)
 
+    def test_simulation_extended_PM_state(self):
+        self.config.general.name_scenario = "DEU_AAH1-2_7900_T-1049"
+        sce_intersection, _ = CommonRoadFileReader(
+            self.config.general.path_scenario
+        ).open(lanelet_assignment=True)
+        self.config.update(ego_id=10020, sce=sce_intersection)
+        self.config.debug.draw_visualization = True
+        sim_long = TTS(self.config)
+        simulated_state1 = sim_long.compute(1)
+
     def test_ttr(self):
         self.config.time.steer_width = 2
         self.config.debug.draw_visualization = True

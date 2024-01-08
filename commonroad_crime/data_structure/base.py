@@ -14,8 +14,9 @@ import logging
 from typing import Union
 
 # CommonRoad packages
+from commonroad.scenario.state import ExtendedPMState, CustomState
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstacle
-from commonroad.prediction.prediction import TrajectoryPrediction
+from commonroad.prediction.prediction import TrajectoryPrediction, Trajectory
 from commonroad.visualization.mp_renderer import MPRenderer
 from commonroad.prediction.prediction import SetBasedPrediction
 
@@ -78,6 +79,22 @@ class CriMeBase:
         if not isinstance(self.ego_vehicle, StaticObstacle) and not isinstance(
             self.ego_vehicle.prediction, SetBasedPrediction
         ):
+            checked_state_list = []
+            for state in self.ego_vehicle.prediction.trajectory.state_list:
+                if isinstance(state, ExtendedPMState):
+                    state = CustomState(
+                        time_step=state.time_step,
+                        position=state.position,
+                        velocity=state.velocity,
+                        orientation=state.orientation,
+                        acceleration=state.acceleration,
+                    )
+                else:
+                    state = state
+                checked_state_list.append(state)
+            self.ego_vehicle.prediction.trajectory = Trajectory(
+                checked_state_list[0].time_step, checked_state_list
+            )
             utils_gen.check_elements_state_list(
                 [self.ego_vehicle.initial_state]
                 + self.ego_vehicle.prediction.trajectory.states_in_time_interval(
@@ -86,6 +103,7 @@ class CriMeBase:
                 self.dt,
             )
             self.clcs: CurvilinearCoordinateSystem = self._update_clcs()
+
         self.other_vehicle: Union[
             Obstacle, DynamicObstacle, StaticObstacle, None
         ] = None  # optional
