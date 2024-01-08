@@ -209,7 +209,7 @@ class SimulationRandoMonteCarlo(SimulationBase):
 
     def simulate_state_list(
         self, start_time_step: int, given_time_limit: int = None
-    ) -> list[PMState]:
+    ) -> List[PMState]:
         # using copy to prevent the change of the initial trajectory
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
