@@ -15,7 +15,7 @@ before_script:
 black:
   stage: style
   needs: []
-  image: pyfound/black:23.1.0
+  image: pyfound/black:24.1.1 
   before_script: []
   cache: []
   allow_failure: true

@@ -4,7 +4,6 @@ See paper: CommonRoad-CriMe: A Toolbox for Criticality Measures of Autonomous Ve
 Experiment: Sec. IV.B Evaluation on Scenarios
 """
 
-
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
 
