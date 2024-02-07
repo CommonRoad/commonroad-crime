@@ -598,9 +598,7 @@ class SimulationLat(SimulationBase):
                 # set a margin around the desired velocity
                 if (
                     np.abs(
-                        np.sqrt(
-                            checked_state.velocity**2 + checked_state.velocity_y**2
-                        )
+                        np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
                         - desired_velocity
                     )
                     < 0.5
