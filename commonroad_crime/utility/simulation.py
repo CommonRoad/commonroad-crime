@@ -835,6 +835,8 @@ class SimulationLat(SimulationBase):
             if suc_state:
                 check_elements_state(suc_state)
                 state_list.append(suc_state)
+                suc_state.acceleration = pre_state.acceleration
+                suc_state.acceleration_y = pre_state.acceleration_y
                 pre_state = suc_state
                 suc_orientation = convert_to_0_2pi(
                     math.atan2(suc_state.velocity_y, suc_state.velocity)
