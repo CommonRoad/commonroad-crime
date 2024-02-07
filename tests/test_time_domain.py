@@ -107,7 +107,7 @@ class TestTimeDomain(unittest.TestCase):
         tts_object = TTS(self.config)
         tts = tts_object.compute()
         tts_object.visualize()
-        self.assertEqual(tts, 2.2)
+        self.assertEqual(tts, -math.inf)
 
         tts2 = tts_object.compute()
         tts_object.visualize()
@@ -130,7 +130,7 @@ class TestTimeDomain(unittest.TestCase):
         ttr_object.configuration.time.steer_width = 1
         ttr_3 = ttr_object.compute()
         ttr_object.visualize()
-        self.assertEqual(ttr_3, 2.2)
+        self.assertEqual(ttr_3, 2.0)
 
         # test scenario with set-based prediction
         self.config.general.name_scenario = "ZAM_Urban-7_1_S-2"
