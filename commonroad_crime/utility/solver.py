@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -16,10 +16,10 @@ from scipy.spatial.distance import cdist
 from commonroad.scenario.obstacle import (
     Obstacle,
     StaticObstacle,
-    State,
     ObstacleType,
     DynamicObstacle,
 )
+from commonroad.scenario.state import State
 from commonroad.scenario.lanelet import Lanelet, LaneletNetwork
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
@@ -272,7 +272,7 @@ def smoothing_reference_path(
 ):
     reference_path_extended = extrapolate_resample_polyline(reference_path)
     # generate a smooth reference path
-    transposed_reference_path = reference_path.T
+    transposed_reference_path = reference_path_extended.T
     # how to generate index okay
     okay = np.where(
         np.abs(np.diff(transposed_reference_path[0]))

@@ -30,13 +30,13 @@ class TestDistanceDomain(unittest.TestCase):
         self.config.update(ego_id=349, sce=sce_crosswalk)
         msd_object = MSD(self.config)
         msd = msd_object.compute(328, 0)
-        self.assertEqual(msd, 0.14)
+        self.assertEqual(msd, 0.32)
         self.config.debug.plot_limits = [-320, -380, 210, 290]
         msd_object.visualize()
 
         psd_object = PSD(self.config)
         psd = psd_object.compute(328, 0)
-        self.assertEqual(psd, 87.97)
+        self.assertEqual(psd, 38.49)
         psd_object.visualize()
 
     def test_hw(self):
