@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.3.2"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -85,11 +85,21 @@ class CriMeBase:
                 ),
                 self.dt,
             )
-            self.clcs: CurvilinearCoordinateSystem = self._update_clcs()
+            self._update_clcs()
         self.other_vehicle: Union[
             Obstacle, DynamicObstacle, StaticObstacle, None
         ] = None  # optional
         self.rnd: Union[MPRenderer, None] = None
+
+    @property
+    def clcs(self):
+        return self.configuration.vehicle.curvilinear.clcs
+
+    @clcs.setter
+    def clcs(self, clcs: CurvilinearCoordinateSystem):
+        raise AttributeError(
+            "Please set up the `clcs` via the `update` function in the configuration."
+        )
 
     def __repr__(self):
         return f"{self.measure_name}"
@@ -120,7 +130,6 @@ class CriMeBase:
         )
         clcs = CurvilinearCoordinateSystem(reference_path)
         self.configuration.update(CLCS=clcs)
-        return clcs
 
     def _initialize_vis(
         self, figsize: tuple = (25, 15), plot_limit: Union[list, None] = None

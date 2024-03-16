@@ -1,9 +1,14 @@
 import unittest
 
+import numpy as np
+import pytest
+
 from commonroad_crime.data_structure.scene import Scene
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 import commonroad_crime.utility.logger as util_logger
+
+from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
 
 
 class TestBase(unittest.TestCase):
@@ -29,3 +34,21 @@ class TestBase(unittest.TestCase):
 
         self.assertIsInstance(base_1, CriMeBase)
         self.assertIsInstance(base_2, CriMeBase)
+
+    def test_clcs(self):
+        """
+        Test the update of the CLCS.
+        """
+        self.config.update()
+        base = CriMeBase(self.config)
+        with pytest.raises(AttributeError):
+            base.clcs = self.config.vehicle.curvilinear.clcs
+
+        example_list = [
+            np.array([1.0, 2.0]),
+            np.array([3.0, 4.0]),
+            np.array([5.0, 6.0]),
+        ]
+        new_clcs = CurvilinearCoordinateSystem(example_list)
+        self.config.update(CLCS=new_clcs)
+        self.assertEqual(base.clcs, new_clcs)
