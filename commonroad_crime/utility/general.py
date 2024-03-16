@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -52,7 +52,7 @@ def generate_reference_path(
     ini_lanelet = lanelet_network.find_lanelet_by_id(lanelet_id)
     ref_path = ini_lanelet.center_vertices
     # extend the reference path
-    pre_lanelet = ini_lanelet  # todo: more predecessors?
+    pre_lanelet = ini_lanelet
     i = 0
     while pre_lanelet.predecessor:
         pre_lanelet = lanelet_network.find_lanelet_by_id(pre_lanelet.predecessor[0])
@@ -60,7 +60,7 @@ def generate_reference_path(
         i += 1
         if i >= 2:
             break
-    suc_lanelet = ini_lanelet  # todo: more successors?
+    suc_lanelet = ini_lanelet
     i = 0
     while suc_lanelet.successor:
         suc_lanelet = lanelet_network.find_lanelet_by_id(suc_lanelet.successor[0])
@@ -96,13 +96,19 @@ def check_in_same_lanelet(
     vehicle_2: Union[DynamicObstacle, StaticObstacle],
     time_step: int,
 ):
-    lanelets_1 = lanelet_network.find_lanelet_by_shape(
-        vehicle_1.occupancy_at_time(time_step).shape
-    )
-    lanelets_2 = lanelet_network.find_lanelet_by_shape(
-        vehicle_2.occupancy_at_time(time_step).shape
-    )
-    return len(set(lanelets_1).intersection(lanelets_2)) > 0
+    # Proceed only if both vehicles have occupancies
+    if vehicle_1.occupancy_at_time(time_step) and vehicle_2.occupancy_at_time(
+        time_step
+    ):
+        lanelets_1 = lanelet_network.find_lanelet_by_shape(
+            vehicle_1.occupancy_at_time(time_step).shape
+        )
+        lanelets_2 = lanelet_network.find_lanelet_by_shape(
+            vehicle_2.occupancy_at_time(time_step).shape
+        )
+        return len(set(lanelets_1).intersection(lanelets_2)) > 0
+    else:
+        return False
 
 
 def check_elements_state_list(
