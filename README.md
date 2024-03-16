@@ -1,4 +1,4 @@
-# CommonRoad-CriMe
+#CommonRoad-CriMe
 ![image info](https://gitlab.lrz.de/tum-cps/commonroad-crime/-/raw/master/docs/figures/CriMe-banner.png)
 [![Linux](https://img.shields.io/badge/os-linux?&logo=Linux&logoColor=white&labelColor=gray)](https://pypi.python.org/pypi/commonroad-openscenario-converter/)
 [![PyPI version fury.io](https://badge.fury.io/py/commonroad-crime.svg?style=plastic)](https://pypi.python.org/pypi/commonroad-crime/)
@@ -11,6 +11,11 @@ Toolbox to compute **Cri**ticality **Me**asures
 can be used to trigger warnings and emergency maneuvers 
 in driver assistance systems or repair an infeasible 
 trajectory. 
+
+- If you have questions or want to report problems or suggestions, please start a [Github discussion](https://github.com/orgs/CommonRoad/discussions). 
+
+### 🚧 We Measure 𝕮ommon 𝕽oad 𝕮ri𝕸e! 🚔
+
 
 ## Installation Guide
 
@@ -85,6 +90,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 - Kun Qian
 - Oliver Specht
 - Sicheng Wang
+- Youran Wang
 - Zekun Xing
 - Ziqian Xu
 
