@@ -44,8 +44,8 @@ setup(
         "casadi>=3.6.3",
         "tqdm>=4.65.0",
         "imageio>=2.9.0",
+        "pytest>=7.4.0"
     ],
-    extras_require={"tests": ["pytest>=7.1"]},
     classifiers=[
         "Programming Language :: C++",
         "Programming Language :: Python :: 3.8",
