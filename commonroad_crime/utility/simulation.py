@@ -598,9 +598,7 @@ class SimulationLat(SimulationBase):
                 # set a margin around the desired velocity
                 if (
                     np.abs(
-                        np.sqrt(
-                            checked_state.velocity**2 + checked_state.velocity_y**2
-                        )
+                        np.sqrt(checked_state.velocity**2 + checked_state.velocity_y**2)
                         - desired_velocity
                     )
                     < 0.5
@@ -622,7 +620,7 @@ class SimulationLat(SimulationBase):
                 state_list.append(suc_state)
                 checked_state = suc_state
             self.set_inputs(checked_state)
-            check_elements_state(checked_state)
+            check_elements_state(checked_state, self.input)
             # fixme: assume vehicle will be go straight at a constant velocity until entering the turning lanelet
             while True:
                 current_lanelet_ids = (
@@ -659,7 +657,7 @@ class SimulationLat(SimulationBase):
                 else:
                     break
         self.set_inputs(checked_state)
-        check_elements_state(checked_state)
+        check_elements_state(checked_state, self.input)
         return state_list, checked_state
 
     def simulate_state_list(self, start_time_step: int, given_time_limit: int = None):
@@ -669,7 +667,7 @@ class SimulationLat(SimulationBase):
         pre_state = copy.deepcopy(self.simulated_vehicle.state_at_time(start_time_step))
         state_list = self.initialize_state_list(start_time_step)
         # update the input
-        check_elements_state(pre_state)
+        check_elements_state(pre_state, self.input)
         self.set_inputs(pre_state)
         state_list.append(pre_state)
         lane_orient = 0.0
@@ -736,16 +734,14 @@ class SimulationLat(SimulationBase):
             )
             state_list.append(suc_state)
             pre_state = suc_state
-        check_elements_state(state_list[-1])
+        check_elements_state(state_list[-1], self.input)
         return state_list
 
     def adjust_velocity(
         self, ref_state: PMState, max_orient: float, lane_orient: float
     ):
         # using P-controller
-        pre_velocity_sum = math.sqrt(
-            ref_state.velocity**2 + ref_state.velocity_y**2
-        )
+        pre_velocity_sum = math.sqrt(ref_state.velocity**2 + ref_state.velocity_y**2)
         if self.maneuver in [Maneuver.TURNLEFT, Maneuver.TURNRIGHT, Maneuver.TURNMC]:
             # drives along the target direction
             target_velocity_x = pre_velocity_sum * math.cos(max_orient)
@@ -833,7 +829,7 @@ class SimulationLat(SimulationBase):
                 throw=False,
             )
             if suc_state:
-                check_elements_state(suc_state)
+                check_elements_state(suc_state, self.input)
                 state_list.append(suc_state)
                 pre_state = suc_state
                 suc_orientation = convert_to_0_2pi(

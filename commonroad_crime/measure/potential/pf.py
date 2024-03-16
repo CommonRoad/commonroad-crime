@@ -91,12 +91,12 @@ class PF(CriMeBase):
 
         # we assume that the lanelet are straight after converting to the curvilinear coordinate system
         # the lanelet that the vehicle is currently occupying
-        left_adj_lanelet = (
-            right_adj_lanelet
-        ) = veh_lanelet = self.sce.lanelet_network.find_lanelet_by_id(
-            self.sce.lanelet_network.find_lanelet_by_position([veh_state.position])[0][
-                0
-            ]
+        left_adj_lanelet = right_adj_lanelet = veh_lanelet = (
+            self.sce.lanelet_network.find_lanelet_by_id(
+                self.sce.lanelet_network.find_lanelet_by_position([veh_state.position])[
+                    0
+                ][0]
+            )
         )
         # assme that all the lanelets have the same width
         ll_width = utils_sol.compute_lanelet_width_orientation(

@@ -52,10 +52,10 @@ class CriMeInterface:
                 self.measures.append(measure)
             m_evaluator = measure(self.config)
             if measure.measure_name.value not in self.criticality_dict[time_step]:
-                self.criticality_dict[time_step][
-                    measure.measure_name.value
-                ] = m_evaluator.compute_criticality(
-                    time_step, vehicle_id, verbose=verbose
+                self.criticality_dict[time_step][measure.measure_name.value] = (
+                    m_evaluator.compute_criticality(
+                        time_step, vehicle_id, verbose=verbose
+                    )
                 )
                 self.measure_evaluators.append(m_evaluator)
         # printing out the summary of the evaluations

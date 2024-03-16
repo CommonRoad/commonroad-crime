@@ -130,9 +130,7 @@ class CI(CriMeBase):
         )
 
         # k_delta to calculate the kinetic energy difference before and after the collision
-        k_delta = (
-            1 / 2 * (m1 * u1**2) + 1 / 2 * (m2 * u2**2) - 1 / 2 * (m1 + m2) * v**2
-        )
+        k_delta = 1 / 2 * (m1 * u1**2) + 1 / 2 * (m2 * u2**2) - 1 / 2 * (m1 + m2) * v**2
         self.value = utils_gen.int_round(alpha * k_delta / math.exp(beta * pet), 2)
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}"
