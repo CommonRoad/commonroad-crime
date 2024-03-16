@@ -3,6 +3,7 @@
 ### Fixed
 - The extension of the lanelet vertices for projecting between different coordinate domains
 - The compatability with the new commonroad-io version
+- The setup of the CLCS attribute of each measure can be updated correctly using the `update` function in the configuration
 ## [0.3.1] - 2023.11.08
 ### added
 - Add the log verbose for batch evaluation
