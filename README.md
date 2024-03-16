@@ -65,7 +65,7 @@ instance to the class as `self.<parameter> = config_relevant.<parameter>`
 3. to override the default parameter values, create a `yaml` file (name it the same as the scenario) in `./config_files` and modify the values there
 ## Documentation
 
-The documentation of our toolbox is available on our website: https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures/.
+The documentation of our toolbox is available on our website: https://cps.pages.gitlab.lrz.de/commonroad/commonroad-criticality-measures/.
 
 In order to generate the documentation via Sphinx locally, run the following commands in the root directory:
 

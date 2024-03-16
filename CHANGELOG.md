@@ -1,10 +1,13 @@
 # Changelog
-## [0.3.2] - 2023.xx.xx
+## [0.3.2] - 2023.03.16
+### Added
+- Error handling for check in same lanelet
 ### Fixed
 - The extension of the lanelet vertices for projecting between different coordinate domains
 - The compatability with the new commonroad-io version
+- The setup of the CLCS attribute of each measure can be updated correctly using the `update` function in the configuration
 ## [0.3.1] - 2023.11.08
-### added
+### Added
 - Add the log verbose for batch evaluation
 ### Changed
 - The lanelet vertices are now extended and smoothed before constructing the curvlinear coordinate system; therefore, some of the test results vary a bit

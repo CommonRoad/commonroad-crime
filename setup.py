@@ -33,7 +33,7 @@ setup(
     install_requires=[
         "commonroad-io>=2023.4",
         "commonroad-vehicle-models>=3.0.0",
-        "commonroad-route-planner>=2022.3",
+        "commonroad-route-planner>=2022.3,<2024.1",
         "commonroad-drivability-checker>=2023.1",
         "commonroad-reach>=2023.1",
         "matplotlib>=3.5.2",
@@ -44,8 +44,8 @@ setup(
         "casadi>=3.6.3",
         "tqdm>=4.65.0",
         "imageio>=2.9.0",
+        "pytest>=7.4.0",
     ],
-    extras_require={"tests": ["pytest>=7.1"]},
     classifiers=[
         "Programming Language :: C++",
         "Programming Language :: Python :: 3.8",
