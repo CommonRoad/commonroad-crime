@@ -25,9 +25,12 @@ import commonroad_crime.utility.solver as utils_sol
 
 import numpy as np
 import math
+import logging
 from typing import List, Union
 import functools
 from scipy.interpolate import splprep, splev
+
+logger = logging.getLogger(__name__)
 
 
 def load_scenario(config) -> Scenario:
@@ -96,19 +99,28 @@ def check_in_same_lanelet(
     vehicle_2: Union[DynamicObstacle, StaticObstacle],
     time_step: int,
 ):
-    # Proceed only if both vehicles have occupancies
-    if vehicle_1.occupancy_at_time(time_step) and vehicle_2.occupancy_at_time(
-        time_step
-    ):
-        lanelets_1 = lanelet_network.find_lanelet_by_shape(
-            vehicle_1.occupancy_at_time(time_step).shape
+    if not vehicle_1.occupancy_at_time(time_step):
+        logger.info(
+            f"<utility> vehicle {vehicle_1.obstacle_id} doesn't have occupancies at time step {time_step}."
         )
-        lanelets_2 = lanelet_network.find_lanelet_by_shape(
-            vehicle_2.occupancy_at_time(time_step).shape
-        )
-        return len(set(lanelets_1).intersection(lanelets_2)) > 0
-    else:
         return False
+
+    if not vehicle_2.occupancy_at_time(time_step):
+        logger.info(
+            f"<utility> vehicle {vehicle_2.obstacle_id} doesn't have occupancies at time step {time_step}."
+        )
+        return False
+
+    # Proceed only if both vehicles have occupancies
+    lanelets_1 = lanelet_network.find_lanelet_by_shape(
+        vehicle_1.occupancy_at_time(time_step).shape
+    )
+    lanelets_2 = lanelet_network.find_lanelet_by_shape(
+        vehicle_2.occupancy_at_time(time_step).shape
+    )
+
+    # Check if there is an intersection between the sets of lanelets occupied by the vehicles
+    return len(set(lanelets_1).intersection(lanelets_2)) > 0
 
 
 def check_elements_state_list(
