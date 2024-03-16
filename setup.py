@@ -44,7 +44,7 @@ setup(
         "casadi>=3.6.3",
         "tqdm>=4.65.0",
         "imageio>=2.9.0",
-        "pytest>=7.4.0"
+        "pytest>=7.4.0",
     ],
     classifiers=[
         "Programming Language :: C++",
