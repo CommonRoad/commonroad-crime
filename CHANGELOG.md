@@ -1,5 +1,5 @@
 # Changelog
-## [0.3.2] - 2023.xx.xx
+## [0.3.2] - 2023.03.16
 ### Added
 - Error handling for check in same lanelet
 ### Fixed
