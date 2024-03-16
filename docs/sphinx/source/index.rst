@@ -12,7 +12,7 @@ autonomous vehicle, we present the novel CommonRoad **CriMe**
 (Criticality Measures) toolbox, which:
 
 - provides a framework in Python with unified notations, vehicle models, and coordinate systems for criticality measures;
-- adopts and supplements the categorization of criticality measures defined in `this collection <criticality-metrics.readthedocs.io/>`_;
+- adopts and supplements the categorization of criticality measures defined in `this collection <https://criticality-metrics.readthedocs.io/en/latest/>`_;
 - is open-source and allows users to easily modify, add, and compare criticality measures;
 - offers efficient and reliable computation by bridging to powerful scenario evaluation tools.
 
