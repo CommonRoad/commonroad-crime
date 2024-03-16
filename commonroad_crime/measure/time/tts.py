@@ -30,9 +30,9 @@ class TTS(CriMeBase):
         # steer to the left or to the right
         self._left_evaluator = TTM(config, Maneuver.STEERLEFT)
         self._right_evaluator = TTM(config, Maneuver.STEERRIGHT)
-        self._left_evaluator.metric_name = (
-            self._right_evaluator.metric_name
-        ) = self.measure_name
+        self._left_evaluator.metric_name = self._right_evaluator.metric_name = (
+            self.measure_name
+        )
         self.maneuver = Maneuver.NONE
         self.selected_state_list = None
         self.state_list_set = []

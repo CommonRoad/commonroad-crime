@@ -86,9 +86,9 @@ class CriMeBase:
                 self.dt,
             )
             self._update_clcs()
-        self.other_vehicle: Union[
-            Obstacle, DynamicObstacle, StaticObstacle, None
-        ] = None  # optional
+        self.other_vehicle: Union[Obstacle, DynamicObstacle, StaticObstacle, None] = (
+            None  # optional
+        )
         self.rnd: Union[MPRenderer, None] = None
 
     @property

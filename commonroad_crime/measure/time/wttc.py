@@ -88,10 +88,7 @@ class WTTC(CriMeBase):
                 linewidth=5,
             )
         r_1 = r_2 = (
-            1
-            / 2
-            * self.configuration.vehicle.params.longitudinal.a_max
-            * self.value**2
+            1 / 2 * self.configuration.vehicle.params.longitudinal.a_max * self.value**2
         )
         if isinstance(self.other_vehicle, StaticObstacle):
             r_2 = 0

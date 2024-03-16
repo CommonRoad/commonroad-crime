@@ -384,9 +384,12 @@ def create_polygon(
     return Polygon(coords)
 
 
-def convert_to_0_2pi(angle):
+def convert_to_0_2pi(angle, epsilon=1e-5):
+    # dealing with floating-point precision errors
+    if abs(angle) < epsilon:
+        angle = 0.0
     # If angle is negative, convert to [0, 2π]
-    if angle < 0:
+    elif angle < 0:
         angle += 2 * math.pi
 
     # If angle is more than 2π, convert to [0, 2π]
