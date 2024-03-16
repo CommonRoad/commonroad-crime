@@ -394,5 +394,4 @@ def convert_to_0_2pi(angle, epsilon=1e-5):
 
     # If angle is more than 2π, convert to [0, 2π]
     angle = angle % (2 * math.pi)
-    print(angle, "output")
     return angle
