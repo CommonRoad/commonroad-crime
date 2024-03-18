@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.3.4"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -65,7 +65,7 @@ class ALongReq(CriMeBase):
             )[1]
         except ValueError as e:
             utils_log.print_and_log_warning(
-                logger, f"During the projection of the other vehicle: {e}"
+                logger, f"<A_LONG_REQ> During the projection of the other vehicle: {e}"
             )
             # out of projection domain: the other vehicle is far away
             a_req = 0.0

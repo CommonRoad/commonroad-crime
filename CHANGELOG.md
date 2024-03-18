@@ -1,4 +1,7 @@
 # Changelog
+## [0.3.4] - 2024.xx.xx
+### Fixed
+- check whether the vehicles are in the same lanelet: now the lanelet is extended by its successors and predecessors
 ## [0.3.2 & 0.3.3] - 2024.03.16
 ### Added
 - Error handling for check in same lanelet
