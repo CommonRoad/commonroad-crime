@@ -64,8 +64,8 @@ class ALongReq(CriMeBase):
                 self.other_vehicle.state_at_time(time_step).position,
             )[1]
         except ValueError as e:
-            utils_log.print_and_log_warning(logger,
-                f"During the projection of the other vehicle: {e}"
+            utils_log.print_and_log_warning(
+                logger, f"During the projection of the other vehicle: {e}"
             )
             # out of projection domain: the other vehicle is far away
             a_req = 0.0
