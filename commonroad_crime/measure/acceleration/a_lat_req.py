@@ -105,7 +105,9 @@ class ALatReq(CriMeBase):
             self.value = 0.0
         else:
             ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
-            utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
+            utils_log.print_and_log_info(
+                logger, f"*\t\t TTC is equal to {ttc}", verbose
+            )
             if ttc == math.inf:
                 # no lateral acceleration is needed for avoiding a collision
                 self.value = 0.0
