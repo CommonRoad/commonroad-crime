@@ -92,42 +92,50 @@ class ALatReq(CriMeBase):
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position,
         )[1]
-        other_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.other_vehicle.state_at_time(time_step).position,
-        )[1]
-        ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
-        utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
-        if ttc == math.inf:
-            # no lateral acceleration is needed for avoiding a collision
+        try:
+            other_orientation = utils_sol.compute_lanelet_width_orientation(
+                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                self.other_vehicle.state_at_time(time_step).position,
+            )[1]
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger, f"<A_LAT_REQ> During the projection of the other vehicle: {e}"
+            )
+            # out of projection domain: the other vehicle is far away
             self.value = 0.0
-            return self.value
-        a_obj_lat = math.sqrt(
-            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
-            + self.other_vehicle.state_at_time(time_step).acceleration ** 2
-        ) * math.sin(other_orientation)
+        else:
+            ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
+            utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
+            if ttc == math.inf:
+                # no lateral acceleration is needed for avoiding a collision
+                self.value = 0.0
+                return self.value
+            a_obj_lat = math.sqrt(
+                self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
+                + self.other_vehicle.state_at_time(time_step).acceleration ** 2
+            ) * math.sin(other_orientation)
 
-        # compute the headway distance
-        d_rel_lat = utils_sol.compute_clcs_distance(
-            self.clcs,
-            self.ego_vehicle.state_at_time(time_step).position,
-            self.ego_vehicle.state_at_time(time_step).position,
-        )[1]
-        v_rel_lat = (
-            math.sqrt(
-                self.other_vehicle.state_at_time(time_step).velocity ** 2
-                + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+            # compute the headway distance
+            d_rel_lat = utils_sol.compute_clcs_distance(
+                self.clcs,
+                self.ego_vehicle.state_at_time(time_step).position,
+                self.ego_vehicle.state_at_time(time_step).position,
+            )[1]
+            v_rel_lat = (
+                math.sqrt(
+                    self.other_vehicle.state_at_time(time_step).velocity ** 2
+                    + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+                )
+                * math.sin(other_orientation)
+                - math.sqrt(
+                    self.ego_vehicle.state_at_time(time_step).velocity ** 2
+                    + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
+                )
+            ) * math.sin(ego_orientation)
+            self.value = min(
+                abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "left")),
+                abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "right")),
             )
-            * math.sin(other_orientation)
-            - math.sqrt(
-                self.ego_vehicle.state_at_time(time_step).velocity ** 2
-                + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
-            )
-        ) * math.sin(ego_orientation)
-        self.value = min(
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "left")),
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "right")),
-        )
         if self.value != math.inf:
             self.value = utils_gen.int_round(self.value, 2)
 
