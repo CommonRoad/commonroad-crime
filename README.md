@@ -10,9 +10,8 @@ Toolbox to compute **Cri**ticality **Me**asures
 (e.g. time-to-collision, time-to-react,...). Such measures
 can be used to trigger warnings and emergency maneuvers 
 in driver assistance systems or repair an infeasible 
-trajectory. 
-
-- If you have questions or want to report problems or suggestions, please start a [Github discussion](https://github.com/orgs/CommonRoad/discussions). 
+trajectory. If you have questions or want to report problems or suggestions, please start a [Github discussion](https://github.com/orgs/CommonRoad/discussions) /
+[Github issue](https://github.com/CommonRoad/commonroad-crime/issues/). 
 
 <a href="https://colab.research.google.com/drive/1T7MbSVqU5XCDZgPTDERKNKYFbAInXRjy">
   <img src="./docs/figures/live_demo.png" alt="Live Demo">
