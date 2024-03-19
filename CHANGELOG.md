@@ -1,6 +1,9 @@
 # Changelog
-## [0.3.4] - 2024.xx.xx
+## [0.4.0] - 2024.xx.xx
+### Added
+- For evaluating an interval, the starting time step should be always smaller or equal than the ending one.
 ### Fixed
+- for all measures, check whether the time step is valid in the function `validate_update_states_log`. If no, NaN is returned.
 - check whether the vehicles are in the same lanelet: now the lanelet is extended by its successors and predecessors
 ## [0.3.2 & 0.3.3] - 2024.03.16
 ### Added
