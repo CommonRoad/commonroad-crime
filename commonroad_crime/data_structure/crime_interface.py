@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -80,6 +80,13 @@ class CriMeInterface:
         vehicle_id: int = None,
         verbose: bool = True,
     ):
+        # Check if time_start is larger than time_end
+        if time_start > time_end:
+            utils_log.print_and_log_error(
+                logger,
+                f"* Time start must not be larger than time end, but {time_start} > {time_end}",
+            )
+            return
         utils_log.print_and_log_info(
             logger,
             f"* Given measures for the whole scenario: "
