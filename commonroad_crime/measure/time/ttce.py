@@ -1,12 +1,13 @@
 __author__ = "Oliver Specht, Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "beta"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
 
 import matplotlib.pyplot as plt
+import numpy as np
 import logging
 
 from commonroad_crime.measure.distance.dce import DCE
@@ -39,14 +40,12 @@ class TTCE(CriMeBase):
         """
         Using DCE to calculate the TTCE value. DCE marks the time step when the minimal distance is reached.
         """
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self._dce_object.compute(vehicle_id, time_step)
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
+
+        self._dce_object.compute(vehicle_id, self.time_step)
         self.value = utils_gen.int_round(
-            (self._dce_object.time_dce - time_step) * self.dt, 3
+            (self._dce_object.time_dce - self.time_step) * self.dt, 3
         )
         utils_log.print_and_log_info(
             logger,

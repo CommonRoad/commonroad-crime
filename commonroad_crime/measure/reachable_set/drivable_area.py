@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -79,8 +79,10 @@ class DA(CriMeBase):
         )
 
     def compute(self, time_step: int = 0, vehicle_id: int = None, verbose: bool = True):
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         self.value = 0.0
-        evaluated_state = copy.deepcopy(self.ego_vehicle.state_at_time(time_step))
+        evaluated_state = copy.deepcopy(self.ego_vehicle.state_at_time(self.time_step))
         self._update_initial_state(target_state=evaluated_state)
         self.reach_config.update(planning_problem=self.reach_config.planning_problem)
         self.reach_config.scenario.remove_obstacle(

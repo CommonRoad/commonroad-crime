@@ -1,12 +1,13 @@
 __author__ = "Oliver Specht, Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.0.1"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import logging
+import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
@@ -34,13 +35,8 @@ class TET(TIT):
         Iterate through all states, calculate ttc, compare it to tau and then add dt to the result
         if ttc is smaller than tau
         """
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} beginning at time step {time_step}",
-            verbose,
-        )
-        # init
-        self.time_step = time_step
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         tau = self.configuration.time.tau
         state_list = self.ego_vehicle.prediction.trajectory.state_list
 

@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -10,6 +10,7 @@ import copy
 import math
 import logging
 from typing import List
+import numpy as np
 import matplotlib.pyplot as plt
 
 from commonroad.visualization.mp_renderer import MPRenderer
@@ -130,12 +131,9 @@ class TTCStar(CriMeBase):
         Detects the collision time given the trajectory of ego_vehicle using a for loop over
         the state list.
         """
-        self.time_step = time_step
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
+
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         self.value = math.inf
         for i in range(time_step, len(state_list)):

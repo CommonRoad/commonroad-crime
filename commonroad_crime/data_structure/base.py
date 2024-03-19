@@ -147,9 +147,47 @@ class CriMeBase:
             self.rnd, self.configuration, self.sce, self.time_step
         )
 
+    def validate_update_states_log(
+        self, vehicle_id: int = None, time_step: int = 0, verbose: bool = True
+    ) -> bool:
+        """
+        Validates the presence of vehicle states at a given time step and updates internal states accordingly.
+
+        This function checks if both the ego vehicle and another specified vehicle have valid states at the specified
+        time step. It updates the internal time step and other vehicle states if valid. It logs the process and any
+        warnings encountered.
+        """
+        if time_step is not None:
+            if not self.ego_vehicle.state_at_time(time_step):
+                utils_log.print_and_log_warning(
+                    logger,
+                    f"<{self.measure_name}>:"
+                    f" The ego vehicle does NOT have the state at time step {time_step}",
+                    verbose,
+                )
+                return False
+            self.time_step = time_step
+
+        if vehicle_id is not None:
+            self.set_other_vehicles(vehicle_id)
+            if not self.other_vehicle.state_at_time(self.time_step):
+                utils_log.print_and_log_warning(
+                    logger,
+                    f"* <{self.measure_name}>:"
+                    f" The vehicle {self.other_vehicle.obstacle_id} does NOT have the state at time step {time_step}",
+                    verbose,
+                )
+                return False
+        utils_log.print_and_log_info(
+            logger,
+            f"* Computing the {self.measure_name} at time step {time_step}",
+            verbose,
+        )
+        return True
+
     def set_other_vehicles(self, vehicle_id: int):
         """
-        Sets up the id for other measure-related vehicle.
+        Sets up the id for other measure-related vehicles.
         """
         # if already being set, do not have to reset again
         if self.other_vehicle:
