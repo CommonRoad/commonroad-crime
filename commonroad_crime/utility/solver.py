@@ -10,6 +10,7 @@ from typing import Tuple, Union
 import numpy as np
 import logging
 import math
+from functools import lru_cache
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
 
@@ -124,6 +125,7 @@ def compute_closest_coordinate_from_list_of_points(state: State, vertices: np.nd
     return vertices[np.argmin(cdist(np.array([state.position]), vertices, "euclidean"))]
 
 
+@lru_cache(maxsize=None)
 def compute_disc_radius_and_distance(
     length: float, width: float
 ) -> Tuple[float, float]:
