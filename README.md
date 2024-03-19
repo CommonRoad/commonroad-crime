@@ -14,8 +14,6 @@ trajectory.
 
 - If you have questions or want to report problems or suggestions, please start a [Github discussion](https://github.com/orgs/CommonRoad/discussions). 
 
-### 🚧 We Measure 𝕮ommon 𝕽oad 𝕮ri𝕸e! 🚔
-
 <a href="https://colab.research.google.com/drive/1T7MbSVqU5XCDZgPTDERKNKYFbAInXRjy">
   <img src="./docs/figures/live_demo.png" width="500" alt="Live Demo">
 </a>
