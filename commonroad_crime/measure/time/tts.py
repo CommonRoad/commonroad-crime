@@ -48,10 +48,14 @@ class TTS(CriMeBase):
         if not self.validate_update_states_log(vehicle_id, time_step, verbose):
             return np.nan
 
-        tts_left = self._left_evaluator.compute(self.time_step, ttc, verbose=False)
+        tts_left = self._left_evaluator.compute(
+            time_step=self.time_step, ttc=ttc, verbose=False
+        )
         self.state_list_set += self._left_evaluator.state_list_set
 
-        tts_right = self._right_evaluator.compute(self.time_step, ttc, verbose=False)
+        tts_right = self._right_evaluator.compute(
+            time_step=self.time_step, ttc=ttc, verbose=False
+        )
         self.state_list_set += self._right_evaluator.state_list_set
 
         # decide the specific maneuver for steering

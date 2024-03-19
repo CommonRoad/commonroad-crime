@@ -61,7 +61,9 @@ class TTR(TTM):
         self.initialize_evaluator(self.time_step, verbose)
         ttm = dict()
         for evl in self._evaluator:
-            ttm[evl] = evl.compute(self.time_step, self.ttc, verbose=False)
+            ttm[evl] = evl.compute(
+                time_step=self.time_step, ttc=self.ttc, verbose=False
+            )
             self.state_list_set += evl.state_list_set
         self.value = max(ttm.values())
         # plots the selected state list as the last evasive maneuver.
