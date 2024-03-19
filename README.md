@@ -16,6 +16,7 @@ trajectory.
 
 ### 🚧 We Measure 𝕮ommon 𝕽oad 𝕮ri𝕸e! 🚔
 
+[![Live Demo](./docs/figures/live_demo.png)](https://colab.research.google.com/drive/1T7MbSVqU5XCDZgPTDERKNKYFbAInXRjy)
 
 ## Installation Guide
 
