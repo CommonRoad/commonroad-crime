@@ -1,5 +1,7 @@
 # Changelog
 ## [0.4.0] - 2024.xx.xx
+### Updated
+- Visualization of criticality curve: now the nan and inf are distinguished!! The tick for inf is automatically generated!
 ### Added
 - For evaluating an interval, the starting time step should be always smaller or equal than the ending one.
 ### Fixed

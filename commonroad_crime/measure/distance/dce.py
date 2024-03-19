@@ -1,7 +1,7 @@
 __author__ = "Oliver Specht, Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -42,14 +42,8 @@ class DCE(CriMeBase):
         Computed the shortest distance of ego-vehicle and obstacle by calculating the distance between both polygons
         (boundaries of both objects) for each time step and returning the minimum.
         """
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.set_other_vehicles(vehicle_id)
-        self.time_step = time_step
-
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         state_list = self.ego_vehicle.prediction.trajectory.state_list
         dce = math.inf
         for i in range(time_step, len(state_list)):

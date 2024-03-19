@@ -1,12 +1,13 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.4"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import math
+import numpy as np
 import logging
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -37,13 +38,8 @@ class ALongReq(CriMeBase):
         self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.set_other_vehicles(vehicle_id)
-        self.time_step = time_step
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         if self._except_obstacle_in_same_lanelet(expected_value=0.0, verbose=verbose):
             # no negative acceleration is needed for avoiding a collision
             utils_log.print_and_log_info(
@@ -65,7 +61,8 @@ class ALongReq(CriMeBase):
             )[1]
         except ValueError as e:
             utils_log.print_and_log_warning(
-                logger, f"<A_LONG_REQ> During the projection of the other vehicle: {e}"
+                logger,
+                f"* <A_LONG_REQ> During the projection of the other vehicle: {e}",
             )
             # out of projection domain: the other vehicle is far away
             a_req = 0.0

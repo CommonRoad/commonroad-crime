@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -40,13 +40,9 @@ class TTZ(CriMeBase):
         super(TTZ, self).__init__(config)
         self._zebra_list = []
 
-    def compute(self, time_step: int = 0, other_id: int = None, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.time_step = time_step
+    def compute(self, time_step: int = 0, vehicle_id: int = None, verbose: bool = True):
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         zebra_list = []
         for ll in self.sce.lanelet_network.lanelets:
             if LaneletType.CROSSWALK in ll.lanelet_type:

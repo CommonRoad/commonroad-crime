@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Sicheng Wang"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -57,14 +57,9 @@ class CPI(CriMeBase):
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} between ego vehicle"
-            f" and vehicle {vehicle_id} at timestep {time_step}.",
-            verbose,
-        )
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
 
-        self.time_step = time_step
         self.end_time_step = self.ego_vehicle.prediction.final_time_step
         self.value = 0.0
 
