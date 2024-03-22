@@ -13,6 +13,8 @@ import copy
 import logging
 from typing import Union
 
+import numpy as np
+
 # CommonRoad packages
 from commonroad.scenario.obstacle import Obstacle, DynamicObstacle, StaticObstacle
 from commonroad.prediction.prediction import TrajectoryPrediction
@@ -280,12 +282,18 @@ class CriMeBase:
                     self.compute(time_step=time_step, vehicle_id=v_id, verbose=verbose)
                 )
             if len([c for c in criti_list if c is not None]) > 0:
+                if np.all(np.isnan(criti_list)):
+                    utils_log.print_and_log_warning(
+                        logger, "* Due to the missing entries, all elements are NaN"
+                    )
+                    return None
+                # Not all elements are NaN, return the max/min of the non-NaN values
                 if self.monotone == TypeMonotone.POS:
-                    criti = max(criti_list)
+                    criti = np.nanmax(criti_list)
                 else:
-                    criti = min(criti_list)
+                    criti = np.nanmin(criti_list)
             else:
-                criti = None
+                return None
         time_computation = time.time() - time_start
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} of the scenario: {criti}", verbose
