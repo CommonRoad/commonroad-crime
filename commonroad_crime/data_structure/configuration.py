@@ -374,7 +374,7 @@ class DebugConfiguration(BaseConfig):
     save_plots: bool = True
     plot_limits: Union[List[float], None] = None
     # visualization settings
-    draw_visualization: bool = True
+    draw_visualization: bool = False
     # visualize dynamic obstacles with icons
     draw_icons: bool = True
 
