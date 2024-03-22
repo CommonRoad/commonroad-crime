@@ -284,9 +284,11 @@ class CriMeBase:
             if len([c for c in criti_list if c is not None]) > 0:
                 if np.all(np.isnan(criti_list)):
                     utils_log.print_and_log_warning(
-                        logger, "* Due to the missing entries, all elements are NaN"
+                        logger,
+                        f"* Due to the missing entries, all elements are NaN, "
+                        f"the result for time step {time_step} is NaN",
                     )
-                    return None
+                    return np.nan
                 # Not all elements are NaN, return the max/min of the non-NaN values
                 if self.monotone == TypeMonotone.POS:
                     criti = np.nanmax(criti_list)

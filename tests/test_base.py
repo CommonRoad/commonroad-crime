@@ -5,7 +5,9 @@ import pytest
 
 from commonroad_crime.data_structure.scene import Scene
 from commonroad_crime.data_structure.base import CriMeBase
+from commonroad_crime.measure import TTC
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
+from commonroad_crime.data_structure.crime_interface import CriMeInterface
 import commonroad_crime.utility.logger as util_logger
 
 from commonroad_dc.pycrccosy import CurvilinearCoordinateSystem
@@ -52,3 +54,21 @@ class TestBase(unittest.TestCase):
         new_clcs = CurvilinearCoordinateSystem(example_list)
         self.config.update(CLCS=new_clcs)
         self.assertEqual(base.clcs, new_clcs)
+
+    def test_nan_evaluation(self):
+        scenario_id = "USA_US101-5_1_T-1"
+        config = CriMeConfiguration.load(
+            f"../config_files/{scenario_id}.yaml", scenario_id
+        )
+        config.update()
+        config.vehicle.ego_id = 439
+        crime_interface = CriMeInterface(config)
+
+        crime_interface.evaluate_scene([TTC], time_step=30)
+        self.assertEqual(crime_interface.criticality_dict[30][TTC.measure_name], np.inf)
+
+        crime_interface.evaluate_scene([TTC], time_step=35)
+        self.assertTrue(
+            np.isnan(crime_interface.criticality_dict[35][TTC.measure_name]),
+            "The result should be NaN.",
+        )
