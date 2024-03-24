@@ -97,9 +97,11 @@ class P_MC(CriMeBase):
             for j in range(len(ego_sl_bundle)):
                 if self.ttc_object.detect_collision(ego_sl_bundle[j]):
                     colliding_prob_list.append(pdf_bundle[j])
-                    self.ego_state_list_set_wc.append(ego_sl_bundle[j])
+                    if self.configuration.debug.draw_visualization:
+                        self.ego_state_list_set_wc.append(ego_sl_bundle[j])
                 else:
-                    self.ego_state_list_set_cf.append(ego_sl_bundle[j])
+                    if self.configuration.debug.draw_visualization:
+                        self.ego_state_list_set_cf.append(ego_sl_bundle[j])
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
         if colliding_prob_list:
