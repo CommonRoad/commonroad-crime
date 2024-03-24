@@ -249,11 +249,19 @@ class CriMeBase:
         """
         Wrapper for computing the criticality, i.e., the value of the measure.
         """
+        if self.ego_vehicle.state_at_time(time_step) is None:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* The ego vehicle doesn't have state at time step {time_step}",
+            )
+            return np.nan
+
         utils_log.print_and_log_info(
             logger, "*********************************", verbose
         )
 
         self.time_step = time_step
+
         if vehicle_id:
             other_veh_ids = [vehicle_id]
         else:
@@ -261,6 +269,7 @@ class CriMeBase:
                 veh.obstacle_id
                 for veh in self.sce.obstacles
                 if veh.obstacle_id is not self.ego_vehicle.obstacle_id
+                and veh.state_at_time(self.time_step) is not None
             ]
 
         time_start = time.time()
