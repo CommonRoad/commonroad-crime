@@ -60,59 +60,69 @@ class TTC(CriMeBase):
             self.value = math.inf
         else:
             # orientation of the ego vehicle and the other vehicle
-            ego_orientation = utils_sol.compute_lanelet_width_orientation(
-                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-                self.ego_vehicle.state_at_time(time_step).position,
-            )[1]
+
             try:
-                other_orientation = utils_sol.compute_lanelet_width_orientation(
+                ego_orientation = utils_sol.compute_lanelet_width_orientation(
                     self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-                    self.other_vehicle.state_at_time(time_step).position,
+                    self.ego_vehicle.state_at_time(time_step).position,
                 )[1]
             except ValueError as e:
                 utils_log.print_and_log_warning(
                     logger,
-                    f"* <TTC> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                    f"* <TTC> During the projection of the ego vehicle {self.ego_vehicle.obstacle_id} "
                     f"at time step {self.time_step}: {e}",
                 )
-                # out of projection domain: the other vehicle is far away
-                self.value = math.inf
+                ego_orientation = math.nan
             else:
-                # actual velocity and acceleration of both vehicles along the lanelet
-                v_ego = (
-                    np.sign(state.velocity)
-                    * math.sqrt(state.velocity**2 + state.velocity_y**2)
-                    * math.cos(ego_orientation)
-                )
-                # include the directions
-                a_ego = (
-                    np.sign(state.acceleration)
-                    * math.sqrt(state.acceleration**2 + state.acceleration_y**2)
-                    * math.cos(ego_orientation)
-                )
-                if isinstance(self.other_vehicle, DynamicObstacle):
-                    v_other = math.sqrt(
-                        state_other.velocity**2 + state_other.velocity_y**2
-                    ) * math.cos(other_orientation)
-                    a_other = math.sqrt(
-                        state_other.acceleration**2 + state_other.acceleration_y**2
-                    ) * math.cos(other_orientation)
+                try:
+                    other_orientation = utils_sol.compute_lanelet_width_orientation(
+                        self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                        self.other_vehicle.state_at_time(time_step).position,
+                    )[1]
+                except ValueError as e:
+                    utils_log.print_and_log_warning(
+                        logger,
+                        f"* <TTC> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                        f"at time step {self.time_step}: {e}",
+                    )
+                    # out of projection domain: the other vehicle is far away
+                    self.value = math.inf
                 else:
-                    v_other = 0.0
-                    a_other = 0.0
-                delta_v = v_other - v_ego
-                delta_a = a_other - a_ego
+                    # actual velocity and acceleration of both vehicles along the lanelet
+                    v_ego = (
+                        np.sign(state.velocity)
+                        * math.sqrt(state.velocity**2 + state.velocity_y**2)
+                        * math.cos(ego_orientation)
+                    )
+                    # include the directions
+                    a_ego = (
+                        np.sign(state.acceleration)
+                        * math.sqrt(state.acceleration**2 + state.acceleration_y**2)
+                        * math.cos(ego_orientation)
+                    )
+                    if isinstance(self.other_vehicle, DynamicObstacle):
+                        v_other = math.sqrt(
+                            state_other.velocity**2 + state_other.velocity_y**2
+                        ) * math.cos(other_orientation)
+                        a_other = math.sqrt(
+                            state_other.acceleration**2 + state_other.acceleration_y**2
+                        ) * math.cos(other_orientation)
+                    else:
+                        v_other = 0.0
+                        a_other = 0.0
+                    delta_v = v_other - v_ego
+                    delta_a = a_other - a_ego
 
-                if delta_v < 0 and abs(delta_a) <= 0.1:
-                    self.value = utils_gen.int_round(-(delta_d / delta_v), 2)
-                elif delta_v**2 - 2 * delta_d * delta_a < 0:
-                    self.value = math.inf
-                elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 > delta_a):
-                    first = -(delta_v / delta_a)
-                    second = np.sqrt(delta_v**2 - 2 * delta_d * delta_a) / delta_a
-                    self.value = utils_gen.int_round(first - second, 2)
-                else:  # delta_v >= 0 and delta_a >= 0
-                    self.value = math.inf
+                    if delta_v < 0 and abs(delta_a) <= 0.1:
+                        self.value = utils_gen.int_round(-(delta_d / delta_v), 2)
+                    elif delta_v**2 - 2 * delta_d * delta_a < 0:
+                        self.value = math.inf
+                    elif (delta_v < 0 and delta_a != 0) or (delta_v >= 0 > delta_a):
+                        first = -(delta_v / delta_a)
+                        second = np.sqrt(delta_v**2 - 2 * delta_d * delta_a) / delta_a
+                        self.value = utils_gen.int_round(first - second, 2)
+                    else:  # delta_v >= 0 and delta_a >= 0
+                        self.value = math.inf
 
         utils_log.print_and_log_info(
             logger, f"*\t\t {self.measure_name} = {self.value}", verbose
