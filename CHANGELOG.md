@@ -8,6 +8,7 @@
 - the memory issues for P_MC measure due to all the simulated vehicle states being stored during the evaluation for subsequent visualization, now the default mode for visualization is off.
 - for all measures, check whether the time step is valid in the function `validate_update_states_log`. If no, `NaN` is returned. Similar to `compute_criticality`: only compute for the valid ego vehicle and other vehicles, otherwise `NaN` is returned
 - check whether the vehicles are in the same lanelet: now the lanelet is extended by its successors and predecessors
+- adds the error handling of the out-of-projection-domain for many measures, such as TTC, THW, ALongReq, ALatReq
 ## [0.3.2 & 0.3.3] - 2024.03.16
 ### Added
 - Error handling for check in same lanelet
