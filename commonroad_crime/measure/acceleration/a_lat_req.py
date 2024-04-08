@@ -97,7 +97,9 @@ class ALatReq(CriMeBase):
             )[1]
         except ValueError as e:
             utils_log.print_and_log_warning(
-                logger, f"* <A_LAT_REQ> During the projection of the other vehicle: {e}"
+                logger,
+                f"* <A_LAT_REQ> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
             )
             # out of projection domain: the other vehicle is far away
             self.value = 0.0

@@ -34,15 +34,32 @@ class THW(CriMeBase):
         super(THW, self).__init__(config)
 
     def cal_headway(self):
-        other_position = self.other_vehicle.state_at_time(self.time_step).position
-        other_s, _ = self.clcs.convert_to_curvilinear_coords(
-            other_position[0], other_position[1]
-        )
-        ego_position = self.ego_vehicle.state_at_time(self.time_step).position
-        ego_s, _ = self.clcs.convert_to_curvilinear_coords(
-            ego_position[0], ego_position[1]
-        )
-
+        try:
+            other_position = self.other_vehicle.state_at_time(self.time_step).position
+            other_s, _ = self.clcs.convert_to_curvilinear_coords(
+                other_position[0], other_position[1]
+            )
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <THW> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
+            )
+            # out of projection domain: the other vehicle is far away
+            return math.inf
+        try:
+            ego_position = self.ego_vehicle.state_at_time(self.time_step).position
+            ego_s, _ = self.clcs.convert_to_curvilinear_coords(
+                ego_position[0], ego_position[1]
+            )
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <THW> During the projection of the ego vehicle with id {self.ego_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
+            )
+            # out of projection domain: the ref path should be problematic
+            return math.nan
         # bump position
         ego_s += self.ego_vehicle.obstacle_shape.length / 2
         other_s -= self.other_vehicle.obstacle_shape.length / 2
