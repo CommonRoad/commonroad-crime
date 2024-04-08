@@ -72,7 +72,7 @@ class TTC(CriMeBase):
                     f"* <TTC> During the projection of the ego vehicle {self.ego_vehicle.obstacle_id} "
                     f"at time step {self.time_step}: {e}",
                 )
-                ego_orientation = math.nan
+                self.value = math.nan
             else:
                 try:
                     other_orientation = utils_sol.compute_lanelet_width_orientation(
