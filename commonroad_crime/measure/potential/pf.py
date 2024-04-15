@@ -177,19 +177,29 @@ class PF(CriMeBase):
         for obs in self.sce.obstacles:
             if obs is not self.ego_vehicle:
                 # shape in curvilinear coordinate system
-                obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                    [
-                        obs.occupancy_at_time(
-                            self.time_step
-                        ).shape.shapely_object.exterior.coords
-                    ],
-                    [0],
-                    1,
-                    4,
-                )[
-                    0
-                ]
-                if len(obs_clcs_shape[0]) == 0:
+                if obs.occupancy_at_time(self.time_step) is not None:
+                    obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
+                        [
+                            obs.occupancy_at_time(
+                                self.time_step
+                            ).shape.shapely_object.exterior.coords
+                        ],
+                        [0],
+                        1,
+                        4,
+                    )[
+                        0
+                    ][
+                        0
+                    ]
+                else:
+                    utils_log.print_and_log_warning(
+                        logger,
+                        f"At Time step {self.time_step}: the obstable {obs.obstacle_id} does not exist",
+                        verbose,
+                    )
+                    obs_clcs_shape = []
+                if len(obs_clcs_shape) == 0:
                     utils_log.print_and_log_warning(
                         logger,
                         f"At Time step {self.time_step}: the conversion of the polygon to the "
@@ -198,7 +208,7 @@ class PF(CriMeBase):
                     )
                     u_car += 0
                     continue
-                obs_clcs_poly = Polygon(obs_clcs_shape[0][0])
+                obs_clcs_poly = Polygon(obs_clcs_shape[0])
                 obs_s_min = np.min(obs_clcs_poly.exterior.xy[0])
                 if isinstance(obs, StaticObstacle) or (
                     isinstance(obs, DynamicObstacle) and (s_veh > obs_s_min).any()
@@ -211,8 +221,8 @@ class PF(CriMeBase):
                         K = Point(s_veh, d_veh).distance(obs_clcs_poly)
                 else:
                     # behind dynamic obstacle
-                    minx, miny = np.array(obs_clcs_shape[0][0]).min(axis=0)
-                    maxx, maxy = np.array(obs_clcs_shape[0][0]).max(axis=0)
+                    minx, miny = np.array(obs_clcs_shape[0]).min(axis=0)
+                    maxx, maxy = np.array(obs_clcs_shape[0]).max(axis=0)
                     bottommost_then_leftmost_point = np.array([minx, maxy])
                     topmost_then_leftmost_point = np.array([minx, miny])
                     # * previous option: the sort of the orders but doesn't work for some scenarios
