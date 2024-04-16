@@ -83,7 +83,8 @@ class CriMeBase:
             utils_gen.check_elements_state_list(
                 [self.ego_vehicle.initial_state]
                 + self.ego_vehicle.prediction.trajectory.states_in_time_interval(
-                    time_begin=1, time_end=self.ego_vehicle.prediction.final_time_step
+                    time_begin=self.ego_vehicle.initial_state.time_step + 1,
+                    time_end=self.ego_vehicle.prediction.final_time_step,
                 ),
                 self.dt,
             )

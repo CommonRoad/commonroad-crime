@@ -3,6 +3,9 @@ import unittest
 import numpy as np
 import pytest
 
+from commonroad.scenario.state import InitialState
+from commonroad.scenario.trajectory import Trajectory
+
 from commonroad_crime.data_structure.scene import Scene
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.measure import TTC
@@ -36,6 +39,26 @@ class TestBase(unittest.TestCase):
 
         self.assertIsInstance(base_1, CriMeBase)
         self.assertIsInstance(base_2, CriMeBase)
+
+    def test_ego_vehicle_initialization(self):
+        """
+        Test whether it is fine to initialize the ego vehicle not starting from initial step equal to 0.
+        """
+        self.config.update()
+        ego_vehicle = self.config.scenario.obstacle_by_id(self.config.vehicle.ego_id)
+        target_state = ego_vehicle.state_at_time(10)
+        ego_vehicle.initial_state = InitialState(
+            position=target_state.position,
+            orientation=target_state.orientation,
+            velocity=target_state.velocity,
+            time_step=target_state.time_step,
+            yaw_rate=0.0,
+            slip_angle=0.0,
+        )
+        ego_vehicle.prediction.trajectory = Trajectory(
+            10, ego_vehicle.prediction.trajectory.state_list[9:]
+        )
+        CriMeBase(self.config)
 
     def test_clcs(self):
         """
