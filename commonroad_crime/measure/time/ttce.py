@@ -9,6 +9,7 @@ __status__ = "Pre-alpha"
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
+import math
 
 from commonroad_crime.measure.distance.dce import DCE
 from commonroad_crime.data_structure.base import CriMeBase
@@ -44,9 +45,12 @@ class TTCE(CriMeBase):
             return np.nan
 
         self._dce_object.compute(vehicle_id, self.time_step)
-        self.value = utils_gen.int_round(
-            (self._dce_object.time_dce - self.time_step) * self.dt, 3
-        )
+        if self._dce_object.time_dce is not math.inf:
+            self.value = utils_gen.int_round(
+                (self._dce_object.time_dce - self.time_step) * self.dt, 3
+            )
+        else:
+            self.value = self._dce_object.time_dce
         utils_log.print_and_log_info(
             logger,
             f"*\t\t {self.measure_name} with vehicle id {vehicle_id} = {self.value}",
