@@ -126,7 +126,9 @@ class CriMeBase:
         """
         # default setting of ego vehicle's curvilinear coordinate system
         ego_initial_lanelet_id = list(
-            self.ego_vehicle.prediction.center_lanelet_assignment[0]
+            self.ego_vehicle.prediction.center_lanelet_assignment[
+                self.ego_vehicle.initial_state.time_step
+            ]
         )[0]
         reference_path = utils_gen.generate_reference_path(
             ego_initial_lanelet_id, self.sce.lanelet_network
