@@ -137,7 +137,7 @@ class SOI(CriMeBase):
                 # Skip ego-vehicle and obstacles out of scope (e.g. timeline ended for this obstacle)
                 if (
                     isinstance(obstacle, DynamicObstacle)
-                    and len(obstacle.prediction.trajectory.state_list) < ts
+                    and obstacle.state_at_time(ts) is None
                 ):
                     continue
                 if obstacle.obstacle_id == self.ego_vehicle.obstacle_id:
