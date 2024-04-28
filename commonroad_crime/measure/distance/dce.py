@@ -35,7 +35,7 @@ class DCE(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(DCE, self).__init__(config)
-        self.time_dce = None
+        self.time_dce = math.inf
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
         """

@@ -11,6 +11,7 @@
 - adds the error handling of the out-of-projection-domain for many measures, such as TTC, THW, ALongReq, ALatReq
 - Initialization of the ego vehicle in the base class
 - fix the pf and soi measure, when the other vehicle is not present in the scenario for some time steps
+- fix the dce and ttce measure of which the initial value should be math.inf
 ## [0.3.2 & 0.3.3] - 2024.03.16
 ### Added
 - Error handling for check in same lanelet
