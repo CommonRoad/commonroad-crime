@@ -31,7 +31,7 @@ unittest:
     matrix:
       - PYTHON_VERSIONS: ["3.8", "3.9", "3.10" ] # 3.11 limited by drivability-checker
   script:
-      - coverage run -m unittest discover -s $CI_PROJECT_DIR/tests -v
+      - coverage run --source./commonroad_crime -m unittest discover -s $CI_PROJECT_DIR/tests -v
       - coverage report -m || true
       - coverage xml -i -o $CI_PROJECT_DIR/tests/coverage.xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
