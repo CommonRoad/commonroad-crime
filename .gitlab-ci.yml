@@ -30,7 +30,16 @@ unittest:
     matrix:
       - PYTHON_VERSIONS: ["3.8", "3.9", "3.10" ] # 3.11 limited by drivability-checker
   script:
-    - cd $CI_PROJECT_DIR/tests && python -m unittest
+      - cd $CI_PROJECT_DIR/tests && coverage run -m unittest
+      - coverage report -m || true
+      - coverage xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
 
 ### publish documentation ###
 pages:
