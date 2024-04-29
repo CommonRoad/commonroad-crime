@@ -33,7 +33,7 @@ unittest:
   script:
       - coverage run -m unittest discover -s $CI_PROJECT_DIR/tests -v
       - coverage report -m || true
-      - coverage xml -o $CI_PROJECT_DIR/tests/coverage.xml
+      - coverage xml -i -o $CI_PROJECT_DIR/tests/coverage.xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
