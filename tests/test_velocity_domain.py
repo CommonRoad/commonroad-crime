@@ -2,6 +2,7 @@
 Unit tests of the module velocity-scale measures
 """
 
+import os
 import unittest
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -13,8 +14,11 @@ class TestVelocityDomain(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = "DEU_Gar-1_1_T-1"
+
+        current_dir = os.path.dirname(__file__)
         self.config = CriMeConfiguration.load(
-            f"../config_files/{scenario_id}.yaml", scenario_id
+            os.path.join(current_dir, "../config_files", f"{scenario_id}.yaml"),
+            scenario_id,
         )
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()

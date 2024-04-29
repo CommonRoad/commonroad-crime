@@ -2,6 +2,7 @@ import unittest
 
 import numpy as np
 import pytest
+import os
 
 from commonroad.scenario.state import InitialState
 from commonroad.scenario.trajectory import Trajectory
@@ -20,9 +21,12 @@ class TestBase(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         scenario_id = "DEU_Test-1_1_T-1"
+        current_dir = os.path.dirname(__file__)
         self.config = CriMeConfiguration.load(
-            f"../config_files/{scenario_id}.yaml", scenario_id
+            os.path.join(current_dir, "../config_files", f"{scenario_id}.yaml"),
+            scenario_id,
         )
+
         util_logger.initialize_logger(self.config)
         self.config.print_configuration_summary()
 
@@ -80,9 +84,13 @@ class TestBase(unittest.TestCase):
 
     def test_nan_evaluation(self):
         scenario_id = "USA_US101-5_1_T-1"
+        current_dir = os.path.dirname(__file__)
+
         config = CriMeConfiguration.load(
-            f"../config_files/{scenario_id}.yaml", scenario_id
+            os.path.join(current_dir, "../config_files", f"{scenario_id}.yaml"),
+            scenario_id,
         )
+
         config.update()
         config.vehicle.ego_id = 439
         crime_interface = CriMeInterface(config)
