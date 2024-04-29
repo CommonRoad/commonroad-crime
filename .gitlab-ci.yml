@@ -39,7 +39,7 @@ unittest:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: coverage.xml
+        path: $CI_PROJECT_DIR/coverage.xml
 
 
 ### publish documentation ###
