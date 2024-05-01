@@ -119,6 +119,7 @@ class CriMeInterface:
             )
 
     def visualize(self, time_step: int = None):
+        self.config.debug.draw_visualization = True
         for m_evaluator in self.measure_evaluators:
             if time_step is None:
                 m_evaluator.visualize()

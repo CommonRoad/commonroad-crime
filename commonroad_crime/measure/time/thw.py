@@ -11,6 +11,9 @@ import logging
 import math
 import numpy as np
 
+from commonroad.geometry.shape import Rectangle, Circle
+from commonroad.scenario.obstacle import Obstacle
+
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.type import TypeTime, TypeMonotone
@@ -32,6 +35,17 @@ class THW(CriMeBase):
 
     def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)
+
+    def _compute_vehicle_add_on(self, vehicle: Obstacle):
+        if isinstance(vehicle.obstacle_shape, Rectangle):
+            add_on = vehicle.obstacle_shape.length / 2
+        elif isinstance(vehicle.obstacle_shape, Circle):
+            add_on = vehicle.obstacle_shape.radius
+        else:
+            raise ValueError(
+                f"<{self.measure_name}>: obstacle shape {type(vehicle.obstacle_shape).__name__} not supported."
+            )
+        return add_on
 
     def cal_headway(self):
         try:
@@ -60,9 +74,10 @@ class THW(CriMeBase):
             )
             # out of projection domain: the ref path should be problematic
             return math.nan
-        # bump position
-        ego_s += self.ego_vehicle.obstacle_shape.length / 2
-        other_s -= self.other_vehicle.obstacle_shape.length / 2
+
+        # additional position for the vehicles
+        ego_s += self._compute_vehicle_add_on(self.ego_vehicle)
+        other_s -= self._compute_vehicle_add_on(self.other_vehicle)
 
         if ego_s > other_s:
             return math.inf
@@ -75,7 +90,7 @@ class THW(CriMeBase):
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(
                 ego_position[0], ego_position[1]
             )
-            ego_s += self.ego_vehicle.obstacle_shape.length / 2
+            ego_s += self._compute_vehicle_add_on(self.ego_vehicle)
             if ego_s > other_s:
                 return utils_gen.int_round(
                     (ts - self.time_step) * self.dt, str(self.dt)[::-1].find(".")
@@ -101,14 +116,15 @@ class THW(CriMeBase):
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
-                margin=10,
-            ),
-        )
+                margin=50,
+            )
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         utils_vis.draw_state_list(
             self.rnd,
@@ -117,8 +133,6 @@ class THW(CriMeBase):
             linewidth=5,
         )
         if self.value > 0 and self.value is not math.inf:
-            print(self.value)
-
             tshw = int(utils_gen.int_round(self.value / self.dt, 0))
             utils_vis.draw_state(
                 self.rnd, self.ego_vehicle.state_at_time(tshw + self.time_step)
