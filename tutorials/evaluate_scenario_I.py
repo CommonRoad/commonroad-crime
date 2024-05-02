@@ -3,6 +3,7 @@ See paper: CommonRoad-CriMe: A Toolbox for Criticality Measures of Autonomous Ve
 
 Experiment: Sec. IV.B Evaluation on Scenarios
 """
+from pathlib import Path
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.crime_interface import CriMeInterface
@@ -34,6 +35,10 @@ def main():
 
     # # ==== visualize the result
     # utils_vis.plot_criticality_curve(crime_interface)
+
+    # # ==== save data to file
+    # path = str(Path.cwd().joinpath("..", "output").absolute())
+    # crime_interface.safe_to_file(str(path))
 
 
 if __name__ == "__main__":
