@@ -37,8 +37,8 @@ def main():
     # utils_vis.plot_criticality_curve(crime_interface)
 
     # # ==== save data to file
-    # path = str(Path.cwd().joinpath("..", "output").absolute())
-    # crime_interface.safe_to_file(str(path))
+    # output_path = Path.cwd().joinpath("..", "output").absolute()
+    # crime_interface.safe_to_file(str(output_path))
 
 
 if __name__ == "__main__":
