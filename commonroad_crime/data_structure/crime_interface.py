@@ -147,17 +147,30 @@ class CriMeInterface:
         # Add list of measures
         measure_list = etree.SubElement(root, "measure_list")
         for measure in self.measures:
-            measure_node = etree.SubElement(measure_list, "measure", {"name": measure.measure_name.value})
+            measure_node = etree.SubElement(
+                measure_list, "measure", {"name": measure.measure_name.value}
+            )
 
         # Add data node
         data_node = etree.SubElement(root, "data")
         # Add all timesteps
-        for (timestep, measure_dict) in self.criticality_dict.items():
-            timestep_node = etree.SubElement(data_node, "timestep", {"timestep": str(timestep)})
+        for timestep, measure_dict in self.criticality_dict.items():
+            timestep_node = etree.SubElement(
+                data_node, "timestep", {"timestep": str(timestep)}
+            )
             # Add measure results in each time-step
-            for (measure_name, value) in self.criticality_dict[timestep].items():
-                etree.SubElement(timestep_node, "measure_value", {"name": measure_name, "value": str(value)})
+            for measure_name, value in self.criticality_dict[timestep].items():
+                etree.SubElement(
+                    timestep_node,
+                    "measure_value",
+                    {"name": measure_name, "value": str(value)},
+                )
 
         # Save to file
         tree = etree.ElementTree(root)
-        tree.write(f"{output_dir}/CriMe-{scenario.scenario_id}.xml", pretty_print=True, xml_declaration=True, encoding="utf-8")
+        tree.write(
+            f"{output_dir}/CriMe-{scenario.scenario_id}.xml",
+            pretty_print=True,
+            xml_declaration=True,
+            encoding="utf-8",
+        )
