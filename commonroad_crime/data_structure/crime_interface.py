@@ -6,6 +6,7 @@ __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
+import os
 import logging
 from typing import List, Type
 from lxml import etree
@@ -128,6 +129,24 @@ class CriMeInterface:
                     m_evaluator.visualize()
 
     def safe_to_file(self, output_dir: str):
+        """
+        Saves the criticality measures of a scenario to an XML file.
+
+        This method serializes the scenario information along with the related
+        criticality measures into an XML structure and saves it to a file. The
+        XML file is structured with a root element and child elements that include
+        the scenario details, parameters, and measures listed over all timesteps.
+
+        Parameters:
+        output_dir (str): The directory where the XML file will be saved.
+
+        The XML file is named using the scenario ID and prefixed with 'CriMe-'. The
+        file will include pretty-printed XML for better readability.
+        """
+        # Ensure the output directory exists
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)  # Create the directory if it does not exist
+
         scenario = self.config.scenario
         root = etree.Element("commonroad-criticality-measures")
 
