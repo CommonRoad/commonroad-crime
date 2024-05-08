@@ -166,7 +166,7 @@ class CriMeInterface:
         # Add list of measures
         measure_list = etree.SubElement(root, "measure_list")
         for measure in self.measures:
-            measure_node = etree.SubElement(
+            etree.SubElement(
                 measure_list, "measure", {"name": measure.measure_name.value}
             )
 
