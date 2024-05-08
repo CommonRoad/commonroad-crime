@@ -4,6 +4,7 @@
 - Visualization of criticality curve: now the nan and inf are distinguished!! The tick for inf is automatically generated!
 ### Added
 - For evaluating an interval, the starting time step should be always smaller or equal than the ending one.
+- save the results to xml files
 ### Fixed
 - the memory issues for P_MC measure due to all the simulated vehicle states being stored during the evaluation for subsequent visualization, now the default mode for visualization is off.
 - for all measures, check whether the time step is valid in the function `validate_update_states_log`. If no, `NaN` is returned. Similar to `compute_criticality`: only compute for the valid ego vehicle and other vehicles, otherwise `NaN` is returned

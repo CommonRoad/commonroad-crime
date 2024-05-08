@@ -1,4 +1,4 @@
-__author__ = "Yuanfei Lin"
+__author__ = "Yuanfei Lin, Marius Erath"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
 __version__ = "0.4.0"
