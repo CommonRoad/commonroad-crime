@@ -84,6 +84,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 
 ### Contributors (in alphabetical order by last name)
 - Liguo Chen
+- Marius Erath
 - Yuanfei Lin
 - Sebastian Maierhofer
 - Ivana Peneva

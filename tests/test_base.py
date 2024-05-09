@@ -103,3 +103,5 @@ class TestBase(unittest.TestCase):
             np.isnan(crime_interface.criticality_dict[35][TTC.measure_name]),
             "The result should be NaN.",
         )
+
+        crime_interface.safe_to_file(config.general.path_output)
