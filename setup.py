@@ -33,9 +33,9 @@ setup(
     install_requires=[
         "commonroad-io>=2023.4",
         "commonroad-vehicle-models>=3.0.0",
-        "commonroad-route-planner>=2022.3,<2024.1",
+        "commonroad-route-planner>=2024.2.0",
         "commonroad-drivability-checker>=2023.1",
-        "commonroad-reach>=2023.1",
+        "commonroad-reach>=2024.1.2",
         "matplotlib>=3.5.2",
         "numpy>=1.19.0",
         "scipy>=1.7.3",
