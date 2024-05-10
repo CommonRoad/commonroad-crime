@@ -8,6 +8,7 @@ __status__ = "beta"
 
 import logging
 import math
+import numpy as np
 
 from commonroad.scenario.obstacle import DynamicObstacle
 from matplotlib import pyplot as plt
@@ -122,14 +123,10 @@ class SOI(CriMeBase):
         """
         Calculates how often the personal space of the ego-vehicle is violated by obstacles in the observed time
         """
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         self.value = 0
         self.value_list.clear()
-        self.time_step = time_step
 
         for ts in range(
             self.time_step, len(self.ego_vehicle.prediction.trajectory.state_list)
@@ -140,7 +137,7 @@ class SOI(CriMeBase):
                 # Skip ego-vehicle and obstacles out of scope (e.g. timeline ended for this obstacle)
                 if (
                     isinstance(obstacle, DynamicObstacle)
-                    and len(obstacle.prediction.trajectory.state_list) < ts
+                    and obstacle.state_at_time(ts) is None
                 ):
                     continue
                 if obstacle.obstacle_id == self.ego_vehicle.obstacle_id:

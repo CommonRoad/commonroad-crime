@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.2"
+__version__ = "0.3.4"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -99,28 +99,32 @@ def check_in_same_lanelet(
     vehicle_2: Union[DynamicObstacle, StaticObstacle],
     time_step: int,
 ):
-    if not vehicle_1.occupancy_at_time(time_step):
-        logger.info(
-            f"<utility> vehicle {vehicle_1.obstacle_id} doesn't have occupancies at time step {time_step}."
-        )
-        return False
+    # Helper function to get occupied lanelets along with their predecessors and successors
+    def get_occupied_lanelets(vehicle):
+        occupancy = vehicle.occupancy_at_time(time_step)
+        if not occupancy:
+            logger.info(
+                f"<utility> vehicle {vehicle.obstacle_id} doesn't have occupancies at time step {time_step}."
+            )
+            return set()
 
-    if not vehicle_2.occupancy_at_time(time_step):
-        logger.info(
-            f"<utility> vehicle {vehicle_2.obstacle_id} doesn't have occupancies at time step {time_step}."
-        )
-        return False
+        occupied_lanelets = set(lanelet_network.find_lanelet_by_shape(occupancy.shape))
+        for ll in list(
+            occupied_lanelets
+        ):  # Use a list copy to iterate over as we modify the set
+            occupied_lanelets.update(
+                lanelet_network.find_lanelet_by_id(ll).predecessor or []
+            )
+            occupied_lanelets.update(
+                lanelet_network.find_lanelet_by_id(ll).successor or []
+            )
+        return occupied_lanelets
 
-    # Proceed only if both vehicles have occupancies
-    lanelets_1 = lanelet_network.find_lanelet_by_shape(
-        vehicle_1.occupancy_at_time(time_step).shape
-    )
-    lanelets_2 = lanelet_network.find_lanelet_by_shape(
-        vehicle_2.occupancy_at_time(time_step).shape
-    )
+    lanelets_1 = get_occupied_lanelets(vehicle_1)
+    lanelets_2 = get_occupied_lanelets(vehicle_2)
 
-    # Check if there is an intersection between the sets of lanelets occupied by the vehicles
-    return len(set(lanelets_1).intersection(lanelets_2)) > 0
+    # Return True if there is any overlap between the sets of lanelets occupied by the two vehicles
+    return not lanelets_1.isdisjoint(lanelets_2)
 
 
 def check_elements_state_list(

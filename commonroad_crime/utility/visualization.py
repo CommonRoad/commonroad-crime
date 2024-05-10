@@ -244,7 +244,63 @@ def plot_criticality_curve(crime, nr_per_row=2, flag_latex=True):
                 ax = axs[count_column]
             else:
                 ax = axs[count_row, count_column]
-            ax.plot(time_list, criticality_list)
+
+            # Create a mask to filter out NaN and infinity values
+            criticality_list = np.array(criticality_list)
+
+            # Apply the mask and find the maximum value among the remaining elements
+            if np.any(np.isinf(criticality_list)):
+                mask = ~np.isnan(criticality_list) & ~np.isinf(criticality_list)
+
+                if len(criticality_list[mask]) > 0:
+                    max_value = np.max(criticality_list[mask]) + 10
+                    min_value = np.min(criticality_list[mask]) - 10
+                else:
+                    max_value = 10
+                    min_value = 10
+
+                # First, replace np.inf with 1000
+                criticality_list_clean = np.where(
+                    criticality_list == np.inf, max_value, criticality_list
+                )
+
+                # Then, replace -np.inf with -1000
+                criticality_list_clean = np.where(
+                    criticality_list_clean == -np.inf, min_value, criticality_list_clean
+                )
+
+                ax.plot(time_list, criticality_list_clean)
+            else:
+                max_value = np.nanmax(criticality_list)
+                min_value = np.nanmin(criticality_list)
+                ax.plot(time_list, criticality_list)
+
+            # Customize y-axis
+            ticks, _ = plt.yticks()
+            # Update ticks and labels
+            new_ticks = [
+                tick for tick in ticks if min_value <= tick <= max_value
+            ]  # Keep ticks within the finite range
+            new_labels = [
+                "{:.4g}".format(tick) for tick in new_ticks
+            ]  # Limit to 4 significant digits
+
+            # Check for infinities and add custom labels
+            if np.any(np.isposinf(criticality_list)):
+                new_ticks.append(
+                    max_value
+                )  # Place at max finite value or a predefined position
+                new_labels.append("inf")
+
+            if np.any(np.isneginf(criticality_list)):
+                new_ticks = [
+                    min_value
+                ] + new_ticks  # Place at min finite value or a predefined position
+                new_labels = ["-inf"] + new_labels
+
+            # Apply the updated ticks and labels to the plot
+            plt.yticks(new_ticks, new_labels)
+
             ax.axis(xmin=time_list[0], xmax=time_list[-1])
             ax.title.set_text(measure.measure_name.value)
 

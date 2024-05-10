@@ -11,6 +11,7 @@ before_script:
     - apt-get install -y libgl1
     - pip install --upgrade pip
     - pip install -e .
+    - pip install coverage  # This line ensures coverage is installed
 
 black:
   stage: style
@@ -30,7 +31,16 @@ unittest:
     matrix:
       - PYTHON_VERSIONS: ["3.8", "3.9", "3.10" ] # 3.11 limited by drivability-checker
   script:
-    - cd $CI_PROJECT_DIR/tests && python -m unittest
+      - coverage run --source=./commonroad_crime -m unittest discover -s $CI_PROJECT_DIR/tests -v
+      - coverage report -m || true
+      - coverage xml -i -o $CI_PROJECT_DIR/tests/coverage.xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: $CI_PROJECT_DIR/tests/coverage.xml
+
 
 ### publish documentation ###
 pages:

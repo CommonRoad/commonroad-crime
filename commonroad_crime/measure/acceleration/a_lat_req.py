@@ -1,13 +1,14 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import math
 import logging
+import numpy as np
 
 from commonroad.geometry.shape import Circle
 
@@ -74,16 +75,13 @@ class ALatReq(CriMeBase):
         )
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.set_other_vehicles(vehicle_id)
-        self.time_step = time_step
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
+
         if self._except_obstacle_in_same_lanelet(expected_value=0.0, verbose=verbose):
             # no negative acceleration is needed for avoiding a collision
             return self.value
+
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position(
             [self.ego_vehicle.state_at_time(time_step).position]
         )[0]
@@ -92,42 +90,54 @@ class ALatReq(CriMeBase):
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position,
         )[1]
-        other_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.other_vehicle.state_at_time(time_step).position,
-        )[1]
-        ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
-        utils_log.print_and_log_info(logger, f"*\t\t TTC is equal to {ttc}", verbose)
-        if ttc == math.inf:
-            # no lateral acceleration is needed for avoiding a collision
+        try:
+            other_orientation = utils_sol.compute_lanelet_width_orientation(
+                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                self.other_vehicle.state_at_time(time_step).position,
+            )[1]
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <A_LAT_REQ> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
+            )
+            # out of projection domain: the other vehicle is far away
             self.value = 0.0
-            return self.value
-        a_obj_lat = math.sqrt(
-            self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
-            + self.other_vehicle.state_at_time(time_step).acceleration ** 2
-        ) * math.sin(other_orientation)
+        else:
+            ttc = self._ttc_object.compute(vehicle_id, time_step, verbose=verbose)
+            utils_log.print_and_log_info(
+                logger, f"*\t\t TTC is equal to {ttc}", verbose
+            )
+            if ttc == math.inf:
+                # no lateral acceleration is needed for avoiding a collision
+                self.value = 0.0
+                return self.value
+            a_obj_lat = math.sqrt(
+                self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
+                + self.other_vehicle.state_at_time(time_step).acceleration ** 2
+            ) * math.sin(other_orientation)
 
-        # compute the headway distance
-        d_rel_lat = utils_sol.compute_clcs_distance(
-            self.clcs,
-            self.ego_vehicle.state_at_time(time_step).position,
-            self.ego_vehicle.state_at_time(time_step).position,
-        )[1]
-        v_rel_lat = (
-            math.sqrt(
-                self.other_vehicle.state_at_time(time_step).velocity ** 2
-                + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+            # compute the headway distance
+            d_rel_lat = utils_sol.compute_clcs_distance(
+                self.clcs,
+                self.ego_vehicle.state_at_time(time_step).position,
+                self.ego_vehicle.state_at_time(time_step).position,
+            )[1]
+            v_rel_lat = (
+                math.sqrt(
+                    self.other_vehicle.state_at_time(time_step).velocity ** 2
+                    + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+                )
+                * math.sin(other_orientation)
+                - math.sqrt(
+                    self.ego_vehicle.state_at_time(time_step).velocity ** 2
+                    + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
+                )
+            ) * math.sin(ego_orientation)
+            self.value = min(
+                abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "left")),
+                abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "right")),
             )
-            * math.sin(other_orientation)
-            - math.sqrt(
-                self.ego_vehicle.state_at_time(time_step).velocity ** 2
-                + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
-            )
-        ) * math.sin(ego_orientation)
-        self.value = min(
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "left")),
-            abs(self._compute_a_lat(a_obj_lat, d_rel_lat, v_rel_lat, ttc, "right")),
-        )
         if self.value != math.inf:
             self.value = utils_gen.int_round(self.value, 2)
 

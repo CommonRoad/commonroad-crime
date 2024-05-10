@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -73,18 +73,15 @@ class P_MC(CriMeBase):
         self.ttc_object = TTCStar(self.configuration)
 
     def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         utils_log.print_and_log_info(
             logger,
             f"* \t\t nr of samples "
             f"{self.configuration.probability.monte_carlo.nr_samples}",
             verbose,
         )
-        self.time_step = time_step
+
         colliding_prob_list = []
         self.ego_state_list_set_cf = []  # collision-free
         self.ego_state_list_set_wc = []  # with collisions
@@ -100,9 +97,11 @@ class P_MC(CriMeBase):
             for j in range(len(ego_sl_bundle)):
                 if self.ttc_object.detect_collision(ego_sl_bundle[j]):
                     colliding_prob_list.append(pdf_bundle[j])
-                    self.ego_state_list_set_wc.append(ego_sl_bundle[j])
+                    if self.configuration.debug.draw_visualization:
+                        self.ego_state_list_set_wc.append(ego_sl_bundle[j])
                 else:
-                    self.ego_state_list_set_cf.append(ego_sl_bundle[j])
+                    if self.configuration.debug.draw_visualization:
+                        self.ego_state_list_set_cf.append(ego_sl_bundle[j])
         # (14) in Broadhurst, Adrian, Simon Baker, and Takeo Kanade. "Monte Carlo road safety reasoning." IEEE
         # Proceedings of Intelligent Vehicles Symposium, IEEE, 2005.
         if colliding_prob_list:
@@ -152,14 +151,16 @@ class P_MC(CriMeBase):
         return state_list_bundle, pdf_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
                 margin=20,
-            ),
-        )
+            )
+
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         for sl in self.ego_state_list_set_wc:
             utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMred)

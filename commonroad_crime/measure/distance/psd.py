@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Ziqian Xu"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -43,13 +43,8 @@ class PSD(CriMeBase):
         self._et_object = ET(config)
 
     def compute(self, vehicle_id: int = None, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} beginning at time step {time_step}",
-            verbose,
-        )
-        self.time_step = time_step
-        self.set_other_vehicles(vehicle_id)
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         # compute MSD
         if isinstance(self.other_vehicle, DynamicObstacle):
             self._et_object.ca = self._et_object.get_ca(

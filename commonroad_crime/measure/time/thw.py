@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -9,6 +9,10 @@ __status__ = "beta"
 import matplotlib.pyplot as plt
 import logging
 import math
+import numpy as np
+
+from commonroad.geometry.shape import Rectangle, Circle
+from commonroad.scenario.obstacle import Obstacle
 
 from commonroad_crime.data_structure.base import CriMeBase
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -32,19 +36,48 @@ class THW(CriMeBase):
     def __init__(self, config: CriMeConfiguration):
         super(THW, self).__init__(config)
 
-    def cal_headway(self):
-        other_position = self.other_vehicle.state_at_time(self.time_step).position
-        other_s, _ = self.clcs.convert_to_curvilinear_coords(
-            other_position[0], other_position[1]
-        )
-        ego_position = self.ego_vehicle.state_at_time(self.time_step).position
-        ego_s, _ = self.clcs.convert_to_curvilinear_coords(
-            ego_position[0], ego_position[1]
-        )
+    def _compute_vehicle_add_on(self, vehicle: Obstacle):
+        if isinstance(vehicle.obstacle_shape, Rectangle):
+            add_on = vehicle.obstacle_shape.length / 2
+        elif isinstance(vehicle.obstacle_shape, Circle):
+            add_on = vehicle.obstacle_shape.radius
+        else:
+            raise ValueError(
+                f"<{self.measure_name}>: obstacle shape {type(vehicle.obstacle_shape).__name__} not supported."
+            )
+        return add_on
 
-        # bump position
-        ego_s += self.ego_vehicle.obstacle_shape.length / 2
-        other_s -= self.other_vehicle.obstacle_shape.length / 2
+    def cal_headway(self):
+        try:
+            other_position = self.other_vehicle.state_at_time(self.time_step).position
+            other_s, _ = self.clcs.convert_to_curvilinear_coords(
+                other_position[0], other_position[1]
+            )
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <THW> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
+            )
+            # out of projection domain: the other vehicle is far away
+            return math.inf
+        try:
+            ego_position = self.ego_vehicle.state_at_time(self.time_step).position
+            ego_s, _ = self.clcs.convert_to_curvilinear_coords(
+                ego_position[0], ego_position[1]
+            )
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <THW> During the projection of the ego vehicle with id {self.ego_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
+            )
+            # out of projection domain: the ref path should be problematic
+            return math.nan
+
+        # additional position for the vehicles
+        ego_s += self._compute_vehicle_add_on(self.ego_vehicle)
+        other_s -= self._compute_vehicle_add_on(self.other_vehicle)
 
         if ego_s > other_s:
             return math.inf
@@ -57,7 +90,7 @@ class THW(CriMeBase):
             ego_s, _ = self.clcs.convert_to_curvilinear_coords(
                 ego_position[0], ego_position[1]
             )
-            ego_s += self.ego_vehicle.obstacle_shape.length / 2
+            ego_s += self._compute_vehicle_add_on(self.ego_vehicle)
             if ego_s > other_s:
                 return utils_gen.int_round(
                     (ts - self.time_step) * self.dt, str(self.dt)[::-1].find(".")
@@ -65,13 +98,8 @@ class THW(CriMeBase):
         return math.inf
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.set_other_vehicles(vehicle_id)
-        self.time_step = time_step
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
 
         if self._except_obstacle_in_same_lanelet(
             expected_value=math.inf, verbose=verbose
@@ -88,14 +116,15 @@ class THW(CriMeBase):
         return self.value
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
-                margin=10,
-            ),
-        )
+                margin=50,
+            )
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         utils_vis.draw_state_list(
             self.rnd,
@@ -104,8 +133,6 @@ class THW(CriMeBase):
             linewidth=5,
         )
         if self.value > 0 and self.value is not math.inf:
-            print(self.value)
-
             tshw = int(utils_gen.int_round(self.value / self.dt, 0))
             utils_vis.draw_state(
                 self.rnd, self.ego_vehicle.state_at_time(tshw + self.time_step)

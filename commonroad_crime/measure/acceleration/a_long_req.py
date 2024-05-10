@@ -1,12 +1,13 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import math
+import numpy as np
 import logging
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
@@ -37,15 +38,13 @@ class ALongReq(CriMeBase):
         self._hw_object = HW(config)
 
     def compute(self, vehicle_id: int, time_step: int = 0, verbose: bool = True):
-        utils_log.print_and_log_info(
-            logger,
-            f"* Computing the {self.measure_name} at time step {time_step}",
-            verbose,
-        )
-        self.set_other_vehicles(vehicle_id)
-        self.time_step = time_step
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
         if self._except_obstacle_in_same_lanelet(expected_value=0.0, verbose=verbose):
             # no negative acceleration is needed for avoiding a collision
+            utils_log.print_and_log_info(
+                logger, f"*\t\t {self.measure_name} = {self.value}", verbose
+            )
             return self.value
         lanelet_id = self.sce.lanelet_network.find_lanelet_by_position(
             [self.ego_vehicle.state_at_time(time_step).position]
@@ -55,38 +54,48 @@ class ALongReq(CriMeBase):
             self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
             self.ego_vehicle.state_at_time(time_step).position,
         )[1]
-        other_orientation = utils_sol.compute_lanelet_width_orientation(
-            self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
-            self.other_vehicle.state_at_time(time_step).position,
-        )[1]
-        # acceleration of the other vehicle along the lanelet
-        a_obj = math.sqrt(
-            self.other_vehicle.state_at_time(time_step).acceleration ** 2
-            + self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
-        ) * math.cos(other_orientation)
-        # compute the headway (relative distance) along the lanelet
-        x_rel = self._hw_object.compute(vehicle_id, time_step, verbose=verbose)
-        # compute the vehicles' velocity along the lanelet direction
-        v_ego_long = math.sqrt(
-            self.ego_vehicle.state_at_time(time_step).velocity ** 2
-            + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
-        ) * math.cos(ego_orientation)
-        v_other_long = math.sqrt(
-            self.other_vehicle.state_at_time(time_step).velocity ** 2
-            + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
-        ) * math.cos(other_orientation)
-        if self.configuration.acceleration.acceleration_mode == 1:
-            # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
-            # implications for autonomous vehicles." is in correct
-            v_rel = v_other_long - v_ego_long
-            utils_log.print_and_log_info(
-                logger, f"*\t\t relative velocity is {v_rel}", verbose
+        try:
+            other_orientation = utils_sol.compute_lanelet_width_orientation(
+                self.sce.lanelet_network.find_lanelet_by_id(lanelet_id[0]),
+                self.other_vehicle.state_at_time(time_step).position,
+            )[1]
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger,
+                f"* <A_LONG_REQ> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
+                f"at time step {self.time_step}: {e}",
             )
-            a_req = min(a_obj - v_rel**2 / (2 * x_rel), 0.0)
+            # out of projection domain: the other vehicle is far away
+            a_req = 0.0
         else:
-            # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
-            # Collision Mitigation"
-            a_req = -(v_ego_long**2) / (2 * (x_rel - v_other_long**2 / 2 * a_obj))
+            # acceleration of the other vehicle along the lanelet
+            a_obj = math.sqrt(
+                self.other_vehicle.state_at_time(time_step).acceleration ** 2
+                + self.other_vehicle.state_at_time(time_step).acceleration_y ** 2
+            ) * math.cos(other_orientation)
+            # compute the headway (relative distance) along the lanelet
+            x_rel = self._hw_object.compute(vehicle_id, time_step, verbose=verbose)
+            # compute the vehicles' velocity along the lanelet direction
+            v_ego_long = math.sqrt(
+                self.ego_vehicle.state_at_time(time_step).velocity ** 2
+                + self.ego_vehicle.state_at_time(time_step).velocity_y ** 2
+            ) * math.cos(ego_orientation)
+            v_other_long = math.sqrt(
+                self.other_vehicle.state_at_time(time_step).velocity ** 2
+                + self.other_vehicle.state_at_time(time_step).velocity_y ** 2
+            ) * math.cos(other_orientation)
+            if self.configuration.acceleration.acceleration_mode == 1:
+                # constant acceleration using (8) in "Using extreme value theory for vehicle level safety validation and
+                # implications for autonomous vehicles." is in correct
+                v_rel = v_other_long - v_ego_long
+                utils_log.print_and_log_info(
+                    logger, f"*\t\t relative velocity is {v_rel}", verbose
+                )
+                a_req = min(a_obj - v_rel**2 / (2 * x_rel), 0.0)
+            else:
+                # piecewise constant motion using (5.39) in "Collision Avoidance Theory with Application to Automotive
+                # Collision Mitigation"
+                a_req = -(v_ego_long**2) / (2 * (x_rel - v_other_long**2 / 2 * a_obj))
         if a_req > 0:  # the object is non-closing
             self.value = 0.0
         else:

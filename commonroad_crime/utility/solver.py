@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.2"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
@@ -10,8 +10,11 @@ from typing import Tuple, Union
 import numpy as np
 import logging
 import math
+from functools import lru_cache
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
+
+from commonroad.geometry.shape import Circle, Rectangle
 
 from commonroad.scenario.obstacle import (
     Obstacle,
@@ -124,6 +127,7 @@ def compute_closest_coordinate_from_list_of_points(state: State, vertices: np.nd
     return vertices[np.argmin(cdist(np.array([state.position]), vertices, "euclidean"))]
 
 
+@lru_cache(maxsize=None)
 def compute_disc_radius_and_distance(
     length: float, width: float
 ) -> Tuple[float, float]:
@@ -356,9 +360,18 @@ def create_polygon(
     angle = obstacle.state_at_time(time_step).orientation
     angle_cos = math.cos(angle)
     angle_sin = math.sin(angle)
-    width = max(obstacle.obstacle_shape.width * 0.5, w)
-    length_front = max(obstacle.obstacle_shape.length * 0.5, l_front)
-    length_back = max(obstacle.obstacle_shape.length * 0.5, l_back)
+    if isinstance(obstacle.obstacle_shape, Circle):
+        width_obs = length_obs = obstacle.obstacle_shape.radius * 2
+    elif isinstance(obstacle.obstacle_shape, Rectangle):
+        width_obs = obstacle.obstacle_shape.width
+        length_obs = obstacle.obstacle_shape.length
+    else:
+        raise ValueError(
+            f"<Criticality/Solver>: obstacle shape {type(obstacle.obstacle_shape).__name__} not supported."
+        )
+    width = max(width_obs * 0.5, w)
+    length_front = max(length_obs * 0.5, l_front)
+    length_back = max(length_obs * 0.5, l_back)
     coords = [
         (
             pos[0] + length_front * angle_cos - width * angle_sin,

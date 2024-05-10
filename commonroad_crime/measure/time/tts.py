@@ -1,12 +1,13 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
 
 import logging
+import numpy as np
 
 from commonroad_crime.data_structure.configuration import CriMeConfiguration
 from commonroad_crime.data_structure.base import CriMeBase
@@ -44,14 +45,17 @@ class TTS(CriMeBase):
         ttc: float = None,
         verbose: bool = True,
     ):
-        utils_log.print_and_log_info(
-            logger, f"* Computing the {self.measure_name} at time step {time_step}"
-        )
+        if not self.validate_update_states_log(vehicle_id, time_step, verbose):
+            return np.nan
 
-        tts_left = self._left_evaluator.compute(time_step, ttc, verbose=False)
+        tts_left = self._left_evaluator.compute(
+            time_step=self.time_step, ttc=ttc, verbose=False
+        )
         self.state_list_set += self._left_evaluator.state_list_set
 
-        tts_right = self._right_evaluator.compute(time_step, ttc, verbose=False)
+        tts_right = self._right_evaluator.compute(
+            time_step=self.time_step, ttc=ttc, verbose=False
+        )
         self.state_list_set += self._right_evaluator.state_list_set
 
         # decide the specific maneuver for steering

@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -17,6 +17,7 @@ from commonroad_crime.data_structure.type import TypeDistance, TypeMonotone
 from commonroad_crime.measure.time.thw import THW
 import commonroad_crime.utility.visualization as utils_vis
 import commonroad_crime.utility.solver as utils_sol
+import commonroad_crime.utility.logger as utils_log
 from commonroad_crime.utility.visualization import TUMcolor
 
 from commonroad.geometry.shape import Polygon, Circle
@@ -55,23 +56,31 @@ class HW(THW):
             self.ego_vehicle.state_at_time(self.time_step).position
             + self.ego_vehicle.obstacle_shape.length / 2
         )
-        headway = utils_sol.compute_clcs_distance(
-            self.clcs, ego_position, other_position
-        )[0]
+        try:
+            headway = utils_sol.compute_clcs_distance(
+                self.clcs, ego_position, other_position
+            )[0]
+        except ValueError as e:
+            utils_log.print_and_log_warning(
+                logger, f"<HW> During the projection of the other vehicle: {e}"
+            )
+            headway = math.inf
         if headway < 0:
             return math.inf
         else:
             return headway
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
                 margin=10,
-            ),
-        )
+            )
+
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         utils_vis.draw_reference_path(self.rnd, np.array(self.clcs.reference_path()))
         utils_vis.draw_state_list(
