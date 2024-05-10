@@ -26,7 +26,7 @@ $ pip install commonroad-crime
 ```
 <details>
 <summary><b>Develop CriMe locally</b></summary>
-### Local Development
+
 For adding new measures, we recommend using [Anaconda](https://www.anaconda.com/) to manage your environment so that even if you mess something up, you can always have a safe and clean restart. A guide for managing python environments with Anaconda can be found [here](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 After installing Anaconda, create a new environment with:
@@ -54,26 +54,31 @@ To test the installition, run unittest:
 $ cd tests
 $ python -m unittest -v
 ```
+
 </details>
 
 To get started your journey with our criticality measures, check the `tutorials` and the following tips.
 
 <details>
 <summary><b>Add new criticality measure</b></summary>
+
 1. create a new branch with `feature-<measure-name>` and checkout the branch
 2. navigate to `commonroad_crime/data_structure/type.py` to find the correct category of the measure and add an 
 enumeration entry `<abbreviation>: <explanation>`
 3. navigate to `commonroad_crime/measure` to find the above-mentioned category and create a python file named
 `<abbreviation>.py`. Then create a class inheriting the `CriMeBase` under `commonroad_crime/data_structure/base.py`
 4. similar to other measures, you need to implement the `compute()` and `visualize()` functions
+
 </details>
 
 <details>
 <summary><b>Define configuration parameters of the measure</b></summary>
+
 1. navigate to `commonroad_crime/data_structure/configuation.py` to find the above-mentioned category and add a new 
 instance to the class as `self.<parameter> = config_relevant.<parameter>`
 2. you can then directly call the values using `self.configuration.<category>.<parameter>` in your measure class
 3. to override the default parameter values, create a `yaml` file (name it the same as the scenario) in `./config_files` and modify the values there
+
 </details>
 
 ## 🚧 Documentation
