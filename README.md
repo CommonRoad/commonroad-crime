@@ -14,7 +14,7 @@ trajectory. If you have questions or want to report problems or suggestions, ple
 [Github issue](https://github.com/CommonRoad/commonroad-crime/issues/). 
 
 <a href="https://colab.research.google.com/drive/1T7MbSVqU5XCDZgPTDERKNKYFbAInXRjy">
-  <img src="./docs/figures/live_demo.png" alt="Live Demo">
+  <img src="https://raw.githubusercontent.com/CommonRoad/commonroad-crime/develop/docs/figures/live_demo.png" alt="Live Demo">
 </a>
 
 ## 🚀 Installation Guide
