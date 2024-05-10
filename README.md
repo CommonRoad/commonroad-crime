@@ -92,7 +92,7 @@ $ make html
 The documentation can then be launched by browsing ``./docs/sphinx/build/html/index.html/``.
 </details>
 
-### 🌟 Contributors (in alphabetical order by last name)
+## 🌟 Contributors (in alphabetical order by last name)
 
 - Liguo Chen
 - Marius Erath
@@ -106,7 +106,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 - Zekun Xing
 - Ziqian Xu
 
-### 🔖 Citation
+## 🔖 Citation
 If you use `commonroad-crime` for academic work, we highly encourage you to cite our paper:
 ```text
 @InProceedings{lin2023crime,
