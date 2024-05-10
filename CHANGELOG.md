@@ -1,7 +1,8 @@
 # Changelog
-## [0.4.0] - 2024.xx.xx
+## [0.4.0] - 2024.05.10
 ### Updated
 - Visualization of criticality curve: now the nan and inf are distinguished!! The tick for inf is automatically generated!
+- Versions of `commonroad-route-planner` and `commonroad-reach`
 ### Added
 - For evaluating an interval, the starting time step should be always smaller or equal than the ending one.
 - save the results to xml files

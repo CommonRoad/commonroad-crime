@@ -71,14 +71,16 @@ class HW(THW):
             return headway
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
                 margin=10,
-            ),
-        )
+            )
+
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         utils_vis.draw_reference_path(self.rnd, np.array(self.clcs.reference_path()))
         utils_vis.draw_state_list(

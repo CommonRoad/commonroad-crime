@@ -151,14 +151,16 @@ class P_MC(CriMeBase):
         return state_list_bundle, pdf_bundle
 
     def visualize(self, figsize: tuple = (25, 15)):
-        self._initialize_vis(
-            figsize=figsize,
-            plot_limit=utils_vis.plot_limits_from_state_list(
+        if self.configuration.debug.plot_limits:
+            plot_limits = self.configuration.debug.plot_limits
+        else:
+            plot_limits = utils_vis.plot_limits_from_state_list(
                 self.time_step,
                 self.ego_vehicle.prediction.trajectory.state_list,
                 margin=20,
-            ),
-        )
+            )
+
+        self._initialize_vis(figsize=figsize, plot_limit=plot_limits)
         self.rnd.render()
         for sl in self.ego_state_list_set_wc:
             utils_vis.draw_state_list(self.rnd, sl, color=TUMcolor.TUMred)
