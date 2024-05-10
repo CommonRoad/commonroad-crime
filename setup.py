@@ -23,9 +23,9 @@ setup(
     author_email="commonroad@lists.lrz.de",
     license="BSD 3-Clause",
     project_urls={
-        "Documentation": "https://cps.pages.gitlab.lrz.de/commonroad-criticality-measures/",
-        "Forum": "https://commonroad.in.tum.de/forum/c/commonroad-crime/20",
-        "Source": "https://gitlab.lrz.de/tum-cps/commonroad-crime",
+        "Documentation": "https://cps.pages.gitlab.lrz.de/commonroad/commonroad-criticality-measures/",
+        "Forum": "https://github.com/CommonRoad/commonroad-crime/issues",
+        "Source": "https://github.com/CommonRoad/commonroad-crime",
     },
     url="https://commonroad.in.tum.de/tools/commonroad-crime",
     packages=find_packages(),
