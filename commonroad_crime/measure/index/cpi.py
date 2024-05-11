@@ -65,7 +65,9 @@ class CPI(CriMeBase):
 
         for ts in range(self.time_step, self.end_time_step):
             try:
-                dr_lon_req = -self._a_lon_req_object.compute(vehicle_id, ts)
+                dr_lon_req = -self._a_lon_req_object.compute(
+                    vehicle_id, ts, verbose=verbose
+                )
                 self.dr_lon_req_list.append(dr_lon_req)
             except ValueError:
                 utils_log.print_and_log_info(

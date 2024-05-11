@@ -44,7 +44,7 @@ class TTCE(CriMeBase):
         if not self.validate_update_states_log(vehicle_id, time_step, verbose):
             return np.nan
 
-        self._dce_object.compute(vehicle_id, self.time_step)
+        self._dce_object.compute(vehicle_id, self.time_step, verbose=verbose)
         if self._dce_object.time_dce is not math.inf:
             self.value = utils_gen.int_round(
                 (self._dce_object.time_dce - self.time_step) * self.dt, 3

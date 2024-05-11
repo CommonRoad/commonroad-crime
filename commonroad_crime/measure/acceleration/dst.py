@@ -40,7 +40,7 @@ class DST(CriMeBase):
         if not self.validate_update_states_log(vehicle_id, time_step, verbose):
             return np.nan
         # under the assumption that the velocity of the other object remains constant
-        headway = self._hw_solver.compute(vehicle_id, time_step)
+        headway = self._hw_solver.compute(vehicle_id, time_step, verbose=verbose)
         if headway < 0:
             return -math.inf
         v_ego = self.ego_vehicle.state_at_time(time_step).velocity

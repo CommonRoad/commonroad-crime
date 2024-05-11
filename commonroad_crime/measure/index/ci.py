@@ -81,7 +81,7 @@ class CI(CriMeBase):
             m2 = m1
 
         # Use PET object
-        pet = self._pet_object.compute(vehicle_id, time_step)
+        pet = self._pet_object.compute(vehicle_id, time_step, verbose=verbose)
 
         # Threshold of 5.0 as standard configuration in the paper
         threshold = self.ci_config.pet_threshold
