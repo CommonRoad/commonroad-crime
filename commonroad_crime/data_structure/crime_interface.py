@@ -129,7 +129,7 @@ class CriMeInterface:
                 if m_evaluator.time_step == time_step:
                     m_evaluator.visualize()
 
-    def safe_to_file(self, output_dir: str):
+    def save_to_file(self, output_dir: str):
         """
         Saves the criticality measures of a scenario to an XML file.
 

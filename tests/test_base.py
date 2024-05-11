@@ -104,4 +104,4 @@ class TestBase(unittest.TestCase):
             "The result should be NaN.",
         )
 
-        crime_interface.safe_to_file(config.general.path_output)
+        crime_interface.save_to_file(config.general.path_output)
