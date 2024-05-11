@@ -141,8 +141,10 @@ class CriMeInterface:
         Parameters:
         output_dir (str): The directory where the XML file will be saved.
 
-        The XML file is named using the scenario ID and prefixed with 'CriMe-'. The
-        file will include pretty-printed XML for better readability.
+        The XML file is named using the scenario ID and prefixed with 'CriMe_123-'
+        where 123 is the ID of the vehicle with respect to which the criticality
+        was computed (ego vehicle).
+        The file will include pretty-printed XML for better readability.
         """
         # Ensure the output directory exists
         if not os.path.exists(output_dir):
@@ -189,7 +191,7 @@ class CriMeInterface:
         # Save to file
         tree = etree.ElementTree(root)
         tree.write(
-            f"{output_dir}/CriMe-{scenario.scenario_id}.xml",
+            f"{output_dir}/CriMe_{self.config.vehicle.ego_id}-{scenario.scenario_id}.xml",
             pretty_print=True,
             xml_declaration=True,
             encoding="utf-8",
