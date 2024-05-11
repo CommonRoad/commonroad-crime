@@ -100,6 +100,7 @@ class ALatReq(CriMeBase):
                 logger,
                 f"* <A_LAT_REQ> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
                 f"at time step {self.time_step}: {e}",
+                verbose,
             )
             # out of projection domain: the other vehicle is far away
             self.value = 0.0
