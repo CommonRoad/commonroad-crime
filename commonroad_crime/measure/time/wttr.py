@@ -83,7 +83,7 @@ class WTTR(CriMeBase):
     def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = True):
         if not self.validate_update_states_log(vehicle_id, time_step, verbose):
             return np.nan
-        self.ttc = self.ttc_object.compute(time_step)
+        self.ttc = self.ttc_object.compute(time_step, verbose=verbose)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:

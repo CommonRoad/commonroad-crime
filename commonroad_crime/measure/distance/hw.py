@@ -38,7 +38,7 @@ class HW(THW):
     def __init__(self, config: CriMeConfiguration):
         super(HW, self).__init__(config)
 
-    def cal_headway(self):
+    def cal_headway(self, verbose=True):
         if isinstance(self.other_vehicle.obstacle_shape, Polygon):
             other_position = self.other_vehicle.state_at_time(self.time_step).position
         else:
@@ -62,7 +62,7 @@ class HW(THW):
             )[0]
         except ValueError as e:
             utils_log.print_and_log_warning(
-                logger, f"<HW> During the projection of the other vehicle: {e}"
+                logger, f"<HW> During the projection of the other vehicle: {e}", verbose
             )
             headway = math.inf
         if headway < 0:
