@@ -1,6 +1,9 @@
 # Changelog
 ## [0.4.1] - 2024.05.xx
+### Updated
+- the saving of the results to xml files with the format of `CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml
 ### Fixed
+- verbose options for `compute` functions
 - matplotlib version
 - fix the WTTR config saving options (align with the `verbose` option)
 ## [0.4.0] - 2024.05.10

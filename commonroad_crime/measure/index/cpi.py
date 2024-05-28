@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin, Sicheng Wang"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
