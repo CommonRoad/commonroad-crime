@@ -1,7 +1,7 @@
 __author__ = "Oliver Specht, Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __maintainer__ = "beta"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "Pre-alpha"
