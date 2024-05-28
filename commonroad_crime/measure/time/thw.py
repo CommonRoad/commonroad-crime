@@ -47,7 +47,7 @@ class THW(CriMeBase):
             )
         return add_on
 
-    def cal_headway(self):
+    def cal_headway(self, verbose=True):
         try:
             other_position = self.other_vehicle.state_at_time(self.time_step).position
             other_s, _ = self.clcs.convert_to_curvilinear_coords(
@@ -58,6 +58,7 @@ class THW(CriMeBase):
                 logger,
                 f"* <THW> During the projection of the vehicle {self.other_vehicle.obstacle_id} "
                 f"at time step {self.time_step}: {e}",
+                verbose,
             )
             # out of projection domain: the other vehicle is far away
             return math.inf
@@ -71,6 +72,7 @@ class THW(CriMeBase):
                 logger,
                 f"* <THW> During the projection of the ego vehicle with id {self.ego_vehicle.obstacle_id} "
                 f"at time step {self.time_step}: {e}",
+                verbose,
             )
             # out of projection domain: the ref path should be problematic
             return math.nan
@@ -105,7 +107,7 @@ class THW(CriMeBase):
             expected_value=math.inf, verbose=verbose
         ):
             return self.value
-        self.value = self.cal_headway()
+        self.value = self.cal_headway(verbose=verbose)
         if self.value is not math.inf:
             self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(

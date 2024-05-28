@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -64,7 +64,6 @@ class WTTR(CriMeBase):
         # self.reach_config.planning.coordinate_system = "CART"
         self.reach_config.update()
         self.reach_interface = ReachableSetInterface(self.reach_config)
-        self._end_sim = None
 
     def _update_initial_state(self, target_state: State):
         self.reach_config.planning_problem.initial_state.position = (
@@ -83,13 +82,13 @@ class WTTR(CriMeBase):
     def compute(self, time_step: int = 0, vehicle_id=None, verbose: bool = True):
         if not self.validate_update_states_log(vehicle_id, time_step, verbose):
             return np.nan
-        self.ttc = self.ttc_object.compute(time_step)
+        self.ttc = self.ttc_object.compute(time_step, verbose=verbose)
         if self.ttc == 0:
             self.value = -math.inf
         elif self.ttc == math.inf:
             self.value = math.inf
         else:
-            self.value = self.binary_search(time_step)
+            self.value = self.binary_search(time_step, verbose=verbose)
         if self.value in [math.inf, -math.inf]:
             utils_log.print_and_log_info(
                 logger, f"*\t\t {self.measure_name} = {self.value}"
@@ -101,7 +100,7 @@ class WTTR(CriMeBase):
         )
         return self.value
 
-    def binary_search(self, initial_step: int):
+    def binary_search(self, initial_step: int, verbose=False):
         """
         Binary search to find the last time to execute the maneuver.
         """
@@ -118,15 +117,22 @@ class WTTR(CriMeBase):
             mid = int((low + high) / 2)
             mid_state = copy.deepcopy(self.ego_vehicle.state_at_time(mid))
             self._update_initial_state(mid_state)
+
+            # update configurations
             self.reach_config.update(
                 planning_problem=self.reach_config.planning_problem
+            )
+            self.reach_config.planning.steps_computation = (
+                time_end - mid_state.time_step
             )
             self.reach_config.scenario.remove_obstacle(
                 self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
             )
+            self.reach_config.debug.save_config = verbose
+
+            # reset the interface and compute the reachable sets
             self.reach_interface.reset(self.reach_config)
-            self._end_sim = time_end - mid
-            self.reach_interface.compute_reachable_sets(0, time_end, verbose=True)
+            self.reach_interface.compute_reachable_sets(verbose=verbose)
             if self.reach_interface.reachable_set_at_step(time_end):
                 # the final step is still reachable without causing the collision
                 low = mid + 1
@@ -150,11 +156,11 @@ class WTTR(CriMeBase):
             self.reach_config.scenario.remove_obstacle(
                 self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
             )
-            self.reach_interface.reset(self.reach_config)
-            self._end_sim = self.ego_vehicle.prediction.final_time_step
-
-            self.reach_interface.compute_reachable_sets(0, self._end_sim, verbose=True)
-            util_visual.plot_scenario_with_reachable_sets(
-                self.reach_interface, step_start=0, step_end=self._end_sim
+            self.reach_config.planning.steps_computation = (
+                self.ego_vehicle.prediction.final_time_step - mid_state.time_step
             )
+            self.reach_interface.reset(self.reach_config)
+
+            self.reach_interface.compute_reachable_sets(verbose=False)
+            util_visual.plot_scenario_with_reachable_sets(self.reach_interface)
             # util_visual.plot_collision_checker(self.reach_interface)

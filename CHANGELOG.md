@@ -1,4 +1,8 @@
 # Changelog
+## [0.4.1] - 2024.05.xx
+### Fixed
+- matplotlib version
+- fix the WTTR config saving options (align with the `verbose` option)
 ## [0.4.0] - 2024.05.10
 ### Updated
 - Visualization of criticality curve: now the nan and inf are distinguished!! The tick for inf is automatically generated!

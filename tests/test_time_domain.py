@@ -169,7 +169,7 @@ class TestTimeDomain(unittest.TestCase):
 
     def test_wttr(self):
         wttr_object = WTTR(self.config)
-        wttr = wttr_object.compute(10)
+        wttr = wttr_object.compute(10, verbose=False)
         wttr_object.visualize()
         self.assertEqual(wttr, 1.3)
         wttr2 = wttr_object.compute()
