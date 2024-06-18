@@ -1,5 +1,8 @@
 # Changelog
-## [0.4.1] - 2024.05.xx
+## [0.4.2] - 2024.0x.xx
+### Fixed
+- Computation of THW
+## [0.4.1] - 2024.05.28
 ### Updated
 - the saving of the results to xml files with the format of `CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml
 ### Fixed
