@@ -108,7 +108,7 @@ class THW(CriMeBase):
         ):
             return self.value
         self.value = self.cal_headway(verbose=verbose)
-        if self.value is not math.inf:
+        if math.isfinite(self.value):
             self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(
             logger,
