@@ -1,9 +1,9 @@
 vehicle:
   cartesian:
-    a_x_max:  6.0
-    a_x_min: -6.0
-    j_x_max:  8.0
-    j_x_min: -8.0
+    a_x_max:  4.0
+    a_x_min: -4.0
+    j_x_max:  4.0
+    j_x_min: -4.0
 reachable_set:
   coordinate_system: 1
 potential:
