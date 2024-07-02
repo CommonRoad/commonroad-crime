@@ -171,7 +171,8 @@ class SimulationBase(ABC):
         # doesn't work for highD scenarios
         abs_velocity = np.sqrt(state.velocity**2 + state.velocity_y**2)
         if (
-            abs_velocity < self.braking_vel_threshold or abs_velocity > self.parameters.longitudinal.v_max
+            abs_velocity < self.braking_vel_threshold
+            or abs_velocity > self.parameters.longitudinal.v_max
         ):  # parameters.longitudinal.v_max:
             return False
         return True
@@ -337,7 +338,10 @@ class SimulationLong(SimulationBase):
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 if suc_state is not None:
-                    if suc_state.velocity**2 + suc_state.velocity_y**2 < self.braking_vel_threshold:
+                    if (
+                        suc_state.velocity**2 + suc_state.velocity_y**2
+                        < self.braking_vel_threshold
+                    ):
                         pre_state.velocity = 0
                         pre_state.velocity_y = 0
                     for time_step in range(
