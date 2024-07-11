@@ -342,8 +342,9 @@ class SimulationLong(SimulationBase):
                         suc_state.velocity**2 + suc_state.velocity_y**2
                         < self.braking_vel_threshold
                     ):
-                        pre_state.velocity = 0
-                        pre_state.velocity_y = 0
+                        # slow down the vehicle immediately without changing the orientation to 0
+                        pre_state.velocity = 1e-5 * pre_state.velocity
+                        pre_state.velocity_y = 1e-5 * pre_state.velocity_y
                     for time_step in range(
                         pre_state.time_step + 1, self.time_horizon + 1
                     ):
