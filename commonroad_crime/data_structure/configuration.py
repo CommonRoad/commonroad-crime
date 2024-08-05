@@ -242,6 +242,8 @@ class TimeDomainConfiguration(BaseConfig):
     # threshold for TET and TIT
     # default value as recommended by Yuanfei
     tau: float = 2.0
+    # for computing the TTX with the braking maneuver, the threshold for determining whether the car should stop
+    braking_vel_threshold: float = 0.2
 
 
 @dataclass

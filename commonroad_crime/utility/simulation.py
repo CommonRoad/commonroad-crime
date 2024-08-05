@@ -69,6 +69,7 @@ class SimulationBase(ABC):
         self.cartesian = config.vehicle.cartesian
         self.vehicle_dynamics = config.vehicle.dynamic
         self.plot = config.debug.draw_visualization
+        self.braking_vel_threshold = config.time.braking_vel_threshold
 
         self.a_long = 0
         self.a_lat = 0
@@ -170,7 +171,8 @@ class SimulationBase(ABC):
         # doesn't work for highD scenarios
         abs_velocity = np.sqrt(state.velocity**2 + state.velocity_y**2)
         if (
-            abs_velocity < 0.1 or abs_velocity > self.parameters.longitudinal.v_max
+            abs_velocity < self.braking_vel_threshold
+            or abs_velocity > self.parameters.longitudinal.v_max
         ):  # parameters.longitudinal.v_max:
             return False
         return True
@@ -336,9 +338,13 @@ class SimulationLong(SimulationBase):
             else:
                 # the simulated state is infeasible, i.e., further acceleration/deceleration is not permitted
                 if suc_state is not None:
-                    if suc_state.velocity**2 + suc_state.velocity_y**2 < 0.1:
-                        pre_state.velocity = 0
-                        pre_state.velocity_y = 0
+                    if (
+                        suc_state.velocity**2 + suc_state.velocity_y**2
+                        < self.braking_vel_threshold
+                    ):
+                        # slow down the vehicle immediately without changing the orientation to 0
+                        pre_state.velocity = 1e-5 * pre_state.velocity
+                        pre_state.velocity_y = 1e-5 * pre_state.velocity_y
                     for time_step in range(
                         pre_state.time_step + 1, self.time_horizon + 1
                     ):
