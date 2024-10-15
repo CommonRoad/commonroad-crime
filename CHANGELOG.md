@@ -4,6 +4,8 @@
 - Computation of THW
 - Version of RoutePlanner
 - Orientation during `simulation` when the vehicle needs to fully stop
+### Added
+- For computing the TTX with the braking maneuver, the threshold for determining whether the car should stop
 ## [0.4.1] - 2024.05.28
 ### Updated
 - the saving of the results to xml files with the format of `CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml
