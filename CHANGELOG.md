@@ -1,5 +1,10 @@
 # Changelog
-## [0.4.1] - 2024.05.xx
+## [0.4.2] - 2024.10.15
+### Fixed
+- Computation of THW
+- Version of RoutePlanner
+- Orientation during `simulation` when the vehicle needs to fully stop
+## [0.4.1] - 2024.05.28
 ### Updated
 - the saving of the results to xml files with the format of `CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml
 ### Fixed

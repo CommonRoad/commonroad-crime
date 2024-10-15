@@ -1,0 +1,12 @@
+vehicle:
+  cartesian:
+    a_x_max:  2.0
+    a_x_min: -2.0
+    j_x_max:  2.0
+    j_x_min: -2.0
+reachable_set:
+  coordinate_system: 1
+potential:
+  u_max: 500
+debug:
+  plot_limits: # [65, 105, -4, 7.5]

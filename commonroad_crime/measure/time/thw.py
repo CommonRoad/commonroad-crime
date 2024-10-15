@@ -1,7 +1,7 @@
 __author__ = "Yuanfei Lin"
 __copyright__ = "TUM Cyber-Physical Systems Group"
 __credits__ = ["KoSi"]
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 __maintainer__ = "Yuanfei Lin"
 __email__ = "commonroad@lists.lrz.de"
 __status__ = "beta"
@@ -108,7 +108,7 @@ class THW(CriMeBase):
         ):
             return self.value
         self.value = self.cal_headway(verbose=verbose)
-        if self.value is not math.inf:
+        if math.isfinite(self.value):
             self.value = utils_gen.int_round(self.value, 2)
         utils_log.print_and_log_info(
             logger,
