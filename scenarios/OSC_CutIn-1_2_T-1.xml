@@ -123,32 +123,6 @@
       <state>
         <position>
           <point>
-            <x>51.3999</x>
-            <y>-1.5349</y>
-          </point>
-        </position>
-        <orientation>
-          <exact>0.0</exact>
-        </orientation>
-        <time>
-          <exact>0</exact>
-        </time>
-        <velocity>
-          <exact>20.0</exact>
-        </velocity>
-        <acceleration>
-          <exact>0.0</exact>
-        </acceleration>
-        <yawRate>
-          <exact>0.0</exact>
-        </yawRate>
-        <slipAngle>
-          <exact>0.0</exact>
-        </slipAngle>
-      </state>
-      <state>
-        <position>
-          <point>
             <x>53.4000</x>
             <y>-1.5349</y>
           </point>
@@ -2757,32 +2731,6 @@
       </slipAngle>
     </initialState>
     <trajectory>
-      <state>
-        <position>
-          <point>
-            <x>81.4500</x>
-            <y>1.5348</y>
-          </point>
-        </position>
-        <orientation>
-          <exact>6.2830</exact>
-        </orientation>
-        <time>
-          <exact>0</exact>
-        </time>
-        <velocity>
-          <exact>15.0</exact>
-        </velocity>
-        <acceleration>
-          <exact>0.0</exact>
-        </acceleration>
-        <yawRate>
-          <exact>0.0</exact>
-        </yawRate>
-        <slipAngle>
-          <exact>0.0</exact>
-        </slipAngle>
-      </state>
       <state>
         <position>
           <point>
