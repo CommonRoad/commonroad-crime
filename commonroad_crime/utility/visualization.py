@@ -154,6 +154,9 @@ def draw_state_list(
     Visualizing the state list as a connecting trajectory. The transparency is based on the starting
     time step.
     """
+    if not state_list:
+        return
+
     global zorder
     # visualize optimal trajectory
     pos = np.asarray([state.position for state in state_list])
@@ -317,24 +320,33 @@ def visualize_scenario_at_time_steps(
     scenario: Scenario, plot_limit, time_steps: List[int]
 ):
     rnd = MPRenderer(plot_limits=plot_limit)
-    rnd.draw_params.time_begin = time_steps[0]
-    if time_steps:
-        rnd.draw_params.time_end = time_steps[-1]
+
+    assert isinstance(time_steps, list)
+    plot_begin: int = min(time_steps)
+    plot_end: int = max(time_steps)
+    rnd.draw_params.time_begin = plot_begin
+    rnd.draw_params.time_end = plot_end
+
     rnd.draw_params.trajectory.draw_trajectory = False
     rnd.draw_params.dynamic_obstacle.draw_icon = True
     scenario.draw(rnd)
     rnd.render()
     for obs in scenario.obstacles:
+        plot_traj_begin_time_step = max(obs.prediction.initial_time_step, plot_begin)
+        plot_traj_end_time_step = min(obs.prediction.final_time_step, plot_end)
+        plot_traj_begin_index = plot_traj_begin_time_step - obs.prediction.initial_time_step
+        plot_traj_end_index = plot_traj_end_time_step - obs.prediction.initial_time_step
+
         draw_state_list(
             rnd,
-            obs.prediction.trajectory.state_list[time_steps[0] : time_steps[-1] + 1],
+            obs.prediction.trajectory.state_list[plot_traj_begin_index: plot_traj_end_index + 1],
             color=TUMcolor.TUMblue,
             linewidth=5,
         )
-        for ts in time_steps[1:]:
-            draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
+        for ts in time_steps:
+            if plot_traj_begin_time_step -1 <= ts <= plot_traj_end_time_step:
+                draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
     plt.show()
-
 
 def make_gif(
     path: str,
