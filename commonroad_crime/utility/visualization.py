@@ -154,6 +154,9 @@ def draw_state_list(
     Visualizing the state list as a connecting trajectory. The transparency is based on the starting
     time step.
     """
+    if not state_list:
+        return
+
     global zorder
     # visualize optimal trajectory
     pos = np.asarray([state.position for state in state_list])
@@ -319,8 +322,8 @@ def visualize_scenario_at_time_steps(
     rnd = MPRenderer(plot_limits=plot_limit)
 
     assert isinstance(time_steps, list)
-    plot_begin: int = time_steps[0]
-    plot_end: int = time_steps[-1]
+    plot_begin: int = min(time_steps)
+    plot_end: int = max(time_steps)
     rnd.draw_params.time_begin = plot_begin
     rnd.draw_params.time_end = plot_end
 
@@ -341,7 +344,7 @@ def visualize_scenario_at_time_steps(
             linewidth=5,
         )
         for ts in time_steps:
-            if plot_traj_begin_time_step <= ts <= plot_traj_end_time_step:
+            if plot_traj_begin_time_step -1 <= ts <= plot_traj_end_time_step:
                 draw_dyn_vehicle_shape(rnd, obs, ts, color=TUMcolor.TUMblue)
     plt.show()
 
