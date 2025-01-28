@@ -208,20 +208,20 @@ class GeneralConfiguration(BaseConfig):
 
     # paths are relative to the root directory
     path_root_abs = os.path.normpath(os.path.join(os.path.dirname(__file__), "../.."))
-    path_scenarios: str = path_root_abs + "/scenarios/"
-    path_scenarios_batch: str = path_root_abs + "/scenarios/batch/"
-    path_output_abs: str = path_root_abs + "/output/"
-    path_logs: str = path_root_abs + "/output/logs/"
-    path_icons: str = path_root_abs + "/docs/icons/"
+    path_scenarios: str = os.path.join(path_root_abs, "scenarios")
+    path_scenarios_batch: str = os.path.join(path_root_abs, "scenarios/batch")
+    path_output_abs: str = os.path.join(path_root_abs, "output")
+    path_logs: str = os.path.join(path_root_abs, "output/logs")
+    path_icons: str = os.path.join(path_root_abs, "docs/icons")
     name_scenario: Optional[str] = None
 
     @property
     def path_scenario(self):
-        return self.path_scenarios + self.name_scenario + ".xml"
+        return os.path.join(self.path_scenarios, f"{self.name_scenario}.xml")
 
     @property
     def path_output(self):
-        return self.path_output_abs + self.name_scenario + "/"
+        return os.path.join(self.path_output_abs, self.name_scenario)
 
     def set_scenario_name(self, scenario_name: str):
         """
