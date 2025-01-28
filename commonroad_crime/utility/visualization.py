@@ -53,7 +53,7 @@ def save_fig(
     # save as svg
     Path(path_output).mkdir(parents=True, exist_ok=True)
     plt.savefig(
-        f"{path_output}{measure_name}_{time_step:.0f}.{suffix}",
+        os.path.join(path_output, f"{measure_name}_{time_step:.0f}.{suffix}"),
         format=suffix,
         bbox_inches="tight",
         transparent=False,

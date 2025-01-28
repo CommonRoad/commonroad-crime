@@ -191,7 +191,7 @@ class CriMeInterface:
         # Save to file
         tree = etree.ElementTree(root)
         tree.write(
-            f"{output_dir}/CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml",
+            os.path.join(output_dir, f"CriMe-{scenario.scenario_id}_veh_{self.config.vehicle.ego_id}.xml"),
             pretty_print=True,
             xml_declaration=True,
             encoding="utf-8",
