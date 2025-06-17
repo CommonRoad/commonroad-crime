@@ -101,6 +101,7 @@ The documentation can then be launched by browsing ``./docs/sphinx/build/html/in
 
 - Liguo Chen
 - Marius Erath
+- Florian Lercher
 - Yuanfei Lin
 - Sebastian Maierhofer
 - Ivana Peneva
