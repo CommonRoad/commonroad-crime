@@ -177,13 +177,14 @@ class PF(CriMeBase):
         for obs in self.sce.obstacles:
             if obs is not self.ego_vehicle:
                 # shape in curvilinear coordinate system
-                if obs.occupancy_at_time(self.time_step) is not None:
+                obs_occ_at_time = obs.occupancy_at_time(self.time_step)
+                if obs_occ_at_time is not None:
+                    occ_polygon = [
+                        np.array(coord)
+                        for coord in obs_occ_at_time.shape.shapely_object.exterior.coords
+                    ]
                     obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                        [
-                            obs.occupancy_at_time(
-                                self.time_step
-                            ).shape.shapely_object.exterior.coords
-                        ],
+                        [occ_polygon],
                         [0],
                         1,
                         4,
@@ -298,12 +299,14 @@ class PF(CriMeBase):
         for obs in self.sce.obstacles:
             if obs is not self.ego_vehicle:
                 # shape in curvilinear coordinate system
+                occ_polygon = [
+                    np.array(coord)
+                    for coord in obs.occupancy_at_time(
+                        self.time_step
+                    ).shape.shapely_object.exterior.coords
+                ]
                 obs_clcs_shape = self.clcs.convert_list_of_polygons_to_curvilinear_coords_and_rasterize(
-                    [
-                        obs.occupancy_at_time(
-                            self.time_step
-                        ).shape.shapely_object.exterior.coords
-                    ],
+                    [occ_polygon],
                     [0],
                     1,
                     4,
