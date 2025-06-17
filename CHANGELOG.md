@@ -1,4 +1,7 @@
 # Changelog
+## [0.4.4] - 2025.06.17
+### Fixed
+- Fix the dc version and the interface to commonroad-clcs
 ## [0.4.3] - 2025.04.30
 ### Updated
 - Use the latest commonroad-clcs tool for curvilinear coordinate system conversion

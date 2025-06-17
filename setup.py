@@ -33,10 +33,10 @@ setup(
     install_requires=[
         "commonroad-io>=2024.1",
         "commonroad-vehicle-models>=3.0.0",
-        "commonroad-route-planner>=2025.1.0",
-        "commonroad-drivability-checker>=2025.1",
-        "commonroad-reach>=2025.1.0",
-        "commonroad-clcs>=2025.1.1",
+        "commonroad-route-planner~=2025.1.0",
+        "commonroad-drivability-checker~=2025.3.1",
+        "commonroad-reach~=2025.2.0",
+        "commonroad-clcs~=2025.2.0",
         "matplotlib>=3.5.2,<3.9",
         "numpy>=1.19.0",
         "scipy>=1.7.3",
@@ -49,7 +49,6 @@ setup(
     ],
     classifiers=[
         "Programming Language :: C++",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: BSD License",
