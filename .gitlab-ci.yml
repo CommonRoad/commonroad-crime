@@ -1,4 +1,4 @@
-image: python:3.9
+image: python:3.10
 
 stages:
   - style
@@ -29,7 +29,7 @@ unittest:
   image: python:$PYTHON_VERSIONS
   parallel:
     matrix:
-      - PYTHON_VERSIONS: ["3.11", "3.9", "3.10" ] # 3.8 limited by drivability-checker
+      - PYTHON_VERSIONS: ["3.11", "3.10" ] # 3.8 limited by drivability-checker
   script:
       - coverage run --source=./commonroad_crime -m unittest discover -s $CI_PROJECT_DIR/tests -v
       - coverage report -m || true
