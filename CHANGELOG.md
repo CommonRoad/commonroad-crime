@@ -1,4 +1,7 @@
 # Changelog
+## [0.4.5] - 2025.10.22
+### Fixed
+- Fix the dependency versions
 ## [0.4.4] - 2025.06.17
 ### Fixed
 - Fix the dc version and the interface to commonroad-clcs
