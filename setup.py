@@ -4,10 +4,17 @@ import os
 
 from setuptools import setup, find_packages
 
-from commonroad_crime.__version__ import __version__
-
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
+version_ns = {}
+with open(
+    os.path.join(this_directory, "commonroad_crime", "__version__.py"),
+    "r",
+    encoding="utf-8",
+) as f:
+    exec(f.read(), version_ns)
+__version__ = version_ns["__version__"]
+
 with open(os.path.join(this_directory, "README.md"), "r", encoding="utf-8") as f:
     readme = f.read()
 

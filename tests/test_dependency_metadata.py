@@ -88,6 +88,13 @@ class TestDependencyMetadata(unittest.TestCase):
         requires = ast.literal_eval(parser["build-system"]["requires"])
         self.assertEqual(backend, "setuptools.build_meta")
         self.assertTrue(any("setuptools" in req for req in requires))
+        with open(self.setup_path, "r", encoding="utf-8") as fh:
+            setup_src = fh.read()
+        self.assertNotIn(
+            "from commonroad_crime.__version__ import",
+            setup_src,
+            "PEP 517 isolated builds do not add '.' to sys.path during get_requires_for_build_wheel",
+        )
 
     def test_python_requires_supports_310_and_311(self):
         meta = _parse_setup_kwargs(self.setup_path)
