@@ -4,10 +4,17 @@ import os
 
 from setuptools import setup, find_packages
 
-from commonroad_crime.__version__ import __version__
-
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
+version_ns = {}
+with open(
+    os.path.join(this_directory, "commonroad_crime", "__version__.py"),
+    "r",
+    encoding="utf-8",
+) as f:
+    exec(f.read(), version_ns)
+__version__ = version_ns["__version__"]
+
 with open(os.path.join(this_directory, "README.md"), "r", encoding="utf-8") as f:
     readme = f.read()
 
@@ -29,14 +36,15 @@ setup(
     },
     url="https://commonroad.in.tum.de/tools/commonroad-crime",
     packages=find_packages(),
+    python_requires=">=3.10,<3.12",
     data_files=[(".", ["LICENSE"])],
     install_requires=[
-        "commonroad-io~=2024.3",
-        "commonroad-vehicle-models~=3.0.0",
-        "commonroad-route-planner~=2025.1.0",
-        "commonroad-drivability-checker~=2025.3.1",
-        "commonroad-reach~=2025.2.0",
-        "commonroad-clcs~=2025.2.0",
+        "commonroad-io>=2024.3,<2027.0",
+        "commonroad-vehicle-models>=3.0.0,<4.0.0",
+        "commonroad-route-planner>=2025.1.0,<2026.0.0",
+        "commonroad-drivability-checker>=2025.4.0,<2026.0.0",
+        "commonroad-reach>=2025.2.1,<2026.0.0",
+        "commonroad-clcs>=2025.2.0,<2026.0.0",
         "matplotlib>=3.0.0",
         "numpy>=1.19.0",
         "scipy>=1.7.3",

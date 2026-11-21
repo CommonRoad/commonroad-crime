@@ -19,7 +19,7 @@ from omegaconf import OmegaConf
 from commonroad.scenario.scenario import Scenario
 from commonroad.common.solution import VehicleType
 from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
-from commonroad_clcs.clcs import CurvilinearCoordinateSystem
+from commonroad_clcs.pycrccosy import CurvilinearCoordinateSystem
 from commonroad_crime.data_structure.scene import Scene
 import commonroad_crime.utility.general as utils_general
 
@@ -173,6 +173,10 @@ class VehicleConfiguration(BaseConfig):
         j_lat_max: float = 25.0
 
         reference_point: str = "rear"
+
+        def __post_init__(self):
+            super().__post_init__()
+            self.clcs: Optional[CurvilinearCoordinateSystem] = None
 
     @dataclass
     class OtherVehicle(BaseConfig):
