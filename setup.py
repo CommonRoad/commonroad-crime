@@ -55,5 +55,5 @@ setup(
         "Operating System :: POSIX :: Linux",
     ],
     include_package_data=True,
-    package_data={"": ["*.yaml"]},
+    package_data={"commonroad_crime": ["icons/*.png"], "": ["*.yaml"]},
 )

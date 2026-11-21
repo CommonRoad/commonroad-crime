@@ -212,7 +212,9 @@ class GeneralConfiguration(BaseConfig):
     path_scenarios_batch: str = path_root_abs + "/scenarios/batch/"
     path_output_abs: str = path_root_abs + "/output/"
     path_logs: str = path_root_abs + "/output/logs/"
-    path_icons: str = path_root_abs + "/docs/icons/"
+    path_icons: str = os.path.join(
+        os.path.normpath(os.path.join(os.path.dirname(__file__), "..")), "icons", ""
+    )
     name_scenario: Optional[str] = None
 
     @property

@@ -8,6 +8,7 @@ __status__ = "beta"
 
 import logging
 import math
+import os
 from shapely.geometry import Point
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
@@ -115,7 +116,9 @@ class TTZ(CriMeBase):
             im._image_skew_coordinate = (x2, y1)
             return im
 
-        pictogram = plt.imread(self.configuration.general.path_icons + "crosswalk.png")
+        pictogram = plt.imread(
+            os.path.join(self.configuration.general.path_icons, "crosswalk.png")
+        )
         for zebra in self._zebra_list:
             obs_zebra = zebra.obstacle_shape.shapely_object
             # get minimum bounding box around polygon
