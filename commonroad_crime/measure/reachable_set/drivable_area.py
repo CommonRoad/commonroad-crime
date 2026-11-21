@@ -32,6 +32,12 @@ class DA(CriMeBase):
     """
     Klischat, Moritz, et al. "Scenario factory: Creating safety-critical traffic scenarios for automated vehicles."
     2020 IEEE 23rd International Conference on Intelligent Transportation Systems (ITSC). IEEE, 2020.
+
+    .. note::
+        ``PlanningProblemSet`` definitions in scenario XML files are optional. In Cartesian mode, goal regions
+        do not affect reachable sets; in curvilinear mode, a planning problem is only used to select the reference
+        lanelet path when no curvilinear coordinate system is supplied. If no planning problem is present, a survival
+        planning problem seeded from ``ego_vehicle.initial_state`` is constructed automatically.
     """
 
     measure_name = TypeReachableSet.DA
@@ -56,8 +62,27 @@ class DA(CriMeBase):
         self.reach_config.planning.dt = self.sce.dt
         if self.configuration.reachable_set.coordinate_system == 1:
             self.reach_config.planning.coordinate_system = "CART"
-        self.reach_config.update(scenario=self.sce)
+        planning_problem = utils_gen.resolve_reach_planning_problem(
+            self.configuration, self.sce, self.ego_vehicle
+        )
+        self._sync_reach_config(planning_problem)
         self.reach_interface = ReachableSetInterface(self.reach_config)
+
+    def _sync_reach_config(self, planning_problem):
+        self.reach_config.update(
+            scenario=copy.deepcopy(self.sce),
+            planning_problem=planning_problem,
+        )
+        if (
+            self.reach_config.planning.coordinate_system == "CVLN"
+            and self.reach_config.planning.CLCS is None
+            and self.clcs is not None
+        ):
+            self.reach_config.update(
+                scenario=copy.deepcopy(self.sce),
+                planning_problem=planning_problem,
+                CLCS=self.clcs,
+            )
 
     def _update_initial_state(self, target_state: Union[InitialState, CustomState]):
         self.reach_config.planning_problem.initial_state.position = (
@@ -84,7 +109,7 @@ class DA(CriMeBase):
         self.value = 0.0
         evaluated_state = copy.deepcopy(self.ego_vehicle.state_at_time(self.time_step))
         self._update_initial_state(target_state=evaluated_state)
-        self.reach_config.update(planning_problem=self.reach_config.planning_problem)
+        self._sync_reach_config(self.reach_config.planning_problem)
         self.reach_config.scenario.remove_obstacle(
             self.reach_config.scenario.obstacle_by_id(self.ego_vehicle.obstacle_id)
         )
