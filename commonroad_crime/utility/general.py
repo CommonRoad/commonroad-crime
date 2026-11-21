@@ -8,6 +8,7 @@ __status__ = "Pre-alpha"
 
 from commonroad.scenario.lanelet import LaneletNetwork
 from commonroad.scenario.state import (
+    InitialState,
     State,
     KSState,
     LongitudinalState,
@@ -15,7 +16,11 @@ from commonroad.scenario.state import (
     PMState,
     CustomState,
 )
+from commonroad.scenario.obstacle import Obstacle
 from commonroad.scenario.scenario import Scenario, DynamicObstacle, StaticObstacle
+from commonroad.planning.goal import GoalRegion
+from commonroad.planning.planning_problem import PlanningProblem
+from commonroad.common.util import Interval
 from commonroad.common.file_reader import CommonRoadFileReader
 
 from commonroad_clcs.util import chaikins_corner_cutting, resample_polyline
@@ -23,6 +28,8 @@ import commonroad_clcs.pycrccosy as pycrccosy
 
 import commonroad_crime.utility.solver as utils_sol
 
+import copy
+import os
 import numpy as np
 import math
 import logging
@@ -44,6 +51,71 @@ def load_scenario(config) -> Scenario:
         lanelet_assignment=True
     )
     return scenario
+
+
+def resolve_reach_planning_problem(
+    config, scenario: Scenario, ego_vehicle: Obstacle
+) -> PlanningProblem:
+    """
+    Resolves a ``PlanningProblem`` for ``commonroad_reach`` evaluation.
+
+    If ``config`` or the scenario XML file provides a non-empty ``PlanningProblemSet``,
+    the existing planning problem is returned so curvilinear route planning remains
+    unchanged. When no planning problem is present (e.g., scenarios saved without
+    ``<planningProblem>`` or created purely in memory), a survival ``PlanningProblem``
+    seeded from ``ego_vehicle.initial_state`` is synthesized automatically.
+    """
+    if getattr(config, "planning_problem", None) is not None:
+        return copy.deepcopy(config.planning_problem)
+
+    pps = getattr(config, "planning_problem_set", None)
+    if pps is not None and getattr(pps, "planning_problem_dict", None):
+        return copy.deepcopy(next(iter(pps.planning_problem_dict.values())))
+
+    if getattr(config.general, "name_scenario", None):
+        path_scenario = config.general.path_scenario
+        if os.path.isfile(path_scenario):
+            _, file_pps = CommonRoadFileReader(path_scenario).open()
+            if file_pps.planning_problem_dict:
+                return next(iter(file_pps.planning_problem_dict.values()))
+
+    ego_init = ego_vehicle.initial_state
+    if hasattr(ego_init, "velocity_y") and ego_init.velocity_y is not None:
+        vel = float(np.hypot(ego_init.velocity, ego_init.velocity_y))
+    else:
+        vel = float(getattr(ego_init, "velocity", 0.0) or 0.0)
+    orientation = float(getattr(ego_init, "orientation", 0.0) or 0.0)
+    acceleration = float(getattr(ego_init, "acceleration", 0.0) or 0.0)
+    yaw_rate = float(getattr(ego_init, "yaw_rate", 0.0) or 0.0)
+    slip_angle = float(getattr(ego_init, "slip_angle", 0.0) or 0.0)
+    init_step = int(getattr(ego_init, "time_step", 0))
+
+    init_state = InitialState(
+        position=np.asarray(ego_init.position, dtype=float).copy(),
+        orientation=orientation,
+        velocity=vel,
+        acceleration=acceleration,
+        yaw_rate=yaw_rate,
+        slip_angle=slip_angle,
+        time_step=init_step,
+    )
+
+    pred = getattr(ego_vehicle, "prediction", None)
+    final_step = getattr(pred, "final_time_step", None)
+    if final_step is None or int(final_step) <= init_step:
+        horizon = int(
+            getattr(getattr(config, "reachable_set", None), "time_horizon", 10)
+        )
+        final_step = init_step + max(1, horizon)
+
+    goal_region = GoalRegion(
+        [CustomState(time_step=Interval(init_step, int(final_step)))]
+    )
+    return PlanningProblem(
+        planning_problem_id=int(ego_vehicle.obstacle_id),
+        initial_state=init_state,
+        goal_region=goal_region,
+    )
 
 
 def generate_reference_path(

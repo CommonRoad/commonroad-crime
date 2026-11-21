@@ -17,6 +17,7 @@ from omegaconf import OmegaConf
 
 
 from commonroad.scenario.scenario import Scenario
+from commonroad.planning.planning_problem import PlanningProblem, PlanningProblemSet
 from commonroad.common.solution import VehicleType
 from commonroad_dc.feasibility.vehicle_dynamics import PointMassDynamics
 from commonroad_clcs.clcs import CurvilinearCoordinateSystem
@@ -407,14 +408,19 @@ class CriMeConfiguration(BaseConfig):
     index: IndexDomainConfiguration = field(default_factory=IndexDomainConfiguration)
 
     def __post_init__(self):
+        super().__post_init__()
         self.scenario: Optional[Scenario] = None
         self.scene: Optional[Scene] = None
+        self.planning_problem: Optional[PlanningProblem] = None
+        self.planning_problem_set: Optional[PlanningProblemSet] = None
 
     def update(
         self,
         ego_id: int = None,
         sce: Union[Scene, Scenario] = None,
         CLCS: Optional[CurvilinearCoordinateSystem] = None,
+        planning_problem: Optional[PlanningProblem] = None,
+        planning_problem_set: Optional[PlanningProblemSet] = None,
     ):
         """
         Updates criticality configuration based on the given attributes.
@@ -425,6 +431,7 @@ class CriMeConfiguration(BaseConfig):
         3. scene
         4. scenario + clcs
         5. scene + clcs
+        6. any of the above + optional planning_problem / planning_problem_set
         """
         if isinstance(sce, Scene):
             self.scene = sce
@@ -440,6 +447,10 @@ class CriMeConfiguration(BaseConfig):
             self.scenario = utils_general.load_scenario(
                 self
             )  # if none is provided, scenario is at default
+        if planning_problem is not None:
+            self.planning_problem = planning_problem
+        if planning_problem_set is not None:
+            self.planning_problem_set = planning_problem_set
         if CLCS:
             self.vehicle.curvilinear.clcs = CLCS
         if ego_id:
