@@ -1,4 +1,5 @@
 """Vulnerable Road User (VRU) crosswalk & shared-space criticality measures."""
+
 from .vru_conflict_measures import (
     VruEncounterCriticalityReport,
     build_vru_encounter_scenario,
@@ -18,3 +19,4 @@ __all__ = [
     "build_vru_encounter_scenario",
     "evaluate_vru_encounter_scenario",
 ]
+

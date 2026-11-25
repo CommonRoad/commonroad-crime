@@ -1,4 +1,5 @@
-"""Cross-platform Vulnerable Road User (VRU) crosswalk & shared-space criticality measures."""
+"""Cross-platform VRU crosswalk and shared-space criticality measures."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -16,7 +17,7 @@ import numpy as np
 
 @dataclass(frozen=True)
 class VruEncounterCriticalityReport:
-    """Aggregated criticality profile for a CommonRoad VRU-vehicle or VRU-cyclist encounter."""
+    """Criticality profile for a CommonRoad VRU-vehicle or VRU-cyclist encounter."""
 
     scenario_id: str
     min_ttc_s: float
@@ -35,10 +36,10 @@ def compute_vru_ttc(
 ) -> float:
     """
     Compute exact continuous-space 2D Time-to-Collision (`TTC`, seconds) between a VRU
-    (pedestrian, wheelchair user, child, cyclist) and an approaching vehicle or micromobility user.
+    (pedestrian, wheelchair user, child, cyclist) and an approaching road user.
 
-    Handles zero relative velocity (`a == 0`), diverging paths, and immediate overlap (`0.0`)
-    cleanly without requiring compiled `commonroad_dc` C++ extensions.
+    Handles zero relative velocity (`a == 0`), diverging paths, and immediate overlap
+    (`0.0`) cleanly without requiring compiled `commonroad_dc` C++ extensions.
     """
     p_a = np.asarray(pos_vru, dtype=float)[:2]
     v_a = np.asarray(vel_vru, dtype=float)[:2]
@@ -79,7 +80,7 @@ def _segment_box_entry_exit_times(
     traj_xy: np.ndarray,
     conflict_box: tuple[float, float, float, float],
 ) -> tuple[float, float] | None:
-    """Compute exact interpolated `[t_entry, t_exit]` of a 2D polyline across `conflict_box`."""
+    """Compute exact interpolated `[t_entry, t_exit]` across `conflict_box`."""
     xmin, ymin, xmax, ymax = (float(v) for v in conflict_box)
     if len(times_s) == 0 or len(traj_xy) == 0:
         return None
@@ -145,8 +146,8 @@ def compute_crosswalk_pet(
     conflict_box: tuple[float, float, float, float] = (-3.5, -3.5, 3.5, 3.5),
 ) -> float:
     """
-    Compute exact continuous-time Post-Encroachment Time (`PET`, seconds) over a crosswalk
-    or shared-space conflict zone `(xmin, ymin, xmax, ymax)`.
+    Compute exact continuous-time Post-Encroachment Time (`PET`, seconds) over a
+    crosswalk or shared-space conflict zone `(xmin, ymin, xmax, ymax)`.
 
     Returns:
         - `0.0` if VRU and vehicle simultaneously occupy `conflict_box`
@@ -209,7 +210,7 @@ def compute_vru_dst(
 
     if vru_speed < 0.15:
         if dist_vru_cp <= float(clear_radius_m):
-            # Stationary VRU inside crosswalk -> required kinematic stopping deceleration
+            # Stationary VRU inside crosswalk -> required stopping deceleration
             return float((closing_speed_veh**2) / (2.0 * d_veh_eff))
         return 0.0
 
@@ -221,7 +222,8 @@ def compute_vru_dst(
         return 0.0
 
     t_clear = rem_clear_dist / vru_speed
-    a_dst = 2.0 * (closing_speed_veh * t_clear - d_veh_eff) / max(t_clear * t_clear, 1e-4)
+    denom = max(t_clear * t_clear, 1e-4)
+    a_dst = 2.0 * (closing_speed_veh * t_clear - d_veh_eff) / denom
     return float(max(0.0, a_dst))
 
 
@@ -297,7 +299,7 @@ def build_vru_encounter_scenario(
 ) -> Scenario:
     """
     Construct a native `commonroad.scenario.scenario.Scenario` containing a VRU
-    (`ObstacleType.PEDESTRIAN` or `ObstacleType.BICYCLE`) and an approaching vehicle (`CAR`).
+    (`ObstacleType.PEDESTRIAN` or `ObstacleType.BICYCLE`) and a vehicle (`CAR`).
     """
     xy_p = np.asarray(vru_xy, dtype=float)
     v_p = np.asarray(vru_vel, dtype=float)
@@ -333,7 +335,7 @@ def evaluate_vru_encounter_scenario(
     conflict_box: tuple[float, float, float, float] = (-3.5, -3.5, 3.5, 3.5),
     tau_star_s: float = 2.5,
 ) -> VruEncounterCriticalityReport:
-    """Evaluate `TTC`, `PET`, `DST`, and `TIT` directly on a `commonroad-io` `Scenario`."""
+    """Evaluate `TTC`, `PET`, `DST`, and `TIT` directly on a CommonRoad `Scenario`."""
     vru_obs = scenario.obstacle_by_id(vru_id)
     veh_obs = scenario.obstacle_by_id(veh_id)
     if vru_obs is None or veh_obs is None:
@@ -378,13 +380,19 @@ def evaluate_vru_encounter_scenario(
         p_xys.append(pos_p)
         v_xys.append(pos_v)
         ttc_list.append(
-            compute_vru_ttc(pos_p, vp_vec, pos_v, vv_vec, collision_distance=collision_distance)
+            compute_vru_ttc(
+                pos_p, vp_vec, pos_v, vv_vec, collision_distance=collision_distance
+            )
         )
         dst_list.append(
-            compute_vru_dst(pos_p, vp_vec, pos_v, vv_vec, conflict_point=conflict_center)
+            compute_vru_dst(
+                pos_p, vp_vec, pos_v, vv_vec, conflict_point=conflict_center
+            )
         )
 
-    pet_val = compute_crosswalk_pet(times_s, p_xys, times_s, v_xys, conflict_box=conflict_box)
+    pet_val = compute_crosswalk_pet(
+        times_s, p_xys, times_s, v_xys, conflict_box=conflict_box
+    )
     tit_val = compute_vru_tit(ttc_list, dt_s=dt_s, tau_star_s=tau_star_s)
 
     return VruEncounterCriticalityReport(
